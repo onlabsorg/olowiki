@@ -1,0 +1,147 @@
+<style>
+
+    :host {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+
+    /* HEADER */
+
+    header {
+        flex: 0 0 48px;
+        display: flex;
+        flex-direction: row;
+        margin: 0;
+        padding: 0;
+        background-color: var(--olo-dark-bgcolor);
+        border: 1px solid var(--olo-line-locolor);
+    }
+
+    header svg {
+        flex: 0 0 48px;
+        width: 48px;
+        height: 48px;
+        stroke: var(--olo-dark-hicolor);
+        fill: transparent;
+    }
+
+
+
+    /* MAIN */
+
+    main {
+        flex: 1 1 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+    }
+
+    main olo-tree {
+        flex: 1 1 20%;
+        border: 1px solid var(--olo-line-locolor);
+        padding-right: 4px;
+    }
+
+    main #content {
+        flex: 1 1 80%;
+        display: flex;
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    main #content olo-editor {
+        flex: 1 1 50%;
+        margin: 0;
+        border: 1px solid var(--olo-line-locolor);
+        padding: 0;
+    }
+
+    main #content olo-viewer {
+        flex: 1 1 50%;
+        margin: 0;
+        border: 1px solid var(--olo-line-locolor);
+        padding: 1em 2em;
+    }
+
+
+    /* viewer-only layout */
+
+    :host([layout="viewer-only"]) main #content{
+        flex-direction: row;
+    }
+
+    :host([layout="viewer-only"]) main #content olo-editor {
+        display: none;
+    }
+
+    :host([layout="viewer-only"]) main #content olo-viewer {
+        flex: 1 1 100%;
+    }
+
+
+
+    /* editor layout */
+
+    :host([layout="editor-only"]) main #content {
+        flex-direction: row;
+    }
+
+    :host([layout="editor-only"]) main #content olo-editor {
+        flex: 1 1 100%;
+    }
+
+    :host([layout="editor-only"]) main #content olo-viewer {
+        display: none;
+    }
+
+
+
+    /* column layout */
+
+    :host([layout="vertical"]) main #content {
+        flex-direction: column;
+    }
+
+    :host([layout="vertical"]) main #content olo-editor {
+        flex: 1 1 50%;
+    }
+
+    :host([layout="vertical"]) main #content olo-viewer {
+        flex: 1 1 50%;
+    }
+
+
+    /* row layout */
+
+    :host([layout="horizontal"]) main #content {
+        flex-direction: row;
+    }
+
+    :host([layout="horizontal"]) main #content olo-editor {
+        flex: 1 1 50%;
+    }
+
+    :host([layout="horizontal"]) main #content olo-viewer {
+        flex: 1 1 50%;
+    }
+
+</style>
+
+
+<header style="font-size: 2em;">
+    <svg id="button" height="100" width="100" viewBox="0 0 100 100" >
+        <rect x="0" y="0" width="100" height="100" style="stroke-width:0;" />
+        <circle cx="26" cy="50" r="10" style="stroke-width:12; fill:none;" />
+        <line x1="50" y1="34" x2="50" y2="66" style="stroke-width:12" />
+        <circle cx="74" cy="50" r="10" style="stroke-width:12; fill:none;" />
+    </svg>
+</header>
+<main>
+    <olo-tree model="."></olo-tree>
+    <section id="content">
+        <olo-editor model="."></olo-editor>
+        <olo-viewer model="."></olo-viewer>
+    </section>
+</main>

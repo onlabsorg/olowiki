@@ -1,0 +1,267 @@
+:host {
+    padding: 2em 0;
+    background-color: var(--olo-text-bgcolor);
+    color: var(--olo-text-color);
+    font-family: var(--olo-sans-font);
+    font-size: var(--olo-font-size);
+}
+
+
+
+/*  Headers  */
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 1em 0 1em 0;
+    padding: 0;
+    font-weight: bold;
+}
+
+h1 {
+    font-size: 3em;
+    color: var(--olo-text-hicolor);
+    text-align: center;
+}
+
+h2 {
+    font-size: 2em;
+    color: var(--olo-text-hicolor);
+    border-bottom: 1px solid var(--olo-text-locolor);
+}
+
+h3 {
+    font-size: 1.6em;
+    color: var(--olo-text-hicolor);
+}
+
+h4 {
+    font-size: 1.4em;
+    color: var(--olo-text-color);
+}
+
+h5 {
+    font-size: 1.2em;
+    color: var(--olo-text-color);
+}
+
+h6 {
+    font-size: 1.1em;
+    color: var(--olo-text-locolor);
+}
+
+
+
+/*  Lists  */
+
+ul, ol, dl, li {
+    margin: 0.5em 0 0.5em 0;
+}
+
+li p {
+    display: inline;
+}
+
+ul, ol {
+    padding-left: 2em;
+    text-indent: -2em;
+    list-style-position: inside;
+}
+
+
+dl {
+    padding: 0;
+}
+
+dl dt {
+    margin: 1em 0 0.5em 0;
+    padding: 0;
+    font-weight: bold;
+}
+
+dl dd {
+    margin: 0 0 1em 0;
+    padding: 0 1em;
+}
+
+
+
+
+
+
+
+/*  Tables  */
+
+table {
+    margin: 1em 0 1em 0;
+    width: 100%;
+    color: var(--olo-text-color);
+}
+
+table tr {
+    border-top: 1px solid var(--olo-text-locolor);
+    background-color: var(--olo-text-bgcolor);
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+table tr th, table tr td {
+    margin: 0;
+    padding: 0.5em 1em;
+    border: 1px solid var(--olo-text-locolor);
+    text-align: left;
+}
+
+table tr th {
+    background-color: var(--olo-light-bgcolor);
+    font-weight: bold;
+}
+
+table tr td {}
+
+table.dict, table.list {
+    font-family: var(--olo-monospace-font);
+    /*display: block;*/
+    border-spacing: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+table.dict tr, table.dict tr {
+    border-radius: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+table.dict tr:hover, table.dict tr:hover {
+    background-color: var(--olo-light-bgcolor);
+}
+
+table.dict td, table.list td {
+    border: none;
+    border-bottom: 1px solid var(--olo-text-locolor);
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: top;
+}
+
+table.dict tr:first-child td, table.list tr:first-child td {
+    border-top: 1px solid var(--olo-text-locolor);
+}
+
+table.dict td:first-child, table.list td:first-child {
+    text-align: right;
+    font-weight: bold;
+}
+
+
+
+
+
+/*  blockquotes  */
+
+blockquote {
+    margin: 1em 0 1em 0;
+    color: var(--olo-text-color);
+    border-left: 4px solid var(--olo-text-locolor);
+    padding: 0 15px;
+}
+
+
+
+/*  code and pre  */
+
+pre, code {
+    font-family: var(--olo-monospace-font);
+}
+
+pre {
+    margin: 1em 0 1em 0;
+    max-height: 16em;
+}
+
+code {
+    margin: 0 2px;
+    padding: 0 0.5em;
+    white-space: nowrap;
+    border-radius: 3px;
+    background-color: var(--olo-light-bgcolor);
+    font-size: 0.9em;
+}
+
+h1 code,
+h2 code,
+h3 code,
+h4 code,
+h5 code,
+h6 code {
+    margin: 0;
+    padding: 0;
+    background-color: inherit;
+    font-size: inherit;
+
+}
+
+pre code {
+    margin: 0;
+    padding: 0;
+    white-space: pre;
+    border: none;
+    background: transparent;
+}
+
+pre {
+    background-color: var(--olo-light-bgcolor);
+    border: 1px solid var(--olo-text-locolor);
+    overflow: auto;
+    padding: 6px 10px;
+    border-radius: 3px;
+}
+
+pre.fullscreen {
+    max-height: none;
+    background-color: transparent;
+    border: 0;
+}
+
+
+
+/*  Paragraphs  */
+
+p {
+    margin: 1em 0 1em 0;
+}
+
+
+
+/*  Links  */
+
+/*
+a {
+    color: var(--olo-link-text-color);
+}
+*/
+
+a:hover {
+    color: var(--olo-link-hicolor);
+}
+
+
+
+/*  Images  */
+
+img {
+    max-width: 100%;
+}
+
+
+
+/*  Separator  */
+
+hr {
+    margin: 2em 0 2em 0;
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, var(--olo-text-locolor), var(--olo-text-hicolor), var(--olo-text-locolor));
+}

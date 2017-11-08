@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+
+<head>
+</head>
+
+<body>
+
+    <olo-wiki>
+        Hello World!
+    </olo-wiki>
+
+
+    <script>
+
+        class OloWiki extends HTMLElement {
+
+            constructor () {
+                super();
+                this.attachShadow({mode: 'open'});
+                this.shadowRoot.innerHTML = `<template id="tpt"><slot></slot></template><h1 id="view"></h1>`;
+            }
+
+            connectedCallback () {
+                console.log(this.innerHTML);
+                const template = this.shadowRoot.querySelector("#tpt");
+                const clone = document.importNode(template.content, true);
+                const view = this.shadowRoot.querySelector("#view");
+                view.appendChild(clone);
+            }
+        }
+
+        customElements.define("olo-wiki", OloWiki);
+
+    </script>
+
+</body>
+</html>

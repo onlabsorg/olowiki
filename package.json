@@ -1,0 +1,39 @@
+{
+  "name": "@onlabsorg/olo",
+  "version": "0.1.0",
+  "description": "OnLabs.org application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/onlabsorg/olo.git"
+  },
+  "author": "Marcello Del Buono",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/onlabsorg/olo/issues"
+  },
+  "homepage": "https://github.com/onlabsorg/olo#readme",
+  "devDependencies": {
+    "jspm": "^0.16.53"
+  },
+  "jspm": {
+    "directories": {
+      "baseURL": "client"
+    },
+    "dependencies": {
+      "ace": "github:ajaxorg/ace-builds@^1.2.9",
+      "html-to-vdom": "npm:html-to-vdom@^0.7.0",
+      "js-yaml": "npm:js-yaml@^3.10.0",
+      "lodash": "npm:lodash@^4.17.4",
+      "marked": "npm:marked@^0.3.6",
+      "nunjucks": "npm:nunjucks@^3.0.1",
+      "sanitize-html": "npm:sanitize-html@^1.14.1",
+      "uuid": "npm:uuid@^3.1.0",
+      "virtual-dom": "npm:virtual-dom@^2.1.1"
+    },
+    "devDependencies": {}
+  }
+}

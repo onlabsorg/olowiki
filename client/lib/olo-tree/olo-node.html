@@ -1,0 +1,77 @@
+<style>
+
+    :host {
+        font-family: var(--olo-sans-font);
+        font-size: var(--olo-font-size);
+        background-color: var(--olo-text-bgcolor);
+        color: var(--olo-text-color);
+    }
+
+    :host(.readonly) {
+        color: var(--olo-text-locolor);
+    }
+
+    #item {
+        -webkit-touch-callout: none;    /* iOS Safari */
+        -webkit-user-select: none;      /* Safari */
+        -khtml-user-select: none;       /* Konqueror HTML */
+        -moz-user-select: none;         /* Firefox */
+        -ms-user-select: none;          /* Internet Explorer/Edge */
+        user-select: none;              /* Chrome and Opera */
+        padding: 2px 4px 2px 4px;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    #item #icon {
+        width: 1.5em;
+    }
+
+    #item:hover {
+        cursor: default;
+        color: var(--olo-text-hicolor);
+        font-weight: bold;
+    }
+
+    :host(.selected) #item {
+        border-radius: 4px;
+        background-color: var(--olo-light-bgcolor);
+        color: var(--olo-light-hicolor);
+        font-weight: bold;
+    }
+
+    :host(.selected.readonly) #item {
+        color: var(--olo-light-locolor);
+    }
+
+    #child-list {
+        display: block;
+        margin-left: 1.5em;
+    }
+
+    :host(.collapsed) #child-list {
+        display: none;
+    }
+
+    #editor {
+        display: none;
+    }
+
+    :host(.editable) #viewer {
+        display: none;
+    }
+
+    :host(.editable) #editor {
+        display: inline;
+    }
+
+
+</style>
+
+<div id="item">
+    <span id="icon"></span>
+    <span id="viewer"></span>
+    <input id="editor"></span>
+</div>
+<div id="child-list">
+</div>
