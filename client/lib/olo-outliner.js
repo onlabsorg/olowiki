@@ -6,6 +6,7 @@ const OloTree = require("olo-tree");
 
 const keyString = require("utils/key-string");
 
+const Split = require("olo-outliner/Split");
 const oloOutlinerTemplate = require("olo-outliner/olo-outliner.html!text");
 
 class OloOutliner extends OloComponent {
@@ -28,6 +29,39 @@ class OloOutliner extends OloComponent {
 
         this.$("olo-editor").tabIndex = 1;
         this.$("olo-editor").addEventListener('keydown', (event) => this._handleEditorKeyDown(event));
+
+        this._mainSplit = Split([this.$("olo-tree"), this.$("#content")], {
+            sizes: [25, 75],
+            gutterSize: 6,
+            minSize: 200,
+            elementStyle: function (dimension, size, gutterSize) {
+                return {
+                    'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)'
+                }
+            },
+            gutterStyle: function (dimension, gutterSize) {
+                return {
+                    'flex-basis':  gutterSize + 'px'
+                }
+            }
+        });
+
+        this._contentSplit = Split([this.$("olo-viewer"), this.$("olo-editor")], {
+            sizes: [60, 40],
+            minSize: 200,
+            gutterSize: 6,
+            direction: "vertical",
+            elementStyle: function (dimension, size, gutterSize) {
+                return {
+                    'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)'
+                }
+            },
+            gutterStyle: function (dimension, gutterSize) {
+                return {
+                    'flex-basis':  gutterSize + 'px'
+                }
+            }
+        });
     }
 
     _updateOutlinerView () {

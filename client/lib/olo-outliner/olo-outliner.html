@@ -1,10 +1,33 @@
 <style>
 
     :host {
+        --olo-spacing: 6px;
         display: flex;
         flex-direction: column;
         align-items: stretch;
+        background-color: var(--olo-dark-bgcolor);
+        padding: var(--olo-spacing);
     }
+
+    .card {
+        border: 1px solid var(--olo-light-bg-color);
+        border-radius: var(--olo-spacing);
+        box-shadow: 2px 2px 1px 0px rgba(0,0,0,0.75);
+        margin: 0;
+    }
+
+    .card:focus {
+        outline: none;
+    }
+
+    .gutter.gutter-horizontal {
+        cursor: ew-resize;
+    }
+
+    .gutter.gutter-vertical {
+        cursor: ns-resize;
+    }
+
 
 
     /* HEADER */
@@ -16,7 +39,6 @@
         margin: 0;
         padding: 0;
         background-color: var(--olo-dark-bgcolor);
-        border: 1px solid var(--olo-line-locolor);
     }
 
     header svg {
@@ -40,8 +62,7 @@
 
     main olo-tree {
         flex: 1 1 20%;
-        border: 1px solid var(--olo-line-locolor);
-        padding-right: 4px;
+        padding: var(--olo-spacing);
     }
 
     main #content {
@@ -51,18 +72,20 @@
         flex-direction: column;
     }
 
+    main #content olo-viewer {
+        flex: 1 1 60%;
+        border: 1px solid var(--olo-line-locolor);
+        padding: 1em 2em;
+    }
+
     main #content olo-editor {
-        flex: 1 1 50%;
-        margin: 0;
+        flex: 1 1 40%;
         border: 1px solid var(--olo-line-locolor);
         padding: 0;
     }
 
-    main #content olo-viewer {
-        flex: 1 1 50%;
-        margin: 0;
-        border: 1px solid var(--olo-line-locolor);
-        padding: 1em 2em;
+    main #content .divider:hover {
+        cursor: row-resize;
     }
 
 
@@ -105,11 +128,15 @@
     }
 
     :host([layout="vertical"]) main #content olo-editor {
-        flex: 1 1 50%;
+        flex: 1 1 40%;
     }
 
     :host([layout="vertical"]) main #content olo-viewer {
-        flex: 1 1 50%;
+        flex: 1 1 60%;
+    }
+
+    :host([layout="vertical"]) main #content .divider:hover {
+        cursor: row-resize;
     }
 
 
@@ -120,11 +147,15 @@
     }
 
     :host([layout="horizontal"]) main #content olo-editor {
-        flex: 1 1 50%;
+        flex: 1 1 40%;
     }
 
     :host([layout="horizontal"]) main #content olo-viewer {
-        flex: 1 1 50%;
+        flex: 1 1 60%;
+    }
+
+    :host([layout="horizontal"]) main #content .divider:hover {
+        cursor: col-resize;
     }
 
 </style>
@@ -139,9 +170,11 @@
     </svg>
 </header>
 <main>
-    <olo-tree model="."></olo-tree>
+    <olo-tree class="card" model="."></olo-tree>
+    <!--<div class="divider"></div>-->
     <section id="content">
-        <olo-editor model="."></olo-editor>
-        <olo-viewer model="."></olo-viewer>
+        <olo-viewer class="card" model="."></olo-viewer>
+        <!--<div class="divider"></div>-->
+        <olo-editor class="card" model="."></olo-editor>
     </section>
 </main>
