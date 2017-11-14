@@ -82,7 +82,6 @@ class OloNode extends OloComponent {
         else {
             this.classList.remove('collapsed');
         }
-        this.render();
     }
 
     toggleCollapsed () {
