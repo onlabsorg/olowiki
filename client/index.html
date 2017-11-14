@@ -16,25 +16,27 @@
 </head>
 <body>
 
-    <olo-outliner layout="column">
+    <olo-root>
+        <olo-outliner layout="viewer-only">
 
-        <h1 style="text-align:center;"><i>OnLabs.org</i></h1>
+            <h1 style="text-align:center;"><i>OnLabs.org</i></h1>
 
-        <div class="spinner">
-            <div class="rect1"></div>
-            <div class="rect2"></div>
-            <div class="rect3"></div>
-            <div class="rect4"></div>
-            <div class="rect5"></div>
-        </div>
+            <div class="spinner">
+                <div class="rect1"></div>
+                <div class="rect2"></div>
+                <div class="rect3"></div>
+                <div class="rect4"></div>
+                <div class="rect5"></div>
+            </div>
 
-        <p style="text-align:center; padding: 0 10% 0 10%;">
-            This application requires a modern standard-compliant browser such as Firefox 52+, Chrome 56+, Opera 43+ or Safari 10.1+. <br>
-            If you are not using one of those browsers you may be stuck here forever!
-        </p>
+            <p style="text-align:center; padding: 0 10% 0 10%;">
+                This application requires a modern standard-compliant browser such as Firefox 52+, Chrome 56+, Opera 43+ or Safari 10.1+. <br>
+                If you are not using one of those browsers you may be stuck here forever!
+            </p>
 
-        <span slot="footer"><span id="ver-number"></span></span>
-    </olo-outliner>
+            <span slot="footer"><span id="ver-number"></span></span>
+        </olo-outliner>
+    </olo-root>
 
 
     <script>

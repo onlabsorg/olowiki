@@ -103,20 +103,18 @@ class OloComponent extends HTMLElement {
     _updateModel () {
 
         // determine the new model
-        const rootModel = this.constructor.config.rootModel;
-        const refModel = this.parentComponent ? this.parentComponent.model || rootModel : rootModel;
-        const newModelPath = refModel.path + "/" + (this.getAttribute("model") || "");
-        const newModel = rootModel.getNode(newModelPath);
+        const refModel = this._getRefModel();
+        const newModel = refModel ? refModel.root.getNode(refModel.path + "/" + (this.getAttribute("model") || "")) : null;
 
         // update the model and renders it
         const oldModel = this.model;
         if (newModel !== oldModel) {
 
             // unbind the old model
-            if (oldModel !== null) oldModel.afterChangeCallbacks.delete(this[$modelChangeCallback]);
+            if (oldModel !== null) oldModel.changeCallbacks.delete(this[$modelChangeCallback]);
 
             // bind the new model
-            if (newModel !== null) newModel.afterChangeCallbacks.add(this[$modelChangeCallback]);
+            if (newModel !== null) newModel.changeCallbacks.add(this[$modelChangeCallback]);
             this[$model] = newModel;
 
             // update the view
@@ -127,6 +125,10 @@ class OloComponent extends HTMLElement {
                 child._updateModel();
             }
         }
+    }
+
+    _getRefModel () {
+        return this.parentComponent ? this.parentComponent.model : null;
     }
 
 
@@ -146,6 +148,35 @@ class OloComponent extends HTMLElement {
     }
 }
 
-OloComponent.config.rootModel = new model.Document({name:"root"});
+OloComponent.register('olo-component')
 
-module.exports = OloComponent.register('olo-component');
+
+
+class OloRoot extends OloComponent {
+
+    constructor () {
+        super();
+        this.document = new model.memory.Document();
+    }
+
+    get document () {
+        return this._document;
+    }
+
+    set document (doc) {
+        if (doc instanceof model.abstract.Document) {
+            this._document = doc;
+            this._updateModel();
+        }
+    }
+
+    _getRefModel () {
+        return this.document.root;
+    }
+}
+
+OloRoot.register("olo-root");
+
+
+
+module.exports = OloComponent;

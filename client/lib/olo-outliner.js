@@ -15,53 +15,103 @@ class OloOutliner extends OloComponent {
         return oloOutlinerTemplate;
     }
 
+    static get observedAttributes () {
+        return super.observedAttributes.concat("layout");
+    }
+
     constructor () {
         super();
         this.addEventListener('olo-node-selected', () => this._updateOutlinerView());
 
         this.addEventListener('keydown', (event) => this._handleKeyDown(event));
 
+        this._activeElement;
+
         this.$("olo-tree").tabIndex = 1;
         this.$("olo-tree").addEventListener('keydown', (event) => this._handleTreeKeyDown(event));
+        this.$("olo-tree").addEventListener('focusin', (event) => {this._activeElement = this.$("olo-tree")});
 
         this.$("olo-viewer").tabIndex = 1;
         this.$("olo-viewer").addEventListener('keydown', (event) => this._handleViewerKeyDown(event));
+        this.$("olo-viewer").addEventListener('focusin', (event) => {this._activeElement = this.$("olo-viewer")});
 
         this.$("olo-editor").tabIndex = 1;
         this.$("olo-editor").addEventListener('keydown', (event) => this._handleEditorKeyDown(event));
+        this.$("olo-editor").addEventListener('focusin', (event) => {this._activeElement = this.$("olo-editor")});
 
-        this._mainSplit = Split([this.$("olo-tree"), this.$("#content")], {
+
+        // LAYOUT
+
+        function elementStyle (dimension, size, gutterSize) {
+            return {
+                'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)'
+            }
+        }
+
+        function gutterStyle (dimension, gutterSize) {
+            return {
+                'flex-basis':  gutterSize + 'px'
+            }
+        }
+
+        this._mainSplitOptions = {
             sizes: [25, 75],
             gutterSize: 6,
             minSize: 200,
-            elementStyle: function (dimension, size, gutterSize) {
-                return {
-                    'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)'
-                }
-            },
-            gutterStyle: function (dimension, gutterSize) {
-                return {
-                    'flex-basis':  gutterSize + 'px'
-                }
-            }
-        });
+            elementStyle: elementStyle,
+            gutterStyle: gutterStyle,
+            onDragEnd: () => {this._mainSplitOptions.sizes = this._mainSplit.getSizes()}
+        }
 
-        this._contentSplit = Split([this.$("olo-viewer"), this.$("olo-editor")], {
+        this._contentSplitOptions = {
             sizes: [60, 40],
-            minSize: 200,
             gutterSize: 6,
-            direction: "vertical",
-            elementStyle: function (dimension, size, gutterSize) {
-                return {
-                    'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)'
+            minSize: 200,
+            elementStyle: elementStyle,
+            gutterStyle: gutterStyle,
+            onDragEnd: () => {this._contentSplitOptions.sizes = this._contentSplit.getSizes()}
+        }
+
+        this._mainSplit = Split([this.$("olo-tree"), this.$("#content")], this._mainSplitOptions);
+
+        this._updateLayout();
+    }
+
+    attributeChangedCallback (attrName, oldVal, newVal) {
+        super.attributeChangedCallback(attrName, oldVal, newVal);
+        if (attrName === "layout") this._updateLayout(oldVal, newVal);
+    }
+
+    _updateLayout (oldLayout, newLayout) {
+        oldLayout = oldLayout || "viewer-only";
+        newLayout = newLayout || "viewer-only";
+
+        switch (newLayout) {
+            case "viewer-only":
+                if (this._contentSplit) {
+                    this._contentSplit.destroy();
+                    this._contentSplit = null;
                 }
-            },
-            gutterStyle: function (dimension, gutterSize) {
-                return {
-                    'flex-basis':  gutterSize + 'px'
+                if (this._activeElement !== this.$("olo-tree")) this.$("olo-viewer").focus();
+                break;
+            case "editor-only":
+                if (this._contentSplit) {
+                    this._contentSplit.destroy();
+                    this._contentSplit = null;
                 }
-            }
-        });
+                if (this._activeElement !== this.$("olo-tree")) this.$("olo-editor").focus();
+                break;
+            case "vertical":
+                if (this._contentSplitOptions.direction === "horizontal" && this._contentSplit) this._contentSplit.destroy();
+                this._contentSplitOptions.direction = "vertical";
+                this._contentSplit = Split([this.$("olo-viewer"), this.$("olo-editor")], this._contentSplitOptions);
+                break;
+            case "horizontal":
+                if (this._contentSplitOptions.direction === "vertical" && this._contentSplit) this._contentSplit.destroy();
+                this._contentSplitOptions.direction = "horizontal";
+                this._contentSplit = Split([this.$("olo-viewer"), this.$("olo-editor")], this._contentSplitOptions);
+                break;
+        }
     }
 
     _updateOutlinerView () {
@@ -156,8 +206,9 @@ class OloOutliner extends OloComponent {
 
     _handleKeyDown (event) {
         const keyStr = keyString(event);
+
         switch (keyStr) {
-            case "ctrl-shift-l":
+            case "ctrl-space":
                 let layout = this.getAttribute("layout");
                 switch (layout) {
                     case undefined:

@@ -24,6 +24,7 @@ System.config({
     "path": "/lib/utils/jspm-path-plugin",
     "sanitize-html": "npm:sanitize-html@1.14.1",
     "text": "/lib/utils/jspm-text-plugin",
+    "url": "github:jspm/nodelibs-url@0.1.0",
     "utils": "/lib/utils",
     "uuid": "npm:uuid@3.1.0",
     "virtual-dom": "npm:virtual-dom@2.1.1",

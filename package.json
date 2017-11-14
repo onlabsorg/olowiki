@@ -31,6 +31,7 @@
       "marked": "npm:marked@^0.3.6",
       "nunjucks": "npm:nunjucks@^3.0.1",
       "sanitize-html": "npm:sanitize-html@^1.14.1",
+      "url": "github:jspm/nodelibs-url@^0.1.0",
       "uuid": "npm:uuid@^3.1.0",
       "virtual-dom": "npm:virtual-dom@^2.1.1"
     },

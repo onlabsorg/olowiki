@@ -1,4 +1,6 @@
 
+const model = require("model");
+
 const marked = require("marked");
 const sanitize = require("utils/sanitize");
 const OloVDOM = require("olo-vdom");
@@ -20,7 +22,7 @@ class OloViewer extends OloVDOM {
         if (this.model === null) return "";
 
         const config = this.constructor.config;
-        const markdown = await this.model.render();
+        const markdown = await model.render(this.model);
         const html = marked(markdown, config.markdown);
         return sanitize(html, config.allowedTags);
     }

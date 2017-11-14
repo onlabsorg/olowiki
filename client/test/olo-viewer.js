@@ -20,7 +20,7 @@ suite("<olo-viewer>", () => {
 
     test("should render markdown", (done) => {
         async function run () {
-            testFrame.innerHTML = `<olo-viewer model=""></olo-viewer>`;
+            testFrame.innerHTML = `<olo-root><olo-viewer model=""></olo-viewer></olo-root>`;
             const viewer = testFrame.querySelector("olo-viewer");
             await setTemplate(viewer, "# Title\n**content1**");
             var html = viewer.shadowRoot.querySelector("vdom").innerHTML;
@@ -31,7 +31,7 @@ suite("<olo-viewer>", () => {
 
     test("should sanitize before rendering", (done) => {
         async function run () {
-            testFrame.innerHTML = `<olo-viewer model=""></olo-viewer>`;
+            testFrame.innerHTML = `<olo-root><olo-viewer model=""></olo-viewer></olo-root>`;
             const viewer = testFrame.querySelector("olo-viewer");
             await setTemplate(viewer, "# Title\n**content2**\n<script>This will be removed</script>");
             var html = viewer.shadowRoot.querySelector("vdom").innerHTML;

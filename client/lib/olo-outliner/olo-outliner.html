@@ -7,10 +7,11 @@
         align-items: stretch;
         background-color: var(--olo-dark-bgcolor);
         padding: var(--olo-spacing);
+        padding-top: 0;
     }
 
     .card {
-        border: 1px solid var(--olo-light-bg-color);
+        border: 1px solid var(olo-text-bgcolor);
         border-radius: var(--olo-spacing);
         box-shadow: 2px 2px 1px 0px rgba(0,0,0,0.75);
         margin: 0;
@@ -18,6 +19,7 @@
 
     .card:focus {
         outline: none;
+        border: 1px solid red;
     }
 
     .gutter.gutter-horizontal {
@@ -74,13 +76,11 @@
 
     main #content olo-viewer {
         flex: 1 1 60%;
-        border: 1px solid var(--olo-line-locolor);
         padding: 1em 2em;
     }
 
     main #content olo-editor {
         flex: 1 1 40%;
-        border: 1px solid var(--olo-line-locolor);
         padding: 0;
     }
 
@@ -91,7 +91,7 @@
 
     /* viewer-only layout */
 
-    :host([layout="viewer-only"]) main #content{
+    :host([layout="viewer-only"]) main #content {
         flex-direction: row;
     }
 

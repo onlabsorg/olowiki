@@ -1,7 +1,10 @@
 
 const model = require("model");
+const Document = model.memory.Document;
+
 const OloComponent = require("olo-component");
 const Feature = require("utils/Feature");
+
 
 
 suite("<olo-component>", () => {
@@ -74,7 +77,8 @@ suite("<olo-component>", () => {
     suite("model binding", () => {
 
         test("binding to absolute path", () => {
-            const rootModel = OloComponent.config.rootModel = new model.Document({
+            const refDoc = new Document();
+            refDoc.root.assign({
                 name: "root", children: [
                     {name: "child1", children: [
                         {name: "grandchild1"}
@@ -84,21 +88,24 @@ suite("<olo-component>", () => {
                     ]}
                 ]
             });
+            console.log(refDoc);
 
-            testFrame.innerHTML = '<olo-component model="/child1/grandchild1"></olo-componnt>';
+            testFrame.innerHTML = '<olo-root><olo-component model="/child1/grandchild1"></olo-componnt></olo-root>';
+            testFrame.querySelector("olo-root").document = refDoc;
+
             const component = testFrame.querySelector("olo-component");
-
-            expect(component.model).to.equal(rootModel.getChild(0).getChild(0));
+            expect(component.model).to.equal(refDoc.root.getChild(0).getChild(0));
 
             component.setAttribute("model", "/child2/grandchild2");
-            expect(component.model).to.equal(rootModel.getChild(1).getChild(0));
+            expect(component.model).to.equal(refDoc.root.getChild(1).getChild(0));
 
             component.setAttribute("model", "/child2/grandchild3");
             expect(component.model).to.be.null;
         });
 
         test("binding to relative path", () => {
-            const rootModel = OloComponent.config.rootModel = new model.Document({
+            const refDoc = new Document();
+            refDoc.root.assign({
                 name: "root", children: [
                     {name: "c0", children: [
                         {name: "gc0", children: [
@@ -124,13 +131,17 @@ suite("<olo-component>", () => {
             });
 
             testFrame.innerHTML = `
-                <olo-component id="cmp1">
-                    <olo-component id="cmp2">
-                        <olo-component id="cmp3">
+                <olo-root>
+                    <olo-component id="cmp1">
+                        <olo-component id="cmp2">
+                            <olo-component id="cmp3">
+                            </olo-component>
                         </olo-component>
                     </olo-component>
-                </olo-component>
+                </olo-root>
             `;
+
+            testFrame.querySelector("olo-root").document = refDoc;
 
             const cmp1 = testFrame.querySelector("#cmp1");
             const cmp2 = testFrame.querySelector("#cmp2");
@@ -147,22 +158,15 @@ suite("<olo-component>", () => {
             expect(cmp1.model.path).to.equal('/c1');
             expect(cmp2.model.path).to.equal('/c1/gc0/ggc0');
             expect(cmp3.model.path).to.equal('/c1/gc0/ggc1');
-
-            // fallback to root model
-            // await cmp3.setAttribute("model", ".....c0");
-            // expect(cmp3.model).to.be.null;
-
-            // non-existing
-            // cmp3.setAttribute("model", "...c2");
-            // expect(cmp3.model).to.be.null;
         });
     });
 
     suite("model changes", () => {
-        var rootModel, cmp1, cmp2, cmp1_callsCount, cmp2_callsCount;
+        var refDoc, cmp1, cmp2, cmp1_callsCount, cmp2_callsCount;
 
         setup(() => {
-            rootModel = OloComponent.config.rootModel = new model.Document({
+            refDoc = new Document();
+            refDoc.root.assign({
                 name: "root", children: [
                     {name: "c0", children: [
                         {name: "gc0"},
@@ -178,11 +182,15 @@ suite("<olo-component>", () => {
             });
 
             testFrame.innerHTML = `
-                <olo-component id="cmp1" model="/c0">
-                    <olo-component id="cmp2" model="./gc0">
+                <olo-root>
+                    <olo-component id="cmp1" model="/c0">
+                        <olo-component id="cmp2" model="./gc0">
+                        </olo-component>
                     </olo-component>
-                </olo-component>
+                </olo-root>
             `;
+
+            testFrame.querySelector("olo-root").document = refDoc;
 
             cmp1 = testFrame.querySelector("#cmp1");
             cmp1.updateView = () => {cmp1_callsCount += 1};
@@ -207,7 +215,7 @@ suite("<olo-component>", () => {
             cmp1.setAttribute("model", "/c0");
             cmp2.setAttribute("model", "./gc0");
 
-            var c0 = rootModel.getChild(0);
+            var c0 = refDoc.root.getChild(0);
             var gc0 = c0.getChild(0);
 
             cmp1_callsCount = cmp2_callsCount = 0;

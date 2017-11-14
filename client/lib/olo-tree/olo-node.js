@@ -1,5 +1,4 @@
 
-const model = require("model");
 const OloComponent = require("olo-component");
 
 const oloNodeTemplate = require("./olo-node.html!text");
