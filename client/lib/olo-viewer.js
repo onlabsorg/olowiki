@@ -29,7 +29,6 @@ class OloViewer extends OloVDOM {
 }
 
 
-
 OloViewer.config.markdown = {}
 
 OloViewer.config.allowedTags = {

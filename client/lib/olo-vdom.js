@@ -28,8 +28,8 @@ class OloVDOM extends OloComponent {
     constructor () {
         super();
 
-        const newVDOM = this._VDOM = h('vdom', {}, []);
-        this._rootNode = createElement(newVDOM);
+        this._VDOM = h('vdom', {}, []);
+        this._rootNode = createElement(this._VDOM);
 
         const vdomElt = this.shadowRoot.querySelector("vdom");
         vdomElt.parentNode.replaceChild(this._rootNode, vdomElt);
@@ -43,10 +43,11 @@ class OloVDOM extends OloComponent {
 
     updateView () {
         const awaitPendingViewUpdate = this._pendingViewUpdate;
-        this._pendingViewUpdate = new Feature();
+        const currentViewUpdate = new Feature();
+        this._pendingViewUpdate = currentViewUpdate;
 
         awaitPendingViewUpdate.then(() => {
-            return this.render()
+            return this.render();
         })
         .then((content) => {
             const oldVDOM = this._VDOM;
@@ -54,8 +55,8 @@ class OloVDOM extends OloComponent {
             const newVDOM = this._VDOM = h('vdom', {}, vnodes);
             const patches = diff(oldVDOM, newVDOM);
             patch(this._rootNode, patches);
-            
-            this._pendingViewUpdate.resolve();
+
+            currentViewUpdate.resolve();
             this.dispatch("olo-vdom-ready", {component:this});
         })
         .catch((error) => {

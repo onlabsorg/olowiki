@@ -47,6 +47,7 @@ class Node {
         newName = String(newName);
         if (this.name !== newName) {
             this._assertWritable();
+            if (this.parent instanceof Node) this.parent._assertNameAvailable(newName);
             this.__setName__(newName);
         }
     }
@@ -200,11 +201,20 @@ class Node {
         throw new RangeError("Index out of range");
     }
 
+    _validateName (name, parent=null) {
+        parent = parent || this.parent;
+    }
+
     _validateNode (node) {
         if (!(node instanceof Node)) throw new TypeError("A node child must be a Node object.");
         if (node.parent !== null) throw new Error("The node has already a parent.");
         if (node.document !== this.document) throw new Error("The node doesn't belog to this document.");
+        this._assertNameAvailable(node.name);
         return node;
+    }
+
+    _assertNameAvailable (name) {
+        if (this.getChildByName(name) !== null) throw new Error(`A child with name "${name}" already exists.`);
     }
 
     _assertWritable () {

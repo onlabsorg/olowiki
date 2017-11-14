@@ -88,7 +88,6 @@ suite("<olo-component>", () => {
                     ]}
                 ]
             });
-            console.log(refDoc);
 
             testFrame.innerHTML = '<olo-root><olo-component model="/child1/grandchild1"></olo-componnt></olo-root>';
             testFrame.querySelector("olo-root").document = refDoc;

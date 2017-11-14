@@ -1,5 +1,8 @@
+//TODO: test name duplication checks
+//TODO: test same document checks
 
 const render = require("model").render;
+
 
 module.exports = function (model) {
     const Node = model.Node;
@@ -30,6 +33,10 @@ module.exports = function (model) {
             //default
             node = doc.createNode();
             expect(node.name).to.equal(node._defaultName);
+
+            //duplication check
+            node = doc.createNode({children: [{name:'n1'}, {name:'n2'}]});
+            expect(() => {doc.getChild(0).name = 'n2'}).to.throw();
         });
 
         test("Node.prototype.template", () => {
@@ -141,13 +148,18 @@ module.exports = function (model) {
             expect(() => node.setChild(-100, newChild)).to.throw();
             expect(Array.from(node.children())).to.deep.equal([child0, newChild1, newChild2]);
 
-            //it should throw an exception if the new child node is not a Node instanceof
+            //it should throw an exception if the new child node is not a Node instance
             expect(() => node.setChild(1, {})).to.throw();
             expect(() => node.setChild(1, [])).to.throw();
             expect(() => node.setChild(1, "abc")).to.throw();
             expect(() => node.setChild(1, null)).to.throw();
             expect(() => node.setChild(1)).to.throw();
             expect(Array.from(node.children())).to.deep.equal([child0, newChild1, newChild2]);
+
+            //duplication check
+            node = doc.createNode({children: [{name:'n1'}, {name:'n2'}]})
+            const n2 = doc.createNode({name:'n2'});
+            expect(() => node.setChild(0, n2)).to.throw();
         });
 
         test("Node.prototype.insertChild(index, node)", () => {
@@ -182,6 +194,11 @@ module.exports = function (model) {
             expect(() => node.insertChild(1, null)).to.throw();
             expect(() => node.insertChild(1)).to.throw();
             expect(Array.from(node.children())).to.deep.equal([child0, child1, child12, child2, child23, child3]);
+
+            //duplication check
+            node = doc.createNode({children: [{name:'n1'}, {name:'n2'}]})
+            const n2 = doc.createNode({name:'n2'});
+            expect(() => node.insertChild(1, n2)).to.throw();
         });
 
         test("Node.prototype.appendChild(node)", () => {
@@ -201,6 +218,11 @@ module.exports = function (model) {
             expect(() => node.appendChild(null)).to.throw();
             expect(() => node.appendChild()).to.throw();
             expect(Array.from(node.children())).to.deep.equal([child0, child1, child2, child3]);
+
+            //duplication check
+            node = doc.createNode({children: [{name:'n1'}, {name:'n2'}]})
+            const n2 = doc.createNode({name:'n2'});
+            expect(() => node.appendChild(n2)).to.throw();
         });
 
         test("Node.prototype.removeChild(index, node)", () => {
@@ -775,6 +797,7 @@ module.exports = function (model) {
     });
 
     suite("rendering", () => {
+
         test("render(node)", (done) => {
             const node = doc.createNode({
                 name: "root",
