@@ -1,5 +1,5 @@
 
-const gload = require("utils/google-api-loader");
+const gapi = require("model/google-api");
 const abstractModel = require("./abstract-model");
 
 
@@ -12,11 +12,11 @@ class Node extends abstractModel.Node {
     constructor (gnode) {
         super();
 
-        gnode.addEventListener(gapi.drive.realtime.EventType.VALUE_CHANGED, (event) => {
+        gnode.addEventListener(window.gapi.drive.realtime.EventType.VALUE_CHANGED, (event) => {
             const change = {};
 
             if (event.property === "name") change.method = "set-name";
-            else if (event.proptery === "template") change.method = "set-template";
+            else if (event.proptery === "value") change.method = "set-value";
             else return;
 
             change.oldValue = event.oldValue;
@@ -27,7 +27,7 @@ class Node extends abstractModel.Node {
             this._dispatch(change);
         });
 
-        gnode.get("children").addEventListener(gapi.drive.realtime.EventType.VALUES_SET, (event) => {
+        gnode.get("children").addEventListener(window.gapi.drive.realtime.EventType.VALUES_SET, (event) => {
             for (let i=0; i<event.newValues.length; i++) {
                 let change = {
                     method: "set-child",
@@ -40,7 +40,7 @@ class Node extends abstractModel.Node {
             }
         });
 
-        gnode.get("children").addEventListener(gapi.drive.realtime.EventType.VALUES_ADDED, (event) => {
+        gnode.get("children").addEventListener(window.gapi.drive.realtime.EventType.VALUES_ADDED, (event) => {
             for (let i=0; i<event.values.length; i++) {
                 let change = {
                     method: "insert-child",
@@ -52,7 +52,7 @@ class Node extends abstractModel.Node {
             }
         });
 
-        gnode.get("children").addEventListener(gapi.drive.realtime.EventType.VALUES_REMOVED, (event) => {
+        gnode.get("children").addEventListener(window.gapi.drive.realtime.EventType.VALUES_REMOVED, (event) => {
             for (let i=0; i<event.values.length; i++) {
                 let change = {
                     method: "remove-child",
@@ -77,12 +77,12 @@ class Node extends abstractModel.Node {
         this._gnode.set("name", newName);
     }
 
-    __getTemplate__ () {
-        return this._gnode.get("template");
+    __getValue__ () {
+        return this._gnode.get("value");
     }
 
-    __setTemplate__ (newTemplate) {
-        this._gnode.set("template", newTemplate);
+    __setValue__ (newValue) {
+        this._gnode.set("value", newValue);
     }
 
     __getChildCount__ () {
@@ -140,8 +140,7 @@ class Document extends abstractModel.Document {
 
 
 async function createDocument (obj={}) {
-    if (!(window.gapi && gapi.drive && gapi.drive.realtime)) await gload('auth:client,drive-realtime,drive-share');
-    const gdoc = gapi.drive.realtime.newInMemoryDocument();
+    const gdoc = await gapi.createInMemoryDocument();
     const doc = new Document(gdoc);
     doc.root.assign(obj);
     return doc;
@@ -149,6 +148,13 @@ async function createDocument (obj={}) {
 
 
 
+async function loadDocument (gid) {
+
+}
+
+
+
 exports.Node = Node;
 exports.Document = Document;
 exports.createDocument = createDocument;
+exports.loadDocument = loadDocument;

@@ -43,7 +43,7 @@ class OloEditor extends OloComponent {
 
     updateView () {
         const oldContent = this.aceEditor.getValue();
-        const newContent = (this.model === null) ? "" : this.model.template;
+        const newContent = (this.model === null) ? "" : this.model.value;
         if (newContent !== oldContent) {
             this.aceEditor.setValue(newContent, -1);
         }
@@ -51,9 +51,9 @@ class OloEditor extends OloComponent {
     }
 
     _handleContentChange (event) {
-        const oldTemplate = (this.model === null) ? "" : this.model.template;
+        const oldTemplate = (this.model === null) ? "" : this.model.value;
         const newTemplate = this.aceEditor.getValue();
-        if (this.model && newTemplate !== oldTemplate) this.model.template = newTemplate;
+        if (this.model && newTemplate !== oldTemplate) this.model.value = newTemplate;
     }
 
     focus () {

@@ -14,7 +14,7 @@ class Loader extends nunjucks.Loader {
         const targetNode = this.cnode.root.getNode(path);
         if (targetNode) {
             let path = targetNode.path;
-            let template = targetNode.template;
+            let template = targetNode.value;
             return {src:template, path:path, noCache:true};
         }
         else {
@@ -42,7 +42,7 @@ async function render (node) {
     return new Promise((resolve, reject) => {
         loader = new Loader(node);
         environment = new nunjucks.Environment(loader);
-        const template = new nunjucks.Template(node.template, environment, node.path);
+        const template = new nunjucks.Template(node.value, environment, node.path);
         template.render(config.context, function (err, res) {
             if (err) reject(err);
             else resolve(res);

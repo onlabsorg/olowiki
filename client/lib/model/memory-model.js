@@ -24,17 +24,17 @@ class Node extends abstractModel.Node {
         });
     }
 
-    __getTemplate__ () {
-        return this._template;
+    __getValue__ () {
+        return this._value;
     }
 
-    __setTemplate__ (newTemplate) {
-        const oldTemplate = this.template;
-        this._template = newTemplate;
+    __setValue__ (newValue) {
+        const oldValue = this.value;
+        this._value = newValue;
         this._dispatch({
-            method: "set-template",
-            oldValue: oldTemplate,
-            newValue: newTemplate,
+            method: "set-value",
+            oldValue: oldValue,
+            newValue: newValue,
             path: [this]
         });
     }

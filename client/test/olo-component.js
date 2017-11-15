@@ -218,19 +218,19 @@ suite("<olo-component>", () => {
             var gc0 = c0.getChild(0);
 
             cmp1_callsCount = cmp2_callsCount = 0;
-            c0.template = c0.template + "-modif";
+            c0.value = c0.value + "-modif";
             expect(cmp1_callsCount).to.equal(1);
             expect(cmp2_callsCount).to.equal(0);
 
             cmp1_callsCount = cmp2_callsCount = 0;
-            gc0.template = gc0.template + "-modif";
+            gc0.value = gc0.value + "-modif";
             expect(cmp1_callsCount).to.equal(1);
             expect(cmp2_callsCount).to.equal(1);
 
             //detaches change listener when unbinding a model
             cmp2.setAttribute("model", "./gc1");
             cmp1_callsCount = cmp2_callsCount = 0;
-            gc0.template = gc0.template + "-modif";
+            gc0.value = gc0.value + "-modif";
             expect(cmp1_callsCount).to.equal(1);
             expect(cmp2_callsCount).to.equal(0);
         });

@@ -10,14 +10,14 @@ class Node {
 
     constructor () {
         this._defaultName = uniqueName();
-        this._defaultTemplate = "";
+        this._defaultValue = "";
         this._parent = null;
         this.changeCallbacks = new Set();
     }
 
     assign (obj) {
         if (obj.name) this.name = String(obj.name);
-        if (obj.template) this.template = String(obj.template);
+        if (obj.value !== undefined) this.value = obj.value;
 
         while (this.size > 0) this.removeChild(0);
         if (Array.isArray(obj.children)) {
@@ -32,7 +32,7 @@ class Node {
     export () {
         const obj = {
             name: this.name,
-            template: this.template,
+            value: this.value,
             children: []
         }
         for (let child of this.children()) obj.children.push(child.export());
@@ -63,15 +63,14 @@ class Node {
         return "/" + path;
     }
 
-    get template () {
-        return this.__getTemplate__() || this._defaultTemplate;
+    get value () {
+        return this.__getValue__() || this._defaultValue;
     }
 
-    set template (newTemplate) {
-        newTemplate = String(newTemplate);
-        if (this.template !== newTemplate) {
+    set value (newValue) {
+        if (this.value !== newValue) {
             this._assertWritable();
-            this.__setTemplate__(newTemplate);
+            this.__setValue__(newValue);
         }
     }
 
@@ -226,15 +225,21 @@ class Node {
 
     __getName__ () {}
 
-    __setName__ () {}
+    __setName__ (newName) {}
 
-    __getTemplate__ () {}
+    __getValue__ () {}
 
-    __setTemplate__ () {}
+    __setValue__ (newValue) {}
 
     __getChildCount__ () {}
 
     __getChild__ (index) {}
+
+    __setChild__ (index, node) {}
+
+    __insertChild__ (index, node) {}
+
+    __removeChild__ (index) {}
 }
 
 

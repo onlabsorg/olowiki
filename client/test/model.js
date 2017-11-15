@@ -39,20 +39,20 @@ module.exports = function (model) {
             expect(() => {doc.getChild(0).name = 'n2'}).to.throw();
         });
 
-        test("Node.prototype.template", () => {
+        test("Node.prototype.value", () => {
             var node;
 
             //getter
-            node = doc.createNode({template:"abc"});
-            expect(node.template).to.equal("abc");
+            node = doc.createNode({value:"abc"});
+            expect(node.value).to.equal("abc");
 
             //setter
-            node.template = "def";
-            expect(node.template).to.equal("def");
+            node.value = "def";
+            expect(node.value).to.equal("def");
 
             //default
             node = doc.createNode();
-            expect(node.template).to.equal("");
+            expect(node.value).to.equal("");
         });
 
         test("Node.prototype.getChild(index)", () => {
@@ -388,33 +388,33 @@ module.exports = function (model) {
         });
 
         test("Node.prototype.assign", () => {
-            var node = doc.createNode({name:"n0", template:"t0", children: [
-                {name:"n1", template:"t1", children:[{},{},{}]},
-                {name:"n2", template:"t2", children:[{},{},{}]},
-                {name:"n3", template:"t3", children:[{},{},{}]},
+            var node = doc.createNode({name:"n0", value:"t0", children: [
+                {name:"n1", value:"t1", children:[{},{},{}]},
+                {name:"n2", value:"t2", children:[{},{},{}]},
+                {name:"n3", value:"t3", children:[{},{},{}]},
             ]});
-            node.assign({name:"N0", template:"T0", children: [
-                {name:"N1", template:"T1", children:[{},{},{},{}]},
-                {name:"N2", template:"T2", children:[{},{},{},{}]},
+            node.assign({name:"N0", value:"T0", children: [
+                {name:"N1", value:"T1", children:[{},{},{},{}]},
+                {name:"N2", value:"T2", children:[{},{},{},{}]},
             ]});
             expect(node.name).to.equal("N0");
-            expect(node.template).to.equal("T0");
+            expect(node.value).to.equal("T0");
             expect(node.size).to.equal(2);
             expect(node.getChild(0).name).to.equal("N1");
-            expect(node.getChild(0).template).to.equal("T1");
+            expect(node.getChild(0).value).to.equal("T1");
             expect(node.getChild(0).size).to.equal(4);
             expect(node.getChild(1).name).to.equal("N2");
-            expect(node.getChild(1).template).to.equal("T2");
+            expect(node.getChild(1).value).to.equal("T2");
             expect(node.getChild(1).size).to.equal(4);
         });
 
         test("Node.prototype.export", () => {
-            const obj = {name:"n0", template:"t0", children: [
-                {name:"n1", template:"t1", children:[
-                    {name:"n10", template:"t10", children:[]},
-                    {name:"n11", template:"t11", children:[]},
+            const obj = {name:"n0", value:"t0", children: [
+                {name:"n1", value:"t1", children:[
+                    {name:"n10", value:"t10", children:[]},
+                    {name:"n11", value:"t11", children:[]},
                 ]},
-                {name:"n2", template:"t2", children:[]},
+                {name:"n2", value:"t2", children:[]},
             ]};
             const node = doc.createNode(obj);
             expect(node.export()).to.deep.equal(obj);
@@ -427,15 +427,15 @@ module.exports = function (model) {
             setup(() => {
                 node = doc.createNode({
                     name: "root",
-                    template: "root template",
+                    value: "root value",
                     children: [
                         {
                             name: "child",
-                            template: "child0 template",
+                            value: "child0 value",
                             children: [
                                 {
                                     name: "grandchild",
-                                    template: "grandchild template",
+                                    value: "grandchild value",
                                     children: []
                                 }
                             ]
@@ -505,48 +505,48 @@ module.exports = function (model) {
                 clearCallbacks();
             });
 
-            test("template set", () => {
+            test("value set", () => {
                 setCallbacks({
 
                     grandchildChangeCallback: (change) => {
                         expect(change).to.deep.equal({
-                            method: "set-template",
-                            oldValue: "grandchild template",
-                            newValue: "new grandchild template",
+                            method: "set-value",
+                            oldValue: "grandchild value",
+                            newValue: "new grandchild value",
                             path: [grandchild],
                         });
-                        expect(grandchild.template).to.equal("new grandchild template");
+                        expect(grandchild.value).to.equal("new grandchild value");
                         change.postProcessedBy = [grandchild];
                     },
 
                     childChangeCallback: (change) => {
                         expect(change).to.deep.equal({
-                            method: "set-template",
-                            oldValue: "grandchild template",
-                            newValue: "new grandchild template",
+                            method: "set-value",
+                            oldValue: "grandchild value",
+                            newValue: "new grandchild value",
                             path: [child, grandchild],
 
                             postProcessedBy: [grandchild]
                         });
-                        expect(grandchild.template).to.equal("new grandchild template");
+                        expect(grandchild.value).to.equal("new grandchild value");
                         change.postProcessedBy.push(child);
                     },
 
                     nodeChangeCallback: (change) => {
                         expect(change).to.deep.equal({
-                            method: "set-template",
-                            oldValue: "grandchild template",
-                            newValue: "new grandchild template",
+                            method: "set-value",
+                            oldValue: "grandchild value",
+                            newValue: "new grandchild value",
                             path: [node, child, grandchild],
 
                             postProcessedBy: [grandchild, child]
                         });
-                        expect(grandchild.template).to.equal("new grandchild template");
+                        expect(grandchild.value).to.equal("new grandchild value");
                         change.postProcessedBy.push(node);
                     }
                 });
 
-                grandchild.template = "new grandchild template";
+                grandchild.value = "new grandchild value";
 
                 clearCallbacks();
             });
@@ -771,10 +771,10 @@ module.exports = function (model) {
 
         test("Document.prototype.root", (done) => {
             async function run () {
-                const doc = await model.createDocument({name:"n", template:"t", children:[{},{},{}]});
+                const doc = await model.createDocument({name:"n", value:"t", children:[{},{},{}]});
                 expect(doc.root).to.be.instanceof(Node);
                 expect(doc.root.name).to.equal("n");
-                expect(doc.root.template).to.equal("t");
+                expect(doc.root.value).to.equal("t");
                 expect(doc.root.size).to.equal(3);
             }
             run().then(done).catch(done);
@@ -782,7 +782,7 @@ module.exports = function (model) {
 
         test("Document.prototype.readonly", (done) => {
             async function run () {
-                const doc = await model.createDocument({name:"n", template:"t", children:[{},{},{}]});
+                const doc = await model.createDocument({name:"n", value:"t", children:[{},{},{}]});
 
                 doc.__isReadOnly__ = () => false;
                 expect(doc.readonly).to.be.false;
@@ -801,26 +801,26 @@ module.exports = function (model) {
         test("render(node)", (done) => {
             const node = doc.createNode({
                 name: "root",
-                template: '{% import "./childSum" as s %}{% import "childX" as x%}s = {{s.v+x.v}}',
+                value: '{% import "./childSum" as s %}{% import "childX" as x%}s = {{s.v+x.v}}',
                 children: [
                     {
                         name: "childX",
-                        template: '{% set v = 10 %}v = {{v}}',
+                        value: '{% set v = 10 %}v = {{v}}',
                         children: []
                     },
                     {
                         name: "childY",
-                        template: '{% set v = 20 %}v = {{v}}',
+                        value: '{% set v = 20 %}v = {{v}}',
                         children: []
                     },
                     {
                         name: "childZ",
-                        template: '{% set v = 30 %}v = {{v}}',
+                        value: '{% set v = 30 %}v = {{v}}',
                         children: []
                     },
                     {
                         name: "childSum",
-                        template: '{% import "../childX" as x %}{% import "../childY" as y %}{% import "../childZ" as z %}{% set v = x.v + y.v + z.v %}v = {{v}}',
+                        value: '{% import "../childX" as x %}{% import "../childY" as y %}{% import "../childZ" as z %}{% set v = x.v + y.v + z.v %}v = {{v}}',
                         children: []
                     },
                 ]
