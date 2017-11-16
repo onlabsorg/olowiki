@@ -129,7 +129,7 @@ class OloNode extends OloComponent {
 
     select () {
         this.classList.add("selected");
-        this.dispatch("olo-node-selected", {oloNode: this})
+        this.dispatch("olo-node-selected", {oloNode: this});
     }
 
     unselect () {

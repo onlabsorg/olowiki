@@ -9,6 +9,7 @@ System.config({
 
   map: {
     "ace": "github:ajaxorg/ace-builds@1.2.9",
+    "font-awesome": "npm:font-awesome@4.7.0",
     "html-to-vdom": "npm:html-to-vdom@0.7.0",
     "js-yaml": "npm:js-yaml@3.10.0",
     "lodash": "npm:lodash@4.17.4",
@@ -473,6 +474,9 @@ System.config({
       "randomatic": "npm:randomatic@1.1.7",
       "repeat-element": "npm:repeat-element@1.1.2",
       "repeat-string": "npm:repeat-string@1.6.1"
+    },
+    "npm:font-awesome@4.7.0": {
+      "css": "github:systemjs/plugin-css@0.1.36"
     },
     "npm:for-own@0.1.5": {
       "for-in": "npm:for-in@1.0.2"

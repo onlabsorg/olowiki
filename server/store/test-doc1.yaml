@@ -1,24 +1,30 @@
 value:name: root
 value: |
-    {% set i = "0" %}
+    {% set docName = "test-doc1" %}
     {% import "./child1" as ch1 %}
     {% import "./child2" as ch2 %}
     {% import "./child3" as ch3 %}
     {% import "./child3/grandchild1" as gch31 %}
-    # template {{i}}
-    * child1.i = {{ch1.i}}
-    * child2.i = {{ch2.i}}
-    * child3.i = {{ch3.i}}
-    * child3.grandchild1.i = {{gch31.i}}
+    # Welcome to OnLabs.org!
+    ### Content
+    * {{docName}}.child1.i = {{ch1.i}}
+    * {{docName}}.child2.i = {{ch2.i}}
+    * {{docName}}.child3.i = {{ch3.i}}
+    * {{docName}}.child3.grandchild1.i = {{gch31.i}}
+
 children:
 
     -   name: child1
         value: |
             {% set i = "1" %}
+            {% import "./grandchild1" as gch1 %}
+            {% import "./grandchild2" as gch2 %}
+            {% import "./grandchild3" as gch3 %}
             # template {{i}}
-            * {{grandchild1.i}}
-            * {{grandchild2.i}}
-            * {{grandchild3.i}}
+            ### Content
+            * grandchild1.i = {{gch1.i}}
+            * grandchild2.i = {{gch2.i}}
+            * grandchild3.i = {{gch3.i}}
         children:
 
             -   name: grandchild1
@@ -42,10 +48,14 @@ children:
     -   name: child2
         value: |
             {% set i = "2" %}
+            {% import "./grandchild1" as gch1 %}
+            {% import "./grandchild2" as gch2 %}
+            {% import "./grandchild3" as gch3 %}
             # template {{i}}
-            * {{grandchild1.i}}
-            * {{grandchild2.i}}
-            * {{grandchild3.i}}
+            ### Content
+            * grandchild1.i = {{gch1.i}}
+            * grandchild2.i = {{gch2.i}}
+            * grandchild3.i = {{gch3.i}}
         children:
 
             -   name: grandchild1
@@ -69,10 +79,14 @@ children:
     -   name: child3
         value: |
             {% set i = "3" %}
+            {% import "./grandchild1" as gch1 %}
+            {% import "./grandchild2" as gch2 %}
+            {% import "./grandchild3" as gch3 %}
             # template {{i}}
-            * {{grandchild1.i}}
-            * {{grandchild2.i}}
-            * {{grandchild3.i}}
+            ### Content
+            * grandchild1.i = {{gch1.i}}
+            * grandchild2.i = {{gch2.i}}
+            * grandchild3.i = {{gch3.i}}
         children:
 
             -   name: grandchild1

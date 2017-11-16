@@ -1,3 +1,6 @@
+
+<font-awesome></font-awesome>
+
 <style>
 
     :host {
@@ -15,6 +18,7 @@
         border-radius: var(--olo-spacing);
         box-shadow: 2px 2px 1px 0px rgba(0,0,0,0.75);
         margin: 0;
+        background-color: var(--olo-text-bgcolor);
     }
 
     .card:focus {
@@ -39,6 +43,7 @@
         display: flex;
         flex-direction: row;
         margin: 0;
+        margin-bottom: var(--olo-spacing);
         padding: 0;
         background-color: var(--olo-dark-bgcolor);
     }
@@ -49,6 +54,31 @@
         height: 48px;
         stroke: var(--olo-dark-hicolor);
         fill: transparent;
+    }
+
+    header #logo {
+        flex: 0 0 auto;
+        padding: 0 var(--olo-spacing);
+        color: var(--olo-light-bgcolor);
+        font-weight: bold;
+        font-style: italic;
+        text-shadow: 0px 1px 0px rgba(255,255,255,.3), 0px -1px 0px rgba(0,0,0,.7);
+    }
+
+    header #controls {
+        flex: 1 0 auto;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    header #controls .control {
+        flex: 0 0 auto;
+        margin: var(--olo-spacing);
+        color: var(--olo-dark-color);
+    }
+
+    header #controls .control:hover {
+        color: var(--olo-dark-hicolor);
     }
 
 
@@ -62,8 +92,9 @@
         align-items: stretch;
     }
 
-    main olo-tree {
+    main nav {
         flex: 1 1 20%;
+        display: block;
         padding: var(--olo-spacing);
     }
 
@@ -158,24 +189,23 @@
         cursor: col-resize;
     }
 
-    .title {
-        color: var(--olo-light-bgcolor);
-        font-weight: bold;
-        font-style: italic;
-        /*color: #3B5957;*/
-        /*background-color: #5D8D89;*/
-        text-shadow: 0px 1px 0px rgba(255,255,255,.3), 0px -1px 0px rgba(0,0,0,.7);
-    }
 </style>
 
 
 <header style="font-size: 2em;">
-    <span class="title">OnLabs.org</span>
+    <div id="logo">OnLabs.org</div>
+    <div id="controls">
+        <span id="ctrl-new" class="control fa fa-file-o" aria-hidden="true"></span>
+        <span id="ctrl-open" class="control fa fa-folder-open-o" aria-hidden="true"></span>
+        <span id="ctrl-save" class="control fa fa-floppy-o" aria-hidden="true"></span>
+        <span id="ctrl-update" class="control fa fa-refresh" aria-hidden="true"></span>
+        <span id="ctrl-settings" class="control fa fa-cog" aria-hidden="true"></span>
+    </div>
 </header>
 <main>
-    <olo-tree class="card" model="."></olo-tree>
-    <section id="content">
+    <nav class="card"></nav>
+    <olo-root id="content">
         <olo-viewer class="card" model="."></olo-viewer>
         <olo-editor class="card" model="."></olo-editor>
-    </section>
+    </olo-root>
 </main>

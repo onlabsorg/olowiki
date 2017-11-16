@@ -3,6 +3,7 @@ const OloComponent = require("olo-component");
 const OloViewer = require("olo-viewer");
 const OloEditor = require("olo-editor");
 const OloTree = require("olo-tree");
+const FontAwesome = require("/lib/themes/font-awesome");
 
 const keyString = require("utils/key-string");
 
@@ -21,15 +22,15 @@ class OloOutliner extends OloComponent {
 
     constructor () {
         super();
-        this.addEventListener('olo-node-selected', () => this._updateOutlinerView());
+        this.addEventListener('olo-node-selected', (event) => this._updateOutlinerView(event.detail.oloNode));
 
         this.addEventListener('keydown', (event) => this._handleKeyDown(event));
 
         this._activeElement;
 
-        this.$("olo-tree").tabIndex = 1;
-        this.$("olo-tree").addEventListener('keydown', (event) => this._handleTreeKeyDown(event));
-        this.$("olo-tree").addEventListener('focusin', (event) => {this._activeElement = this.$("olo-tree")});
+        this.$("nav").tabIndex = 1;
+        this.$("nav").addEventListener('keydown', (event) => this._handleTreeKeyDown(event));
+        this.$("nav").addEventListener('focusin', (event) => {this._activeElement = this.$("nav")});
 
         this.$("olo-viewer").tabIndex = 1;
         this.$("olo-viewer").addEventListener('keydown', (event) => this._handleViewerKeyDown(event));
@@ -72,7 +73,7 @@ class OloOutliner extends OloComponent {
             onDragEnd: () => {this._contentSplitOptions.sizes = this._contentSplit.getSizes()}
         }
 
-        this._mainSplit = Split([this.$("olo-tree"), this.$("#content")], this._mainSplitOptions);
+        this._mainSplit = Split([this.$("nav"), this.$("#content")], this._mainSplitOptions);
 
         this._updateLayout();
     }
@@ -81,6 +82,14 @@ class OloOutliner extends OloComponent {
         super.attributeChangedCallback(attrName, oldVal, newVal);
         if (attrName === "layout") this._updateLayout(oldVal, newVal);
     }
+
+    addDocument (doc) {
+        const treeElt = document.createElement("olo-tree");
+        treeElt.document = doc;
+        this.$("nav").appendChild(treeElt);
+    }
+
+    removeDocument (doc) {}
 
     _updateLayout (oldLayout, newLayout) {
         oldLayout = oldLayout || "viewer-only";
@@ -92,14 +101,14 @@ class OloOutliner extends OloComponent {
                     this._contentSplit.destroy();
                     this._contentSplit = null;
                 }
-                if (this._activeElement !== this.$("olo-tree")) this.$("olo-viewer").focus();
+                if (this._activeElement !== this.$("nav")) this.$("olo-viewer").focus();
                 break;
             case "editor-only":
                 if (this._contentSplit) {
                     this._contentSplit.destroy();
                     this._contentSplit = null;
                 }
-                if (this._activeElement !== this.$("olo-tree")) this.$("olo-editor").focus();
+                if (this._activeElement !== this.$("nav")) this.$("olo-editor").focus();
                 break;
             case "vertical":
                 if (this._contentSplitOptions.direction === "horizontal" && this._contentSplit) this._contentSplit.destroy();
@@ -114,11 +123,20 @@ class OloOutliner extends OloComponent {
         }
     }
 
-    _updateOutlinerView () {
-        const viewModel = this.$("olo-tree").selectedNode.model;
+    _updateOutlinerView (oloNode) {
+        const viewModel = oloNode.model;
         const modelPath = viewModel.path;
+        this.$("olo-root").document = viewModel.document;
         this.$("olo-editor").setAttribute("model", modelPath);
         this.$("olo-viewer").setAttribute("model", modelPath);
+
+        const navElt = this.$("nav");
+        for (let i=0; i<navElt.children.length; i++) {
+            let oloTree = navElt.children[i];
+            if (oloTree.selectedNode && oloTree.selectedNode !== oloNode) {
+                oloTree.selectedNode.unselect();
+            }
+        }
     }
 
     _handleTreeKeyDown (event) {
@@ -131,12 +149,12 @@ class OloOutliner extends OloComponent {
 
             case "enter":
                 selectedNode.commit();
-                this.$("olo-tree").focus();
+                this.$("nav").focus();
                 break;
 
             case "esc":
                 selectedNode.cancel();
-                this.$("olo-tree").focus();
+                this.$("nav").focus();
                 break;
         }
         else switch (keyStr) {

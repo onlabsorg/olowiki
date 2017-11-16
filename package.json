@@ -25,6 +25,7 @@
     },
     "dependencies": {
       "ace": "github:ajaxorg/ace-builds@^1.2.9",
+      "font-awesome": "npm:font-awesome@^4.7.0",
       "html-to-vdom": "npm:html-to-vdom@^0.7.0",
       "js-yaml": "npm:js-yaml@^3.10.0",
       "lodash": "npm:lodash@^4.17.4",
@@ -36,5 +37,8 @@
       "virtual-dom": "npm:virtual-dom@^2.1.1"
     },
     "devDependencies": {}
+  },
+  "dependencies": {
+    "express": "^4.16.2"
   }
 }
