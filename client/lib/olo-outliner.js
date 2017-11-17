@@ -1,4 +1,4 @@
-const model = require("model");
+const store = require("store");
 const OloComponent = require("olo-component");
 const OloViewer = require("olo-viewer");
 const OloEditor = require("olo-editor");
@@ -32,13 +32,13 @@ class OloOutliner extends OloComponent {
         this.$("nav").addEventListener('keydown', (event) => this._handleTreeKeyDown(event));
         this.$("nav").addEventListener('focusin', (event) => {this._activeElement = this.$("nav")});
 
-        this.$("olo-viewer").tabIndex = 1;
-        this.$("olo-viewer").addEventListener('keydown', (event) => this._handleViewerKeyDown(event));
-        this.$("olo-viewer").addEventListener('focusin', (event) => {this._activeElement = this.$("olo-viewer")});
+        this.viewer.tabIndex = 1;
+        this.viewer.addEventListener('keydown', (event) => this._handleViewerKeyDown(event));
+        this.viewer.addEventListener('focusin', (event) => {this._activeElement = this.viewer});
 
-        this.$("olo-editor").tabIndex = 1;
-        this.$("olo-editor").addEventListener('keydown', (event) => this._handleEditorKeyDown(event));
-        this.$("olo-editor").addEventListener('focusin', (event) => {this._activeElement = this.$("olo-editor")});
+        this.editor.tabIndex = 1;
+        this.editor.addEventListener('keydown', (event) => this._handleEditorKeyDown(event));
+        this.editor.addEventListener('focusin', (event) => {this._activeElement = this.editor});
 
 
         // LAYOUT
@@ -83,6 +83,14 @@ class OloOutliner extends OloComponent {
         if (attrName === "layout") this._updateLayout(oldVal, newVal);
     }
 
+    get viewer () {
+        return this.$("olo-viewer");
+    }
+
+    get editor () {
+        return this.$("olo-editor");
+    }
+
     addDocument (doc) {
         const treeElt = document.createElement("olo-tree");
         treeElt.document = doc;
@@ -101,34 +109,29 @@ class OloOutliner extends OloComponent {
                     this._contentSplit.destroy();
                     this._contentSplit = null;
                 }
-                if (this._activeElement !== this.$("nav")) this.$("olo-viewer").focus();
+                if (this._activeElement !== this.$("nav")) this.viewer.focus();
                 break;
             case "editor-only":
                 if (this._contentSplit) {
                     this._contentSplit.destroy();
                     this._contentSplit = null;
                 }
-                if (this._activeElement !== this.$("nav")) this.$("olo-editor").focus();
+                if (this._activeElement !== this.$("nav")) this.editor.focus();
                 break;
             case "vertical":
                 if (this._contentSplitOptions.direction === "horizontal" && this._contentSplit) this._contentSplit.destroy();
                 this._contentSplitOptions.direction = "vertical";
-                this._contentSplit = Split([this.$("olo-viewer"), this.$("olo-editor")], this._contentSplitOptions);
+                this._contentSplit = Split([this.viewer, this.editor], this._contentSplitOptions);
                 break;
             case "horizontal":
                 if (this._contentSplitOptions.direction === "vertical" && this._contentSplit) this._contentSplit.destroy();
                 this._contentSplitOptions.direction = "horizontal";
-                this._contentSplit = Split([this.$("olo-viewer"), this.$("olo-editor")], this._contentSplitOptions);
+                this._contentSplit = Split([this.viewer, this.editor], this._contentSplitOptions);
                 break;
         }
     }
 
     _updateOutlinerView (oloNode) {
-        const viewModel = oloNode.model;
-        const modelPath = viewModel.path;
-        this.$("olo-root").document = viewModel.document;
-        this.$("olo-editor").setAttribute("model", modelPath);
-        this.$("olo-viewer").setAttribute("model", modelPath);
 
         const navElt = this.$("nav");
         for (let i=0; i<navElt.children.length; i++) {
@@ -137,6 +140,11 @@ class OloOutliner extends OloComponent {
                 oloTree.selectedNode.unselect();
             }
         }
+
+        const contentElt = this.$("olo-root");
+        const contentModel = oloNode.model;
+        contentElt.document = contentModel.root;
+        contentElt.setAttribute("model", contentModel.path);
     }
 
     _handleTreeKeyDown (event) {
@@ -210,7 +218,7 @@ class OloOutliner extends OloComponent {
             case "ctrl-enter":
                 if (selectedNode.model.readonly) break;
                 var selectedModel = selectedNode.model;
-                var newModel = new model.Node();
+                var newModel = new store.Node();
                 selectedModel.parent.insertChild(selectedModel.index+1, newModel);
                 selectedNode.nextSiblingItem.select();
                 event.stopPropagation();

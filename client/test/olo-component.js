@@ -1,6 +1,6 @@
 
-const model = require("model");
-const Document = model.memory.Document;
+const store = require("store");
+const Document = store.Document;
 
 const OloComponent = require("olo-component");
 const Feature = require("utils/Feature");
@@ -77,8 +77,7 @@ suite("<olo-component>", () => {
     suite("model binding", () => {
 
         test("binding to absolute path", () => {
-            const refDoc = new Document();
-            refDoc.root.assign({
+            const refDoc = new Document({
                 name: "root", children: [
                     {name: "child1", children: [
                         {name: "grandchild1"}
@@ -90,21 +89,22 @@ suite("<olo-component>", () => {
             });
 
             testFrame.innerHTML = '<olo-root><olo-component model="/child1/grandchild1"></olo-componnt></olo-root>';
-            testFrame.querySelector("olo-root").document = refDoc;
+
+            const root = testFrame.querySelector("olo-root");
+            root.document = refDoc;
 
             const component = testFrame.querySelector("olo-component");
-            expect(component.model).to.equal(refDoc.root.getChild(0).getChild(0));
+            expect(component.model).to.equal(refDoc.getChild(0).getChild(0));
 
             component.setAttribute("model", "/child2/grandchild2");
-            expect(component.model).to.equal(refDoc.root.getChild(1).getChild(0));
+            expect(component.model).to.equal(refDoc.getChild(1).getChild(0));
 
             component.setAttribute("model", "/child2/grandchild3");
             expect(component.model).to.be.null;
         });
 
         test("binding to relative path", () => {
-            const refDoc = new Document();
-            refDoc.root.assign({
+            const refDoc = new Document({
                 name: "root", children: [
                     {name: "c0", children: [
                         {name: "gc0", children: [
@@ -164,8 +164,7 @@ suite("<olo-component>", () => {
         var refDoc, cmp1, cmp2, cmp1_callsCount, cmp2_callsCount;
 
         setup(() => {
-            refDoc = new Document();
-            refDoc.root.assign({
+            refDoc = new Document({
                 name: "root", children: [
                     {name: "c0", children: [
                         {name: "gc0"},

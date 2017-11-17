@@ -1,4 +1,3 @@
-const model = require("model");
 const OloComponent = require("olo-component");
 const OloVDOM = require("olo-vdom");
 const Feature = require("utils/Feature");

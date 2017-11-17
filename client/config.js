@@ -14,7 +14,7 @@ System.config({
     "js-yaml": "npm:js-yaml@3.10.0",
     "lodash": "npm:lodash@4.17.4",
     "marked": "npm:marked@0.3.6",
-    "model": "/lib/model",
+    "store": "/lib/store",
     "nunjucks": "npm:nunjucks@3.0.1",
     "olo-component": "/lib/olo-component",
     "olo-editor": "/lib/olo-editor",

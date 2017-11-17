@@ -52,7 +52,8 @@ async function render (node) {
 
 
 exports.config = config;
-exports.abstract = require("model/abstract-model");
-exports.memory = require("model/memory-model");
-exports.google = require("model/google-model");
+exports.abstract = require("store/abstract-store");
+exports.memory = require("store/memory-store");
+exports.http = require("store/http-store");
+//exports.google = require("store/google-model");
 exports.render = render;

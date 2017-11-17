@@ -1,4 +1,4 @@
-value:name: root
+name: root2
 value: |
     {% set docName = "test-doc2" %}
     {% import "./child1" as ch1 %}

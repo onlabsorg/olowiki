@@ -1,4 +1,4 @@
-const model = require("model");
+const store = require("store");
 
 const $parentComponent = Symbol("olo-component.$parentComponent");
 const $childComponents = Symbol("olo-component.$childComponents");
@@ -14,10 +14,6 @@ class OloComponent extends HTMLElement {
 
     static get observedAttributes () {
         return ['model'];
-    }
-
-    static get config () {
-        return model.config;
     }
 
     static register (tag) {
@@ -156,7 +152,7 @@ class OloRoot extends OloComponent {
 
     constructor () {
         super();
-        this.document = new model.memory.Document();
+        this.document = new store.Document();
     }
 
     get document () {
@@ -164,14 +160,14 @@ class OloRoot extends OloComponent {
     }
 
     set document (doc) {
-        if (doc instanceof model.abstract.Document) {
+        if (doc instanceof store.Document) {
             this._document = doc;
             this._updateModel();
         }
     }
 
     _getRefModel () {
-        return this.document.root;
+        return this.document;
     }
 }
 

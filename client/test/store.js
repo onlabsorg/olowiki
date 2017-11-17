@@ -1,15 +1,27 @@
+//TODO: test name duplication checks
+//TODO: test same document checks
 
-const model = require("model");
+const store = require("store");
+const Node = store.Node;
+const Document = store.Document;
+
+function createNode (hash={}) {
+    return new Node(hash);
+}
+
+function createDocument (hash={}, readonly=false) {
+    return new Document(hash, readonly);
+}
 
 
-suite("model.Node", () => {
-    const Node = model.Node;
 
-    test("model.Node.prototype.name", () => {
+suite("Node", () => {
+
+    test("Node.prototype.name", () => {
         var node;
 
         // getter
-        node = new Node({name:"test-node-1"});
+        node = createNode({name:"test-node-1"});
         expect(node.name).to.equal("test-node-1");
 
         // setter
@@ -17,34 +29,35 @@ suite("model.Node", () => {
         expect(node.name).to.equal("test-node-2");
 
         //default
-        node = new Node();
-        expect(node.name).to.equal("node1");
-        node = new Node();
-        expect(node.name).to.equal("node2");
+        node = createNode();
+        expect(node.name).to.equal(node._defaultName);
+
+        //duplication check
+        node = createNode({children: [{name:'n1'}, {name:'n2'}]});
+        expect(() => {doc.getChild(0).name = 'n2'}).to.throw();
     });
 
-    test("model.Node.prototype.template", () => {
+    test("Node.prototype.value", () => {
         var node;
 
         //getter
-        node = new Node({template:"abc"});
-        expect(node.template).to.equal("abc");
+        node = createNode({value:"abc"});
+        expect(node.value).to.equal("abc");
 
         //setter
-        node.template = "def";
-        expect(node.template).to.equal("def");
+        node.value = "def";
+        expect(node.value).to.equal("def");
 
         //default
-        node = new Node();
-        expect(node.template).to.equal("");
+        node = createNode();
+        expect(node.value).to.equal("");
     });
 
-    test("model.Node.prototype.getChild(index)", () => {
-        var child1 = new Node({name: "child1"});
+    test("Node.prototype.getChild(index)", () => {
 
-        var node = new Node({children: [
+        var node = createNode({children: [
             {name: "child0"},
-            child1,
+            {name: "child1"},
             {name: "child2"}
         ]});
 
@@ -52,6 +65,7 @@ suite("model.Node", () => {
         expect(child0).to.be.instanceof(Node);
         expect(child0.name).to.equal("child0");
 
+        var child1 = node.getChild(1);
         expect(child1).to.be.instanceof(Node);
         expect(child1.name).to.equal("child1");
 
@@ -68,27 +82,27 @@ suite("model.Node", () => {
         expect(node.getChild(-4)).to.be.null;
     });
 
-    test("model.Node.prototype.size", () => {
+    test("Node.prototype.size", () => {
         var node;
 
-        node = new Node({children: [{}, {}, {}]});
+        node = createNode({children: [{}, {}, {}]});
         expect(node.size).to.equal(3);
 
-        node = new Node({children: [{}, {}]});
+        node = createNode({children: [{}, {}]});
         expect(node.size).to.equal(2);
 
-        node = new Node({children: []});
+        node = createNode({children: []});
         expect(node.size).to.equal(0);
 
-        node = new Node({children: "non-array-value"});
+        node = createNode({children: "non-array-value"});
         expect(node.size).to.equal(0);
 
-        node = new Node();
+        node = createNode();
         expect(node.size).to.equal(0);
     });
 
-    test("model.Node.prototype.children()", () => {
-        var node = new Node({children: [{}, {}, {}]});
+    test("Node.prototype.children()", () => {
+        var node = createNode({children: [{}, {}, {}]});
         const child0 = node.getChild(0);
         const child1 = node.getChild(1);
         const child2 = node.getChild(2);
@@ -97,8 +111,8 @@ suite("model.Node", () => {
         expect(Array.from(node.children())).to.deep.equal([child0, child1, child2]);
     });
 
-    test("model.Node.prototype.getChildByName(name)", () => {
-        var node = new Node({name: "root", children: [
+    test("Node.prototype.getChildByName(name)", () => {
+        var node = createNode({name: "root", children: [
             {name: "child0"},
             {name: "child1"},
             {name: "child2"}
@@ -109,59 +123,64 @@ suite("model.Node", () => {
         expect(node.getChildByName("child3")).to.be.null;
     });
 
-    test("model.Node.prototype.setChild(index, node)", () => {
-        var node = new Node({children: [{}, {}, {}]});
+    test("Node.prototype.setChild(index, node)", () => {
+        var node = createNode({children: [{}, {}, {}]});
         const child0 = node.getChild(0);
         const child1 = node.getChild(1);
         const child2 = node.getChild(2);
 
-        const newChild1 = new Node();
+        const newChild1 = createNode();
         node.setChild(1, newChild1);
         expect(node.getChild(1)).to.equal(newChild1);
 
         //it should consider negative indexes as relative to the end
-        const newChild2 = new Node();
+        const newChild2 = createNode();
         node.setChild(-1, newChild2);
         expect(node.getChild(2)).to.equal(newChild2);
 
         //it should throw an exception if the index is out of range
-        const newChild = new Node();
+        const newChild = createNode();
         expect(() => node.setChild(3, newChild)).to.throw();
         expect(() => node.setChild(-4, newChild)).to.throw();
         expect(() => node.setChild(100, newChild)).to.throw();
         expect(() => node.setChild(-100, newChild)).to.throw();
         expect(Array.from(node.children())).to.deep.equal([child0, newChild1, newChild2]);
 
-        //it should throw an exception if the new child node is not a Node instanceof
+        //it should throw an exception if the new child node is not a Node instance
         expect(() => node.setChild(1, {})).to.throw();
         expect(() => node.setChild(1, [])).to.throw();
         expect(() => node.setChild(1, "abc")).to.throw();
         expect(() => node.setChild(1, null)).to.throw();
         expect(() => node.setChild(1)).to.throw();
         expect(Array.from(node.children())).to.deep.equal([child0, newChild1, newChild2]);
+
+        //duplication check
+        node = createNode({children: [{name:'n1'}, {name:'n2'}]})
+        const n2 = createNode({name:'n2'});
+        expect(() => node.setChild(0, n2)).to.throw();
     });
 
-    test("model.Node.prototype.insertChild(index, node)", () => {
-        var node = new Node({children: [{}, {}, {}]});
+    test("Node.prototype.insertChild(index, node)", () => {
+        var node = createNode({children: [{}, {}, {}]});
         const child0 = node.getChild(0);
         const child1 = node.getChild(1);
         const child2 = node.getChild(2);
 
-        const child12 = new Node();
+        const child12 = createNode();
         node.insertChild(2, child12);
         expect(Array.from(node.children())).to.deep.equal([child0, child1, child12, child2]);
 
-        const child3 = new Node();
+        const child3 = createNode();
         node.insertChild(node.size, child3);
         expect(Array.from(node.children())).to.deep.equal([child0, child1, child12, child2, child3]);
 
         //it should consider negative indexes as relative to the end
-        const child23 = new Node();
+        const child23 = createNode();
         node.insertChild(-1, child23);
         expect(Array.from(node.children())).to.deep.equal([child0, child1, child12, child2, child23, child3]);
 
         //it should throw an exception if the index is out of range
-        const newChild = new Node();
+        const newChild = createNode();
         expect(() => node.insertChild(100, newChild)).to.throw();
         expect(() => node.insertChild(-100, newChild)).to.throw();
         expect(Array.from(node.children())).to.deep.equal([child0, child1, child12, child2, child23, child3]);
@@ -173,15 +192,20 @@ suite("model.Node", () => {
         expect(() => node.insertChild(1, null)).to.throw();
         expect(() => node.insertChild(1)).to.throw();
         expect(Array.from(node.children())).to.deep.equal([child0, child1, child12, child2, child23, child3]);
+
+        //duplication check
+        node = createNode({children: [{name:'n1'}, {name:'n2'}]})
+        const n2 = createNode({name:'n2'});
+        expect(() => node.insertChild(1, n2)).to.throw();
     });
 
-    test("model.Node.prototype.appendChild(node)", () => {
-        var node = new Node({children: [{}, {}, {}]});
+    test("Node.prototype.appendChild(node)", () => {
+        var node = createNode({children: [{}, {}, {}]});
         const child0 = node.getChild(0);
         const child1 = node.getChild(1);
         const child2 = node.getChild(2);
 
-        const child3 = new Node();
+        const child3 = createNode();
         node.appendChild(child3);
         expect(Array.from(node.children())).to.deep.equal([child0, child1, child2, child3]);
 
@@ -192,10 +216,15 @@ suite("model.Node", () => {
         expect(() => node.appendChild(null)).to.throw();
         expect(() => node.appendChild()).to.throw();
         expect(Array.from(node.children())).to.deep.equal([child0, child1, child2, child3]);
+
+        //duplication check
+        node = createNode({children: [{name:'n1'}, {name:'n2'}]})
+        const n2 = createNode({name:'n2'});
+        expect(() => node.appendChild(n2)).to.throw();
     });
 
-    test("model.Node.prototype.removeChild(index, node)", () => {
-        var node = new Node({children: [{}, {}, {}, {}, {}]});
+    test("Node.prototype.removeChild(index, node)", () => {
+        var node = createNode({children: [{}, {}, {}, {}, {}]});
         const child0 = node.getChild(0);
         const child1 = node.getChild(1);
         const child2 = node.getChild(2);
@@ -215,8 +244,8 @@ suite("model.Node", () => {
         expect(Array.from(node.children())).to.deep.equal([child0, child2, child4]);
     });
 
-    test("model.Node.prototype.parent", () => {
-        const node = new Node({children: [{}, {}, {}]});
+    test("Node.prototype.parent", () => {
+        const node = createNode({children: [{}, {}, {}]});
         const child0 = node.getChild(0);
         const child1 = node.getChild(1);
         const child2 = node.getChild(2);
@@ -227,43 +256,43 @@ suite("model.Node", () => {
         expect(child2.parent).to.equal(node);
 
         //setChild
-        const newChild1 = new Node();
+        const newChild1 = createNode();
         expect(newChild1.parent).to.be.null;
         node.setChild(1, newChild1);
         expect(child1.parent).to.be.null;
         expect(newChild1.parent).to.equal(node);
 
         //insertChild
-        const child12 = new Node();
+        const child12 = createNode();
         expect(child12.parent).to.be.null;
         node.insertChild(2, child12);
         expect(child12.parent).to.equal(node);
 
         //appendChild
-        const child4 = new Node();
+        const child4 = createNode();
         expect(child4.parent).to.be.null;
         node.appendChild(child4);
         expect(child4.parent).to.equal(node);
 
         //removeChild
-        const child01 = new Node();
+        const child01 = createNode();
         node.insertChild(1, child01);
         expect(child01.parent).to.equal(node);
         node.removeChild(1);
         expect(child01.parent).to.be.null;
 
         //prevent node duplication
-        const node1 = new Node({children: [{}]});
+        const node1 = createNode({children: [{}]});
         const child = node1.getChild(0);
-        expect(() => new Node({children: [child]})).to.throw();
-        const node2 = new Node({children: [{}, {}, {}]});
+        expect(() => createNode({children: [child]})).to.throw();
+        const node2 = createNode({children: [{}, {}, {}]});
         expect(() => node2.setChild(1, child)).to.throw();
         expect(() => node2.insertChild(1, child)).to.throw();
         expect(() => node2.appendChild(child)).to.throw();
     });
 
-    test("model.Node.prototype.path", () => {
-        var node = new Node({name:"root", children: [
+    test("Node.prototype.path", () => {
+        var node = createNode({name:"root", children: [
             {name:"child", children: [
                 {name:"grandchild"}
             ]}
@@ -276,8 +305,8 @@ suite("model.Node", () => {
         expect(grandchild.path).to.equal("/child/grandchild");
     });
 
-    test("model.Node.prototype.index", () => {
-        const node = new Node({children: [{}, {}, {}]});
+    test("Node.prototype.index", () => {
+        const node = createNode({children: [{}, {}, {}]});
         const child0 = node.getChild(0);
         const child1 = node.getChild(1);
         const child2 = node.getChild(2);
@@ -288,8 +317,8 @@ suite("model.Node", () => {
         expect(node.index).to.be.undefined;
     });
 
-    test("model.Node.prototype.root", () => {
-        var node = new Node({
+    test("Node.prototype.root", () => {
+        var node = createNode({
             children: [
                 {
                     children: [{}, {}, {}]
@@ -303,13 +332,8 @@ suite("model.Node", () => {
         expect(node.root).to.equal(node);
     });
 
-    test("model.Node.prototype.readonly", () => {
-        var readonly;
-        class RootNode extends Node {
-            get readonly () {return readonly}
-        }
-
-        var node = new RootNode({name:"root", children: [
+    test("Node.prototype.readonly", () => {
+        var node = createNode({name:"root", children: [
             {name: "child", children: [
                 {name: "grandchild"}
             ]}
@@ -317,19 +341,19 @@ suite("model.Node", () => {
         var child = node.getChild(0);
         var grandchild = child.getChild(0);
 
-        readonly = true;
+        node._parent = {readonly: true};
         expect(node.readonly).to.be.true;
         expect(child.readonly).to.be.true;
         expect(grandchild.readonly).to.be.true;
 
-        readonly = false;
+        node._parent = {readonly: false};
         expect(node.readonly).to.be.false;
         expect(child.readonly).to.be.false;
         expect(grandchild.readonly).to.be.false;
     });
 
-    test("model.Document.prototype.getNode(path)", () => {
-        const node = new Node({name: "root", children: [
+    test("Node.prototype.getNode(path)", () => {
+        const node = createNode({name: "root", children: [
                 {name: "child0", children: [
                     {name: "grandchild"}
                 ]},
@@ -356,29 +380,63 @@ suite("model.Node", () => {
         expect(child1.getNode("/child0/grandchild")).to.equal(grandchild);
     });
 
-    test("model.Node.prototype.render", (done) => {
-        const node = new Node({
+    test("Node.prototype.assign", () => {
+        var node = createNode({name:"n0", value:"t0", children: [
+            {name:"n1", value:"t1", children:[{},{},{}]},
+            {name:"n2", value:"t2", children:[{},{},{}]},
+            {name:"n3", value:"t3", children:[{},{},{}]},
+        ]});
+        node.assign({name:"N0", value:"T0", children: [
+            {name:"N1", value:"T1", children:[{},{},{},{}]},
+            {name:"N2", value:"T2", children:[{},{},{},{}]},
+        ]});
+        expect(node.name).to.equal("N0");
+        expect(node.value).to.equal("T0");
+        expect(node.size).to.equal(2);
+        expect(node.getChild(0).name).to.equal("N1");
+        expect(node.getChild(0).value).to.equal("T1");
+        expect(node.getChild(0).size).to.equal(4);
+        expect(node.getChild(1).name).to.equal("N2");
+        expect(node.getChild(1).value).to.equal("T2");
+        expect(node.getChild(1).size).to.equal(4);
+    });
+
+    test("Node.prototype.export", () => {
+        const obj = {name:"n0", value:"t0", children: [
+            {name:"n1", value:"t1", children:[
+                {name:"n10", value:"t10", children:[]},
+                {name:"n11", value:"t11", children:[]},
+            ]},
+            {name:"n2", value:"t2", children:[]},
+        ]};
+        const node = createNode(obj);
+        expect(node.export()).to.deep.equal(obj);
+
+    });
+
+    test("Node.prototype.render()", (done) => {
+        const node = createNode({
             name: "root",
-            template: '{% import "./childSum" as s %}{% import "childX" as x%}s = {{s.v+x.v}}',
+            value: '{% import "./childSum" as s %}{% import "childX" as x%}s = {{s.v+x.v}}',
             children: [
                 {
                     name: "childX",
-                    template: '{% set v = 10 %}v = {{v}}',
+                    value: '{% set v = 10 %}v = {{v}}',
                     children: []
                 },
                 {
                     name: "childY",
-                    template: '{% set v = 20 %}v = {{v}}',
+                    value: '{% set v = 20 %}v = {{v}}',
                     children: []
                 },
                 {
                     name: "childZ",
-                    template: '{% set v = 30 %}v = {{v}}',
+                    value: '{% set v = 30 %}v = {{v}}',
                     children: []
                 },
                 {
                     name: "childSum",
-                    template: '{% import "../childX" as x %}{% import "../childY" as y %}{% import "../childZ" as z %}{% set v = x.v + y.v + z.v %}v = {{v}}',
+                    value: '{% import "../childX" as x %}{% import "../childY" as y %}{% import "../childZ" as z %}{% set v = x.v + y.v + z.v %}v = {{v}}',
                     children: []
                 },
             ]
@@ -404,21 +462,21 @@ suite("model.Node", () => {
         run().then(done).catch(done);
     });
 
-    suite("model.Node change events", () => {
+    suite("Node change events", () => {
         var node, child, grandchild, setCallbacks, clearCallbacks;
 
         setup(() => {
-            node = new Node({
+            node = createNode({
                 name: "root",
-                template: "root template",
+                value: "root value",
                 children: [
                     {
                         name: "child",
-                        template: "child0 template",
+                        value: "child0 value",
                         children: [
                             {
                                 name: "grandchild",
-                                template: "grandchild template",
+                                value: "grandchild value",
                                 children: []
                             }
                         ]
@@ -430,103 +488,52 @@ suite("model.Node", () => {
             grandchild = child.getChild(0);
 
             setCallbacks = (cbs) => {
-                node.beforeChangeCallbacks.add(cbs.nodeBeforeChangeCallback);
-                node.afterChangeCallbacks.add(cbs.nodeAfterChangeCallback);
-
-                child.beforeChangeCallbacks.add(cbs.childBeforeChangeCallback);
-                child.afterChangeCallbacks.add(cbs.childAfterChangeCallback);
-
-                grandchild.beforeChangeCallbacks.add(cbs.grandchildBeforeChangeCallback);
-                grandchild.afterChangeCallbacks.add(cbs.grandchildAfterChangeCallback);
+                node.changeCallbacks.add(cbs.nodeChangeCallback);
+                child.changeCallbacks.add(cbs.childChangeCallback);
+                grandchild.changeCallbacks.add(cbs.grandchildChangeCallback);
             }
 
             clearCallbacks = () => {
-                node.beforeChangeCallbacks = new Set();
-                node.afterChangeCallbacks = new Set();
-
-                child.beforeChangeCallbacks = new Set();
-                child.afterChangeCallbacks = new Set();
-
-                grandchild.beforeChangeCallbacks = new Set();
-                grandchild.afterChangeCallbacks = new Set();
+                node.changeCallbacks = new Set();
+                child.changeCallbacks = new Set();
+                grandchild.changeCallbacks = new Set();
             }
         });
 
         test("name set", () => {
             setCallbacks({
 
-                grandchildBeforeChangeCallback: (change) => {
-                    expect(change).to.deep.equal({
-                        method: "set-name",
-                        oldValue: "grandchild",
-                        newValue: "new grandchild name",
-                        path: [grandchild]
-                    });
-                    expect(grandchild.name).to.equal("grandchild");
-                    change.preProcessedBy = [grandchild];
-                },
-
-                childBeforeChangeCallback: (change) => {
-                    expect(change).to.deep.equal({
-                        method: "set-name",
-                        oldValue: "grandchild",
-                        newValue: "new grandchild name",
-                        path: [child, grandchild],
-
-                        preProcessedBy: [grandchild]
-                    });
-                    expect(grandchild.name).to.equal("grandchild");
-                    change.preProcessedBy.push(child);
-                },
-
-                nodeBeforeChangeCallback: (change) => {
-                    expect(change).to.deep.equal({
-                        method: "set-name",
-                        oldValue: "grandchild",
-                        newValue: "new grandchild name",
-                        path: [node, child, grandchild],
-
-                        preProcessedBy: [grandchild, child]
-                    });
-                    expect(grandchild.name).to.equal("grandchild");
-                    change.preProcessedBy.push(node);
-                },
-
-                grandchildAfterChangeCallback: (change) => {
+                grandchildChangeCallback: (change) => {
                     expect(change).to.deep.equal({
                         method: "set-name",
                         oldValue: "grandchild",
                         newValue: "new grandchild name",
                         path: [grandchild],
-
-                        preProcessedBy: [grandchild, child, node]
                     });
                     expect(grandchild.name).to.equal("new grandchild name");
                     change.postProcessedBy = [grandchild];
                 },
 
-                childAfterChangeCallback: (change) => {
+                childChangeCallback: (change) => {
                     expect(change).to.deep.equal({
                         method: "set-name",
                         oldValue: "grandchild",
                         newValue: "new grandchild name",
                         path: [child, grandchild],
 
-                        preProcessedBy: [grandchild, child, node],
                         postProcessedBy: [grandchild]
                     });
                     expect(grandchild.name).to.equal("new grandchild name");
                     change.postProcessedBy.push(child);
                 },
 
-                nodeAfterChangeCallback: (change) => {
+                nodeChangeCallback: (change) => {
                     expect(change).to.deep.equal({
                         method: "set-name",
                         oldValue: "grandchild",
                         newValue: "new grandchild name",
                         path: [node, child, grandchild],
 
-                        preProcessedBy: [grandchild, child, node],
                         postProcessedBy: [grandchild, child]
                     });
                     expect(grandchild.name).to.equal("new grandchild name");
@@ -539,155 +546,72 @@ suite("model.Node", () => {
             clearCallbacks();
         });
 
-        test("template set", () => {
+        test("value set", () => {
             setCallbacks({
 
-                grandchildBeforeChangeCallback: (change) => {
+                grandchildChangeCallback: (change) => {
                     expect(change).to.deep.equal({
-                        method: "set-template",
-                        oldValue: "grandchild template",
-                        newValue: "new grandchild template",
-                        path: [grandchild]
-                    });
-                    expect(grandchild.template).to.equal("grandchild template");
-                    change.preProcessedBy = [grandchild];
-                },
-
-                childBeforeChangeCallback: (change) => {
-                    expect(change).to.deep.equal({
-                        method: "set-template",
-                        oldValue: "grandchild template",
-                        newValue: "new grandchild template",
-                        path: [child, grandchild],
-
-                        preProcessedBy: [grandchild]
-                    });
-                    expect(grandchild.template).to.equal("grandchild template");
-                    change.preProcessedBy.push(child);
-                },
-
-                nodeBeforeChangeCallback: (change) => {
-                    expect(change).to.deep.equal({
-                        method: "set-template",
-                        oldValue: "grandchild template",
-                        newValue: "new grandchild template",
-                        path: [node, child, grandchild],
-
-                        preProcessedBy: [grandchild, child]
-                    });
-                    expect(grandchild.template).to.equal("grandchild template");
-                    change.preProcessedBy.push(node);
-                },
-
-                grandchildAfterChangeCallback: (change) => {
-                    expect(change).to.deep.equal({
-                        method: "set-template",
-                        oldValue: "grandchild template",
-                        newValue: "new grandchild template",
+                        method: "set-value",
+                        oldValue: "grandchild value",
+                        newValue: "new grandchild value",
                         path: [grandchild],
-
-                        preProcessedBy: [grandchild, child, node]
                     });
-                    expect(grandchild.template).to.equal("new grandchild template");
+                    expect(grandchild.value).to.equal("new grandchild value");
                     change.postProcessedBy = [grandchild];
                 },
 
-                childAfterChangeCallback: (change) => {
+                childChangeCallback: (change) => {
                     expect(change).to.deep.equal({
-                        method: "set-template",
-                        oldValue: "grandchild template",
-                        newValue: "new grandchild template",
+                        method: "set-value",
+                        oldValue: "grandchild value",
+                        newValue: "new grandchild value",
                         path: [child, grandchild],
 
-                        preProcessedBy: [grandchild, child, node],
                         postProcessedBy: [grandchild]
                     });
-                    expect(grandchild.template).to.equal("new grandchild template");
+                    expect(grandchild.value).to.equal("new grandchild value");
                     change.postProcessedBy.push(child);
                 },
 
-                nodeAfterChangeCallback: (change) => {
+                nodeChangeCallback: (change) => {
                     expect(change).to.deep.equal({
-                        method: "set-template",
-                        oldValue: "grandchild template",
-                        newValue: "new grandchild template",
+                        method: "set-value",
+                        oldValue: "grandchild value",
+                        newValue: "new grandchild value",
                         path: [node, child, grandchild],
 
-                        preProcessedBy: [grandchild, child, node],
                         postProcessedBy: [grandchild, child]
                     });
-                    expect(grandchild.template).to.equal("new grandchild template");
+                    expect(grandchild.value).to.equal("new grandchild value");
                     change.postProcessedBy.push(node);
                 }
             });
 
-            grandchild.template = "new grandchild template";
+            grandchild.value = "new grandchild value";
 
             clearCallbacks();
         });
 
         test("child set", () => {
-            const oldNode = new Node();
-            const newNode = new Node();
+            const oldNode = createNode();
+            const newNode = createNode();
             grandchild.appendChild(oldNode);
 
             setCallbacks({
 
-                grandchildBeforeChangeCallback: (change) => {
-                    expect(change).to.deep.equal({
-                        method: "set-child",
-                        index: 0,
-                        oldValue: oldNode,
-                        newValue: newNode,
-                        path: [grandchild]
-                    });
-                    expect(grandchild.getChild(0)).to.equal(oldNode);
-                    change.preProcessedBy = [grandchild];
-                },
-
-                childBeforeChangeCallback: (change) => {
-                    expect(change).to.deep.equal({
-                        method: "set-child",
-                        index: 0,
-                        oldValue: oldNode,
-                        newValue: newNode,
-                        path: [child, grandchild],
-
-                        preProcessedBy: [grandchild]
-                    });
-                    expect(grandchild.getChild(0)).to.equal(oldNode);
-                    change.preProcessedBy.push(child);
-                },
-
-                nodeBeforeChangeCallback: (change) => {
-                    expect(change).to.deep.equal({
-                        method: "set-child",
-                        index: 0,
-                        oldValue: oldNode,
-                        newValue: newNode,
-                        path: [node, child, grandchild],
-
-                        preProcessedBy: [grandchild, child]
-                    });
-                    expect(grandchild.getChild(0)).to.equal(oldNode);
-                    change.preProcessedBy.push(node);
-                },
-
-                grandchildAfterChangeCallback: (change) => {
+                grandchildChangeCallback: (change) => {
                     expect(change).to.deep.equal({
                         method: "set-child",
                         index: 0,
                         oldValue: oldNode,
                         newValue: newNode,
                         path: [grandchild],
-
-                        preProcessedBy: [grandchild, child, node]
                     });
                     expect(grandchild.getChild(0)).to.equal(newNode);
                     change.postProcessedBy = [grandchild];
                 },
 
-                childAfterChangeCallback: (change) => {
+                childChangeCallback: (change) => {
                     expect(change).to.deep.equal({
                         method: "set-child",
                         index: 0,
@@ -695,14 +619,13 @@ suite("model.Node", () => {
                         newValue: newNode,
                         path: [child, grandchild],
 
-                        preProcessedBy: [grandchild, child, node],
                         postProcessedBy: [grandchild]
                     });
                     expect(grandchild.getChild(0)).to.equal(newNode);
                     change.postProcessedBy.push(child);
                 },
 
-                nodeAfterChangeCallback: (change) => {
+                nodeChangeCallback: (change) => {
                     expect(change).to.deep.equal({
                         method: "set-child",
                         index: 0,
@@ -710,7 +633,6 @@ suite("model.Node", () => {
                         newValue: newNode,
                         path: [node, child, grandchild],
 
-                        preProcessedBy: [grandchild, child, node],
                         postProcessedBy: [grandchild, child]
                     });
                     expect(grandchild.getChild(0)).to.equal(newNode);
@@ -724,72 +646,32 @@ suite("model.Node", () => {
         });
 
         test("child insert", () => {
-            grandchild.appendChild(new Node());
-            grandchild.appendChild(new Node());
-            const newNode = new Node();
+            grandchild.appendChild(createNode());
+            grandchild.appendChild(createNode());
+            const newNode = createNode();
             const oldSize = grandchild.size;
 
             setCallbacks({
 
-                grandchildBeforeChangeCallback: (change) => {
+                grandchildChangeCallback: (change) => {
                     expect(change).to.deep.equal({
                         method: "insert-child",
                         index: 1,
-                        value: newNode,
-                        path: [grandchild]
-                    });
-                    expect(grandchild.size).to.equal(oldSize);
-                    change.preProcessedBy = [grandchild];
-                },
-
-                childBeforeChangeCallback: (change) => {
-                    expect(change).to.deep.equal({
-                        method: "insert-child",
-                        index: 1,
-                        value: newNode,
-                        path: [child, grandchild],
-
-                        preProcessedBy: [grandchild]
-                    });
-                    expect(grandchild.size).to.equal(oldSize);
-                    change.preProcessedBy.push(child);
-                },
-
-                nodeBeforeChangeCallback: (change) => {
-                    expect(change).to.deep.equal({
-                        method: "insert-child",
-                        index: 1,
-                        value: newNode,
-                        path: [node, child, grandchild],
-
-                        preProcessedBy: [grandchild, child]
-                    });
-                    expect(grandchild.size).to.equal(oldSize);
-                    change.preProcessedBy.push(node);
-                },
-
-                grandchildAfterChangeCallback: (change) => {
-                    expect(change).to.deep.equal({
-                        method: "insert-child",
-                        index: 1,
-                        value: newNode,
+                        newValue: newNode,
                         path: [grandchild],
-
-                        preProcessedBy: [grandchild, child, node]
                     });
                     expect(grandchild.size).to.equal(oldSize+1);
                     expect(grandchild.getChild(1)).to.equal(newNode);
                     change.postProcessedBy = [grandchild];
                 },
 
-                childAfterChangeCallback: (change) => {
+                childChangeCallback: (change) => {
                     expect(change).to.deep.equal({
                         method: "insert-child",
                         index: 1,
-                        value: newNode,
+                        newValue: newNode,
                         path: [child, grandchild],
 
-                        preProcessedBy: [grandchild, child, node],
                         postProcessedBy: [grandchild]
                     });
                     expect(grandchild.size).to.equal(oldSize+1);
@@ -797,14 +679,13 @@ suite("model.Node", () => {
                     change.postProcessedBy.push(child);
                 },
 
-                nodeAfterChangeCallback: (change) => {
+                nodeChangeCallback: (change) => {
                     expect(change).to.deep.equal({
                         method: "insert-child",
                         index: 1,
-                        value: newNode,
+                        newValue: newNode,
                         path: [node, child, grandchild],
 
-                        preProcessedBy: [grandchild, child, node],
                         postProcessedBy: [grandchild, child]
                     });
                     expect(grandchild.size).to.equal(oldSize+1);
@@ -819,73 +700,33 @@ suite("model.Node", () => {
         });
 
         test("child append", () => {
-            grandchild.appendChild(new Node());
-            grandchild.appendChild(new Node());
-            grandchild.appendChild(new Node());
-            const newNode = new Node();
+            grandchild.appendChild(createNode());
+            grandchild.appendChild(createNode());
+            grandchild.appendChild(createNode());
+            const newNode = createNode();
             const oldSize = grandchild.size;
 
             setCallbacks({
 
-                grandchildBeforeChangeCallback: (change) => {
+                grandchildChangeCallback: (change) => {
                     expect(change).to.deep.equal({
                         method: "insert-child",
                         index: oldSize,
-                        value: newNode,
-                        path: [grandchild]
-                    });
-                    expect(grandchild.size).to.equal(oldSize);
-                    change.preProcessedBy = [grandchild];
-                },
-
-                childBeforeChangeCallback: (change) => {
-                    expect(change).to.deep.equal({
-                        method: "insert-child",
-                        index: oldSize,
-                        value: newNode,
-                        path: [child, grandchild],
-
-                        preProcessedBy: [grandchild]
-                    });
-                    expect(grandchild.size).to.equal(oldSize);
-                    change.preProcessedBy.push(child);
-                },
-
-                nodeBeforeChangeCallback: (change) => {
-                    expect(change).to.deep.equal({
-                        method: "insert-child",
-                        index: oldSize,
-                        value: newNode,
-                        path: [node, child, grandchild],
-
-                        preProcessedBy: [grandchild, child]
-                    });
-                    expect(grandchild.size).to.equal(oldSize);
-                    change.preProcessedBy.push(node);
-                },
-
-                grandchildAfterChangeCallback: (change) => {
-                    expect(change).to.deep.equal({
-                        method: "insert-child",
-                        index: oldSize,
-                        value: newNode,
+                        newValue: newNode,
                         path: [grandchild],
-
-                        preProcessedBy: [grandchild, child, node]
                     });
                     expect(grandchild.size).to.equal(oldSize+1);
                     expect(grandchild.getChild(oldSize)).to.equal(newNode);
                     change.postProcessedBy = [grandchild];
                 },
 
-                childAfterChangeCallback: (change) => {
+                childChangeCallback: (change) => {
                     expect(change).to.deep.equal({
                         method: "insert-child",
                         index: oldSize,
-                        value: newNode,
+                        newValue: newNode,
                         path: [child, grandchild],
 
-                        preProcessedBy: [grandchild, child, node],
                         postProcessedBy: [grandchild]
                     });
                     expect(grandchild.size).to.equal(oldSize+1);
@@ -893,14 +734,13 @@ suite("model.Node", () => {
                     change.postProcessedBy.push(child);
                 },
 
-                nodeAfterChangeCallback: (change) => {
+                nodeChangeCallback: (change) => {
                     expect(change).to.deep.equal({
                         method: "insert-child",
                         index: oldSize,
-                        value: newNode,
+                        newValue: newNode,
                         path: [node, child, grandchild],
 
-                        preProcessedBy: [grandchild, child, node],
                         postProcessedBy: [grandchild, child]
                     });
                     expect(grandchild.size).to.equal(oldSize+1);
@@ -915,89 +755,45 @@ suite("model.Node", () => {
         });
 
         test("child remove", () => {
-            grandchild.appendChild(new Node());
-            grandchild.appendChild(new Node());
-            grandchild.appendChild(new Node());
+            grandchild.appendChild(createNode());
+            grandchild.appendChild(createNode());
+            grandchild.appendChild(createNode());
             const oldNode = grandchild.getChild(1);
             const oldSize = grandchild.size;
 
             setCallbacks({
 
-                grandchildBeforeChangeCallback: (change) => {
-                    expect(change).to.deep.equal({
-                        method: "remove-child",
-                        index: 1,
-                        oldValue: oldNode,
-                        path: [grandchild]
-                    });
-                    expect(grandchild.size).to.equal(oldSize);
-                    expect(grandchild.getChild(1)).to.equal(oldNode);
-                    change.preProcessedBy = [grandchild];
-                },
-
-                childBeforeChangeCallback: (change) => {
-                    expect(change).to.deep.equal({
-                        method: "remove-child",
-                        index: 1,
-                        oldValue: oldNode,
-                        path: [child, grandchild],
-
-                        preProcessedBy: [grandchild]
-                    });
-                    expect(grandchild.size).to.equal(oldSize);
-                    expect(grandchild.getChild(1)).to.equal(oldNode);
-                    change.preProcessedBy.push(child);
-                },
-
-                nodeBeforeChangeCallback: (change) => {
-                    expect(change).to.deep.equal({
-                        method: "remove-child",
-                        index: 1,
-                        oldValue: oldNode,
-                        path: [node, child, grandchild],
-
-                        preProcessedBy: [grandchild, child]
-                    });
-                    expect(grandchild.size).to.equal(oldSize);
-                    expect(grandchild.getChild(1)).to.equal(oldNode);
-                    change.preProcessedBy.push(node);
-                },
-
-                grandchildAfterChangeCallback: (change) => {
+                grandchildChangeCallback: (change) => {
                     expect(change).to.deep.equal({
                         method: "remove-child",
                         index: 1,
                         oldValue: oldNode,
                         path: [grandchild],
-
-                        preProcessedBy: [grandchild, child, node]
                     });
                     expect(grandchild.size).to.equal(oldSize-1);
                     change.postProcessedBy = [grandchild];
                 },
 
-                childAfterChangeCallback: (change) => {
+                childChangeCallback: (change) => {
                     expect(change).to.deep.equal({
                         method: "remove-child",
                         index: 1,
                         oldValue: oldNode,
                         path: [child, grandchild],
 
-                        preProcessedBy: [grandchild, child, node],
                         postProcessedBy: [grandchild]
                     });
                     expect(grandchild.size).to.equal(oldSize-1);
                     change.postProcessedBy.push(child);
                 },
 
-                nodeAfterChangeCallback: (change) => {
+                nodeChangeCallback: (change) => {
                     expect(change).to.deep.equal({
                         method: "remove-child",
                         index: 1,
                         oldValue: oldNode,
                         path: [node, child, grandchild],
 
-                        preProcessedBy: [grandchild, child, node],
                         postProcessedBy: [grandchild, child]
                     });
                     expect(grandchild.size).to.equal(oldSize-1);
@@ -1013,16 +809,28 @@ suite("model.Node", () => {
 });
 
 
-suite("model.Document", () => {
-    const Document = model.Document;
 
-    test("model.Document.prototype.readonly", () => {
-        const rwdoc = new Document({children: [{}]});
-        expect(rwdoc.readonly).to.be.false;
-        expect(() => {rwdoc.getChild(0).name = "child name"}).to.not.throw();
+suite("Document", () => {
 
-        const rodoc = new Document({children: [{}]}, true);
-        expect(rodoc.readonly).to.be.true;
-        expect(() => {rodoc.getChild(0).name = "new child name"}).to.throw();
+    test("Document.prototype.readonly", (done) => {
+        async function run () {
+            const rwDoc = await createDocument({name:"n", value:"t", children:[{},{},{}]}, false);
+
+            expect(rwDoc.readonly).to.be.false;
+            expect(() => {rwDoc.name = "child name"}).to.not.throw();
+
+            expect(rwDoc.getChild(0).readonly).to.be.false;
+            expect(() => {rwDoc.getChild(0).name = "child name"}).to.not.throw();
+
+
+            const roDoc = await createDocument({name:"n", value:"t", children:[{},{},{}]}, true);
+
+            expect(roDoc.readonly).to.be.true;
+            expect(() => {roDoc.name = "new child name"}).to.throw();
+
+            expect(roDoc.getChild(0).readonly).to.be.true;
+            expect(() => {roDoc.getChild(0).name = "new child name"}).to.throw();
+        }
+        run().then(done).catch(done);
     });
 });

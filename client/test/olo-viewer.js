@@ -1,4 +1,4 @@
-const model = require("model");
+const store = require("store");
 const OloViewer = require("olo-viewer");
 
 const testFrame = document.querySelector("#test-frame");
