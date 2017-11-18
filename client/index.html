@@ -43,12 +43,6 @@
         document.addEventListener("DOMContentLoaded", function () {
             window.outliner = document.querySelector("olo-outliner");
             SystemJS.import("/index.js").then((module) => {
-                function applyURL () {
-                    if (location.hash) outliner.setAttribute("model", location.hash.substr(1));
-                    else outliner.setAttribute("model", "");
-                }
-                window.addEventListener('hashchange', applyURL);
-                applyURL();
                 console.log("loaded in", Date.now()-t0, "ms");
             });
         });

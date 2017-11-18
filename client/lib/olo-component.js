@@ -144,35 +144,4 @@ class OloComponent extends HTMLElement {
     }
 }
 
-OloComponent.register('olo-component')
-
-
-
-class OloRoot extends OloComponent {
-
-    constructor () {
-        super();
-        this.document = new store.Document();
-    }
-
-    get document () {
-        return this._document;
-    }
-
-    set document (doc) {
-        if (doc instanceof store.Document) {
-            this._document = doc;
-            this._updateModel();
-        }
-    }
-
-    _getRefModel () {
-        return this.document;
-    }
-}
-
-OloRoot.register("olo-root");
-
-
-
-module.exports = OloComponent;
+module.exports = OloComponent.register('olo-component')

@@ -20,8 +20,19 @@ app.get("/", function (req, res, next) {
     res.status(200).send(indexDoc);
 });
 
+app.get("/docs/*", function (req, res, next) {
+    if (!req.xhr) {
+        const indexDoc = fs.readFileSync(`${basePath}/index.html`);
+        res.set('Content-Type', "text/html");
+        res.status(200).send(indexDoc);
+    }
+    else {
+        next();
+    }
+});
+
 const Router = require("./server/router");
-app.use("/olo", Router(store));
+app.use("/docs", Router(store));
 
 app.use(express.static(basePath, {etag:false}));
 

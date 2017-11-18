@@ -66,6 +66,22 @@
     }
 
 
+    /* ROOT NODE */
+
+    :host(.root) #item {
+        font-size: 1.2em;
+        font-weight: bold;
+        border-bottom: 1px solid var(--olo-dark-bgcolor);
+    }
+
+    :host(.root) #item #icon {
+        display: none;
+    }
+
+    :host(.root) #child-list {
+        margin-left: 0
+    }
+
 </style>
 
 <div id="item">

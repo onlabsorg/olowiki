@@ -17,6 +17,7 @@ System.config({
     "store": "/lib/store",
     "nunjucks": "npm:nunjucks@3.0.1",
     "olo-component": "/lib/olo-component",
+    "olo-root": "/lib/olo-root",
     "olo-editor": "/lib/olo-editor",
     "olo-outliner": "/lib/olo-outliner",
     "olo-tree": "/lib/olo-tree",

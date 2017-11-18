@@ -1,5 +1,6 @@
 const store = require("store");
 const OloComponent = require("olo-component");
+const OloRoot = require("olo-root");
 const OloViewer = require("olo-viewer");
 const OloEditor = require("olo-editor");
 const OloTree = require("olo-tree");
@@ -10,7 +11,7 @@ const keyString = require("utils/key-string");
 const Split = require("olo-outliner/Split");
 const oloOutlinerTemplate = require("olo-outliner/olo-outliner.html!text");
 
-class OloOutliner extends OloComponent {
+class OloOutliner extends OloRoot {
 
     static get template () {
         return oloOutlinerTemplate;
@@ -39,6 +40,8 @@ class OloOutliner extends OloComponent {
         this.editor.tabIndex = 1;
         this.editor.addEventListener('keydown', (event) => this._handleEditorKeyDown(event));
         this.editor.addEventListener('focusin', (event) => {this._activeElement = this.editor});
+
+        this.tree.select();
 
 
         // LAYOUT
@@ -83,6 +86,10 @@ class OloOutliner extends OloComponent {
         if (attrName === "layout") this._updateLayout(oldVal, newVal);
     }
 
+    get tree () {
+        return this.$("olo-tree");
+    }
+
     get viewer () {
         return this.$("olo-viewer");
     }
@@ -90,14 +97,6 @@ class OloOutliner extends OloComponent {
     get editor () {
         return this.$("olo-editor");
     }
-
-    addDocument (doc) {
-        const treeElt = document.createElement("olo-tree");
-        treeElt.document = doc;
-        this.$("nav").appendChild(treeElt);
-    }
-
-    removeDocument (doc) {}
 
     _updateLayout (oldLayout, newLayout) {
         oldLayout = oldLayout || "viewer-only";
@@ -132,23 +131,15 @@ class OloOutliner extends OloComponent {
     }
 
     _updateOutlinerView (oloNode) {
-
-        const navElt = this.$("nav");
-        for (let i=0; i<navElt.children.length; i++) {
-            let oloTree = navElt.children[i];
-            if (oloTree.selectedNode && oloTree.selectedNode !== oloNode) {
-                oloTree.selectedNode.unselect();
-            }
-        }
-
         const contentElt = this.$("olo-root");
         const contentModel = oloNode.model;
-        contentElt.document = contentModel.root;
-        contentElt.setAttribute("model", contentModel.path);
+        const contentModelPath = contentModel.path;
+        this.viewer.setAttribute("model", contentModelPath);
+        this.editor.setAttribute("model", contentModelPath);
     }
 
     _handleTreeKeyDown (event) {
-        const selectedNode = this.$("olo-tree").selectedNode;
+        const selectedNode = this.tree.selectedNode;
         if (selectedNode === null) return;
 
         const keyStr = keyString(event);

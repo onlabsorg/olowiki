@@ -1,16 +1,11 @@
 
-const OloComponent = require("olo-component");
 const OloNode = require("./olo-tree/olo-node");
-const oloTreeTemplate = require("./olo-tree/olo-tree.html!text");
 
-class OloTree extends OloComponent {
-
-    static get template () {
-        return oloTreeTemplate;
-    }
+class OloTree extends OloNode {
 
     constructor () {
         super();
+        this.classList.add("root");
         this.addEventListener("olo-node-selected", (event) => {
             const nodeElt = event.detail.oloNode;
             if (this.selectedNode && this.selectedNode !== nodeElt) {
@@ -20,20 +15,14 @@ class OloTree extends OloComponent {
         });
     }
 
-    get document () {
-        return this.$("olo-root").document;
-    }
-
-    set document (doc) {
-        this.$("olo-root").document = doc;
-    }
-
-    get root () {
-        return this.$("olo-node");
-    }
-
     get selectedNode () {
         return this._selectedNode || null;
+    }
+
+    set collapsed (value) {}
+
+    findNodeByPath (path) {
+        return this.findItem((node) => node.model.path === path);
     }
 }
 

@@ -3,6 +3,7 @@ const store = require("store");
 const Document = store.Document;
 
 const OloComponent = require("olo-component");
+const OloRoot = require("olo-root");
 const Feature = require("utils/Feature");
 
 
