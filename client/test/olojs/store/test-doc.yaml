@@ -1,0 +1,18 @@
+committed:
+  head:
+    users:
+      Admin:
+        role: admin
+      Writer:
+        role: writer
+      Reader:
+        role: reader
+      Guest:
+        role: guest
+  body:
+    a: 10
+    b: 20
+    c: 30
+owner: Owner
+release: 0.1.0
+changes: []

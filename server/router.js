@@ -10,13 +10,13 @@ function Router (store) {
         next();
     });
 
-    router.use(bodyParser.text());
+    router.use(bodyParser.json());
 
     router.get('*', function (req, res, next) {
         store.read(req.path, req.authorization)
         .then((file) => {
             res.set(file.head);
-            res.status(200).send(file.body);
+            res.status(200).json(file.body);
         })
         .catch((error) => {
             res.status(400).send(error);

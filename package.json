@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/onlabsorg/olo#readme",
   "devDependencies": {
+    "chai": "^4.1.2",
     "jspm": "^0.16.53"
   },
   "jspm": {
@@ -27,18 +28,27 @@
       "ace": "github:ajaxorg/ace-builds@^1.2.9",
       "font-awesome": "npm:font-awesome@^4.7.0",
       "html-to-vdom": "npm:html-to-vdom@^0.7.0",
-      "js-yaml": "npm:js-yaml@^3.10.0",
       "lodash": "npm:lodash@^4.17.4",
       "marked": "npm:marked@^0.3.6",
+      "minimatch": "npm:minimatch@^3.0.4",
       "nunjucks": "npm:nunjucks@^3.0.1",
       "sanitize-html": "npm:sanitize-html@^1.14.1",
+      "semver": "npm:semver@^5.4.1",
       "url": "github:jspm/nodelibs-url@^0.1.0",
       "uuid": "npm:uuid@^3.1.0",
       "virtual-dom": "npm:virtual-dom@^2.1.1"
     },
-    "devDependencies": {}
+    "devDependencies": {
+      "chai": "npm:chai@^4.1.2",
+      "js-yaml": "npm:js-yaml@^3.10.0"
+    }
   },
   "dependencies": {
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    "fs.promised": "^3.0.0",
+    "js-yaml": "^3.10.0",
+    "jsonwebtoken": "^8.1.0",
+    "minimatch": "^3.0.4",
+    "semver": "^5.4.1"
   }
 }

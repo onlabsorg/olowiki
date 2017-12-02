@@ -1,5 +1,6 @@
 
 const fs = require('fs');
+const YAML = require('js-yaml');
 
 function readFileAsync (path, options) {
     return new Promise((resolve, reject) => {
@@ -44,7 +45,7 @@ class Store {
             head: {
                 'olo-Doc-Auth': docAuth,
             },
-            body: docContent,
+            body: YAML.load(docContent),
         };
     }
 
@@ -54,7 +55,7 @@ class Store {
             throw new Error(`Write permission denied on document path ${docPath}`);
         }
 
-        await writeFileAsync(this.path + docPath, docContent, {encoding:'utf8'});
+        await writeFileAsync(this.path + docPath, YAML.dump(docContent), {encoding:'utf8'});
     }
 }
 

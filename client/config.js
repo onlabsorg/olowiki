@@ -9,22 +9,26 @@ System.config({
 
   map: {
     "ace": "github:ajaxorg/ace-builds@1.2.9",
+    "chai": "npm:chai@4.1.2",
     "font-awesome": "npm:font-awesome@4.7.0",
     "html-to-vdom": "npm:html-to-vdom@0.7.0",
     "js-yaml": "npm:js-yaml@3.10.0",
     "lodash": "npm:lodash@4.17.4",
     "marked": "npm:marked@0.3.6",
-    "store": "/lib/store",
+    "minimatch": "npm:minimatch@3.0.4",
     "nunjucks": "npm:nunjucks@3.0.1",
     "olo-component": "/lib/olo-component",
-    "olo-root": "/lib/olo-root",
     "olo-editor": "/lib/olo-editor",
     "olo-outliner": "/lib/olo-outliner",
+    "olo-root": "/lib/olo-root",
     "olo-tree": "/lib/olo-tree",
     "olo-vdom": "/lib/olo-vdom",
     "olo-viewer": "/lib/olo-viewer",
+    "olojs": "/lib/olojs",
     "path": "/lib/utils/jspm-path-plugin",
     "sanitize-html": "npm:sanitize-html@1.14.1",
+    "semver": "npm:semver@5.4.1",
+    "store": "/lib/store",
     "text": "/lib/utils/jspm-text-plugin",
     "url": "github:jspm/nodelibs-url@0.1.0",
     "utils": "/lib/utils",
@@ -285,6 +289,16 @@ System.config({
       "base64-js": "npm:base64-js@1.2.1",
       "ieee754": "npm:ieee754@1.1.8"
     },
+    "npm:chai@4.1.2": {
+      "assertion-error": "npm:assertion-error@1.0.2",
+      "check-error": "npm:check-error@1.0.2",
+      "deep-eql": "npm:deep-eql@3.0.1",
+      "get-func-name": "npm:get-func-name@2.0.0",
+      "pathval": "npm:pathval@1.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.2",
+      "systemjs-json": "github:systemjs/plugin-json@0.1.2",
+      "type-detect": "npm:type-detect@4.0.5"
+    },
     "npm:chokidar@1.7.0": {
       "anymatch": "npm:anymatch@1.3.2",
       "async-each": "npm:async-each@1.0.1",
@@ -374,6 +388,9 @@ System.config({
     },
     "npm:debug@2.6.9": {
       "ms": "npm:ms@2.0.0"
+    },
+    "npm:deep-eql@3.0.1": {
+      "type-detect": "npm:type-detect@4.0.5"
     },
     "npm:deep-extend@0.4.2": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.1"

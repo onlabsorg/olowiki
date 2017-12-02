@@ -1,7 +1,6 @@
 
 const isInteger = require("lodash/isInteger");
 const nunjucks = require("nunjucks");
-const YAML = require("js-yaml");
 
 var nodeCount = 1;
 const uniqueName = () => `node${nodeCount++}`;
@@ -340,7 +339,7 @@ class Document extends Node {
 
             case 200:
                 var docAuth = response.headers.has('olo-Doc-Auth') ? response.headers.get('olo-Doc-Auth') : "read";
-                var docContent = await response.text();
+                var docContent = await response.json();
                 break;
 
             default:
@@ -348,9 +347,8 @@ class Document extends Node {
                 throw new Error(errorMessage);
         }
 
-        const docHash = YAML.load(docContent);
         const readonly = (docAuth === "read");
-        const doc = new Document(docHash, readonly);
+        const doc = new Document(docContent, readonly);
 
         return doc;
     }
