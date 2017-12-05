@@ -22,22 +22,10 @@ class Document extends CRDT.Dict {
 
     constructor (docHash, userName='root') {
         docHash = Value.type(docHash) === 'Object' ? docHash : {};
-
-        var committed;
-        if (Value.type(docHash.committed) === 'Object') {
-            committed = Value(docHash.committed);
-            committed.body = Value.type(committed.body) === 'Object' ? committed.body : {};
-            committed.head = Value.type(committed.head) === 'Object' ? committed.head : {};
-        } else {
-            committed = {
-                head: {},
-                body: {}
-            }
-        }
-        super(committed, docHash.release, docHash.changes);
+        super(docHash.committed, docHash.release, docHash.changes);
         this._owner = docHash.owner;
         this._userName = userName;
-        this._changeCallbacks = new Set();
+        this.changeCallbacks = new Set();
     }
 
     get ownerName () {
@@ -53,7 +41,7 @@ class Document extends CRDT.Dict {
             return 'owner';
         } else {
             let userName = this.userName;
-            return this._sudo(() => this.get(`/head/users/${userName}/role`));
+            return this._sudo(() => this.get(`/users/${userName}/role`));
         }
     }
 
@@ -62,36 +50,17 @@ class Document extends CRDT.Dict {
     }
 
     beforeChange (change) {
-        this.assertEditable (change.path);
+        this.assertEditable(change.path);
     }
 
     afterChange (diff) {
-        for (let callback of this._changeCallbacks) {
+        for (let callback of this.changeCallbacks) {
             if (typeof callback === 'function') callback(diff);
         }
     }
 
     beforeCommit (releaseType) {
         this.assertWritable();
-    }
-
-    subscribe (path, listener) {
-        path = Path.parse(path);
-
-        const subscription = {
-            path: path,
-            listener: listener,
-        }
-
-        const callback = (changes) => {
-            changes = changes.map(change => change.getSubChange(subscription.path)).filter(change => change !== null);
-            if (changes.length > 0 && typeof subscription.listener === "function") subscription.listener.call(this, changes);
-        };
-
-        this._changeCallbacks.add(callback);
-        subscription.cancel = () => this._changeCallbacks.delete(callback);
-
-        return subscription;
     }
 
     toHash () {
@@ -117,8 +86,8 @@ class Document extends CRDT.Dict {
         path = Path.parse(path);
         const role = this.userRole;
         if (ROLES[role] >= ROLES.owner) return true;
-        if (path[0] === 'head' && ROLES[role] >= ROLES.admin) return true;
-        if (path[0] === 'body' && ROLES[role] >= ROLES.writer) return true;
+        if (path[0] !== 'data' && ROLES[role] >= ROLES.admin) return true;
+        if (path[0] === 'data' && ROLES[role] >= ROLES.writer) return true;
         return false;
     }
 

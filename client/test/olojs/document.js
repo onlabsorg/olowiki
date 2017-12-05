@@ -31,14 +31,12 @@ suite("olojs.Document", () => {
     test("Document.prototype.userRole - getter", () => {
         const docHash = {
             committed: {
-                head: {
-                    users: {
-                        Owner: {role:"owner"},
-                        Admin: {role:"admin"},
-                        Writer: {role:"writer"},
-                        Reader: {role:"reader"},
-                        Guest: {role:"none"}
-                    }
+                users: {
+                    Owner: {role:"owner"},
+                    Admin: {role:"admin"},
+                    Writer: {role:"writer"},
+                    Reader: {role:"reader"},
+                    Guest: {role:"none"}
                 }
             }
         }
@@ -62,16 +60,14 @@ suite("olojs.Document", () => {
     test("Document.prototype.get(path)", () => {
         const docHash = {
             committed: {
-                head: {
-                    users: {
-                        Owner: {role:"owner"},
-                        Admin: {role:"admin"},
-                        Writer: {role:"writer"},
-                        Reader: {role:"reader"},
-                        Guest: {role:"none"}
-                    }
+                users: {
+                    Owner: {role:"owner"},
+                    Admin: {role:"admin"},
+                    Writer: {role:"writer"},
+                    Reader: {role:"reader"},
+                    Guest: {role:"none"}
                 },
-                body: {
+                data: {
                     n: null,
                     o: {x:10},
                     s: "abc"
@@ -80,44 +76,42 @@ suite("olojs.Document", () => {
         }
 
         var doc = new Document(docHash);
-        expect(doc.get('/body/n')).to.equal(null);
-        expect(doc.get('/body/o')).to.deep.equal({x:10});
-        expect(doc.get('/body/s')).to.equal("abc");
+        expect(doc.get('/data/n')).to.equal(null);
+        expect(doc.get('/data/o')).to.deep.equal({x:10});
+        expect(doc.get('/data/s')).to.equal("abc");
 
         doc = new Document(docHash, 'Guest');
-        expect(() => doc.get("/head/users")).to.throw(errors.ReadPermissionError);
-        expect(() => doc.get("/body/n")).to.throw(errors.ReadPermissionError);
+        expect(() => doc.get("/users")).to.throw(errors.ReadPermissionError);
+        expect(() => doc.get("/data/n")).to.throw(errors.ReadPermissionError);
 
         doc = new Document(docHash, 'Reader');
-        expect(() => doc.get("/head/users")).to.not.throw(errors.ReadPermissionError);
-        expect(() => doc.get("/body/n")).to.not.throw(errors.ReadPermissionError);
+        expect(() => doc.get("/users")).to.not.throw(errors.ReadPermissionError);
+        expect(() => doc.get("/data/n")).to.not.throw(errors.ReadPermissionError);
 
         doc = new Document(docHash, 'Writer');
-        expect(() => doc.get("/head/users")).to.not.throw(errors.ReadPermissionError);
-        expect(() => doc.get("/body/n")).to.not.throw(errors.ReadPermissionError);
+        expect(() => doc.get("/users")).to.not.throw(errors.ReadPermissionError);
+        expect(() => doc.get("/data/n")).to.not.throw(errors.ReadPermissionError);
 
         doc = new Document(docHash, 'Admin');
-        expect(() => doc.get("/head/users")).to.not.throw(errors.ReadPermissionError);
-        expect(() => doc.get("/body/n")).to.not.throw(errors.ReadPermissionError);
+        expect(() => doc.get("/users")).to.not.throw(errors.ReadPermissionError);
+        expect(() => doc.get("/data/n")).to.not.throw(errors.ReadPermissionError);
 
         doc = new Document(docHash, 'Owner');
-        expect(() => doc.get("/head/users")).to.not.throw(errors.ReadPermissionError);
-        expect(() => doc.get("/body/n")).to.not.throw(errors.ReadPermissionError);
+        expect(() => doc.get("/users")).to.not.throw(errors.ReadPermissionError);
+        expect(() => doc.get("/data/n")).to.not.throw(errors.ReadPermissionError);
     });
 
     test("Document.prototype.type(path)", () => {
         const docHash = {
             committed: {
-                head: {
-                    users: {
-                        Owner: {role:"owner"},
-                        Admin: {role:"admin"},
-                        Writer: {role:"writer"},
-                        Reader: {role:"reader"},
-                        Guest: {role:"none"}
-                    }
+                users: {
+                    Owner: {role:"owner"},
+                    Admin: {role:"admin"},
+                    Writer: {role:"writer"},
+                    Reader: {role:"reader"},
+                    Guest: {role:"none"}
                 },
-                body: {
+                data: {
                     n: null,
                     o: {x:10},
                     s: "abc"
@@ -126,149 +120,164 @@ suite("olojs.Document", () => {
         }
 
         var doc = new Document(docHash);
-        expect(doc.type('/body/n')).to.equal('Null');
-        expect(doc.type('/body/o')).to.equal('Object');
-        expect(doc.type('/body/s')).to.equal('String');
+        expect(doc.type('/data/n')).to.equal('Null');
+        expect(doc.type('/data/o')).to.equal('Object');
+        expect(doc.type('/data/s')).to.equal('String');
 
         doc = new Document(docHash, 'none');
-        expect(() => doc.type("/head/users")).to.throw(errors.ReadPermissionError);
-        expect(() => doc.type("/body/n")).to.throw(errors.ReadPermissionError);
+        expect(() => doc.type("/users")).to.throw(errors.ReadPermissionError);
+        expect(() => doc.type("/data/n")).to.throw(errors.ReadPermissionError);
 
         doc = new Document(docHash, 'Reader');
-        expect(() => doc.type("/head/users")).to.not.throw(errors.ReadPermissionError);
-        expect(() => doc.type("/body/n")).to.not.throw(errors.ReadPermissionError);
+        expect(() => doc.type("/users")).to.not.throw(errors.ReadPermissionError);
+        expect(() => doc.type("/data/n")).to.not.throw(errors.ReadPermissionError);
 
         doc = new Document(docHash, 'Writer');
-        expect(() => doc.type("/head/users")).to.not.throw(errors.ReadPermissionError);
-        expect(() => doc.type("/body/n")).to.not.throw(errors.ReadPermissionError);
+        expect(() => doc.type("/users")).to.not.throw(errors.ReadPermissionError);
+        expect(() => doc.type("/data/n")).to.not.throw(errors.ReadPermissionError);
 
         doc = new Document(docHash, 'Admin');
-        expect(() => doc.type("/head/users")).to.not.throw(errors.ReadPermissionError);
-        expect(() => doc.type("/body/n")).to.not.throw(errors.ReadPermissionError);
+        expect(() => doc.type("/users")).to.not.throw(errors.ReadPermissionError);
+        expect(() => doc.type("/data/n")).to.not.throw(errors.ReadPermissionError);
 
         doc = new Document(docHash, 'Owner');
-        expect(() => doc.type("/head/users")).to.not.throw(errors.ReadPermissionError);
-        expect(() => doc.type("/body/n")).to.not.throw(errors.ReadPermissionError);
+        expect(() => doc.type("/users")).to.not.throw(errors.ReadPermissionError);
+        expect(() => doc.type("/data/n")).to.not.throw(errors.ReadPermissionError);
     });
 
     test("Document.prototype.applyChanges(...changes)", () => {
-        var doc = new Document();
-        doc.applyChanges(new Change("/body/x", 10), new Change("/body/y", 20));
-        expect(doc.get("/body")).to.deep.equal({x:10, y:20});
+        var doc = new Document({
+            committed: {
+                data:{}
+            }
+        });
+        doc.applyChanges(new Change("/data/x", 10), new Change("/data/y", 20));
+        expect(doc.get("/data")).to.deep.equal({x:10, y:20});
 
-        doc.applyChanges(new Change("/body/y", undefined), new Change("/body/z", 30));
-        expect(doc.get("/body")).to.deep.equal({x:10, z:30});
+        doc.applyChanges(new Change("/data/y", undefined), new Change("/data/z", 30));
+        expect(doc.get("/data")).to.deep.equal({x:10, z:30});
 
-        doc.applyChanges(new Change("/body/o/x", 10, 2000));
-        expect(doc.get("/body")).to.deep.equal({x:10, z:30});
+        doc.applyChanges(new Change("/data/o/x", 10, 2000));
+        expect(doc.get("/data")).to.deep.equal({x:10, z:30});
 
-        doc.applyChanges(new Change("/body/o", {}, 1000));
-        expect(doc.get("/body")).to.deep.equal({x:10, z:30, o:{x:10}});
+        doc.applyChanges(new Change("/data/o", {}, 1000));
+        expect(doc.get("/data")).to.deep.equal({x:10, z:30, o:{x:10}});
 
         const docHash = {
             committed: {
-                head: {
-                    users: {
-                        Owner: {role:"owner"},
-                        Admin: {role:"admin"},
-                        Writer: {role:"writer"},
-                        Reader: {role:"reader"},
-                        Guest: {role:"none"}
-                    }
-                }
+                users: {
+                    Owner: {role:"owner"},
+                    Admin: {role:"admin"},
+                    Writer: {role:"writer"},
+                    Reader: {role:"reader"},
+                    Guest: {role:"none"}
+                },
+                data: {}
             }
         }
 
         doc = new Document(docHash, 'Reader');
-        expect(() => doc.applyChanges(new Change("/head/x", 10))).to.throw(errors.UpdatePermissionError);
-        expect(() => doc.applyChanges(new Change("/body/x", 10))).to.throw(errors.UpdatePermissionError);
-        expect(doc.get('/body/x')).to.be.undefined;
-        expect(doc.get('/head/x')).to.be.undefined;
+        expect(() => doc.applyChanges(new Change("/x", 10))).to.throw(errors.UpdatePermissionError);
+        expect(() => doc.applyChanges(new Change("/data/x", 10))).to.throw(errors.UpdatePermissionError);
+        expect(doc.get('/data/x')).to.be.undefined;
+        expect(doc.get('/x')).to.be.undefined;
 
         doc = new Document(docHash, 'Writer');
-        expect(() => doc.applyChanges(new Change("/body/x", 10), new Change("/body/y", 20))).to.not.throw(errors.UpdatePermissionError);
-        expect(() => doc.applyChanges(new Change("/body/y", 20), new Change("/head/x", 10))).to.throw(errors.UpdatePermissionError);
-        expect(doc.get('/body')).to.deep.equal({x:10, y:20});
-        expect(doc.get('/head/x')).to.be.undefined;
+        expect(() => doc.applyChanges(new Change("/data/x", 10), new Change("/data/y", 20))).to.not.throw(errors.UpdatePermissionError);
+        expect(() => doc.applyChanges(new Change("/data/y", 20), new Change("/x", 10))).to.throw(errors.UpdatePermissionError);
+        expect(doc.get('/data')).to.deep.equal({x:10, y:20});
+        expect(doc.get('/x')).to.be.undefined;
 
         doc = new Document(docHash, 'Admin');
-        expect(() => doc.applyChanges(new Change("/body/x", 10), new Change("/body/y", 20))).to.not.throw(errors.UpdatePermissionError);
-        expect(() => doc.applyChanges(new Change("/body/z", 30), new Change("/head/x", 10))).to.not.throw(errors.UpdatePermissionError);
-        expect(doc.get('/body')).to.deep.equal({x:10, y:20, z:30});
-        expect(doc.get('/head/x')).to.equal(10);
+        expect(() => doc.applyChanges(new Change("/data/x", 10), new Change("/data/y", 20))).to.not.throw(errors.UpdatePermissionError);
+        expect(() => doc.applyChanges(new Change("/data/z", 30), new Change("/x", 10))).to.not.throw(errors.UpdatePermissionError);
+        expect(doc.get('/data')).to.deep.equal({x:10, y:20, z:30});
+        expect(doc.get('/x')).to.equal(10);
 
         doc = new Document(docHash, 'Owner');
-        expect(() => doc.applyChanges(new Change("/body/x", 10), new Change("/body/y", 20))).to.not.throw(errors.UpdatePermissionError);
-        expect(() => doc.applyChanges(new Change("/body/z", 30), new Change("/head/x", 10))).to.not.throw(errors.UpdatePermissionError);
-        expect(doc.get('/body')).to.deep.equal({x:10, y:20, z:30});
-        expect(doc.get('/head/x')).to.equal(10);
+        expect(() => doc.applyChanges(new Change("/data/x", 10), new Change("/data/y", 20))).to.not.throw(errors.UpdatePermissionError);
+        expect(() => doc.applyChanges(new Change("/data/z", 30), new Change("/x", 10))).to.not.throw(errors.UpdatePermissionError);
+        expect(doc.get('/data')).to.deep.equal({x:10, y:20, z:30});
+        expect(doc.get('/x')).to.equal(10);
     });
 
     test("Document.prototype.set(path, value)", () => {
-        const doc = new Document();
-        doc.set('/body/x', 10);
-        expect(doc.get('/body')).to.deep.equal({x:10});
+        const doc = new Document({
+            committed: {
+                data: {}
+            }
+        });
+        doc.set('/data/x', 10);
+        expect(doc.get('/data')).to.deep.equal({x:10});
     });
 
     test("Document.prototype.delete(path)", () => {
-        const doc = new Document();
-        doc.set('/body/x', 10);
-        doc.set('/body/y', 20);
-        doc.delete('/body/x');
-        expect(doc.get('/body')).to.deep.equal({y:20});
+        const doc = new Document({
+            committed: {
+                data: {}
+            }
+        });
+        doc.set('/data/x', 10);
+        doc.set('/data/y', 20);
+        doc.delete('/data/x');
+        expect(doc.get('/data')).to.deep.equal({y:20});
     });
 
     test("Document.prototype.version - getter", () => {
         const doc = new Document({release:"1.2.3"});
         expect(doc.version).to.equal("1.2.3-pre.0");
 
-        doc.set('/body/x', 10);
-        doc.set('/body/y', 20);
+        doc.set('/data/x', 10);
+        doc.set('/data/y', 20);
         expect(doc.version).to.equal("1.2.3-pre.2");
 
-        doc.delete('/body/y');
+        doc.delete('/data/y');
         expect(doc.version).to.equal("1.2.3-pre.3");
     });
 
     test("Document.prototype.commit(releaseType)", () => {
-        var doc = new Document({release:"0.0.0"});
-        doc.set("/body/x", 10);
-        doc.set("/body/y", 20);
-        expect(doc.get('/body')).to.deep.equal({x:10, y:20});
+        var doc = new Document({
+            committed: {
+                data: {}
+            },
+            release:"0.0.0"
+        });
+        doc.set("/data/x", 10);
+        doc.set("/data/y", 20);
+        expect(doc.get('/data')).to.deep.equal({x:10, y:20});
         expect(doc.version).to.equal("0.0.0-pre.2");
 
         doc.commit("patch");
-        expect(doc.get('/body')).to.deep.equal({x:10, y:20});
+        expect(doc.get('/data')).to.deep.equal({x:10, y:20});
         expect(doc.version).to.equal("0.0.1-pre.0");
 
-        doc.set("/body/z", 30);
+        doc.set("/data/z", 30);
         expect(doc.version).to.equal("0.0.1-pre.1");
         doc.commit("minor");
-        expect(doc.get('/body')).to.deep.equal({x:10, y:20, z:30});
+        expect(doc.get('/data')).to.deep.equal({x:10, y:20, z:30});
         expect(doc.version).to.equal("0.1.0-pre.0");
 
-        doc.set("/body/w", 0);
+        doc.set("/data/w", 0);
         expect(doc.version).to.equal("0.1.0-pre.1");
         doc.commit("major");
-        expect(doc.get('/body')).to.deep.equal({x:10, y:20, z:30, w:0});
+        expect(doc.get('/data')).to.deep.equal({x:10, y:20, z:30, w:0});
         expect(doc.version).to.equal("1.0.0-pre.0");
 
-        doc.set("/body/v", 1);
+        doc.set("/data/v", 1);
         expect(doc.version).to.equal("1.0.0-pre.1");
         doc.commit("xxx");
         expect(doc.version).to.equal("1.0.0-pre.1");
 
         const docHash = {
             committed: {
-                head: {
-                    users: {
-                        Owner: {role:"owner"},
-                        Admin: {role:"admin"},
-                        Writer: {role:"writer"},
-                        Reader: {role:"reader"},
-                        Guest: {role:"none"}
-                    }
-                }
+                users: {
+                    Owner: {role:"owner"},
+                    Admin: {role:"admin"},
+                    Writer: {role:"writer"},
+                    Reader: {role:"reader"},
+                    Guest: {role:"none"}
+                },
+                data: {}
             }
         }
 
@@ -291,9 +300,9 @@ suite("olojs.Document", () => {
     test("Document.prototype.delta(version)", () => {
         var doc = new Document();
 
-        const change1 = new Change('/body/x', 10);
-        const change2 = new Change('/body/y', 20);
-        const change3 = new Change('/body/z', 30);
+        const change1 = new Change('/data/x', 10);
+        const change2 = new Change('/data/y', 20);
+        const change3 = new Change('/data/z', 30);
 
         doc.applyChanges(change1);
         doc.commit('minor');
@@ -340,63 +349,57 @@ suite("olojs.Document", () => {
         expect(doc.toHash()).to.not.equal(docHash);
     });
 
-    test("Document.prototype.subscribe(path, listener)", () => {
+    test("Document change events", () => {
         const doc = new Document({
             committed: {
-                head: {
-                    users: {
-                        user1: {
-                            role: "admin",
-                            email: "user1@onlabs.org"
-                        },
-                        user2: {
-                            role: "reader",
-                            email: "user2@onlabs.org"
-                        },
-                        user3: {
-                            role: "reader",
-                            email: "user3@onlabs.org"
-                        }
+                users: {
+                    user1: {
+                        role: "admin",
+                        email: "user1@onlabs.org"
+                    },
+                    user2: {
+                        role: "reader",
+                        email: "user2@onlabs.org"
+                    },
+                    user3: {
+                        role: "reader",
+                        email: "user3@onlabs.org"
                     }
                 },
-                body: {
-                    n: null,
-                    o: {x:10},
-                    s: "abc"
-                }
+                data: {}
             },
         });
 
         var changes = null;
-        var subscription = doc.subscribe('/body/o', passedChanges => {
+        function changeCallback (passedChanges) {
             changes = passedChanges.map(change => {return {path:String(change.path), value:change.value}})
-        });
+        }
+        doc.changeCallbacks.add(changeCallback);
 
-        const ch1 = new Change('/body/o/x', 11, 1000);
-        const ch2 = new Change('/body/s', "def", 2000);
-        const ch3 = new Change('/body/o/y', 20, 3000);
-        const ch4 = new Change('/body/o/o1', {}, 4000);
-        const ch5 = new Change('/body/o/o1/x', 10, 5000);
+        const ch1 = new Change('/data/x', 11, 1000);
+        const ch2 = new Change('/data/y', 20, 3000);
+        const ch3 = new Change('/data/o', {}, 4000);
+        const ch4 = new Change('/data/o/x', 10, 5000);
 
-        doc.applyChanges(ch1, ch2, ch3);
+        doc.applyChanges(ch1, ch2);
 
         expect(changes).to.deep.equal([
-            {path:'/x', value:11},
-            {path:'/y', value:20},
+            {path:'/data/x', value:11},
+            {path:'/data/y', value:20},
         ]);
 
         changes = null;
-        doc.applyChanges(ch5);
+        doc.applyChanges(ch4);
         expect(changes).to.be.null;
 
-        doc.applyChanges(ch4);
+        doc.applyChanges(ch3);
         expect(changes).to.deep.equal([
-            {path:'/o1', value:{x:10}},
+            {path:'/data/o', value:{x:10}},
         ]);
 
-        subscription.cancel();
+        doc.changeCallbacks.delete(changeCallback);
         changes = null;
-        doc.applyChanges(new Change('/body/o/z', 30, 10000));
+        doc.applyChanges(new Change('/data/o/z', 30, 10000));
         expect(changes).to.be.null;
     });
 });

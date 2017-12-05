@@ -89,15 +89,13 @@ const testDocPath = `/test-doc.yaml`;
 const testDocHash = {
 
     committed: {
-        head: {
-            users: {
-                Admin: {role:'admin'},
-                Writer: {role:'writer'},
-                Reader: {role:'reader'},
-                Guest: {role:'guest'},
-            }
+        users: {
+            Admin: {role:'admin'},
+            Writer: {role:'writer'},
+            Reader: {role:'reader'},
+            Guest: {role:'guest'},
         },
-        body: {a:10, b:20, c:30}
+        data: {a:10, b:20, c:30}
     },
 
     owner: 'Owner',
@@ -124,10 +122,10 @@ suite("olojs.Client", () => {
             expect(doc.toHash()).to.deep.equal(testDocHash);
 
             // doc.store() - async method
-            doc.set('/body/pi', 3.14);
+            doc.set('/data/pi', 3.14);
             await doc.store();
             const storedDoc = await client.loadDocument(testDocPath);
-            expect(storedDoc.get('/body/pi')).to.equal(3.14);
+            expect(storedDoc.get('/data/pi')).to.equal(3.14);
             expect(storedDoc.toHash()).to.deep.equal(doc.toHash());
             expect(storedDoc.version).to.equal(doc.version);
 
@@ -135,36 +133,36 @@ suite("olojs.Client", () => {
             await writeFile(testDocPath, YAML.dump(testDocHash));
             var doc1 = await client.loadDocument(testDocPath);
             var doc2 = await client.loadDocument(testDocPath);
-            doc2.set('/body/x', 100);
+            doc2.set('/data/x', 100);
             await doc2.store();
-            doc1.set('/body/y', 200);
+            doc1.set('/data/y', 200);
             await doc1.sync();
-            expect(doc1.get('/body/x')).to.equal(100);
-            expect(doc1.get('/body/y')).to.equal(200);
+            expect(doc1.get('/data/x')).to.equal(100);
+            expect(doc1.get('/data/y')).to.equal(200);
             expect(doc1.version).to.equal('0.1.0-pre.2');
             doc2 = await client.loadDocument(testDocPath);
-            expect(doc2.get('/body/x')).to.equal(100);
-            expect(doc2.get('/body/y')).to.equal(200);
+            expect(doc2.get('/data/x')).to.equal(100);
+            expect(doc2.get('/data/y')).to.equal(200);
             expect(doc2.version).to.equal('0.1.0-pre.2');
 
             await writeFile(testDocPath, YAML.dump(testDocHash));
             doc1 = await client.loadDocument(testDocPath);
             doc2 = await client.loadDocument(testDocPath);
-            doc2.set('/body/x', 100);
+            doc2.set('/data/x', 100);
             await doc2.store();
             await doc1.sync();
-            expect(doc1.get('/body/x')).to.equal(100);
+            expect(doc1.get('/data/x')).to.equal(100);
             expect(doc1.version).to.equal('0.1.0-pre.1');
             doc2 = await client.loadDocument(testDocPath);
-            expect(doc2.get('/body/x')).to.equal(100);
+            expect(doc2.get('/data/x')).to.equal(100);
             expect(doc2.version).to.equal('0.1.0-pre.1');
 
             await writeFile(testDocPath, YAML.dump(testDocHash));
             doc1 = await client.loadDocument(testDocPath);
-            doc1.set('/body/x', 100);
+            doc1.set('/data/x', 100);
             await doc1.sync();
             doc2 = await client.loadDocument(testDocPath);
-            expect(doc2.get('/body/x')).to.equal(100);
+            expect(doc2.get('/data/x')).to.equal(100);
             expect(doc2.version).to.equal('0.1.0-pre.1');
         }
         test().then(done).catch(done);
@@ -176,10 +174,10 @@ suite("olojs.Client", () => {
             const client = new Client(store, 'root');
             const doc = await client.loadDocument(testDocPath);
 
-            doc.set('/body/pi', 3.14);
+            doc.set('/data/pi', 3.14);
             await client.storeDocument(testDocPath, doc);
             const storedDoc = await client.loadDocument(testDocPath);
-            expect(storedDoc.get('/body/pi')).to.equal(3.14);
+            expect(storedDoc.get('/data/pi')).to.equal(3.14);
             expect(storedDoc.toHash()).to.deep.equal(doc.toHash());
 
             const newDocPath = '/new-test-doc.yaml';

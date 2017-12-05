@@ -66,5 +66,9 @@ suite("olojs.Path", () => {
         path = Path.parse("a/b///c", "", 'd', null, undefined);
         expect(path).to.be.instanceof(Path);
         expect(path).to.deep.equal(['a','b','c','d']);
+
+        path = Path.parse("/a/b/c/./d/../e");
+        expect(path).to.be.instanceof(Path);
+        expect(path).to.deep.equal(['a','b','c','e']);
     });
 });

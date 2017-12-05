@@ -1,9 +1,8 @@
 
-const store = require("store");
-const Document = store.Document;
+const model = require("model");
+const Document = require("olojs/document");
 
 const OloComponent = require("olo-component");
-const OloRoot = require("olo-root");
 const Feature = require("utils/Feature");
 
 
@@ -78,70 +77,60 @@ suite("<olo-component>", () => {
     suite("model binding", () => {
 
         test("binding to absolute path", () => {
-            const refDoc = new Document({
-                name: "root", children: [
-                    {name: "child1", children: [
-                        {name: "grandchild1"}
-                    ]},
-                    {name: "child2", children: [
-                        {name: "grandchild2"}
-                    ]}
-                ]
+            const doc = new Document();
+            doc.set('data', {
+                child1: {grandchild1: 11},
+                child2: {grandchild2: 22}
             });
+            model.setDocument(doc);
 
-            testFrame.innerHTML = '<olo-root><olo-component model="/child1/grandchild1"></olo-componnt></olo-root>';
-
-            const root = testFrame.querySelector("olo-root");
-            root.document = refDoc;
+            testFrame.innerHTML = '<olo-component model="/child1/grandchild1"></olo-componnt>';
 
             const component = testFrame.querySelector("olo-component");
-            expect(component.model).to.equal(refDoc.getChild(0).getChild(0));
+            expect(component.model).to.equal(11);
 
             component.setAttribute("model", "/child2/grandchild2");
-            expect(component.model).to.equal(refDoc.getChild(1).getChild(0));
+            expect(component.model).to.equal(22);
 
             component.setAttribute("model", "/child2/grandchild3");
-            expect(component.model).to.be.null;
+            expect(component.model).to.be.undefined;
         });
 
         test("binding to relative path", () => {
-            const refDoc = new Document({
-                name: "root", children: [
-                    {name: "c0", children: [
-                        {name: "gc0", children: [
-                            {name: "ggc0"},
-                            {name: "ggc1"},
-                        ]},
-                        {name: "gc1", children: [
-                            {name: "ggc0"},
-                            {name: "ggc1"},
-                        ]}
-                    ]},
-                    {name: "c1", children: [
-                        {name: "gc0", children: [
-                            {name: "ggc0"},
-                            {name: "ggc1"},
-                        ]},
-                        {name: "gc1", children: [
-                            {name: "ggc0"},
-                            {name: "ggc1"},
-                        ]}
-                    ]}
-                ]
-            });
+            const dataHash = {
+                c0: {
+                    gc0: {
+                        ggc0: "c000",
+                        ggc1: "c001"
+                    },
+                    gc1: {
+                        ggc0: "c010",
+                        ggc1: "c011"
+                    },
+                },
+                c1: {
+                    gc0: {
+                        ggc0: "c100",
+                        ggc1: "c101"
+                    },
+                    gc1: {
+                        ggc0: "c110",
+                        ggc1: "c111"
+                    },
+                }
+            };
+            const doc = new Document();
+            doc.set('data', dataHash);
+            model.setDocument(doc);
 
             testFrame.innerHTML = `
-                <olo-root>
-                    <olo-component id="cmp1">
-                        <olo-component id="cmp2">
-                            <olo-component id="cmp3">
-                            </olo-component>
+                <olo-component id="cmp1">
+                    <olo-component id="cmp2">
+                        <olo-component id="cmp3">
                         </olo-component>
                     </olo-component>
-                </olo-root>
+                </olo-component>
             `;
-
-            testFrame.querySelector("olo-root").document = refDoc;
 
             const cmp1 = testFrame.querySelector("#cmp1");
             const cmp2 = testFrame.querySelector("#cmp2");
@@ -150,46 +139,43 @@ suite("<olo-component>", () => {
             cmp1.setAttribute("model", '/c0');
             cmp2.setAttribute("model", './gc0/ggc0');
             cmp3.setAttribute("model", '../ggc1');
-            expect(cmp1.model.path).to.equal('/c0');
-            expect(cmp2.model.path).to.equal('/c0/gc0/ggc0');
-            expect(cmp3.model.path).to.equal('/c0/gc0/ggc1');
+            expect(cmp1.model).to.deep.equal(dataHash.c0);
+            expect(cmp2.model).to.equal('c000');
+            expect(cmp3.model).to.equal('c001');
 
             cmp1.setAttribute("model", "/c1");
-            expect(cmp1.model.path).to.equal('/c1');
-            expect(cmp2.model.path).to.equal('/c1/gc0/ggc0');
-            expect(cmp3.model.path).to.equal('/c1/gc0/ggc1');
+            expect(cmp1.model).to.deep.equal(dataHash.c1);
+            expect(cmp2.model).to.equal('c100');
+            expect(cmp3.model).to.equal('c101');
         });
     });
 
     suite("model changes", () => {
-        var refDoc, cmp1, cmp2, cmp1_callsCount, cmp2_callsCount;
+        var doc, docDataHash, cmp1, cmp2, cmp1_callsCount, cmp2_callsCount;
 
         setup(() => {
-            refDoc = new Document({
-                name: "root", children: [
-                    {name: "c0", children: [
-                        {name: "gc0"},
-                        {name: "gc1"},
-                        {name: "gc2"}
-                    ]},
-                    {name: "c1", children: [
-                        {name: "gc0"},
-                        {name: "gc1"},
-                        {name: "gc2"}
-                    ]}
-                ]
-            });
+            docDataHash = {
+                c0: {
+                    gc0: "c00",
+                    gc1: "c01",
+                    gc2: "c02"
+                },
+                c1: {
+                    gc0: "c10",
+                    gc1: "c11",
+                    gc2: "c12"
+                }
+            }
+            doc = new Document();
+            doc.set('data', docDataHash);
+            model.setDocument(doc);
 
             testFrame.innerHTML = `
-                <olo-root>
-                    <olo-component id="cmp1" model="/c0">
-                        <olo-component id="cmp2" model="./gc0">
-                        </olo-component>
+                <olo-component id="cmp1" model="/c0">
+                    <olo-component id="cmp2" model="./gc0">
                     </olo-component>
-                </olo-root>
+                </olo-component>
             `;
-
-            testFrame.querySelector("olo-root").document = refDoc;
 
             cmp1 = testFrame.querySelector("#cmp1");
             cmp1.updateView = () => {cmp1_callsCount += 1};
@@ -214,23 +200,50 @@ suite("<olo-component>", () => {
             cmp1.setAttribute("model", "/c0");
             cmp2.setAttribute("model", "./gc0");
 
-            var c0 = refDoc.root.getChild(0);
-            var gc0 = c0.getChild(0);
-
             cmp1_callsCount = cmp2_callsCount = 0;
-            c0.value = c0.value + "-modif";
+            doc.set('/data/c0/x', 10)
             expect(cmp1_callsCount).to.equal(1);
             expect(cmp2_callsCount).to.equal(0);
 
             cmp1_callsCount = cmp2_callsCount = 0;
-            gc0.value = gc0.value + "-modif";
+            doc.set('/data/c0/gc0', doc.get('/data/c0/gc0') + "-modif");
             expect(cmp1_callsCount).to.equal(1);
             expect(cmp2_callsCount).to.equal(1);
 
             //detaches change listener when unbinding a model
             cmp2.setAttribute("model", "./gc1");
             cmp1_callsCount = cmp2_callsCount = 0;
-            gc0.value = gc0.value + "-modif";
+            doc.set('/data/c0/gc0', doc.get('/data/c0/gc0') + "-modif");
+            expect(cmp1_callsCount).to.equal(1);
+            expect(cmp2_callsCount).to.equal(0);
+        });
+
+        test("should call .updateView on document change", () => {
+            cmp1.setAttribute("model", "/c0");
+            cmp2.setAttribute("model", "./gc0");
+
+            cmp1_callsCount = cmp2_callsCount = 0;
+            const newDoc = new Document();
+            model.setDocument(newDoc);
+            expect(cmp1_callsCount).to.equal(1);
+            expect(cmp2_callsCount).to.equal(1);
+        });
+
+        test("should not call .updateView once removed from the DOM", () => {
+            cmp1.setAttribute("model", "/c0");
+            cmp2.setAttribute("model", "./gc0");
+
+            cmp1.removeChild(cmp2);
+
+            cmp1_callsCount = cmp2_callsCount = 0;
+            const newDoc = new Document();
+            newDoc.set('data', docDataHash);
+            model.setDocument(newDoc);
+            expect(cmp1_callsCount).to.equal(1);
+            expect(cmp2_callsCount).to.equal(0);
+
+            cmp1_callsCount = cmp2_callsCount = 0;
+            newDoc.set('/data/c0/gc0', newDoc.get('/data/c0/gc0') + "-modif");
             expect(cmp1_callsCount).to.equal(1);
             expect(cmp2_callsCount).to.equal(0);
         });

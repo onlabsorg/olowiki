@@ -12,15 +12,13 @@ const testDocPath = `/test-doc.yaml`;
 const testDocHash = {
 
     committed: {
-        head: {
-            users: {
-                Admin: {role:'admin'},
-                Writer: {role:'writer'},
-                Reader: {role:'reader'},
-                Guest: {role:'guest'},
-            }
+        users: {
+            Admin: {role:'admin'},
+            Writer: {role:'writer'},
+            Reader: {role:'reader'},
+            Guest: {role:'guest'},
         },
-        body: {a:10, b:20, c:30}
+        data: {a:10, b:20, c:30}
     },
 
     owner: 'Owner',
@@ -79,13 +77,13 @@ module.exports = function (storeClassName, store, writeFile, fileExists, deleteF
                 await writeFile(testDocPath, YAML.dump(testDocHash));
                 var doc = await store.readDocument(testDocPath, 'root');
 
-                doc.set('/body/pi', 3.14);
+                doc.set('/data/pi', 3.14);
                 doc.commit();
                 await store.writeDocument(testDocPath, doc, 'root');
                 doc = await store.readDocument(testDocPath, 'root');
-                expect(doc.get('/body/pi')).to.equal(3.14);
+                expect(doc.get('/data/pi')).to.equal(3.14);
                 var docHash = doc.toHash();
-                delete docHash.committed.body.pi;
+                delete docHash.committed.data.pi;
                 docHash.release = testDocHash.release;
                 expect(docHash).to.deep.equal(testDocHash);
 
@@ -204,23 +202,23 @@ module.exports = function (storeClassName, store, writeFile, fileExists, deleteF
                 var doc = await store.readDocument(testDocPath, 'root');
                 var sinceVersion = doc.version;
 
-                const change1 = new Change('/head/x', 11);
-                const change2 = new Change('/body/x', 12);
+                const change1 = new Change('/x', 11);
+                const change2 = new Change('/data/x', 12);
                 var missingChanges = await store.updateDocument(testDocPath, sinceVersion, [change1, change2], 'root');
                 expect(missingChanges).to.deep.equal([]);
 
-                const change3 = new Change('/head/y', 21);
-                const change4 = new Change('/body/y', 22);
+                const change3 = new Change('/y', 21);
+                const change4 = new Change('/data/y', 22);
                 missingChanges = await store.updateDocument(testDocPath, sinceVersion, [change3, change4], 'root');
                 expect(missingChanges.length).to.equal(2);
                 expect(missingChanges[0].toHash()).to.deep.equal(change1.toHash());
                 expect(missingChanges[1].toHash()).to.deep.equal(change2.toHash());
 
                 doc = await store.readDocument(testDocPath, 'root');
-                expect(doc.get('/head/x')).to.equal(11);
-                expect(doc.get('/body/x')).to.equal(12);
-                expect(doc.get('/head/y')).to.equal(21);
-                expect(doc.get('/body/y')).to.equal(22);
+                expect(doc.get('/x')).to.equal(11);
+                expect(doc.get('/data/x')).to.equal(12);
+                expect(doc.get('/y')).to.equal(21);
+                expect(doc.get('/data/y')).to.equal(22);
 
 
                 // permissions

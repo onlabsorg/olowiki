@@ -1,15 +1,14 @@
 committed:
-  head:
-    users:
-      Admin:
-        role: admin
-      Writer:
-        role: writer
-      Reader:
-        role: reader
-      Guest:
-        role: guest
-  body:
+  users:
+    Admin:
+      role: admin
+    Writer:
+      role: writer
+    Reader:
+      role: reader
+    Guest:
+      role: guest
+  data:
     a: 10
     b: 20
     c: 30

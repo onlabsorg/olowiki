@@ -23,7 +23,9 @@ class Path extends Array {
 
             // Append each key of the subPath to this path
             for (let item of subPath) {
-                if (item !== "") {
+                if (item === "..") {
+                    path.pop();
+                } else if (item !== "" && item !== ".") {
                     path.push(item);
                 }
             }

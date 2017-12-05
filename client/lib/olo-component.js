@@ -1,9 +1,12 @@
-const store = require("store");
+
+const model = require("model");
+const Path = require("olojs/path");
 
 const $parentComponent = Symbol("olo-component.$parentComponent");
 const $childComponents = Symbol("olo-component.$childComponents");
-const $model = Symbol("olo-component.$model");
+const $modelPath = Symbol("olo-component.$modelPath");
 const $modelChangeCallback = Symbol("olo-component.$modelChangeCallback");
+const $documentChangeCallback = Symbol("olo-component.$documentChangeCallback");
 
 
 class OloComponent extends HTMLElement {
@@ -29,6 +32,7 @@ class OloComponent extends HTMLElement {
         super();
         this.attachShadow({mode: 'open'});
 
+
         this[$parentComponent] = null;
         this[$childComponents] = new Set();
         this.addEventListener("olo-component-connected", (event) => {
@@ -38,21 +42,38 @@ class OloComponent extends HTMLElement {
             }
         });
 
-        this[$model] = null;
-        this[$modelChangeCallback] = () => this.updateView();
+
+        this[$modelPath] = null;
+
+        this[$modelChangeCallback] = changes => {
+            const fullModelPath = Path.parse('data', this[$modelPath]);
+            const relevantChanges = changes.map(change => change.getSubChange(fullModelPath)).filter(change => change !== null);
+            if (relevantChanges.length > 0) this.updateView();
+        };
+
+        this[$documentChangeCallback] = (oldDocument, newDocument) => {
+            oldDocument.changeCallbacks.delete(this[$modelChangeCallback]);
+            newDocument.changeCallbacks.add(this[$modelChangeCallback]);
+            this.updateView();
+        }
+
 
         this.shadowRoot.innerHTML = this.constructor.template;
     }
 
     connectedCallback () {
+        model.getDocument().changeCallbacks.add(this[$modelChangeCallback]);
+        model.documentChangeCallbacks.add(this[$documentChangeCallback]);
         this.dispatch("olo-component-connected", this);
     }
 
     attributeChangedCallback (attrName, oldVal, newVal) {
-        if (attrName === "model") this._updateModel();
+        if (attrName === "model") this._updateModelPath();
     }
 
     disconnectedCallback () {
+        model.getDocument().changeCallbacks.delete(this[$modelChangeCallback]);
+        model.documentChangeCallbacks.delete(this[$documentChangeCallback]);
         if (this.parentComponent) {
             this.parentComponent._unregisterChild(this);
         }
@@ -75,14 +96,14 @@ class OloComponent extends HTMLElement {
     _registerChild (child) {
         child[$parentComponent] = this;
         this[$childComponents].add(child);
-        child._updateModel();
+        child._updateModelPath();
     }
 
     _unregisterChild (child) {
         if (this[$childComponents].has(child)) {
             child[$parentComponent] = null;
             this[$childComponents].delete(child);
-            child._updateModel();
+            child._updateModelPath();
         }
     }
 
@@ -91,40 +112,35 @@ class OloComponent extends HTMLElement {
     // MODEL
 
     get model () {
-        return this[$model];
+        return (this[$modelPath] === null) ? undefined : model.getModel(this[$modelPath]);
     }
 
     updateView () {}
 
-    _updateModel () {
+    _updateModelPath () {
 
-        // determine the new model
-        const refModel = this._getRefModel();
-        const newModel = refModel ? refModel.root.getNode(refModel.path + "/" + (this.getAttribute("model") || "")) : null;
+        // determine the new model path
+        var newModelPath;
+        const modelAttr = this.getAttribute("model") || "";
+        if (modelAttr[0] === "/") {
+            newModelPath = Path.parse(modelAttr);
+        } else if (this.parentComponent) {
+            newModelPath = Path.parse(this.parentComponent[$modelPath], modelAttr);
+        } else {
+            newModelPath = null;
+        }
 
-        // update the model and renders it
-        const oldModel = this.model;
-        if (newModel !== oldModel) {
-
-            // unbind the old model
-            if (oldModel !== null) oldModel.changeCallbacks.delete(this[$modelChangeCallback]);
-
-            // bind the new model
-            if (newModel !== null) newModel.changeCallbacks.add(this[$modelChangeCallback]);
-            this[$model] = newModel;
-
-            // update the view
+        // update the model path and render the view
+        const oldModelPath = this[$modelPath];
+        if (String(newModelPath) !== String(oldModelPath)) {
+            this[$modelPath] = newModelPath;
             this.updateView()
 
-            // update the child components model
+            // update the child components model path
             for (let child of this.childComponents) {
-                child._updateModel();
+                child._updateModelPath();
             }
         }
-    }
-
-    _getRefModel () {
-        return this.parentComponent ? this.parentComponent.model : null;
     }
 
 
@@ -144,4 +160,6 @@ class OloComponent extends HTMLElement {
     }
 }
 
-module.exports = OloComponent.register('olo-component')
+
+
+module.exports = OloComponent.register('olo-component');
