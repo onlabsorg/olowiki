@@ -3,7 +3,6 @@ const model = require("model");
 const Document = require("olojs/document");
 
 const OloComponent = require("olo-component");
-const Feature = require("utils/Feature");
 
 
 

@@ -11,8 +11,6 @@ const VText = require("virtual-dom/vnode/vtext");
 const HTMLToVDOM = require("html-to-vdom");
 const htmlToVDOM = HTMLToVDOM({VNode:VNode, VText:VText});
 
-const Feature = require("utils/Feature");
-
 
 
 class OloVDOM extends OloComponent {
@@ -42,29 +40,15 @@ class OloVDOM extends OloComponent {
     // RENDERING
 
     updateView () {
-        const awaitPendingViewUpdate = this._pendingViewUpdate;
-        const currentViewUpdate = new Feature();
-        this._pendingViewUpdate = currentViewUpdate;
-
-        awaitPendingViewUpdate.then(() => {
-            return this.render();
-        })
-        .then((content) => {
-            const oldVDOM = this._VDOM;
-            const vnodes = (typeof content === "string" && content !== "") ? htmlToVDOM(content) : content;
-            const newVDOM = this._VDOM = h('vdom', {}, vnodes);
-            const patches = diff(oldVDOM, newVDOM);
-            patch(this._rootNode, patches);
-
-            currentViewUpdate.resolve();
-            this.dispatch("olo-vdom-ready", {component:this});
-        })
-        .catch((error) => {
-            throw error;
-        });
+        const content = this.render();
+        const oldVDOM = this._VDOM;
+        const vnodes = (typeof content === "string" && content !== "") ? htmlToVDOM(content) : content;
+        const newVDOM = this._VDOM = h('vdom', {}, vnodes);
+        const patches = diff(oldVDOM, newVDOM);
+        patch(this._rootNode, patches);
     }
 
-    async render () {
+    render () {
         // custom content here
         // can return an HTML markup string or virtual-dom nodes
     }

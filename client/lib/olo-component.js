@@ -46,7 +46,7 @@ class OloComponent extends HTMLElement {
         this[$modelPath] = null;
 
         this[$modelChangeCallback] = changes => {
-            const fullModelPath = Path.parse('data', this[$modelPath]);
+            const fullModelPath = Path.parse('data', this.modelPath);
             const relevantChanges = changes.map(change => change.getSubChange(fullModelPath)).filter(change => change !== null);
             if (relevantChanges.length > 0) this.updateView();
         };
@@ -112,7 +112,11 @@ class OloComponent extends HTMLElement {
     // MODEL
 
     get model () {
-        return (this[$modelPath] === null) ? undefined : model.getModel(this[$modelPath]);
+        return (this.modelPath === null) ? undefined : model.getModel(this.modelPath);
+    }
+
+    get modelPath () {
+        return this[$modelPath];
     }
 
     updateView () {}
@@ -125,13 +129,13 @@ class OloComponent extends HTMLElement {
         if (modelAttr[0] === "/") {
             newModelPath = Path.parse(modelAttr);
         } else if (this.parentComponent) {
-            newModelPath = Path.parse(this.parentComponent[$modelPath], modelAttr);
+            newModelPath = Path.parse(this.parentComponent.modelPath, modelAttr);
         } else {
             newModelPath = null;
         }
 
         // update the model path and render the view
-        const oldModelPath = this[$modelPath];
+        const oldModelPath = this.modelPath;
         if (String(newModelPath) !== String(oldModelPath)) {
             this[$modelPath] = newModelPath;
             this.updateView()
