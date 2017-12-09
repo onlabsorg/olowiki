@@ -1,6 +1,9 @@
-const store = require("store");
+const Path = require("olojs/path");
+
+const model = require("model");
+
 const OloComponent = require("olo-component");
-const OloRoot = require("olo-root");
+const OloOutlinerDialog = require("olo-outliner/olo-outliner-dialog");
 const OloViewer = require("olo-viewer");
 const OloEditor = require("olo-editor");
 const OloTree = require("olo-tree");
@@ -11,7 +14,7 @@ const keyString = require("utils/key-string");
 const Split = require("olo-outliner/Split");
 const oloOutlinerTemplate = require("olo-outliner/olo-outliner.html!text");
 
-class OloOutliner extends OloRoot {
+class OloOutliner extends OloComponent {
 
     static get template () {
         return oloOutlinerTemplate;
@@ -23,28 +26,44 @@ class OloOutliner extends OloRoot {
 
     constructor () {
         super();
-        this.addEventListener('olo-node-selected', (event) => this._updateOutlinerView(event.detail.oloNode));
 
-        this.addEventListener('keydown', (event) => this._handleKeyDown(event));
+        this.addEventListener('olo-tree-node-selected', event => {
+            const modelAttr = Path.parse(event.detail.path).toString();
+            this.$("#content").setAttribute("model", modelAttr);
+        });
 
-        this._activeElement;
+        this._initLayout();
 
         this.$("nav").tabIndex = 1;
-        this.$("nav").addEventListener('keydown', (event) => this._handleTreeKeyDown(event));
-        this.$("nav").addEventListener('focusin', (event) => {this._activeElement = this.$("nav")});
+        this.$("nav").addEventListener("keydown", event => {
+            event.targetComponent = "tree";
+        });
 
         this.viewer.tabIndex = 1;
-        this.viewer.addEventListener('keydown', (event) => this._handleViewerKeyDown(event));
-        this.viewer.addEventListener('focusin', (event) => {this._activeElement = this.viewer});
+        this.viewer.addEventListener("keydown", event => {
+            event.targetComponent = "viewer";
+        });
 
         this.editor.tabIndex = 1;
-        this.editor.addEventListener('keydown', (event) => this._handleEditorKeyDown(event));
-        this.editor.addEventListener('focusin', (event) => {this._activeElement = this.editor});
+        this.editor.addEventListener("keydown", event => {
+            event.targetComponent = "editor";
+        });
 
-        this.tree.select();
+        this.addEventListener("keydown", event => {
+            event.keyString = keyString(event);
+        });
+    }
 
+    attributeChangedCallback (attrName, oldVal, newVal) {
+        super.attributeChangedCallback(attrName, oldVal, newVal);
+        switch (attrName) {
+            case "layout":
+                this._updateLayout(oldVal, newVal);
+                break;
+        }
+    }
 
-        // LAYOUT
+    _initLayout () {
 
         function elementStyle (dimension, size, gutterSize) {
             return {
@@ -68,6 +87,7 @@ class OloOutliner extends OloRoot {
         }
 
         this._contentSplitOptions = {
+            direction: "vertical",
             sizes: [60, 40],
             gutterSize: 6,
             minSize: 200,
@@ -77,25 +97,6 @@ class OloOutliner extends OloRoot {
         }
 
         this._mainSplit = Split([this.$("nav"), this.$("#content")], this._mainSplitOptions);
-
-        this._updateLayout();
-    }
-
-    attributeChangedCallback (attrName, oldVal, newVal) {
-        super.attributeChangedCallback(attrName, oldVal, newVal);
-        if (attrName === "layout") this._updateLayout(oldVal, newVal);
-    }
-
-    get tree () {
-        return this.$("olo-tree");
-    }
-
-    get viewer () {
-        return this.$("olo-viewer");
-    }
-
-    get editor () {
-        return this.$("olo-editor");
     }
 
     _updateLayout (oldLayout, newLayout) {
@@ -130,123 +131,28 @@ class OloOutliner extends OloRoot {
         }
     }
 
-    _updateOutlinerView (oloNode) {
-        const contentElt = this.$("olo-root");
-        const contentModel = oloNode.model;
-        const contentModelPath = contentModel.path;
-        this.viewer.setAttribute("model", contentModelPath);
-        this.editor.setAttribute("model", contentModelPath);
+    get dialog () {
+        return this.$("olo-outliner-dialog");
     }
 
-    _handleTreeKeyDown (event) {
-        const selectedNode = this.tree.selectedNode;
-        if (selectedNode === null) return;
-
-        const keyStr = keyString(event);
-
-        if (selectedNode.editable) switch(keyStr) {
-
-            case "enter":
-                selectedNode.commit();
-                this.$("nav").focus();
-                break;
-
-            case "esc":
-                selectedNode.cancel();
-                this.$("nav").focus();
-                break;
-        }
-        else switch (keyStr) {
-
-            case "up":
-                const previousNode = selectedNode.prevItem;
-                if (previousNode) previousNode.select();
-                event.stopPropagation();
-                break;
-
-            case "down":
-                const nextNode = selectedNode.nextItem;
-                if (nextNode) nextNode.select();
-                event.stopPropagation();
-                break;
-
-            case "left":
-                selectedNode.collapsed = true;
-                event.stopPropagation();
-                break;
-
-            case "right":
-                selectedNode.collapsed = false;
-                event.stopPropagation();
-                break;
-
-            case "ctrl-x":
-                if (selectedNode.model.readonly) break;
-                const newSelectedNode = selectedNode.nextItem || selectedNode.prevItem;
-                if (newSelectedNode) {
-                    newSelectedNode.select();
-                    let selectedModel = this._cutModel = selectedNode.model;
-                    selectedModel.parent.removeChild(selectedModel.index);
-                }
-                break;
-
-            case "ctrl-v":
-                if (selectedNode.model.readonly) break;
-                if (this._cutModel) {
-                    let selectedModel = selectedNode.model;
-                    let selectedIndex = selectedModel.index;
-                    selectedModel.parent.insertChild(selectedIndex, this._cutModel);
-                    this._cutModel = null;
-                    selectedNode.prevSiblingItem.select();
-                }
-                event.stopPropagation();
-                break;
-
-            case "enter":
-                selectedNode.edit();
-                break;
-
-            case "ctrl-enter":
-                if (selectedNode.model.readonly) break;
-                var selectedModel = selectedNode.model;
-                var newModel = new store.Node();
-                selectedModel.parent.insertChild(selectedModel.index+1, newModel);
-                selectedNode.nextSiblingItem.select();
-                event.stopPropagation();
-                break;
-        }
+    get tree () {
+        return this.$("olo-tree");
     }
 
-    _handleViewerKeyDown (event) {}
+    get viewer () {
+        return this.$("olo-viewer");
+    }
 
-    _handleEditorKeyDown (event) {}
+    get editor () {
+        return this.$("olo-editor");
+    }
 
-    _handleKeyDown (event) {
-        const keyStr = keyString(event);
-
-        switch (keyStr) {
-            case "ctrl-space":
-                let layout = this.getAttribute("layout");
-                switch (layout) {
-                    case undefined:
-                    case "viewer-only":
-                        this.setAttribute("layout", "vertical");
-                        break;
-                    case "vertical":
-                        this.setAttribute("layout", "horizontal");
-                        break;
-                    case "horizontal":
-                        this.setAttribute("layout", "editor-only");
-                        break;
-                    case "editor-only":
-                    default:
-                        this.setAttribute("layout", "viewer-only");
-                        break;
-                }
-                event.stopPropagation();
-                event.preventDefault();
-                break;
-        }
+    addButton (faIconName, onClick) {
+        const button = document.createElement("span");
+        button.setAttribute("class", `control fa fa-${faIconName}`);
+        button.setAttribute("aria-hidden", true);
+        this.$("#controls").appendChild(button);
+        button.addEventListener("click", onClick);
     }
 }
 

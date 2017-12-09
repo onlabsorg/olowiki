@@ -2,6 +2,8 @@
 const model = require("model");
 const Path = require("olojs/path");
 
+const OloElement = require("olo-element");
+
 const $parentComponent = Symbol("olo-component.$parentComponent");
 const $childComponents = Symbol("olo-component.$childComponents");
 const $modelPath = Symbol("olo-component.$modelPath");
@@ -9,7 +11,7 @@ const $modelChangeCallback = Symbol("olo-component.$modelChangeCallback");
 const $documentChangeCallback = Symbol("olo-component.$documentChangeCallback");
 
 
-class OloComponent extends HTMLElement {
+class OloComponent extends OloElement {
 
     static get template () {
         return "<slot></slot>";
@@ -19,18 +21,12 @@ class OloComponent extends HTMLElement {
         return ['model'];
     }
 
-    static register (tag) {
-        customElements.define(tag, this);
-        return this;
-    }
-
 
 
     // LIFE CYCLE
 
     constructor () {
         super();
-        this.attachShadow({mode: 'open'});
 
 
         this[$parentComponent] = null;
@@ -145,22 +141,6 @@ class OloComponent extends HTMLElement {
                 child._updateModelPath();
             }
         }
-    }
-
-
-
-    // SERVICE METHODS
-
-    dispatch (eventName, eventDetail) {
-        this.dispatchEvent(new CustomEvent(eventName, {
-            bubbles: true,
-            composed: true,
-            detail: eventDetail
-        }));
-    }
-
-    $ (selector) {
-        return this.shadowRoot.querySelector(selector);
     }
 }
 

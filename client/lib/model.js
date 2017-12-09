@@ -32,4 +32,10 @@ exports.getModel = function (path) {
 }
 
 
+exports.setModel = function (path, value) {
+    const fullPath = Path.parse('data', path);
+    return currentDocument.set(fullPath, value);    
+}
+
+
 exports.documentChangeCallbacks = new Set();

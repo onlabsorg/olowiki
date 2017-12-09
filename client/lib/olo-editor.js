@@ -1,5 +1,7 @@
 const ace = require("./olo-editor/ace-shadowDOM-shim");
 
+const model = require("model");
+
 const OloComponent = require("olo-component");
 const oloEditorTemplate = require("./olo-editor/olo-editor.html!text");
 
@@ -43,17 +45,19 @@ class OloEditor extends OloComponent {
 
     updateView () {
         const oldContent = this.aceEditor.getValue();
-        const newContent = (this.model === null) ? "" : this.model.value;
+        const newContent = String(this.model);
         if (newContent !== oldContent) {
             this.aceEditor.setValue(newContent, -1);
         }
-        this.aceEditor.setReadOnly(this.model && this.model.readonly);
+        //this.aceEditor.setReadOnly(this.model && this.model.readonly);
     }
 
     _handleContentChange (event) {
-        const oldTemplate = (this.model === null) ? "" : this.model.value;
+        const oldTemplate = this.model;
         const newTemplate = this.aceEditor.getValue();
-        if (this.model && newTemplate !== oldTemplate) this.model.value = newTemplate;
+        if (newTemplate !== oldTemplate) {
+            model.setModel(this.modelPath, newTemplate);
+        }
     }
 
     focus () {

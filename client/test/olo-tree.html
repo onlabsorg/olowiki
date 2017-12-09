@@ -1,0 +1,40 @@
+<html>
+<head>
+
+    <!-- Load and setup test libraries -->
+    <script src="/jspm_packages/system.js"></script>
+    <script src="/config.js"></script>
+
+    <style>
+        html, body .viewport {
+            margin: 0;
+            border: 0;
+            padding: 0;
+            height: 100vh;
+        }
+
+        olo-tree {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            padding: 16px;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="/lib/themes/default.css">    
+
+</head>
+<body>
+
+    <olo-tree model="/root"></olo-tree>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function(event) {
+            window.tree = document.querySelector("olo-tree");
+            SystemJS.import("./olo-tree.js");
+        });
+    </script>
+
+</body>
+</html>

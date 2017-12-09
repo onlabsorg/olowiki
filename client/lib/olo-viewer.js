@@ -26,7 +26,7 @@ class NunjucksLoader extends nunjucks.Loader {
         const fullPath = Path.parse(this.path, subPath);
         const template = model.getModel(`${fullPath}/__template__`);
         if (typeof template !== "string") return null;
-        
+
         return {
             src: template,
             path: String(fullPath),
@@ -68,10 +68,12 @@ class OloViewer extends OloVDOM {
     // RENDERING
 
     render () {
+        const __template__ = model.getModel(`${this.modelPath}/__template__`);
+        if (typeof __template__ !== "string") return "";
 
         const nunjucksLoader = new NunjucksLoader(this.modelPath);
         const nunjucksEnvironment = new nunjucks.Environment(nunjucksLoader);
-        const template = new nunjucks.Template(model.getModel(`${this.modelPath}/__template__`), nunjucksEnvironment, String(this.modelPath));
+        const template = new nunjucks.Template(__template__, nunjucksEnvironment, String(this.modelPath));
 
         const context = this.constructor.context;
         const markdown = template.render(context);

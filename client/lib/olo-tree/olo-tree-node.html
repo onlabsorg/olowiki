@@ -49,20 +49,8 @@
         margin-left: 1.5em;
     }
 
-    :host(.collapsed) #child-list {
+    :host([collapsed]) #child-list {
         display: none;
-    }
-
-    #editor {
-        display: none;
-    }
-
-    :host(.editable) #viewer {
-        display: none;
-    }
-
-    :host(.editable) #editor {
-        display: inline;
     }
 
 
@@ -85,9 +73,9 @@
 </style>
 
 <div id="item">
-    <span id="icon"></span>
-    <span id="viewer"></span>
-    <input id="editor"></span>
+    <span id="icon" name="icon"></span>
+    <span id="value" name="value"></span>
 </div>
 <div id="child-list">
+    <slot name="child"></slot>
 </div>

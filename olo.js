@@ -9,8 +9,12 @@ const app = express();
 const http = require('http');
 const server = http.createServer(app);
 
-const Store = require('./server/store');
-const store  = new Store(`${__dirname}/server/store`);
+
+app.use("*", function (req, res, next) {
+    req.userName = req.get('Authorization') || 'guest';
+    next();
+});
+
 
 const basePath = `${__dirname}/client`;
 
@@ -31,8 +35,15 @@ app.get("/docs/*", function (req, res, next) {
     }
 });
 
-const Router = require("./server/router");
-app.use("/docs", Router(store));
+
+
+const {FileStore, Router} = require("../lib/olojs/store-server");
+const olojsStore = new FileStore(`${__dirname}/olojs/store`);
+const olojsRouter = new Router(olojsStore);
+
+app.use('/store', olojsRouter);
+
+
 
 app.use(express.static(basePath, {etag:false}));
 
