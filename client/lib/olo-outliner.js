@@ -1,4 +1,6 @@
 const Path = require("olojs/path");
+const Value = require("olojs/value");
+const Change = require("olojs/change");
 
 const model = require("model");
 
@@ -14,14 +16,14 @@ const keyString = require("utils/key-string");
 const Split = require("olo-outliner/Split");
 const oloOutlinerTemplate = require("olo-outliner/olo-outliner.html!text");
 
+const YAML = require("js-yaml");
+
+
+
 class OloOutliner extends OloComponent {
 
     static get template () {
         return oloOutlinerTemplate;
-    }
-
-    static get observedAttributes () {
-        return super.observedAttributes.concat("layout");
     }
 
     constructor () {
@@ -29,7 +31,7 @@ class OloOutliner extends OloComponent {
 
         this.addEventListener('olo-tree-node-selected', event => {
             const modelAttr = Path.parse(event.detail.path).toString();
-            this.$("#content").setAttribute("model", modelAttr);
+            this.viewer.setAttribute("model", modelAttr);
         });
 
         this._initLayout();
@@ -51,16 +53,8 @@ class OloOutliner extends OloComponent {
 
         this.addEventListener("keydown", event => {
             event.keyString = keyString(event);
+            if (event.keyString === "ctrl-enter") this.editTemplate();
         });
-    }
-
-    attributeChangedCallback (attrName, oldVal, newVal) {
-        super.attributeChangedCallback(attrName, oldVal, newVal);
-        switch (attrName) {
-            case "layout":
-                this._updateLayout(oldVal, newVal);
-                break;
-        }
     }
 
     _initLayout () {
@@ -86,49 +80,7 @@ class OloOutliner extends OloComponent {
             onDragEnd: () => {this._mainSplitOptions.sizes = this._mainSplit.getSizes()}
         }
 
-        this._contentSplitOptions = {
-            direction: "vertical",
-            sizes: [60, 40],
-            gutterSize: 6,
-            minSize: 200,
-            elementStyle: elementStyle,
-            gutterStyle: gutterStyle,
-            onDragEnd: () => {this._contentSplitOptions.sizes = this._contentSplit.getSizes()}
-        }
-
         this._mainSplit = Split([this.$("nav"), this.$("#content")], this._mainSplitOptions);
-    }
-
-    _updateLayout (oldLayout, newLayout) {
-        oldLayout = oldLayout || "viewer-only";
-        newLayout = newLayout || "viewer-only";
-
-        switch (newLayout) {
-            case "viewer-only":
-                if (this._contentSplit) {
-                    this._contentSplit.destroy();
-                    this._contentSplit = null;
-                }
-                if (this._activeElement !== this.$("nav")) this.viewer.focus();
-                break;
-            case "editor-only":
-                if (this._contentSplit) {
-                    this._contentSplit.destroy();
-                    this._contentSplit = null;
-                }
-                if (this._activeElement !== this.$("nav")) this.editor.focus();
-                break;
-            case "vertical":
-                if (this._contentSplitOptions.direction === "horizontal" && this._contentSplit) this._contentSplit.destroy();
-                this._contentSplitOptions.direction = "vertical";
-                this._contentSplit = Split([this.viewer, this.editor], this._contentSplitOptions);
-                break;
-            case "horizontal":
-                if (this._contentSplitOptions.direction === "vertical" && this._contentSplit) this._contentSplit.destroy();
-                this._contentSplitOptions.direction = "horizontal";
-                this._contentSplit = Split([this.viewer, this.editor], this._contentSplitOptions);
-                break;
-        }
     }
 
     get dialog () {
@@ -153,6 +105,69 @@ class OloOutliner extends OloComponent {
         button.setAttribute("aria-hidden", true);
         this.$("#controls").appendChild(button);
         button.addEventListener("click", onClick);
+    }
+
+    async editTemplate () {
+        console.log(this.editor.getMode());
+        const templatePath = Path.parse(this.viewer.modelPath, '__template__');
+        const oldTemplate = model.getModel(templatePath) || "";
+
+        this.editor.setMode("markdown");
+        const newTemplate = await this._edit(oldTemplate);
+        if (newTemplate === null) return;
+
+        model.setModel(templatePath, newTemplate);
+    }
+
+    async editDocument () {
+        const doc = model.getDocument();
+        const oldDocHash = doc.get("/");
+        const oldYAML = YAML.dump(oldDocHash);
+
+        this.editor.setMode("yaml");
+        const newYAML = await this._edit(oldYAML);
+        if (newYAML === null) return;
+
+        const newDocHash = YAML.load(newYAML);
+        const changes = Change.diff(oldDocHash, newDocHash);
+        doc.applyChanges(...changes);
+    }
+
+    _edit (text) {
+        return new Promise((resolve, reject) => {
+            this.$("#content").classList.add("edit");
+            this.editor.value = text;
+
+            const done = (retval) => {
+                this.$("#content").classList.remove("edit");
+                this.editor.removeEventListener("keydown", onKeyDown);
+                this.editor.removeEventListener("focusout", onFocusOut);
+                this.viewer.focus();
+                resolve(retval);
+            }
+
+            const onKeyDown = event => {
+                const keyStr = keyString(event);
+                switch (keyStr) {
+                    case "ctrl-enter":
+                        event.stopPropagation();
+                        done(this.editor.value);
+                        break;
+                    case "esc":
+                        event.stopPropagation();
+                        done(null);
+                        break;
+                }
+            }
+            this.editor.addEventListener("keydown", onKeyDown);
+
+            const onFocusOut = event => {
+                done(this.editor.value);
+            }
+            this.editor.addEventListener("focusout", onFocusOut);
+
+            this.editor.focus();
+        });
     }
 }
 

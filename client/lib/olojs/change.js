@@ -79,14 +79,14 @@ class Change {
         }
 
         if (type1 !== "Object") {
-            return val1 === val2 ? [] : [new Change('/', val2, 0)];
+            return val1 === val2 ? [] : [new Change('/', val2)];
         }
 
         const changes = [];
 
         for (let key in val1) {
             if (val2[key] === undefined) {
-                changes.push(new Change(key, undefined, 0));
+                changes.push(new Change(key, undefined));
             }
         }
 

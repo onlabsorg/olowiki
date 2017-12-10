@@ -28,6 +28,7 @@
       "ace": "github:ajaxorg/ace-builds@^1.2.9",
       "font-awesome": "npm:font-awesome@^4.7.0",
       "html-to-vdom": "npm:html-to-vdom@^0.7.0",
+      "js-yaml": "npm:js-yaml@^3.10.0",
       "lodash": "npm:lodash@^4.17.4",
       "marked": "npm:marked@^0.3.6",
       "minimatch": "npm:minimatch@^3.0.4",
@@ -39,8 +40,7 @@
       "virtual-dom": "npm:virtual-dom@^2.1.1"
     },
     "devDependencies": {
-      "chai": "npm:chai@^4.1.2",
-      "js-yaml": "npm:js-yaml@^3.10.0"
+      "chai": "npm:chai@^4.1.2"
     }
   },
   "dependencies": {

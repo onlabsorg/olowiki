@@ -4,7 +4,7 @@ const model = require("model");
 const OloOutliner = require("olo-outliner");
 
 
-const outlinerDoc = new Document();
+const outlinerDoc = window.outlinerDoc = new Document();
 outlinerDoc.set('data', {
     root: {
         __template__: "# root",

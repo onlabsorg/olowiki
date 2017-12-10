@@ -2,18 +2,17 @@ const ace = require("./olo-editor/ace-shadowDOM-shim");
 
 const model = require("model");
 
-const OloComponent = require("olo-component");
+const OloElement = require("olo-element");
 const oloEditorTemplate = require("./olo-editor/olo-editor.html!text");
 
 
-class OloEditor extends OloComponent {
 
-    static get template () {
-        return oloEditorTemplate;
-    }
+class OloEditor extends OloElement {
 
     constructor () {
         super();
+        this.shadowRoot.innerHTML = oloEditorTemplate;
+
         this.aceEditor = ace.edit(this.$("#editor"), this.$("#header"));
 
         this.aceEditor.$blockScrolling = Infinity;
@@ -27,8 +26,6 @@ class OloEditor extends OloComponent {
 
         this.setMode("handlebars");
         this.setTheme("iplastic");
-
-        session.on("change", (event) => this._handleContentChange(event));
     }
 
     setMode (mode) {
@@ -43,21 +40,13 @@ class OloEditor extends OloComponent {
         this.aceEditor.setTheme(`ace/theme/${theme}`);
     }
 
-    updateView () {
-        const oldContent = this.aceEditor.getValue();
-        const newContent = String(this.model);
-        if (newContent !== oldContent) {
-            this.aceEditor.setValue(newContent, -1);
-        }
-        //this.aceEditor.setReadOnly(this.model && this.model.readonly);
+    get value () {
+        return this.aceEditor.getValue();
     }
 
-    _handleContentChange (event) {
-        const oldTemplate = this.model;
-        const newTemplate = this.aceEditor.getValue();
-        if (newTemplate !== oldTemplate) {
-            model.setModel(this.modelPath, newTemplate);
-        }
+    set value (newValue) {
+        newValue = String(newValue);
+        this.aceEditor.setValue(newValue, -1);
     }
 
     focus () {

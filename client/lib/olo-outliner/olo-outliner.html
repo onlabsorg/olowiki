@@ -105,84 +105,27 @@
     }
 
     main #content olo-viewer {
-        flex: 1 1 60%;
+        flex: 1 1 100%;
         padding: 1em 2em;
     }
 
     main #content olo-editor {
-        flex: 1 1 40%;
+        flex: 1 1 100%;
+        display: none;
         padding: 0;
     }
 
-
-    /* edit-mode */
-
-    :host([layout="viewer-only"]) main #content {
-        flex-direction: row;
-    }
-
-    :host([layout="viewer-only"]) main #content olo-editor {
+    main #content.edit olo-viewer {
         display: none;
     }
 
-    :host([layout="viewer-only"]) main #content olo-viewer {
-        flex: 1 1 100%;
+    main #content.edit olo-editor {
+        display: flex;
     }
 
 
 
-    /* editor layout */
-
-    :host([layout="editor-only"]) main #content {
-        flex-direction: row;
-    }
-
-    :host([layout="editor-only"]) main #content olo-editor {
-        flex: 1 1 100%;
-    }
-
-    :host([layout="editor-only"]) main #content olo-viewer {
-        display: none;
-    }
-
-
-
-    /* column layout */
-
-    :host([layout="vertical"]) main #content {
-        flex-direction: column;
-    }
-
-    :host([layout="vertical"]) main #content olo-editor {
-        flex: 1 1 40%;
-    }
-
-    :host([layout="vertical"]) main #content olo-viewer {
-        flex: 1 1 60%;
-    }
-
-    :host([layout="vertical"]) main #content .divider:hover {
-        cursor: row-resize;
-    }
-
-
-    /* row layout */
-
-    :host([layout="horizontal"]) main #content {
-        flex-direction: row;
-    }
-
-    :host([layout="horizontal"]) main #content olo-editor {
-        flex: 1 1 40%;
-    }
-
-    :host([layout="horizontal"]) main #content olo-viewer {
-        flex: 1 1 60%;
-    }
-
-    :host([layout="horizontal"]) main #content .divider:hover {
-        cursor: col-resize;
-    }
+    /* FOOTER */
 
     footer {
         flex: 0 0 12pt;
@@ -202,10 +145,10 @@
     <nav class="card">
         <olo-tree model="."></olo-tree>
     </nav>
-    <olo-component id="content" model=".">
+    <div id="content">
         <olo-viewer class="card" model="."></olo-viewer>
-        <olo-editor class="card" model="./__template__"></olo-editor>
-    </olo-component>
+        <olo-editor class="card"></olo-editor>
+    </div>
 </main>
 <footer>
     <slot name="footer"></slot>
