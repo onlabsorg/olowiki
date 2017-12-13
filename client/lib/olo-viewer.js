@@ -17,19 +17,19 @@ const nunjucks = require("nunjucks");
 
 class NunjucksLoader extends nunjucks.Loader {
 
-    constructor (path) {
+    constructor (model) {
         super();
-        this.path = Path.parse(path);
+        this.model = model;
     }
 
     getSource (subPath) {
-        const fullPath = Path.parse(this.path, subPath);
-        const template = model.getModel(`${fullPath}/__template__`);
+        const subModel = this.model.getSubModel(subPath);
+        const template = subModel.get("__template__");
         if (typeof template !== "string") return null;
 
         return {
             src: template,
-            path: String(fullPath),
+            path: String(subModel.path),
             noCache: true
         };
     }
@@ -68,12 +68,13 @@ class OloViewer extends OloVDOM {
     // RENDERING
 
     render () {
-        const __template__ = model.getModel(`${this.modelPath}/__template__`);
+        const __template__ = this.model.get("__template__");
         if (typeof __template__ !== "string") return "";
 
-        const nunjucksLoader = new NunjucksLoader(this.modelPath);
+        const nunjucksLoader = new NunjucksLoader(this.model);
         const nunjucksEnvironment = new nunjucks.Environment(nunjucksLoader);
-        const template = new nunjucks.Template(__template__, nunjucksEnvironment, String(this.modelPath));
+        const templatePathStr = String(this.model.path);
+        const template = new nunjucks.Template(__template__, nunjucksEnvironment, templatePathStr);
 
         const context = this.constructor.context;
         const markdown = template.render(context);

@@ -3,39 +3,68 @@ const Path = require("olojs/path");
 const Document = require("olojs/document");
 
 
-var currentDocument = new Document({
-    committed: {
-        data: {}
-    }
-});
 
+class Model {
 
-exports.getDocument = function () {
-    return currentDocument;
-}
-
-
-exports.setDocument = function (newDocument) {
-    if (newDocument instanceof Document) {
-        let oldDocument = currentDocument;
-        currentDocument = newDocument;
-        for (let callback of this.documentChangeCallbacks) {
-            if (typeof callback === "function") callback(oldDocument, newDocument);
+    constructor (doc, path) {
+        if (doc instanceof Document) {
+            this.document = doc;
+            this.path = Path.parse(path);
+        } else {
+            throw new Error("olojs Document instance expected as first argument");
         }
     }
+
+    _getFullPath (subPath) {
+        return Path.parse('data', this.path, subPath);
+    }
+
+    type (subPath) {
+        const fullPath = this._getFullPath(subPath);
+        return this.document.type(fullPath);
+    }
+
+    get (subPath) {
+        const fullPath = this._getFullPath(subPath);
+        return this.document.get(fullPath);
+    }
+
+    set (subPath, value) {
+        const fullPath = this._getFullPath(subPath);
+        this.document.set(fullPath, value);
+    }
+
+    delete (subPath) {
+        const fullPath = this._getFullPath(subPath);
+        this.document.delete(fullPath);
+    }
+
+    subscribe (callback) {
+
+        const subscription = {
+            model: this,
+            callback: callback,
+            cancel: () => {
+                this.document.changeCallbacks.delete(listener);
+            }
+        }
+
+        const listener = changes => {
+            const modelPath = this._getFullPath("/");
+            const relevantChanges = changes.map(change => change.getSubChange(modelPath)).filter(change => change !== null);
+            if (relevantChanges.length > 0) subscription.callback(relevantChanges);
+        }
+
+        this.document.changeCallbacks.add(listener);
+
+        return subscription;
+    }
+
+    getSubModel (subPath) {
+        const subModelPath = Path.parse(this.path, subPath);
+        return new this.constructor(this.document, subModelPath);
+    }
 }
 
 
-exports.getModel = function (path) {
-    const fullPath = Path.parse('data', path);
-    return currentDocument.get(fullPath);
-}
-
-
-exports.setModel = function (path, value) {
-    const fullPath = Path.parse('data', path);
-    return currentDocument.set(fullPath, value);    
-}
-
-
-exports.documentChangeCallbacks = new Set();
+module.exports = Model;

@@ -37,11 +37,11 @@ app.get("/docs/*", function (req, res, next) {
 
 
 
-const {FileStore, Router} = require("../lib/olojs/store-server");
-const olojsStore = new FileStore(`${__dirname}/olojs/store`);
+const {FileStore, Router} = require("./client/lib/olojs/store-server");
+const olojsStore = new FileStore(`${__dirname}/server/store`);
 const olojsRouter = new Router(olojsStore);
 
-app.use('/store', olojsRouter);
+app.use('/docs', olojsRouter);
 
 
 

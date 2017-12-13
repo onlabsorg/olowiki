@@ -1,14 +1,12 @@
 
-const model = require("model");
 const Path = require("olojs/path");
+const Document = require("olojs/document");
+
+const Model = require("model");
+Model.root = new Model(new Document({ committed: { data: {} } }), "/");
 
 const OloElement = require("olo-element");
 
-const $parentComponent = Symbol("olo-component.$parentComponent");
-const $childComponents = Symbol("olo-component.$childComponents");
-const $modelPath = Symbol("olo-component.$modelPath");
-const $modelChangeCallback = Symbol("olo-component.$modelChangeCallback");
-const $documentChangeCallback = Symbol("olo-component.$documentChangeCallback");
 
 
 class OloComponent extends OloElement {
@@ -28,9 +26,8 @@ class OloComponent extends OloElement {
     constructor () {
         super();
 
-
-        this[$parentComponent] = null;
-        this[$childComponents] = new Set();
+        this._parentComponent = null;
+        this._childComponents = new Set();
         this.addEventListener("olo-component-connected", (event) => {
             if (event.detail !== this) {
                 this._registerChild(event.detail);
@@ -38,38 +35,22 @@ class OloComponent extends OloElement {
             }
         });
 
-
-        this[$modelPath] = null;
-
-        this[$modelChangeCallback] = changes => {
-            const fullModelPath = Path.parse('data', this.modelPath);
-            const relevantChanges = changes.map(change => change.getSubChange(fullModelPath)).filter(change => change !== null);
-            if (relevantChanges.length > 0) this.updateView();
-        };
-
-        this[$documentChangeCallback] = (oldDocument, newDocument) => {
-            oldDocument.changeCallbacks.delete(this[$modelChangeCallback]);
-            newDocument.changeCallbacks.add(this[$modelChangeCallback]);
-            this.updateView();
-        }
-
+        this._parentModel = null;
+        this._model = null;
+        this._modelSubscription = null;
 
         this.shadowRoot.innerHTML = this.constructor.template;
     }
 
     connectedCallback () {
-        model.getDocument().changeCallbacks.add(this[$modelChangeCallback]);
-        model.documentChangeCallbacks.add(this[$documentChangeCallback]);
         this.dispatch("olo-component-connected", this);
     }
 
     attributeChangedCallback (attrName, oldVal, newVal) {
-        if (attrName === "model") this._updateModelPath();
+        if (attrName === "model") this._updateModel();
     }
 
     disconnectedCallback () {
-        model.getDocument().changeCallbacks.delete(this[$modelChangeCallback]);
-        model.documentChangeCallbacks.delete(this[$documentChangeCallback]);
         if (this.parentComponent) {
             this.parentComponent._unregisterChild(this);
         }
@@ -80,26 +61,26 @@ class OloComponent extends OloElement {
     // CHILD COMPONENTS
 
     get parentComponent () {
-        return this[$parentComponent];
+        return this._parentComponent;
     }
 
     get childComponents () {
         return (function * () {
-            for (let childComponent of this[$childComponents]) yield childComponent;
+            for (let childComponent of this._childComponents) yield childComponent;
         }).call(this);
     }
 
     _registerChild (child) {
-        child[$parentComponent] = this;
-        this[$childComponents].add(child);
-        child._updateModelPath();
+        child._parentComponent = this;
+        this._childComponents.add(child);
+        child._updateModel();
     }
 
     _unregisterChild (child) {
-        if (this[$childComponents].has(child)) {
-            child[$parentComponent] = null;
-            this[$childComponents].delete(child);
-            child._updateModelPath();
+        if (this._childComponents.has(child)) {
+            child._parentComponent = null;
+            this._childComponents.delete(child);
+            child._updateModel();
         }
     }
 
@@ -107,38 +88,46 @@ class OloComponent extends OloElement {
 
     // MODEL
 
-    get model () {
-        return (this.modelPath === null) ? undefined : model.getModel(this.modelPath);
+    get parentModel () {
+        if (this._parentModel) return this._parentModel;
+        if (this.parentComponent) return this.parentComponent.model || this.parentComponent.parentModel;
+        return Model.root;
     }
 
-    get modelPath () {
-        return this[$modelPath];
-    }
-
-    updateView () {}
-
-    _updateModelPath () {
-
-        // determine the new model path
-        var newModelPath;
-        const modelAttr = this.getAttribute("model") || "";
-        if (modelAttr[0] === "/") {
-            newModelPath = Path.parse(modelAttr);
-        } else if (this.parentComponent) {
-            newModelPath = Path.parse(this.parentComponent.modelPath, modelAttr);
-        } else {
-            newModelPath = null;
+    set parentModel (newParentModel) {
+        if (newParentModel instanceof Model || newParentModel === null) {
+            this._parentModel = newParentModel;
+            this._updateModel();
         }
+    }
+
+    get model () {
+        return this._model;
+    }
+
+    updateView (changes) {}
+
+    _updateModel () {
+
+        // determine the new model
+        const modelAttr = this.getAttribute("model") || "";
+        const newModel = (modelAttr[0] === "/") ?
+                new Model(this.parentModel.document, modelAttr) :
+                this.parentModel.getSubModel(modelAttr);
 
         // update the model path and render the view
-        const oldModelPath = this.modelPath;
-        if (String(newModelPath) !== String(oldModelPath)) {
-            this[$modelPath] = newModelPath;
+        const oldModel = this.model;
+        if (oldModel === null || newModel.document !== oldModel.document || String(newModel.path) !== String(oldModel.path)) {
+
+            if (this._modelSubscription) this._modelSubscription.cancel();
+            this._modelSubscription = newModel.subscribe(changes => this.updateView(changes));
+
+            this._model = newModel;
             this.updateView()
 
             // update the child components model path
             for (let child of this.childComponents) {
-                child._updateModelPath();
+                child._updateModel();
             }
         }
     }

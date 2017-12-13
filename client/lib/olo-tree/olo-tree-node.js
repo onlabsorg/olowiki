@@ -1,3 +1,4 @@
+const model = require("model");
 
 const OloComponent = require("olo-component");
 const oloTreeNodeTemplate = require("./olo-tree-node.html!text");
@@ -21,8 +22,8 @@ class OloNode extends OloComponent {
 
     constructor () {
         super();
-        this.$("#icon").addEventListener('click', () => this.dispatch("olo-tree-node-icon-click", {node:this}));
-        this.$("#value").addEventListener('click', () => this.dispatch("olo-tree-node-value-click", {node:this}));
+        this.$("#icon").addEventListener('click', () => this.dispatch("olo-tree-node-icon-click", {path:this.model.path}));
+        this.$("#value").addEventListener('click', () => this.dispatch("olo-tree-item-click", {path:this.model.path}));
     }
 
     attributeChangedCallback (attrName, oldVal, newVal) {
@@ -36,7 +37,13 @@ class OloNode extends OloComponent {
 
     updateView () {
         this.$("#icon").textContent = (this.hasAttribute("collapsed")) ? collapsedIcon : expandedIcon;
-        this.$("#value").textContent = this.modelPath ? this.modelPath.leaf : "";
+        if (!this.model) {
+            this.$("#value").textContent = "";
+        } else if (this.model.path.length === 0) {
+            this.$("#value").textContent = "v" + this.model.document.version;
+        } else {
+            this.$("#value").textContent = this.model.path.leaf;
+        }
     }
 }
 

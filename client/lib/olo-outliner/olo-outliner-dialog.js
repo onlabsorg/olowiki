@@ -1,6 +1,8 @@
 const OloElement = require("olo-element");
 const oloOutlinerDialogTemplate = require("./olo-outliner-dialog.html!text");
 
+const keyString = require("utils/key-string");
+
 
 class OloOutlinerDialog extends OloElement {
 
@@ -26,13 +28,20 @@ class OloOutlinerDialog extends OloElement {
         return {done:done, timeout:timeout};
     }
 
-    input (message, type) {
+    input (message, startVal="", type="text") {
         return new Promise ((resolve, reject) => {
             const messageElt = document.createElement('span');
             messageElt.setAttribute("slot", "message");
             messageElt.innerHTML = `${message}: <input type="${type}"></input>`;
             this.appendChild(messageElt);
             const inputElt = messageElt.querySelector("input");
+            inputElt.value = startVal;
+            inputElt.addEventListener("keydown", event => {
+                if (keyString(event) === "esc") {
+                    inputElt.value = startVal;
+                    inputElt.dispatchEvent(new CustomEvent('change'));
+                }
+            });
             inputElt.addEventListener('change', () => {
                 var value = inputElt.value;
                 this.removeChild(messageElt);
