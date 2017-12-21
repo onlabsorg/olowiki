@@ -2,24 +2,26 @@
 const Change = require("./change");
 const Document = require("./document");
 const errors = require("./errors");
+const Auth = require("./auth");
 
 
 
-class HTTPStore {
+class Store {
 
     constructor (host) {
         this.host = host || "";
     }
 
-    _getURL (path) {
-        return this.host + path;
+    _getURL (path, authToken) {
+        var url = this.host + path;
+        if (authToken)  url += "?auth=" + authToken;
+        return url;
     }
 
-    async readDocument (docPath, user) {
-        const response = await fetch(this._getURL(docPath), {
+    async readDocument (docPath, authToken) {
+        const response = await fetch(this._getURL(docPath, authToken), {
             method: "GET",
             headers: new Headers({
-                'Authorization': user,
                 'X-Requested-With': "XMLHttpRequest"
             }),
         });
@@ -27,20 +29,20 @@ class HTTPStore {
         switch (response.status) {
 
             case 200:
-                let docHash = await response.json();
-                let userName = response.headers.get("X-olo-user-name");
-                return new Document(docHash, userName);
+                let responseHash = await response.json();
+                let doc = new Document(responseHash.doc);
+                doc._auth = new Auth(responseHash.auth);
+                return doc;
 
             default:
                 await this._handleError(response);
         }
     }
 
-    async updateDocument (docPath, sinceVersion, changes, user) {
-        const response = await fetch(this._getURL(docPath), {
+    async updateDocument (docPath, sinceVersion, changes, authToken) {
+        const response = await fetch(this._getURL(docPath, authToken), {
             method: "PATCH",
             headers: new Headers({
-                'Authorization': user,
                 'ETag': sinceVersion,
                 'Content-Type': "application/json",
                 'X-Requested-With': "XMLHttpRequest"
@@ -62,11 +64,10 @@ class HTTPStore {
         }
     }
 
-    async writeDocument (docPath, doc, user) {
-        const response = await fetch(this._getURL(docPath), {
+    async writeDocument (docPath, doc, authToken) {
+        const response = await fetch(this._getURL(docPath, authToken), {
             method: "PUT",
             headers: new Headers({
-                'Authorization': user,
                 'Content-Type': "application/json",
                 'X-Requested-With': "XMLHttpRequest"
             }),
@@ -83,11 +84,10 @@ class HTTPStore {
         }
     }
 
-    async deleteDocument (docPath, user) {
-        const response = await fetch(this._getURL(docPath), {
+    async deleteDocument (docPath, authToken) {
+        const response = await fetch(this._getURL(docPath, authToken), {
             method: "DELETE",
             headers: new Headers({
-                'Authorization': user,
                 'X-Requested-With': "XMLHttpRequest"
             }),
         });
@@ -111,43 +111,38 @@ class HTTPStore {
 
 
 
-class Client {
+async function RemoteDocument (store, docPath, authToken) {
+    const doc = await store.readDocument(docPath, authToken);
 
-    constructor (store, auth) {
-        this.store = store;
-        this.auth = auth;
+    var serverVersion = doc.version;
+
+    doc.beforeRead = function (path) {
+        this._auth.assertReadable(docPath, path);
     }
 
-    async loadDocument (path) {
-        const client = this;
-        const doc = await this.store.readDocument(path, this.auth);
-
-        var serverVersion = doc.version;
-
-        doc.sync = async function () {
-            const changes = this.delta(serverVersion);
-            const missingChanges = await client.store.updateDocument(path, serverVersion, changes, client.auth);
-            doc.applyChanges(...missingChanges);
-            serverVersion = doc.verson;
-        }
-
-        doc.store = async function () {
-            await client.storeDocument(path, this);
-            serverVersion = doc.version;
-        }
-
-        return doc;
+    doc.beforeChange = function (change) {
+        this._auth.assertWritable(docPath, change.path);
     }
 
-    async storeDocument (path, doc) {
-        await this.store.writeDocument(path, doc, this.auth);
+    doc.beforeCommit = function (releaseType) {
+        this._auth.assertWritable(docPath, "/");
     }
 
-    async deleteDocument (path) {
-        await this.store.deleteDocument(path, this.auth);
+    doc.sync = async function () {
+        const changes = this.delta(serverVersion);
+        const missingChanges = await store.updateDocument(docPath, serverVersion, changes, authToken);
+        doc.applyChanges(...missingChanges);
+        serverVersion = doc.verson;
     }
+
+    doc.save = async function () {
+        await store.writeDocument(docPath, this, authToken);
+        serverVersion = this.version;
+    }
+
+    return doc;
 }
 
 
-exports.HTTPStore = HTTPStore;
-exports.Client = Client;
+exports.Store = Store;
+exports.RemoteDocument = RemoteDocument;

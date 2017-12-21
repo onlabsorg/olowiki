@@ -29,6 +29,7 @@
       "font-awesome": "npm:font-awesome@^4.7.0",
       "html-to-vdom": "npm:html-to-vdom@^0.7.0",
       "js-yaml": "npm:js-yaml@^3.10.0",
+      "jsonwebtoken": "npm:jsonwebtoken@^8.1.0",
       "lodash": "npm:lodash@^4.17.4",
       "marked": "npm:marked@^0.3.6",
       "minimatch": "npm:minimatch@^3.0.4",

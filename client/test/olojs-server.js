@@ -16,6 +16,10 @@ require("./olojs/change");
 require("./olojs/document");
 
 
+// testing olojs.Auth
+require("./olojs/auth");
+
+
 // testing olojs.FileStore
 
 const YAML = require('js-yaml');
@@ -38,5 +42,6 @@ async function deleteFile (docPath) {
     await fs.unlink(`${storePath}/${docPath}`);
 }
 
+const Auth = require("../lib/olojs/auth");
 const testStore = require("./olojs/store");
-testStore('FileStore', store, writeFile, fileExists, deleteFile);
+testStore('FileStore', store, writeFile, fileExists, deleteFile, hash => new Auth(hash));

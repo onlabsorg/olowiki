@@ -1,17 +1,22 @@
 const ace = require("./olo-editor/ace-shadowDOM-shim");
+const YAML = require("js-yaml");
 
-const model = require("model");
+const Change = require("olojs/change");
+const Model = require("model");
 
-const OloElement = require("olo-element");
+const OloComponent = require("olo-component");
 const oloEditorTemplate = require("./olo-editor/olo-editor.html!text");
 
 
 
-class OloEditor extends OloElement {
+class OloEditor extends OloComponent {
+
+    static get template () {
+        return oloEditorTemplate;
+    }
 
     constructor () {
         super();
-        this.shadowRoot.innerHTML = oloEditorTemplate;
 
         this.aceEditor = ace.edit(this.$("#editor"), this.$("#header"));
 
@@ -40,13 +45,33 @@ class OloEditor extends OloElement {
         this.aceEditor.setTheme(`ace/theme/${theme}`);
     }
 
-    get value () {
-        return this.aceEditor.getValue();
+    updateView () {
+        var content;
+        if (!this.model) {
+            content = "";
+        } else if (this.model.type() === "Object") {
+            content = YAML.dump(this.model.get());
+        } else {
+            content = String(this.model.get());
+        }
+        this.aceEditor.setValue(content, -1);
     }
 
-    set value (newValue) {
-        newValue = String(newValue);
-        this.aceEditor.setValue(newValue, -1);
+    commit () {
+        if (!this.model) return false;
+
+        const oldValue = this.model.get("/");
+        if (this.model.type() === "Object") {
+            var newValue = YAML.load(this.aceEditor.getValue());
+            var changes = Change.diff(oldValue, newValue);
+            if (changes.length === 0) return false;
+            this.model.applyChanges(...changes);
+        } else {
+            var newValue = this.aceEditor.getValue();
+            if (oldValue === newValue) return false;
+            this.model.set('/', newValue);
+        }
+        return true;
     }
 
     focus () {

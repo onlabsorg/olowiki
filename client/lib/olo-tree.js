@@ -48,12 +48,31 @@ class OloTree extends OloVDOM {
         `;
     }
 
+    isCollapsed (path) {
+        path = Path.parse(path).toString();
+        return !this._expandedNodes.has(path) && path !== "/";
+    }
+
+    expand (path) {
+        path = Path.parse(path).toString();
+        this._expandedNodes.add(path);
+        this.updateView();
+    }
+
+    collapse (path) {
+        path = Path.parse(path).toString();
+        this._expandedNodes.delete(path);
+        this.updateView();
+    }
+
     getChildPaths (path) {
-        const modelValue = model.getModel(path);
-        if (Value.type(modelValue) !== 'Object') return [];
-        const childNames = this._getChildNames(modelValue);
-        const rootPath = Path.parse(path).toString();
-        return childNames.map(name => `${rootPath}/${name}`);
+        if (!this.model) return [];
+        path = Path.parse(path);
+        const model = new Model(this.model.document, path);
+        if (model.type() !== 'Object') return [];
+        const childNames = this._getChildNames(model);
+        const basePathStr = path.length > 0 ? String(path) : "";
+        return childNames.map(name => `${basePathStr}/${name}`);
     }
 
     getSiblingPaths (path) {
@@ -75,23 +94,6 @@ class OloTree extends OloVDOM {
         for (let i=0; i<siblingPaths.length; i++) {
             if (path === String(siblingPaths[i])) return siblingPaths[i+1];
         }
-    }
-
-    isCollapsed (path) {
-        path = Path.parse(path).toString();
-        return !this._expandedNodes.has(path) && path !== "/";
-    }
-
-    expand (path) {
-        path = Path.parse(path).toString();
-        this._expandedNodes.add(path);
-        this.updateView();
-    }
-
-    collapse (path) {
-        path = Path.parse(path).toString();
-        this._expandedNodes.delete(path);
-        this.updateView();
     }
 
     _renderNodeList (model) {

@@ -16,8 +16,6 @@ const keyString = require("utils/key-string");
 const Split = require("olo-outliner/Split");
 const oloOutlinerTemplate = require("olo-outliner/olo-outliner.html!text");
 
-const YAML = require("js-yaml");
-
 
 
 class OloOutliner extends OloComponent {
@@ -29,11 +27,10 @@ class OloOutliner extends OloComponent {
     constructor () {
         super();
 
-        this.addEventListener('olo-tree-item-click', event => {
-            const modelAttr = Path.parse(event.detail.path).toString();
-            this.setAttribute("model", modelAttr);
-        });
 
+        // INIT MAIN LAYOUT
+
+        if (!this.hasAttribute("mode")) this.setAttribute("mode", "view");
 
         const splitOptions = {
             sizes: [25, 75],
@@ -51,13 +48,46 @@ class OloOutliner extends OloComponent {
             },
             onDragEnd: () => {splitOptions.sizes = this._split.getSizes()}
         }
+
         this._split = Split([this.$("nav"), this.$("#content")], splitOptions);
 
 
-        this.tabIndex = 1;
-        this.addEventListener("keydown", event => this._handleKeyDown(event));
+        // INIT VIEWER
 
-        this.dialog.addEventListener("keydown", event => event.stopPropagation());
+        this.viewer.tabIndex = 1;
+        this.viewer.addEventListener("keydown", event => this._handleViewerKeyDown(event));
+
+
+        // INIT EDITOR
+
+        this.editor.tabIndex = 1;
+        this.editor.addEventListener("keydown", event => this._handleEditorKeyDown(event));
+
+
+        // INIT TREE
+
+        this.addEventListener('olo-tree-item-click', event => {
+            const modelAttr = Path.parse(event.detail.path).toString();
+            this.setAttribute("model", modelAttr);
+        });
+
+        this.$("nav").tabIndex = 1;
+        this.$("nav").addEventListener("keydown", event => this._handleTreeKeyDown(event));
+
+
+        // INIT HEADER
+
+        this.$("#button-edit").addEventListener("click", event => this._setEditMode(event.shiftKey));
+        this.$("#button-done").addEventListener("click", event => this._setViewMode());
+        this.$("#button-refresh").addEventListener("click", event => this.refreshDocument());
+        this.$("#button-commit").addEventListener("click", event => this.commitDocument());
+    }
+
+    attributeChangedCallback (attrName, oldVal, newVal) {
+        if (attrName === "model" && this.getAttribute("mode") === "edit") {
+            this._saveTemplate();
+        }
+        super.attributeChangedCallback(attrName, oldVal, newVal);
     }
 
     get dialog () {
@@ -76,78 +106,39 @@ class OloOutliner extends OloComponent {
         return this.$("olo-editor");
     }
 
-    addButton (faIconName, onClick) {
-        const button = document.createElement("span");
-        button.setAttribute("class", `control fa fa-${faIconName}`);
-        button.setAttribute("aria-hidden", true);
-        this.$("#controls").appendChild(button);
-        button.addEventListener("click", onClick);
+    refreshDocument () {
+        this.dialog.pushMessage("Document refresh not implemented!").timeout(1000);
     }
 
-    async editTemplate () {
-        console.log(this.editor.getMode());
-        const templatePath = Path.parse(this.viewer.modelPath, '__template__');
-        const oldTemplate = model.getModel(templatePath) || "";
-
-        this.editor.setMode("markdown");
-        const newTemplate = await this._edit(oldTemplate);
-        if (newTemplate === null) return;
-
-        model.setModel(templatePath, newTemplate);
+    commitDocument () {
+        this.dialog.pushMessage("Document commit not implemented!").timeout(1000);
     }
 
-    async editDocument () {
-        const doc = model.getDocument();
-        const oldDocHash = doc.get("/");
-        const oldYAML = YAML.dump(oldDocHash);
+    _handleViewerKeyDown (event) {
+        event.keyString = keyString(event);
+        switch (event.keyString) {
 
-        this.editor.setMode("yaml");
-        const newYAML = await this._edit(oldYAML);
-        if (newYAML === null) return;
+            case "ctrl-enter":
+                this._setEditMode();
+                break;
 
-        const newDocHash = YAML.load(newYAML);
-        const changes = Change.diff(oldDocHash, newDocHash);
-        doc.applyChanges(...changes);
+            case "ctrl-shift-enter":
+                this._setEditMode(true);
+                break;
+        }
     }
 
-    _edit (text) {
-        return new Promise((resolve, reject) => {
-            this.$("#content").classList.add("edit");
-            this.editor.value = text;
+    _handleEditorKeyDown (event) {
+        event.keyString = keyString(event);
+        switch (event.keyString) {
 
-            const done = (retval) => {
-                this.$("#content").classList.remove("edit");
-                this.editor.removeEventListener("keydown", onKeyDown);
-                this.editor.removeEventListener("focusout", onFocusOut);
-                this.viewer.focus();
-                resolve(retval);
-            }
-
-            const onKeyDown = event => {
-                const keyStr = keyString(event);
-                switch (keyStr) {
-                    case "ctrl-enter":
-                        event.stopPropagation();
-                        done(this.editor.value);
-                        break;
-                    case "esc":
-                        event.stopPropagation();
-                        done(null);
-                        break;
-                }
-            }
-            this.editor.addEventListener("keydown", onKeyDown);
-
-            const onFocusOut = event => {
-                done(this.editor.value);
-            }
-            this.editor.addEventListener("focusout", onFocusOut);
-
-            this.editor.focus();
-        });
+            case "ctrl-enter":
+                this._setViewMode();
+                break;
+        }
     }
 
-    _handleKeyDown (event) {
+    _handleTreeKeyDown (event) {
         event.keyString = keyString(event);
         switch (event.keyString) {
 
@@ -156,11 +147,13 @@ class OloOutliner extends OloComponent {
                 break;
 
             case "ctrl-enter":
-                this.editTemplate();
+                var mode = this.getAttribute("mode");
+                if (mode === "view") this._setEditMode();
+                else if (mode === "edit") this._setViewMode();
                 break;
 
             case "ctrl-shift-enter":
-                this.editDocument();
+                this._setEditMode(true);
                 break;
 
             case "up":
@@ -172,14 +165,14 @@ class OloOutliner extends OloComponent {
                 break;
 
             case "left":
-                var selectedPath = this.tree.selectedPath;
+                var selectedPath = this.tree.model.path;
                 if (String(selectedPath) !== String(this.tree.modelPath)) {
                     this.tree.collapse(selectedPath);
                 }
                 break;
 
             case "right":
-                var selectedPath = this.tree.selectedPath;
+                var selectedPath = this.tree.model.path;
                 if (String(selectedPath) !== String(this.tree.modelPath)) {
                     this.tree.expand(selectedPath);
                 }
@@ -188,22 +181,22 @@ class OloOutliner extends OloComponent {
     }
 
     _editItemName () {
-        const selectedPath = this.tree.selectedPath;
-        this.dialog.input("Change item name:", selectedPath.leaf)
+        const oldName = this.model.path.leaf;
+        this.dialog.input("Change item name:", oldName)
         .then(newName => {
-            if (newName !== selectedPath.leaf) {
-                const doc = model.getDocument();
-                const modelValue = model.getModel(selectedPath);
-                doc.delete(`/data/${selectedPath}`);
-                doc.set(`/data/${selectedPath}/../${newName}`, modelValue);
-                this.tree.selectedPath = `/${selectedPath}/../${newName}`;
+            if (newName !== oldName) {
+                const parentModel = this.model.getSubModel("..");
+                const modelValue = parentModel.get(oldName);
+                parentModel.delete(oldName);
+                parentModel.set(newName, modelValue);
+                this.setAttribute("model", `${parentModel.path}/${newName}`);
             }
         });
     }
 
     _selectPreviousItem () {
-        const selectedPath = Path.parse(this.tree.selectedPath);
-        if (String(selectedPath) === String(this.tree.modelPath)) return;
+        const selectedPath = this.model.path;
+        if (String(selectedPath) === "/") return;
 
         const previousSibling = this.tree.getPreviousSiblingPath(selectedPath);
         if (previousSibling) {
@@ -213,36 +206,59 @@ class OloOutliner extends OloComponent {
                 if (previousItemChildPaths.length === 0) break;
                 previousItemPath = previousItemChildPaths.pop();
             }
-            this.tree.selectedPath = previousItemPath;
+            this.setAttribute("model", String(previousItemPath));
         } else {
-            this.tree.selectedPath = selectedPath.parent;
+            this.setAttribute("model", String(selectedPath.parent));
         }
     }
 
     _selectNextItem () {
-        const selectedPath = this.tree.selectedPath;
+        const selectedPath = this.model.path;
 
         if (!this.tree.isCollapsed(selectedPath)) {
             let childPaths = this.tree.getChildPaths(selectedPath);
             if (childPaths.length > 0) {
-                this.tree.selectedPath = childPaths[0];
+                this.setAttribute("model", String(childPaths[0]));
                 return;
             }
         }
 
         const nextSiblingPath = this.tree.getNextSiblingPath(selectedPath);
         if (nextSiblingPath) {
-            this.tree.selectedPath = nextSiblingPath;
+            this.setAttribute("model", String(nextSiblingPath));
         } else {
             var parentPath = selectedPath;
-            while (String(parentPath) !== String(this.tree.modelPath)) {
+            while (String(parentPath) !== "/") {
                 let nextItemPath = this.tree.getNextSiblingPath(parentPath);
                 if (nextItemPath) {
-                    this.tree.selectedPath = nextItemPath;
+                    this.setAttribute("model", String(nextItemPath));
                     return;
                 }
                 parentPath = parentPath.parent;
             }
+        }
+    }
+
+    _saveTemplate () {
+        const committed = this.editor.commit();
+        if (committed) this.dialog.pushMessage(`Saved: '${this.model.path}'`).timeout(1000);
+    }
+
+    _setViewMode () {
+        if (this.getAttribute("mode") === "edit") {
+            this._saveTemplate();
+            this.setAttribute("mode", "view");
+            this.viewer.focus();
+        }
+    }
+
+    _setEditMode (struct=false) {
+        if (this.getAttribute("mode") === "view") {
+            const modelAttr = struct ? "." : "./__template__";
+            this.editor.setAttribute("model", modelAttr);
+            this.setAttribute("mode", "edit");
+            this.editor.updateView();
+            this.editor.focus();
         }
     }
 }

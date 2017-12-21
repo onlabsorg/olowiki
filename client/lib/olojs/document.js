@@ -2,114 +2,115 @@
 const Value = require("./value");
 const Path = require("./path");
 const Change = require("./change");
-const CRDT = require("./CRDT");
-const errors = require("./errors");
 
 const semver = require("semver");
 const getSemverRelease = (version) => (semver.valid(version) || '0.0.0').split('-')[0];
 const getSemverPrerelease = (version) => Number((semver.prerelease(semver.valid(version)) || ['pre', '0'])[1]);
 
-const ROLES = {
-    reader: 0b0001,
-    writer: 0b0011,
-    admin:  0b0111,
-    owner:  0b1111
-};
 
 
+class Document {
 
-class Document extends CRDT.Dict {
+    constructor (docHash) {
+        docHash = Object(docHash);
 
-    constructor (docHash, userName='root') {
-        docHash = Value.type(docHash) === 'Object' ? docHash : {};
-        super(docHash.committed, docHash.release, docHash.changes);
-        this._owner = docHash.owner;
-        this._userName = userName;
-        this.changeCallbacks = new Set();
-    }
+        this._committed = Value.type(docHash.committed) === 'Object' ? Value(docHash.committed) : {};
 
-    get ownerName () {
-        return this._owner;
-    }
+        this._release = getSemverRelease(docHash.release);
 
-    get userName () {
-        return this._userName;
-    }
-
-    get userRole () {
-        if (this.ownerName === this.userName || this.userName === 'root') {
-            return 'owner';
+        if (Value.type(docHash.changes) === 'Array') {
+            this._changes = docHash.changes
+                    .filter(change => Value.type(change) === 'Object')
+                    .map(change => new Change(change.path, change.value, change.timestamp));
         } else {
-            let userName = this.userName;
-            return this._sudo(() => this.get(`/users/${userName}/role`));
+            this._changes = [];
+        }
+
+        this._digest = Change.digest(this._committed, ...this._changes);
+
+        this._changeCallbacks = new Set();
+    }
+
+    get version () {
+        return `${this._release}-pre.${this._changes.length}`;
+    }
+
+    get (path) {
+        path = Path.parse(path);
+        this.beforeRead(path);
+        return path.lookup(this._digest);
+    }
+
+    type (path) {
+        const value = this.get(path);
+        return Value.type(value);
+    }
+
+    applyChanges (...changes) {
+        const validChanges = changes.filter(change => change instanceof Change);
+        if (validChanges.length === 0) return;
+
+        for (let change of validChanges) this.beforeChange(change);
+        for (let change of validChanges) this._changes.push(change);
+
+        let oldDigest = this._digest;
+        let newDigest = this._digest = Change.digest(this._committed, ...this._changes);;
+        let diff = Change.diff(oldDigest, newDigest);
+        if (diff.length > 0) {
+            for (let callback of this.changeCallbacks) {
+                if (typeof callback === 'function') callback(diff);
+            }
         }
     }
 
-    beforeRead (path) {
-        this.assertReadable(path);
+    set (path, value) {
+        const change = new Change(path, value);
+        this.applyChanges(change);
     }
 
-    beforeChange (change) {
-        this.assertEditable(change.path);
+    delete (path) {
+        const change = new Change(path, undefined);
+        this.applyChanges(change);
     }
 
-    afterChange (diff) {
-        for (let callback of this.changeCallbacks) {
-            if (typeof callback === 'function') callback(diff);
+    commit (releaseType="patch") {
+        if (releaseType === "major" || releaseType === "minor" || releaseType === "patch") {
+            this.beforeCommit(releaseType);
+            this._committed = this._digest;
+            this._release = semver.inc(this._release, releaseType);
+            this._changes = [];
         }
     }
 
-    beforeCommit (releaseType) {
-        this.assertWritable();
+    delta (version) {
+        this.beforeRead(new Path());
+
+        const oldVersion = semver.valid(version);
+        const newVersion = this.version;
+        if (getSemverRelease(oldVersion) !== getSemverRelease(newVersion)) return [];
+        if (semver.gte(oldVersion, newVersion)) return [];
+
+        const oldPrerelease = getSemverPrerelease(oldVersion);
+        return this._changes.slice(oldPrerelease);
     }
 
     toHash () {
-        const hash = super.toHash();
-        hash.owner = this._owner;
-        return hash;
+        this.beforeRead(new Path());
+        return {
+            committed: Value(this._committed),
+            release: this._release,
+            changes: this._changes.map(change => change.toHash()),
+        };
     }
 
+    beforeRead (path) {}
 
-    // access control methods
+    beforeChange (change) {}
 
-    isReadable (path) {
-        path = Path.parse(path);
-        const role = this.userRole;
-        return ROLES[role] >= ROLES.reader;
-    }
+    beforeCommit (releaseType) {}
 
-    assertReadable (path) {
-        if (!this.isReadable(path)) throw new errors.ReadPermissionError(path);
-    }
-
-    isEditable (path) {
-        path = Path.parse(path);
-        const role = this.userRole;
-        if (ROLES[role] >= ROLES.owner) return true;
-        if (path[0] !== 'data' && ROLES[role] >= ROLES.admin) return true;
-        if (path[0] === 'data' && ROLES[role] >= ROLES.writer) return true;
-        return false;
-    }
-
-    assertEditable (path) {
-        if (!this.isEditable(path)) throw new errors.UpdatePermissionError(path);
-    }
-
-    isWritable () {
-        const role = this.userRole;
-        return ROLES[role] >= ROLES.owner;
-    }
-
-    assertWritable () {
-        if (!this.isWritable()) throw new errors.WritePermissionError('/');
-    }
-
-    _sudo (command) {
-        const userName = this.userName;
-        this._userName = 'root';
-        const retval = command();
-        this._userName = userName;
-        return retval;
+    get changeCallbacks () {
+        return this._changeCallbacks;
     }
 }
 

@@ -36,11 +36,12 @@ app.delete("/fs/*", function (req, res, next) {
 
 const {FileStore, Router} = require("../lib/olojs/store-server");
 const olojsStore = new FileStore(`${__dirname}/olojs/store`);
-const olojsRouter = new Router(olojsStore);
+const secret = "test-jwt-key";
+const olojsRouter = new Router(olojsStore, secret);
 
 app.use('/store', olojsRouter);
 
- 
+
 
 app.use(express.static(basePath, {etag:false}));
 

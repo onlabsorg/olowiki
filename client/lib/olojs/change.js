@@ -75,7 +75,7 @@ class Change {
 
 
         if (type1 !== type2) {
-            return [new Change('/', val2, 0)];
+            return [new Change('/', val2)];
         }
 
         if (type1 !== "Object") {

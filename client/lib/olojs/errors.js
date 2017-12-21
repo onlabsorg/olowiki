@@ -2,7 +2,7 @@
 
 exports.ReadPermissionError = class extends Error {
     constructor (path) {
-        super(`Read access deinied on '${path}'`);
+        super(`Read access deinied to '${path}'`);
         this.path = String(path);
         this.statusCode = 403;
     }
@@ -15,24 +15,9 @@ exports.ReadPermissionError = class extends Error {
     }
 };
 
-exports.UpdatePermissionError = class extends Error {
-    constructor (path) {
-        super(`Update access deinied on '${path}'`);
-        this.path = String(path);
-        this.statusCode = 403;
-    }
-
-    toHash () {
-        return {
-            type: 'UpdatePermissionError',
-            param: this.path
-        }
-    }
-};
-
 exports.WritePermissionError = class extends Error {
     constructor (path) {
-        super(`Write access deinied on '${path}'`);
+        super(`Write access deinied to '${path}'`);
         this.path = String(path);
         this.statusCode = 403;
     }

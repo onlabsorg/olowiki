@@ -1,5 +1,6 @@
 
 const Path = require("olojs/path");
+const Change = require("olojs/change");
 const Document = require("olojs/document");
 
 
@@ -27,6 +28,11 @@ class Model {
     get (subPath) {
         const fullPath = this._getFullPath(subPath);
         return this.document.get(fullPath);
+    }
+
+    applyChanges (...subChanges) {
+        const changes = subChanges.map(change => new Change(this._getFullPath(change.path), change.value, change.timestamp));
+        this.document.applyChanges(...changes);
     }
 
     set (subPath, value) {

@@ -1,17 +1,8 @@
 committed:
-  users:
-    Admin:
-      role: admin
-    Writer:
-      role: writer
-    Reader:
-      role: reader
-    Guest:
-      role: guest
   data:
-    a: 10
-    b: 20
-    c: 30
-owner: Owner
+    x: 10
+    b: true
+    s: abc
+    'n': null
 release: 0.1.0
 changes: []

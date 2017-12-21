@@ -4,22 +4,25 @@ const Model = require("model");
 const OloTree = require("olo-tree");
 
 
-const treeDoc = new Document();
-treeDoc.set('data', {
-    child1: {
-        grandChild1: {},
-        grandChild2: {},
-        grandChild3: {},
-    },
-    child2: {
-        grandChild1: {},
-        grandChild2: {},
-        grandChild3: {},
-    },
-    child3: {
-        grandChild1: {},
-        grandChild2: {},
-        grandChild3: {},
+const treeDoc = new Document({
+    committed: {
+        data: {
+            child1: {
+                grandChild1: {},
+                grandChild2: {},
+                grandChild3: {},
+            },
+            child2: {
+                grandChild1: {},
+                grandChild2: {},
+                grandChild3: {},
+            },
+            child3: {
+                grandChild1: {},
+                grandChild2: {},
+                grandChild3: {},
+            }
+        }
     }
 });
 

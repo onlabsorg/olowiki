@@ -16,7 +16,6 @@
 
     .card {
         border: 1px solid var(olo-text-bgcolor);
-        border-radius: var(--olo-spacing);
         box-shadow: 2px 2px 1px 0px rgba(0,0,0,0.75);
         margin: 0;
         background-color: var(--olo-text-bgcolor);
@@ -63,20 +62,32 @@
         flex: 3 1 100%;
     }
 
-    header #controls {
+    header #buttons {
         flex: 1 0 auto;
         display: flex;
         justify-content: flex-end;
     }
 
-    header #controls .control {
+    header #buttons .button {
         flex: 0 0 auto;
         margin: var(--olo-spacing);
         color: var(--olo-dark-color);
         font-size: 0.8em;
     }
 
-    header #controls .control:hover {
+    header #buttons .button:hover {
+        color: var(--olo-dark-hicolor);
+    }
+
+    :host([mode="view"]) header #buttons .edit.button {
+        display: none;
+    }
+
+    :host([mode="edit"]) header #buttons .view.button {
+        display: none;
+    }
+
+    header #buttons .control:hover {
         color: var(--olo-dark-hicolor);
     }
 
@@ -111,15 +122,22 @@
 
     main #content olo-editor {
         flex: 1 1 100%;
-        display: none;
         padding: 0;
     }
 
-    main #content.edit olo-viewer {
+    :host([mode="view"]) main #content olo-viewer {
+        display: block;
+    }
+
+    :host([mode="view"]) main #content olo-editor {
         display: none;
     }
 
-    main #content.edit olo-editor {
+    :host([mode="edit"]) main #content olo-viewer {
+        display: none;
+    }
+
+    :host([mode="edit"]) main #content olo-editor {
         display: flex;
     }
 
@@ -129,7 +147,12 @@
 <header style="font-size: 2em;">
     <div id="logo">OnLabs.org</div>
     <olo-outliner-dialog></olo-outliner-dialog>
-    <div id="controls"></div>
+    <div id="buttons">
+        <span id="button-edit"        class="view button fa fa-edit"></span>
+        <span id="button-done"        class="edit button fa fa-check"></span>
+        <span id="button-refresh"     class="button fa fa-refresh"></span>
+        <span id="button-commit"      class="button fa fa-save"></span>
+    </div>
 </header>
 <main>
     <nav class="card">
@@ -137,6 +160,6 @@
     </nav>
     <div id="content">
         <olo-viewer class="card" model="."></olo-viewer>
-        <olo-editor class="card"></olo-editor>
+        <olo-editor class="card" model="./__template__"></olo-editor>
     </div>
 </main>

@@ -8,6 +8,7 @@ const errors = require("./errors");
 const Change = require("./change");
 const Document = require("./document");
 
+const Auth = require("./auth");
 
 
 class FileStore {
@@ -20,7 +21,10 @@ class FileStore {
         return this.path + docPath;
     }
 
-    async readDocument (docPath, userName) {
+    async readDocument (docPath, auth) {
+        auth = auth instanceof Auth ? auth : Auth.default;
+        auth.assertReadable(docPath);
+
         const filePath = this._getFullPath(docPath);
 
         const fileExists = await fs.exists(filePath);
@@ -28,91 +32,79 @@ class FileStore {
 
         const fileText = await fs.readFile(filePath, {encoding:'utf8'});
         const docHash = YAML.load(fileText);
-        const doc = new Document(docHash, userName);
-
-        // throw an error if the user has no read permission
-        doc.assertReadable('/');
+        const doc = new Document(docHash);
 
         return doc;
     }
 
-    async writeDocument (docPath, doc, userName) {
-        var oldDoc;
-        try {
-            oldDoc = await this.readDocument(docPath, userName);
-            oldDoc.assertWritable();
-        } catch (error) {
-            if (error instanceof errors.DocumentNotFoundError) {
-                let canCreate = await this.canCreate(docPath, userName);
-                if (!canCreate) throw new errors.WritePermissionError(docPath);
-            } else {
-                throw error;
-            }
-        }
+    async writeDocument (docPath, doc, auth) {
+        auth = auth instanceof Auth ? auth : Auth.default;
+        auth.assertWritable(docPath, "/");
 
         const docHash = doc.toHash();
-        if (!docHash.owner) docHash.owner = userName;
         const fileText = YAML.dump(docHash);
         const filePath = this._getFullPath(docPath);
         await fs.writeFile(filePath, fileText, {encoding:'utf8'});
     }
 
-    async updateDocument (docPath, sinceVersion, changes, userName) {
-        const doc = await this.readDocument(docPath, userName);
+    async updateDocument (docPath, sinceVersion, changes, auth) {
+        auth = auth instanceof Auth ? auth : Auth.default;
+        for (let change of changes) auth.assertWritable(docPath, change.path);
+
+        const doc = await this.readDocument(docPath, auth);
+        if (doc === null) {
+            throw new errors.DocumentNotFoundError(docPath);
+        }
         const missingChanges = doc.delta(sinceVersion);
         doc.applyChanges(...changes);
-        await this.writeDocument(docPath, doc, 'root');
+        await this.writeDocument(docPath, doc, new Auth({pattern:"**", permission:"admin"}));
         return missingChanges;
     }
 
-    async deleteDocument (docPath, userName) {
-        const doc = await this.readDocument(docPath, userName);
-        if (doc === null) throw new errors.DocumentNotFoundError(docPath);
-
-        doc.assertWritable();
+    async deleteDocument (docPath, auth) {
+        auth = auth instanceof Auth ? auth : Auth.default;
+        auth.assertWritable(docPath, "/");
 
         const filePath = this._getFullPath(docPath);
+        const fileExists = await fs.exists(filePath);
+        if (!fileExists) throw new errors.DocumentNotFoundError(docPath);
         await fs.unlink(filePath);
-    }
-
-    async canCreate (docPath, userName) {
-        return userName === 'root';
     }
 }
 
 
 
-function Router (store) {
+function Router (store, secret) {
     const router = express.Router();
 
     router.use(bodyParser.json());
 
+    router.use(function (req, res, next) {
+        const token = req.query.auth;
+        req.auth = token ? Auth.decode(token, secret) || Auth.default : Auth.default;
+        next();
+    });
+
     router.get('*', function (req, res, next) {
-        store.readDocument(req.path, req.userName)
+        store.readDocument(req.path, req.auth)
         .then((doc) => {
             res.set("Content-Type", "application/json");
             res.set("ETag", doc.version);
-            res.set("X-olo-user-name", doc.userName);
-            res.status(200).json(doc.toHash());
+            res.status(200).json({
+                auth: req.auth.toHash(),
+                doc: doc.toHash()
+            });
         })
-        .catch((error) => {
-            const statusCode = error.statusCode || 500;
-            const errorHash = error.toHash ? error.toHash() : {type:'Error', param:String(error)};
-            res.status(statusCode).json(errorHash);
-        });
+        .catch(error => handleError(error, res));
     });
 
     router.put('*', function (req, res, next) {
         const newDoc = new Document(req.body || {});
-        store.writeDocument(req.path, newDoc, req.userName)
+        store.writeDocument(req.path, newDoc, req.auth)
         .then(() => {
             res.status(200).send();
         })
-        .catch((error) => {
-            const statusCode = error.statusCode || 500;
-            const errorHash = error.toHash ? error.toHash() : {type:'Error', param:String(error)};
-            res.status(statusCode).json(errorHash);
-        });
+        .catch(error => handleError(error, res));
     });
 
     router.patch('*', function (req, res, next) {
@@ -126,29 +118,27 @@ function Router (store) {
             changes = req.body.changes.map(change => new Change(change.path, change.value, change.timestamp));
         }
 
-        store.updateDocument(req.path, sinceVersion, changes, req.userName)
+        store.updateDocument(req.path, sinceVersion, changes, req.auth)
         .then((missingChanges) => {
             missingChanges = missingChanges.map(change => change.toHash());
             res.status(200).json(missingChanges);
         })
-        .catch((error) => {
-            const statusCode = error.statusCode || 500;
-            const errorHash = error.toHash ? error.toHash() : {type:'Error', param:String(error)};
-            res.status(statusCode).json(errorHash);
-        });
+        .catch(error => handleError(error, res));
     });
 
     router.delete('*', function (req, res, next) {
-        store.deleteDocument(req.path, req.userName)
+        store.deleteDocument(req.path, req.auth)
         .then(() => {
             res.status(200).send();
         })
-        .catch((error) => {
-            const statusCode = error.statusCode || 500;
-            const errorHash = error.toHash ? error.toHash() : {type:'Error', param:String(error)};
-            res.status(statusCode).json(errorHash);
-        });
+        .catch(error => handleError(error, res));
     });
+
+    function handleError (error, res) {
+        const statusCode = error.statusCode || 500;
+        const errorHash = error.toHash ? error.toHash() : {type:'Error', param:String(error)};
+        res.status(statusCode).json(errorHash);
+    }
 
     return router;
 }
