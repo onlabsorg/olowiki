@@ -181,6 +181,34 @@ suite("olojs.RemoteDocument", () => {
         test().then(done).catch(done);
     });
 
+    test("RemoteDocument instance 'share' method", function (done) {
+        this.timeout(10000);
+        async function test () {
+            var doc;
+
+            await writeFile(testDocPath, YAML.dump(testDocHash));
+            doc = await RemoteDocument(store, testDocPath, Token({permission:'admin'}));
+
+            const info = await doc.share({user:"m.delbuono@gmail.com", pattern:"**", permission:"write"});
+
+            let infoProps = new Map();
+            info.response.replace(/\[([^\]]+)\]$/, (m, props) => {
+                props.replace(/\b([A-Z0-9]+)=([^\s]+)/g, (m, key, value) => {
+                    infoProps.set(key, value);
+                });
+            });
+
+            if (infoProps.has('STATUS') && infoProps.has('MSGID')) {
+                info.testMessageURL = 'https://ethereal.email/message/' + infoProps.get('MSGID');
+            }
+
+            console.log(info);
+            console.log(info.testMessageURL);
+        }
+        test().then(done).catch(done);
+    });
+
+
     test("RemoteDocument instance access control", (done) => {
         async function test () {
             var doc, error;
@@ -266,4 +294,5 @@ suite("olojs.RemoteDocument", () => {
         }
         test().then(done).catch(done);
     });
+
 });

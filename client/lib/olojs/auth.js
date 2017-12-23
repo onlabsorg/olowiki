@@ -21,6 +21,7 @@ class Auth {
         hash = Object(hash);
         this._pattern = hash.pattern || "**";
         this._permission = PERMISSIONS[hash.permission] ? hash.permission : "none";
+        this._user = hash.user;
     }
 
     get pattern () {
@@ -29,6 +30,10 @@ class Auth {
 
     get permission () {
         return this._permission;
+    }
+
+    get user () {
+        return this._user;
     }
 
     match (docPath) {
@@ -64,7 +69,8 @@ class Auth {
     toHash () {
         return {
             pattern: this.pattern,
-            permission: this.permission
+            permission: this.permission,
+            user: this.user
         }
     }
 

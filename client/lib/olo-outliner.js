@@ -81,6 +81,7 @@ class OloOutliner extends OloComponent {
         this.$("#button-done").addEventListener("click", event => this._setViewMode());
         this.$("#button-refresh").addEventListener("click", event => this.refreshDocument());
         this.$("#button-commit").addEventListener("click", event => this.commitDocument());
+        this.$("#button-share").addEventListener("click", event => this.shareDocument());
     }
 
     attributeChangedCallback (attrName, oldVal, newVal) {
@@ -112,6 +113,10 @@ class OloOutliner extends OloComponent {
 
     commitDocument () {
         this.dialog.pushMessage("Document commit not implemented!").timeout(1000);
+    }
+
+    shareDocument () {
+        this.dialog.pushMessage("Document share not implemented!").timeout(1000);
     }
 
     _handleViewerKeyDown (event) {

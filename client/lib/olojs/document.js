@@ -54,7 +54,7 @@ class Document {
         for (let change of validChanges) this._changes.push(change);
 
         let oldDigest = this._digest;
-        let newDigest = this._digest = Change.digest(this._committed, ...this._changes);;
+        let newDigest = this._digest = Change.digest(this._committed, ...this._changes);
         let diff = Change.diff(oldDigest, newDigest);
         if (diff.length > 0) {
             for (let callback of this.changeCallbacks) {

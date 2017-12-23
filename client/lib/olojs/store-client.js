@@ -14,7 +14,7 @@ class Store {
 
     _getURL (path, authToken) {
         var url = this.host + path;
-        if (authToken)  url += "?auth=" + authToken;
+        if (authToken) url += "?auth=" + authToken;
         return url;
     }
 
@@ -138,6 +138,31 @@ async function RemoteDocument (store, docPath, authToken) {
     doc.save = async function () {
         await store.writeDocument(docPath, this, authToken);
         serverVersion = this.version;
+    }
+
+    doc.share = async function (authHash, expiresIn) {
+        const response = await fetch(store.host + "/rpc/share", {
+            method: "POST",
+            headers: new Headers({
+                'Content-Type': "application/json",
+                'X-Requested-With': "XMLHttpRequest",
+            }),
+            body: JSON.stringify({
+                path: docPath,
+                auth: authHash,
+                expiresIn: expiresIn
+            })
+        });
+
+        switch (response.status) {
+
+            case 200:
+                let info = await response.json();
+                return info;
+
+            default:
+                await store._handleError(response);
+        }
     }
 
     return doc;

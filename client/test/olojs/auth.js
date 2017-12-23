@@ -124,14 +124,14 @@ suite("olojs.Auth", () => {
     });
 
     test("Auth.prototype.toHash()", () => {
-        var hash = {pattern:"/a/b/*", permission:"admin"};
+        var hash = {pattern:"/a/b/*", permission:"admin", user:"x@y"};
         var auth = new Auth(hash);
         expect(auth.toHash()).to.deep.equal(hash);
     });
 
     test("Auth encode and decode", (done) => {
         const secret = "shhh";
-        var hash = {pattern:"/a/b/*", permission:"admin"};
+        var hash = {pattern:"/a/b/*", permission:"admin", user:"x@y"};
 
         var auth = new Auth(hash);
         var token = auth.encode(secret);
