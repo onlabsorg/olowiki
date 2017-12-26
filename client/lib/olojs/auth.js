@@ -86,15 +86,21 @@ class Auth {
     }
 
     encode (secret, expiresIn="1y") {
-        const payload = this.toHash();
-        const token = jwtSign(payload, secret, {expiresIn:expiresIn});
+        const payloadDict = this.toHash();
+        const payloadList = [payloadDict.user, payloadDict.pattern, payloadDict.permission];
+        const token = jwtSign(payloadList, secret, {expiresIn:expiresIn});
         return token;
     }
 
     static decode (token, secret) {
         try {
-            const payload = jwtVerify(token, secret);
-            return new Auth(payload);
+            const payloadList = jwtVerify(token, secret);
+            const payloadDict = {
+                user: payloadList[0],
+                pattern: payloadList[1],
+                permission: payloadList[2]
+            }
+            return new Auth(payloadDict);
         } catch (err) {
             return null;
         }

@@ -46,8 +46,8 @@ class OloComponent extends OloElement {
         this.dispatch("olo-component-connected", this);
     }
 
-    attributeChangedCallback (attrName, oldVal, newVal) {
-        if (attrName === "model") this._updateModel();
+    modelAttributeChangedCallback (oldVal, newVal) {
+        this._updateModel();
     }
 
     disconnectedCallback () {

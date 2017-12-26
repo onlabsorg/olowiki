@@ -17,6 +17,11 @@ class OloElement extends HTMLElement {
         this.attachShadow({mode: 'open'});
     }
 
+    attributeChangedCallback (attrName, oldVal, newVal) {
+        const callback = this[`${attrName}AttributeChangedCallback`];
+        if (typeof callback === "function") callback.call(this, oldVal, newVal);
+    }
+
 
 
     // SERVICE METHODS

@@ -26,13 +26,8 @@ class OloNode extends OloComponent {
         this.$("#value").addEventListener('click', () => this.dispatch("olo-tree-item-click", {path:this.model.path}));
     }
 
-    attributeChangedCallback (attrName, oldVal, newVal) {
-        super.attributeChangedCallback(attrName, oldVal, newVal);
-        switch (attrName) {
-            case "collapsed":
-                this.updateView();
-                break;
-        }
+    collapsedAttributeChangedCallback (oldVal, newVal) {
+        this.updateView();
     }
 
     updateView () {

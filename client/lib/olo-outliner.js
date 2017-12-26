@@ -163,22 +163,29 @@ class OloOutliner extends OloComponent {
             return;
         }
 
-        const user = await this.dialog.input("User e-mail:");
+        const user = await this.dialog.input("User e-mail", "", "text");
         if (user === "") return;
 
-        const permission = await this.dialog.ask("Permission:", "admin", "write", "read", "cancel");
-        if (permission === "cancel") return;
+        const permission = await this.dialog.ask("Granted permission", 'admin', 'write', 'read', 'none');
+        if (permission === 'none') return;
 
-        const message = this.dialog.pushMessage("Sharing ...");
+        const expiresIn = await this.dialog.input("Permission expires in", "30d", "text");
+        if (expiresIn === "") return;
+
+
+        const message = this.dialog.pushMessage("Sharing document ...");
         try {
-            let token = await this.model.document.share(user, permission, "1y");
-            const url = `${location.origin}${location.pathname}?auth=${token}`;
-            console.log("Shared link:", url);
+            var token = await this.model.document.share(user, permission, expiresIn);
             message.done();
-            this.dialog.pushMessage("Shared!").timeout(1000);
-        } catch (e) {
+        } catch (error) {
+            var token = null;
             message.done();
             this.dialog.pushMessage("Failed!").timeout(1000);
+        }
+
+        if (token) {
+            let url = `${location.origin}${location.pathname}?auth=${token}`;
+            window.prompt("Shared URL (Ctrl+C, Enter)", url);
         }
     }
 

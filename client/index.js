@@ -36,6 +36,7 @@ async function loadDocument () {
     return doc;
 }
 
+
 loadDocument()
 .then(doc => {
     outliner.parentModel = new Model(doc, "/");
