@@ -40,7 +40,7 @@ class OloNode extends OloComponent {
         if (!this.model) {
             this.$("#value").textContent = "";
         } else if (this.model.path.length === 0) {
-            this.$("#value").textContent = "v" + this.model.document.version;
+            this.$("#value").textContent = this.model.document.name;
         } else {
             this.$("#value").textContent = this.model.path.leaf;
         }

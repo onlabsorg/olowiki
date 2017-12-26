@@ -31,7 +31,7 @@ class Store {
             case 200:
                 let responseHash = await response.json();
                 let doc = new Document(responseHash.doc);
-                doc._auth = new Auth(responseHash.auth);
+                doc.auth = new Auth(responseHash.auth);
                 return doc;
 
             default:
@@ -102,6 +102,26 @@ class Store {
         }
     }
 
+    async getToken (qAuth, expiresIn, authToken) {
+        const url = `${this.host}/token?auth=${authToken}&user=${qAuth.user}&pattern=${qAuth.pattern}&permission=${qAuth.permission}&exp=${expiresIn}`;
+        const response = await fetch(url, {
+            method: "GET",
+            headers: new Headers({
+                'X-Requested-With': "XMLHttpRequest"
+            }),
+        });
+
+        switch (response.status) {
+
+            case 200:
+                let token = await response.text();
+                return token;
+
+            default:
+                await this._handleError(response);
+        }
+    }
+
     async _handleError (response) {
         const errorHash = await response.json();
         const ErrorType = errors[errorHash.type] || Error;
@@ -114,18 +134,21 @@ class Store {
 async function RemoteDocument (store, docPath, authToken) {
     const doc = await store.readDocument(docPath, authToken);
 
+    doc.path = docPath;
+    doc.name = docPath.substring(docPath.lastIndexOf("/") + 1, docPath.lastIndexOf("."));
+
     var serverVersion = doc.version;
 
     doc.beforeRead = function (path) {
-        this._auth.assertReadable(docPath, path);
+        this.auth.assertReadable(docPath, path);
     }
 
     doc.beforeChange = function (change) {
-        this._auth.assertWritable(docPath, change.path);
+        this.auth.assertWritable(docPath, change.path);
     }
 
     doc.beforeCommit = function (releaseType) {
-        this._auth.assertWritable(docPath, "/");
+        this.auth.assertWritable(docPath, "/");
     }
 
     doc.sync = async function () {
@@ -140,29 +163,14 @@ async function RemoteDocument (store, docPath, authToken) {
         serverVersion = this.version;
     }
 
-    doc.share = async function (authHash, expiresIn) {
-        const response = await fetch(store.host + "/rpc/share", {
-            method: "POST",
-            headers: new Headers({
-                'Content-Type': "application/json",
-                'X-Requested-With': "XMLHttpRequest",
-            }),
-            body: JSON.stringify({
-                path: docPath,
-                auth: authHash,
-                expiresIn: expiresIn
-            })
+    doc.share = async function (user, permission, expiresIn) {
+        const qAuth = new Auth({
+            user: user,
+            pattern: docPath,
+            permission: permission
         });
-
-        switch (response.status) {
-
-            case 200:
-                let info = await response.json();
-                return info;
-
-            default:
-                await store._handleError(response);
-        }
+        const token = await store.getToken(qAuth, expiresIn, authToken);
+        return token;
     }
 
     return doc;

@@ -50,7 +50,6 @@
     "js-yaml": "^3.10.0",
     "jsonwebtoken": "^8.1.0",
     "minimatch": "^3.0.4",
-    "nodemailer": "^4.4.1",
     "semver": "^5.4.1"
   }
 }

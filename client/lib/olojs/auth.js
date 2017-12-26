@@ -51,6 +51,10 @@ class Auth {
         return false;
     }
 
+    canAdmin (docPath) {
+        return this.match(docPath) && PERMISSIONS[this.permission] >= PERMISSIONS.admin;
+    }
+
     assertReadable (docPath, subPath) {
         if (!this.canRead(docPath, subPath)) {
             const url = `${Path.parse(docPath)}#${Path.parse(subPath)}`;
@@ -63,6 +67,13 @@ class Auth {
         if (!this.canWrite(docPath, subPath)) {
             const url = `${Path.parse(docPath)}#${Path.parse(subPath)}`;
             throw new errors.WritePermissionError(url);
+        }
+    }
+
+    assertAdministrable (docPath) {
+        if (!this.canAdmin(docPath)) {
+            const url = `${Path.parse(docPath)}`;
+            throw new errors.AdminPermissionError(url);
         }
     }
 
@@ -94,6 +105,13 @@ class Auth {
 Auth.default = new Auth({
     pattern: "**",
     permission: "read"
+});
+
+
+Auth.root = new Auth({
+    user: "root",
+    pattern: "**",
+    permission: "admin"
 });
 
 

@@ -30,6 +30,23 @@ exports.WritePermissionError = class extends Error {
     }
 };
 
+
+exports.AdminPermissionError = class extends Error {
+    constructor (path) {
+        super(`Admin access deinied to '${path}'`);
+        this.path = String(path);
+        this.statusCode = 403;
+    }
+
+    toHash () {
+        return {
+            type: 'AdminPermissionError',
+            param: this.path
+        }
+    }
+};
+
+
 exports.DocumentNotFoundError = class extends Error {
     constructor (path) {
         super(`Document '${path}' not found`);

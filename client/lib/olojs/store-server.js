@@ -10,11 +10,6 @@ const Document = require("./document");
 
 const Auth = require("./auth");
 
-const nodemailer = require("nodemailer");
-const renderMailTemplate = (template, url) => {
-    template = template.replace("{{url}}", url);
-    return template;
-}
 
 
 class FileStore {
@@ -83,14 +78,33 @@ class FileStore {
 function Router (store, options) {
     const router = express.Router();
 
-    const mailTransport = nodemailer.createTransport(options.smtp);
-
     router.use(bodyParser.json());
 
     router.use(function (req, res, next) {
         const token = req.query.auth;
-        req.auth = token ? Auth.decode(token, options.secret) || Auth.default : Auth.default;
+        if (!token) {
+            req.auth = Auth.default;
+        } else if (token === options.rootToken) {
+            req.auth = Auth.root;
+        } else {
+            req.auth = Auth.decode(token, options.secret) || Auth.default;
+        }
         next();
+    });
+
+    router.get('/token', function (req, res, next) {
+        const qAuth = new Auth({
+            user: req.query.user,
+            pattern: req.query.pattern,
+            permission: req.query.permission
+        });
+
+        try {
+            req.auth.assertAdministrable(qAuth.pattern);
+            res.status(200).send(qAuth.encode(options.secret, req.query.exp));
+        } catch (error) {
+            handleError(error, res);
+        }
     });
 
     router.get('*', function (req, res, next) {
@@ -140,25 +154,6 @@ function Router (store, options) {
             res.status(200).send();
         })
         .catch(error => handleError(error, res));
-    });
-
-    router.post('/rpc/share', function (req, res, next) {
-        let docPath = req.body.path;
-        let auth = new Auth(req.body.auth);
-        let expiresIn = req.body.expiresIn;
-        let authToken = auth.encode(options.secret, expiresIn);
-        let url = `${req.protocol}://${req.hostname}${docPath}?auth=${authToken}`;
-        mailTransport.sendMail({
-            from: 'norelay@onlabs.org',
-            to: auth.user,
-            subject: 'olo document shared with your',
-            text: renderMailTemplate(options.mailTemplates.text, url),
-            html: renderMailTemplate(options.mailTemplates.html, url),
-        })
-        .then((info) => {
-            res.status(200).json(info);
-        })
-        .catch(error => hanldeError(error, res));
     });
 
     function handleError (error, res) {

@@ -91,6 +91,13 @@ class OloOutliner extends OloComponent {
         super.attributeChangedCallback(attrName, oldVal, newVal);
     }
 
+    updateView () {
+        const auth = this.model.document.auth;
+        this.$("footer").innerHTML = auth ?
+                `version: ${this.model.document.version} | user: ${auth.user} | permission: ${auth.permission} | pattern: ${auth.pattern}`:
+                `version: ${this.model.document.version} | user: undefined`;
+    }
+
     get dialog () {
         return this.$("olo-outliner-dialog");
     }
@@ -108,15 +115,71 @@ class OloOutliner extends OloComponent {
     }
 
     refreshDocument () {
-        this.dialog.pushMessage("Document refresh not implemented!").timeout(1000);
+        if (typeof this.model.document.sync !== "function") {
+            this.dialog.pushMessage("Document refresh not implemented!").timeout(1000);
+            return;
+        }
+
+        const message = this.dialog.pushMessage("Syncing ...");
+        this.model.document.sync()
+        .then(() => {
+            message.done();
+            this.dialog.pushMessage("Synced!").timeout(1000);
+        })
+        .catch(error => {
+            this.dialog.pushMessage("Failed!").timeout(1000);
+        });
+
     }
 
     commitDocument () {
-        this.dialog.pushMessage("Document commit not implemented!").timeout(1000);
+        if (typeof this.model.document.save !== "function") {
+            this.dialog.pushMessage("Document commit not implemented!").timeout(1000);
+            return;
+        }
+
+        this.dialog.ask("Commit release:", "major", "minor", "patch", "cancel")
+        .then(releaseType => {
+            if (releaseType === "cancel") return
+            this.model.document.commit(releaseType);
+            this.updateView();
+
+            let message = this.dialog.pushMessage("Committing ...");
+            this.model.document.save()
+            .then(() => {
+                message.done();
+                this.dialog.pushMessage("Committed!").timeout(1000);
+            })
+            .catch(error => {
+                message.done();
+                this.dialog.pushMessage("Failed!").timeout(1000);
+            });
+        })
     }
 
-    shareDocument () {
-        this.dialog.pushMessage("Document share not implemented!").timeout(1000);
+    async shareDocument () {
+        if (typeof this.model.document.share !== "function") {
+            this.dialog.pushMessage("Document share not implemented!").timeout(1000);
+            return;
+        }
+
+        const user = await this.dialog.input("User e-mail:");
+        if (user === "") return;
+
+        const permission = await this.dialog.ask("Permission:", "admin", "write", "read", "cancel");
+        if (permission === "cancel") return;
+
+        const message = this.dialog.pushMessage("Sharing ...");
+        try {
+            let token = await this.model.document.share(user, permission, "1y");
+            const url = `${location.origin}${location.pathname}?auth=${token}`;
+            console.log("Shared link:", url);
+            message.done();
+            this.dialog.pushMessage("Shared!").timeout(1000);
+        } catch (e) {
+            message.done();
+            this.dialog.pushMessage("Failed!").timeout(1000);
+        }
     }
 
     _handleViewerKeyDown (event) {

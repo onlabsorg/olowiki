@@ -35,7 +35,7 @@ module.exports = function (storeClassName, store, writeFile, fileExists, deleteF
                 expect(doc.toHash()).to.deep.equal(testDocHash);
 
                 // write auth
-                doc = await store.readDocument(testDocPath, Auth({pattern:"**", permission:"read"}));
+                doc = await store.readDocument(testDocPath, Auth({pattern:"**", permission:"write"}));
                 expect(doc).to.be.instanceof(Document);
                 expect(doc.toHash()).to.deep.equal(testDocHash);
 

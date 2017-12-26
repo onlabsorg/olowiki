@@ -181,33 +181,36 @@ suite("olojs.RemoteDocument", () => {
         test().then(done).catch(done);
     });
 
-    test("RemoteDocument instance 'share' method", function (done) {
-        this.timeout(10000);
+    test("RemoteDocument instance 'share' method", (done) => {
         async function test () {
-            var doc;
+            var doc, error, token;
 
             await writeFile(testDocPath, YAML.dump(testDocHash));
+
             doc = await RemoteDocument(store, testDocPath, Token({permission:'admin'}));
+            token = await doc.share("user@host", "write", "1y");
+            const qAuth = Auth.decode(token, secret);
+            expect(qAuth.user).to.equal("user@host");
+            expect(qAuth.permission).to.equal("write");
+            expect(qAuth.pattern).to.equal(testDocPath);
 
-            const info = await doc.share({user:"m.delbuono@gmail.com", pattern:"**", permission:"write"});
-
-            let infoProps = new Map();
-            info.response.replace(/\[([^\]]+)\]$/, (m, props) => {
-                props.replace(/\b([A-Z0-9]+)=([^\s]+)/g, (m, key, value) => {
-                    infoProps.set(key, value);
-                });
+            token = await doc.share("user@host", "write", "1ms");
+            await new Promise((resolve, reject) => {
+                setTimeout(resolve, 2);
             });
+            expect(Auth.decode(token, secret)).to.be.null;
 
-            if (infoProps.has('STATUS') && infoProps.has('MSGID')) {
-                info.testMessageURL = 'https://ethereal.email/message/' + infoProps.get('MSGID');
+            doc = await RemoteDocument(store, testDocPath, Token({permission:'write'}));
+            try {
+                await doc.share("user@host", "write", "1y");
+                error = null;
+            } catch (e) {
+                error = e;
             }
-
-            console.log(info);
-            console.log(info.testMessageURL);
+            expect(error).to.be.instanceof(errors.AdminPermissionError);
         }
         test().then(done).catch(done);
     });
-
 
     test("RemoteDocument instance access control", (done) => {
         async function test () {
