@@ -107,7 +107,7 @@ module.exports = function (storeClassName, store, writeFile, fileExists, deleteF
                 } catch (e) {
                     error = e;
                 }
-                expect(error).to.be.instanceof(errors.WritePermissionError);
+                expect(error).to.be.instanceof(errors.AdminPermissionError);
                 expect(await fileExists(newDocPath)).to.be.false;
 
                 // read auth
@@ -118,7 +118,7 @@ module.exports = function (storeClassName, store, writeFile, fileExists, deleteF
                 } catch (e) {
                     error = e;
                 }
-                expect(error).to.be.instanceof(errors.WritePermissionError);
+                expect(error).to.be.instanceof(errors.AdminPermissionError);
                 expect(await fileExists(newDocPath)).to.be.false;
 
                 // non-authorized path
@@ -129,7 +129,7 @@ module.exports = function (storeClassName, store, writeFile, fileExists, deleteF
                 } catch (e) {
                     error = e;
                 }
-                expect(error).to.be.instanceof(errors.ReadPermissionError);
+                expect(error).to.be.instanceof(errors.AdminPermissionError);
                 expect(await fileExists(newDocPath)).to.be.false;
             }
             test().then(done).catch(done);
@@ -181,15 +181,6 @@ module.exports = function (storeClassName, store, writeFile, fileExists, deleteF
                 doc = await store.readDocument(testDocPath, auth);
                 expect(doc.get('/data/x')).to.equal(12);
 
-                change = new Change('/x', 11);
-                error = null;
-                try {
-                    await store.updateDocument(testDocPath, sinceVersion, [change], auth);
-                } catch (e) {
-                    error = e;
-                }
-                expect(error).to.be.instanceof(errors.WritePermissionError);
-
                 // read auth
                 auth = Auth({pattern:"**", permission:"read"});
                 await writeFile(testDocPath, YAML.dump(testDocHash));
@@ -235,7 +226,7 @@ module.exports = function (storeClassName, store, writeFile, fileExists, deleteF
                 } catch (e) {
                     error = e;
                 }
-                expect(error).to.be.instanceof(errors.WritePermissionError);
+                expect(error).to.be.instanceof(errors.AdminPermissionError);
 
                 // read auth
                 auth = Auth({pattern:"**", permission:"read"});
@@ -245,7 +236,7 @@ module.exports = function (storeClassName, store, writeFile, fileExists, deleteF
                 } catch (e) {
                     error = e;
                 }
-                expect(error).to.be.instanceof(errors.WritePermissionError);
+                expect(error).to.be.instanceof(errors.AdminPermissionError);
 
                 // non-authorized path
                 auth = Auth({pattern:"/ns/*", permission:"admin"});
@@ -255,7 +246,7 @@ module.exports = function (storeClassName, store, writeFile, fileExists, deleteF
                 } catch (e) {
                     error = e;
                 }
-                expect(error).to.be.instanceof(errors.ReadPermissionError);
+                expect(error).to.be.instanceof(errors.AdminPermissionError);
             }
             test().then(done).catch(done);
         });

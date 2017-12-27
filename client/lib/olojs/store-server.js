@@ -24,7 +24,7 @@ class FileStore {
 
     async readDocument (docPath, auth) {
         auth = auth instanceof Auth ? auth : Auth.default;
-        auth.assertReadable(docPath);
+        auth.assertReadPermission(docPath);
 
         const filePath = this._getFullPath(docPath);
 
@@ -40,7 +40,7 @@ class FileStore {
 
     async writeDocument (docPath, doc, auth) {
         auth = auth instanceof Auth ? auth : Auth.default;
-        auth.assertWritable(docPath, "/");
+        auth.assertAdminPermission(docPath);
 
         const docHash = doc.toHash();
         const fileText = YAML.dump(docHash);
@@ -50,7 +50,7 @@ class FileStore {
 
     async updateDocument (docPath, sinceVersion, changes, auth) {
         auth = auth instanceof Auth ? auth : Auth.default;
-        for (let change of changes) auth.assertWritable(docPath, change.path);
+        auth.assertWritePermission(docPath);
 
         const doc = await this.readDocument(docPath, auth);
         if (doc === null) {
@@ -64,7 +64,7 @@ class FileStore {
 
     async deleteDocument (docPath, auth) {
         auth = auth instanceof Auth ? auth : Auth.default;
-        auth.assertWritable(docPath, "/");
+        auth.assertAdminPermission(docPath);
 
         const filePath = this._getFullPath(docPath);
         const fileExists = await fs.exists(filePath);
@@ -100,7 +100,7 @@ function Router (store, options) {
         });
 
         try {
-            req.auth.assertAdministrable(qAuth.pattern);
+            req.auth.assertAdminPermission(qAuth.pattern);
             res.status(200).send(qAuth.encode(options.secret, req.query.exp));
         } catch (error) {
             handleError(error, res);

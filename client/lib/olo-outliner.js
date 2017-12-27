@@ -5,7 +5,6 @@ const Change = require("olojs/change");
 const Model = require("model");
 
 const OloComponent = require("olo-component");
-const OloOutlinerDialog = require("olo-outliner/olo-outliner-dialog");
 const OloViewer = require("olo-viewer");
 const OloEditor = require("olo-editor");
 const OloTree = require("olo-tree");
@@ -99,7 +98,7 @@ class OloOutliner extends OloComponent {
     }
 
     get dialog () {
-        return this.$("olo-outliner-dialog");
+        return this.$("#dialog");
     }
 
     get tree () {
@@ -114,73 +113,131 @@ class OloOutliner extends OloComponent {
         return this.$("olo-editor");
     }
 
+    pushMessage (message) {
+        const messageElt = document.createElement('span');
+        messageElt.setAttribute("class", "message");
+        messageElt.innerHTML = message;
+        this.dialog.appendChild(messageElt)
+
+        const done = () => this.dialog.removeChild(messageElt);
+        const timeout = (time=1500) => new Promise((resolve, reject) => {
+            setTimeout(() => {
+                done();
+                resolve();
+            }, time);
+        });
+
+        return {done:done, timeout:timeout};
+    }
+
+    input (message, startVal="", type="text") {
+        return new Promise ((resolve, reject) => {
+            const messageElt = document.createElement('span');
+            messageElt.setAttribute("class", "message");
+            messageElt.innerHTML = `${message}: <input type="${type}"></input>`;
+            this.dialog.appendChild(messageElt);
+            const inputElt = messageElt.querySelector("input");
+            inputElt.value = startVal;
+            inputElt.addEventListener("keydown", event => {
+                if (keyString(event) === "esc") {
+                    inputElt.value = startVal;
+                    inputElt.dispatchEvent(new CustomEvent('change'));
+                }
+            });
+            inputElt.addEventListener('change', () => {
+                var value = inputElt.value;
+                this.dialog.removeChild(messageElt);
+                resolve(value);
+            });
+            inputElt.focus();
+        });
+    }
+
+    ask (question, ...options) {
+        return new Promise ((resolve, reject) => {
+            const messageElt = document.createElement('span');
+            messageElt.setAttribute("class", "message");
+            messageElt.innerHTML = question;
+            for (let option of options) {
+                let button = document.createElement('button');
+                button.setAttribute("style", "margin: 0 0.3em;")
+                button.textContent = option;
+                button.addEventListener('click', () => {
+                    this.dialog.removeChild(messageElt);
+                    resolve(option);
+                });
+                messageElt.appendChild(button);
+            }
+            this.dialog.appendChild(messageElt);
+        });
+    }
+
     refreshDocument () {
         if (typeof this.model.document.sync !== "function") {
-            this.dialog.pushMessage("Document refresh not implemented!").timeout(1000);
+            this.pushMessage("Document refresh not implemented!").timeout(1000);
             return;
         }
 
-        const message = this.dialog.pushMessage("Syncing ...");
+        const message = this.pushMessage("Syncing ...");
         this.model.document.sync()
         .then(() => {
             message.done();
-            this.dialog.pushMessage("Synced!").timeout(1000);
+            this.pushMessage("Synced!").timeout(1000);
         })
         .catch(error => {
-            this.dialog.pushMessage("Failed!").timeout(1000);
+            this.pushMessage("Failed!").timeout(1000);
         });
 
     }
 
     commitDocument () {
         if (typeof this.model.document.save !== "function") {
-            this.dialog.pushMessage("Document commit not implemented!").timeout(1000);
+            this.pushMessage("Document commit not implemented!").timeout(1000);
             return;
         }
 
-        this.dialog.ask("Commit release:", "major", "minor", "patch", "cancel")
+        this.ask("Commit release:", "major", "minor", "patch", "cancel")
         .then(releaseType => {
             if (releaseType === "cancel") return
             this.model.document.commit(releaseType);
             this.updateView();
 
-            let message = this.dialog.pushMessage("Committing ...");
+            let message = this.pushMessage("Committing ...");
             this.model.document.save()
             .then(() => {
                 message.done();
-                this.dialog.pushMessage("Committed!").timeout(1000);
+                this.pushMessage("Committed!").timeout(1000);
             })
             .catch(error => {
                 message.done();
-                this.dialog.pushMessage("Failed!").timeout(1000);
+                this.pushMessage("Failed!").timeout(1000);
             });
         })
     }
 
     async shareDocument () {
         if (typeof this.model.document.share !== "function") {
-            this.dialog.pushMessage("Document share not implemented!").timeout(1000);
+            this.pushMessage("Document share not implemented!").timeout(1000);
             return;
         }
 
-        const user = await this.dialog.input("User e-mail", "", "text");
+        const user = await this.input("User e-mail", "", "text");
         if (user === "") return;
 
-        const permission = await this.dialog.ask("Granted permission", 'admin', 'write', 'read', 'none');
+        const permission = await this.ask("Granted permission", 'admin', 'write', 'read', 'none');
         if (permission === 'none') return;
 
-        const expiresIn = await this.dialog.input("Permission expires in", "30d", "text");
+        const expiresIn = await this.input("Permission expires in", "30d", "text");
         if (expiresIn === "") return;
 
-
-        const message = this.dialog.pushMessage("Sharing document ...");
+        const message = this.pushMessage("Sharing document ...");
         try {
             var token = await this.model.document.share(user, permission, expiresIn);
             message.done();
         } catch (error) {
             var token = null;
             message.done();
-            this.dialog.pushMessage("Failed!").timeout(1000);
+            this.pushMessage("Failed!").timeout(1000);
         }
 
         if (token) {
@@ -257,7 +314,7 @@ class OloOutliner extends OloComponent {
 
     _editItemName () {
         const oldName = this.model.path.leaf;
-        this.dialog.input("Change item name:", oldName)
+        this.input("Change item name:", oldName)
         .then(newName => {
             if (newName !== oldName) {
                 const parentModel = this.model.getSubModel("..");
@@ -316,7 +373,7 @@ class OloOutliner extends OloComponent {
 
     _saveTemplate () {
         const committed = this.editor.commit();
-        if (committed) this.dialog.pushMessage(`Saved: '${this.model.path}'`).timeout(1000);
+        if (committed) this.pushMessage(`Saved: '${this.model.path}'`).timeout(1000);
     }
 
     _setViewMode () {

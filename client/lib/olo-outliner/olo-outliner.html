@@ -58,8 +58,23 @@
         text-shadow: 0px 1px 0px rgba(255,255,255,.3), 0px -1px 0px rgba(0,0,0,.7);
     }
 
-    header olo-outliner-dialog {
+    header #dialog {
         flex: 3 1 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        font-size: var(--olo-font-size);
+    }
+
+    header #dialog .message {
+        display: block;
+        border-radius: var(--olo-spacing);
+        padding: 0.3em;
+        margin: 0.3em;
+        font-family: var(--olo-sans-font);
+        background-color: var(--olo-text-bgcolor);
+        color: var(--olo-text-color);
     }
 
     header #buttons {
@@ -157,7 +172,7 @@
 
 <header style="font-size: 2em;">
     <div id="logo">OnLabs.org</div>
-    <olo-outliner-dialog></olo-outliner-dialog>
+    <div id="dialog"></div>
     <div id="buttons">
         <span id="button-edit"    class="view button fa fa-edit"></span>
         <span id="button-done"    class="edit button fa fa-check"></span>

@@ -17,7 +17,7 @@ class Model {
     }
 
     _getFullPath (subPath) {
-        return Path.parse('data', this.path, subPath);
+        return Path.parse(this.path, subPath);
     }
 
     type (subPath) {

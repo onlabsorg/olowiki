@@ -1,8 +1,7 @@
 committed:
-  data:
-    x: 10
-    b: true
-    s: abc
-    'n': null
+  x: 10
+  b: true
+  s: abc
+  'n': null
 release: 0.1.0
 changes: []

@@ -40,39 +40,35 @@ class Auth {
         return Path.parse(docPath).match(this.pattern);
     }
 
-    canRead (docPath, subPath) {
+    canRead (docPath) {
         return this.match(docPath) && PERMISSIONS[this.permission] >= PERMISSIONS.read;
     }
 
-    canWrite (docPath, subPath) {
-        if (!this.canRead(docPath, subPath)) return false;
-        if (PERMISSIONS[this.permission] >= PERMISSIONS.admin) return true;
-        if (Path.parse(subPath)[0] === "data" && PERMISSIONS[this.permission] >= PERMISSIONS.write) return true;
-        return false;
+    canWrite (docPath) {
+        return this.match(docPath) && PERMISSIONS[this.permission] >= PERMISSIONS.write;
     }
 
     canAdmin (docPath) {
         return this.match(docPath) && PERMISSIONS[this.permission] >= PERMISSIONS.admin;
     }
 
-    assertReadable (docPath, subPath) {
-        if (!this.canRead(docPath, subPath)) {
-            const url = `${Path.parse(docPath)}#${Path.parse(subPath)}`;
+    assertReadPermission (docPath) {
+        if (!this.canRead(docPath)) {
+            const url = Path.parse(docPath).toString();
             throw new errors.ReadPermissionError(url);
         }
     }
 
-    assertWritable (docPath, subPath) {
-        this.assertReadable(docPath, subPath);
-        if (!this.canWrite(docPath, subPath)) {
-            const url = `${Path.parse(docPath)}#${Path.parse(subPath)}`;
+    assertWritePermission (docPath) {
+        if (!this.canWrite(docPath)) {
+            const url = Path.parse(docPath).toString();
             throw new errors.WritePermissionError(url);
         }
     }
 
-    assertAdministrable (docPath) {
+    assertAdminPermission (docPath) {
         if (!this.canAdmin(docPath)) {
-            const url = `${Path.parse(docPath)}`;
+            const url = Path.parse(docPath).toString();
             throw new errors.AdminPermissionError(url);
         }
     }
@@ -86,24 +82,33 @@ class Auth {
     }
 
     encode (secret, expiresIn="1y") {
-        const payloadDict = this.toHash();
-        const payloadList = [payloadDict.user, payloadDict.pattern, payloadDict.permission];
-        const token = jwtSign(payloadList, secret, {expiresIn:expiresIn});
+        const hash = this.toHash();
+        const payload = {
+            u: hash.user,
+            pa: hash.pattern,
+            pe: PERMISSIONS[hash.permission] || 0
+        }
+        const token = jwtSign(payload, secret, {expiresIn:expiresIn});
         return token;
     }
 
     static decode (token, secret) {
         try {
-            const payloadList = jwtVerify(token, secret);
-            const payloadDict = {
-                user: payloadList[0],
-                pattern: payloadList[1],
-                permission: payloadList[2]
-            }
-            return new Auth(payloadDict);
+            var payload = jwtVerify(token, secret);
         } catch (err) {
             return null;
         }
+
+        const hash = {
+            user: payload.u,
+            pattern: payload.pa,
+            permission: (() => {
+                for (let pe in PERMISSIONS) if (PERMISSIONS[pe] === payload.pe) return pe;
+                return 'none';
+            })()
+        };
+
+        return new Auth(hash);
     }
 }
 

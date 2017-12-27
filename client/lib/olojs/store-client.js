@@ -140,15 +140,15 @@ async function RemoteDocument (store, docPath, authToken) {
     var serverVersion = doc.version;
 
     doc.beforeRead = function (path) {
-        this.auth.assertReadable(docPath, path);
+        this.auth.assertReadPermission(docPath);
     }
 
     doc.beforeChange = function (change) {
-        this.auth.assertWritable(docPath, change.path);
+        this.auth.assertWritePermission(docPath);
     }
 
     doc.beforeCommit = function (releaseType) {
-        this.auth.assertWritable(docPath, "/");
+        this.auth.assertAdminPermission(docPath);
     }
 
     doc.sync = async function () {

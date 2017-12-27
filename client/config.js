@@ -23,6 +23,7 @@ System.config({
     "olo-editor": "/lib/olo-editor",
     "olo-element": "/lib/olo-element",
     "olo-outliner": "/lib/olo-outliner",
+    "olo-style": "/lib/themes/olo-style",
     "olo-tree": "/lib/olo-tree",
     "olo-vdom": "/lib/olo-vdom",
     "olo-viewer": "/lib/olo-viewer",

@@ -43,7 +43,7 @@ suite("olojs.Auth", () => {
         expect(auth.match("/a/x/c")).to.be.false;
     });
 
-    test("Auth.prototype.canRead(docPath, subPath)", () => {
+    test("Auth.prototype.canRead(docPath)", () => {
         var auth = new Auth({pattern:"/a/b/*", permission:"admin"});
         expect(auth.canRead("/a/b/c", "/x")).to.be.true;
         expect(auth.canRead("/a/x/c", "/x")).to.be.false;
@@ -61,66 +61,58 @@ suite("olojs.Auth", () => {
         expect(auth.canRead("/a/x/c", "/x")).to.be.false;
     });
 
-    test("Auth.prototype.assertReadable(docPath, subPath)", () => {
+    test("Auth.prototype.assertReadPermission(docPath)", () => {
         var auth = new Auth({pattern:"/a/b/*", permission:"admin"});
-        expect(() => auth.assertReadable("/a/b/c", "/x")).to.not.throw();
-        expect(() => auth.assertReadable("/a/x/c", "/x")).to.throw(errors.ReadPermissionError);
+        expect(() => auth.assertReadPermission("/a/b/c")).to.not.throw();
+        expect(() => auth.assertReadPermission("/a/x/c")).to.throw(errors.ReadPermissionError);
 
         auth = new Auth({pattern:"/a/b/*", permission:"write"});
-        expect(() => auth.assertReadable("/a/b/c", "/x")).to.not.throw();
-        expect(() => auth.assertReadable("/a/x/c", "/x")).to.throw(errors.ReadPermissionError);
+        expect(() => auth.assertReadPermission("/a/b/c")).to.not.throw();
+        expect(() => auth.assertReadPermission("/a/x/c")).to.throw(errors.ReadPermissionError);
 
         auth = new Auth({pattern:"/a/b/*", permission:"read"});
-        expect(() => auth.assertReadable("/a/b/c", "/x")).to.not.throw();
-        expect(() => auth.assertReadable("/a/x/c", "/x")).to.throw(errors.ReadPermissionError);
+        expect(() => auth.assertReadPermission("/a/b/c")).to.not.throw();
+        expect(() => auth.assertReadPermission("/a/x/c")).to.throw(errors.ReadPermissionError);
 
         auth = new Auth({pattern:"/a/b/*", permission:"none"});
-        expect(() => auth.assertReadable("/a/b/c", "/x")).to.throw(errors.ReadPermissionError);
-        expect(() => auth.assertReadable("/a/x/c", "/x")).to.throw(errors.ReadPermissionError);
+        expect(() => auth.assertReadPermission("/a/b/c")).to.throw(errors.ReadPermissionError);
+        expect(() => auth.assertReadPermission("/a/x/c")).to.throw(errors.ReadPermissionError);
     });
 
-    test("Auth.prototype.canWrite(docPath, subPath)", () => {
+    test("Auth.prototype.canWrite(docPath)", () => {
         var auth = new Auth({pattern:"/a/b/*", permission:"admin"});
-        expect(auth.canWrite("/a/b/c", "/x")).to.be.true;
-        expect(auth.canWrite("/a/b/c", "/data/x")).to.be.true;
-        expect(auth.canWrite("/a/x/c", "/data/x")).to.be.false;
+        expect(auth.canWrite("/a/b/c")).to.be.true;
+        expect(auth.canWrite("/a/x/c")).to.be.false;
 
         auth = new Auth({pattern:"/a/b/*", permission:"write"});
-        expect(auth.canWrite("/a/b/c", "/x")).to.be.false;
-        expect(auth.canWrite("/a/b/c", "/data/x")).to.be.true;
-        expect(auth.canWrite("/a/x/c", "/data/x")).to.be.false;
+        expect(auth.canWrite("/a/b/c")).to.be.true;
+        expect(auth.canWrite("/a/x/c")).to.be.false;
 
         auth = new Auth({pattern:"/a/b/*", permission:"read"});
-        expect(auth.canWrite("/a/b/c", "/x")).to.be.false;
-        expect(auth.canWrite("/a/b/c", "/data/x")).to.be.false;
-        expect(auth.canWrite("/a/x/c", "/data/x")).to.be.false;
+        expect(auth.canWrite("/a/b/c")).to.be.false;
+        expect(auth.canWrite("/a/x/c")).to.be.false;
 
         auth = new Auth({pattern:"/a/b/*", permission:"none"});
-        expect(auth.canWrite("/a/b/c", "/x")).to.be.false;
-        expect(auth.canWrite("/a/b/c", "/data/x")).to.be.false;
-        expect(auth.canWrite("/a/x/c", "/data/x")).to.be.false;
+        expect(auth.canWrite("/a/b/c")).to.be.false;
+        expect(auth.canWrite("/a/x/c")).to.be.false;
     });
 
-    test("Auth.prototype.assertWritable(docPath, subPath)", () => {
+    test("Auth.prototype.assertWritePermission(docPath)", () => {
         var auth = new Auth({pattern:"/a/b/*", permission:"admin"});
-        expect(() => auth.assertWritable("/a/b/c", "/x")).to.not.throw();
-        expect(() => auth.assertWritable("/a/b/c", "/data/x")).to.not.throw();
-        expect(() => auth.assertWritable("/a/x/c", "/data/x")).to.throw(errors.ReadPermissionError);
+        expect(() => auth.assertWritePermission("/a/b/c")).to.not.throw();
+        expect(() => auth.assertWritePermission("/a/x/c")).to.throw(errors.WritePermissionError);
 
         auth = new Auth({pattern:"/a/b/*", permission:"write"});
-        expect(() => auth.assertWritable("/a/b/c", "/x")).to.throw(errors.WritePermissionError);
-        expect(() => auth.assertWritable("/a/b/c", "/data/x")).to.not.throw();
-        expect(() => auth.assertWritable("/a/x/c", "/data/x")).to.throw(errors.ReadPermissionError);
+        expect(() => auth.assertWritePermission("/a/b/c")).to.not.throw();
+        expect(() => auth.assertWritePermission("/a/x/c")).to.throw(errors.WritePermissionError);
 
         auth = new Auth({pattern:"/a/b/*", permission:"read"});
-        expect(() => auth.assertWritable("/a/b/c", "/x")).to.throw(errors.WritePermissionError);
-        expect(() => auth.assertWritable("/a/b/c", "/data/x")).to.throw(errors.WritePermissionError);
-        expect(() => auth.assertWritable("/a/x/c", "/data/x")).to.throw(errors.ReadPermissionError);
+        expect(() => auth.assertWritePermission("/a/b/c")).to.throw(errors.WritePermissionError);
+        expect(() => auth.assertWritePermission("/a/x/c")).to.throw(errors.WritePermissionError);
 
         auth = new Auth({pattern:"/a/b/*", permission:"none"});
-        expect(() => auth.assertWritable("/a/b/c", "/x")).to.throw(errors.ReadPermissionError);
-        expect(() => auth.assertWritable("/a/b/c", "/data/x")).to.throw(errors.ReadPermissionError);
-        expect(() => auth.assertWritable("/a/x/c", "/data/x")).to.throw(errors.ReadPermissionError);
+        expect(() => auth.assertWritePermission("/a/b/c")).to.throw(errors.WritePermissionError);
+        expect(() => auth.assertWritePermission("/a/x/c")).to.throw(errors.WritePermissionError);
     });
 
     test("Auth.prototype.toHash()", () => {
@@ -138,6 +130,7 @@ suite("olojs.Auth", () => {
         expect(token).to.be.a("string");
 
         auth = Auth.decode(token, secret);
+        expect(auth).to.not.be.null;
         expect(auth.toHash()).to.deep.equal(hash);
 
         expect(Auth.decode(token, "wrong-secret")).to.be.null;

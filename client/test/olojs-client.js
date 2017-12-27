@@ -98,12 +98,10 @@ const testDocPath = `/test-doc.yaml`;
 const testDocHash = {
 
     committed: {
-        data: {
-            x: 10,
-            b: true,
-            s: "abc",
-            n: null,
-        }
+        x: 10,
+        b: true,
+        s: "abc",
+        n: null,
     },
 
     release: "0.1.0",
@@ -113,177 +111,38 @@ const testDocHash = {
 
 suite("olojs.RemoteDocument", () => {
 
-    test("RemoteDocument(store, auth, authToken) - async factory", (done) => {
-        async function test () {
-            await writeFile(testDocPath, YAML.dump(testDocHash));
-            const doc = await RemoteDocument(store, testDocPath, Token({permission:'admin'}));
-            expect(doc).to.be.instanceof(Document);
-            expect(doc.toHash()).to.deep.equal(testDocHash);
-        }
-        test().then(done).catch(done);
-    });
-
-    test("RemoteDocument instance 'save' method", (done) => {
-        async function test () {
-            var doc;
-
-            await writeFile(testDocPath, YAML.dump(testDocHash));
-            doc = await RemoteDocument(store, testDocPath, Token({permission:'admin'}));
-            doc.set('/data/pi', 3.14);
-            await doc.save();
-            const storedDoc = await RemoteDocument(store, testDocPath, Token({permission:'admin'}));
-            expect(storedDoc.get('/data/pi')).to.equal(3.14);
-            expect(storedDoc.toHash()).to.deep.equal(doc.toHash());
-            expect(storedDoc.version).to.equal(doc.version);
-        }
-        test().then(done).catch(done);
-    });
-
-    test("RemoteDocument instance 'sync' method", (done) => {
-        async function test () {
-            var doc, doc1, doc2;
-
-            await writeFile(testDocPath, YAML.dump(testDocHash));
-            doc1 = await RemoteDocument(store, testDocPath, Token({permission:'admin'}));
-            doc2 = await RemoteDocument(store, testDocPath, Token({permission:'admin'}));
-            doc2.set('/data/x', 100);
-            await doc2.save();
-            doc1.set('/data/y', 200);
-            await doc1.sync();
-            expect(doc1.get('/data/x')).to.equal(100);
-            expect(doc1.get('/data/y')).to.equal(200);
-            expect(doc1.version).to.equal('0.1.0-pre.2');
-            doc2 = await RemoteDocument(store, testDocPath, Token({permission:'admin'}));
-            expect(doc2.get('/data/x')).to.equal(100);
-            expect(doc2.get('/data/y')).to.equal(200);
-            expect(doc2.version).to.equal('0.1.0-pre.2');
-
-            await writeFile(testDocPath, YAML.dump(testDocHash));
-            doc1 = await RemoteDocument(store, testDocPath, Token({permission:'admin'}));
-            doc2 = await RemoteDocument(store, testDocPath, Token({permission:'admin'}));
-            doc2.set('/data/x', 100);
-            await doc2.save();
-            await doc1.sync();
-            expect(doc1.get('/data/x')).to.equal(100);
-            expect(doc1.version).to.equal('0.1.0-pre.1');
-            doc2 = await RemoteDocument(store, testDocPath, Token({permission:'admin'}));
-            expect(doc2.get('/data/x')).to.equal(100);
-            expect(doc2.version).to.equal('0.1.0-pre.1');
-
-            await writeFile(testDocPath, YAML.dump(testDocHash));
-            doc1 = await RemoteDocument(store, testDocPath, Token({permission:'admin'}));
-            doc1.set('/data/x', 100);
-            await doc1.sync();
-            doc2 = await RemoteDocument(store, testDocPath, Token({permission:'admin'}));
-            expect(doc2.get('/data/x')).to.equal(100);
-            expect(doc2.version).to.equal('0.1.0-pre.1');
-        }
-        test().then(done).catch(done);
-    });
-
-    test("RemoteDocument instance 'share' method", (done) => {
-        async function test () {
-            var doc, error, token;
-
-            await writeFile(testDocPath, YAML.dump(testDocHash));
-
-            doc = await RemoteDocument(store, testDocPath, Token({permission:'admin'}));
-            token = await doc.share("user@host", "write", "1y");
-            const qAuth = Auth.decode(token, secret);
-            expect(qAuth.user).to.equal("user@host");
-            expect(qAuth.permission).to.equal("write");
-            expect(qAuth.pattern).to.equal(testDocPath);
-
-            token = await doc.share("user@host", "write", "1ms");
-            await new Promise((resolve, reject) => {
-                setTimeout(resolve, 2);
-            });
-            expect(Auth.decode(token, secret)).to.be.null;
-
-            doc = await RemoteDocument(store, testDocPath, Token({permission:'write'}));
-            try {
-                await doc.share("user@host", "write", "1y");
-                error = null;
-            } catch (e) {
-                error = e;
-            }
-            expect(error).to.be.instanceof(errors.AdminPermissionError);
-        }
-        test().then(done).catch(done);
-    });
-
-    test("RemoteDocument instance access control", (done) => {
+    test("Local operations access control", (done) => {
         async function test () {
             var doc, error;
 
             // admin permission
             await writeFile(testDocPath, YAML.dump(testDocHash));
             doc = await RemoteDocument(store, testDocPath, Token({permission:'admin'}));
-            expect(() => doc.get('/data/x')).to.not.throw();
-            expect(() => doc.set('/data/x', 11)).to.not.throw();
+            expect(() => doc.get('/x')).to.not.throw();
+            expect(() => doc.set('/x', 11)).to.not.throw();
             expect(() => doc.set('/y', 20)).to.not.throw();
 
-            try {
-                await doc.save();
-                error = null;
-            } catch (e) {
-                error = e;
-            }
-            expect(error).to.be.null;
-
-            try {
-                await doc.sync();
-                error = null;
-            } catch (e) {
-                error = e;
-            }
-            expect(error).to.be.null;
+            // try {
+            //     await doc.sync();
+            //     error = null;
+            // } catch (e) {
+            //     error = e;
+            // }
+            // expect(error).to.be.null;
 
             // write permission
             await writeFile(testDocPath, YAML.dump(testDocHash));
             doc = await RemoteDocument(store, testDocPath, Token({permission:'write'}));
-            expect(() => doc.get('/data/x')).to.not.throw();
-            expect(() => doc.set('/data/x', 11)).to.not.throw();
-            expect(() => doc.set('/y', 20)).to.throw(errors.WritePermissionError);
-
-            try {
-                await doc.save();
-                error = null;
-            } catch (e) {
-                error = e;
-            }
-            expect(error).to.be.instanceof(errors.WritePermissionError);
-
-            try {
-                await doc.sync();
-                error = null;
-            } catch (e) {
-                error = e;
-            }
-            expect(error).to.be.null;
+            expect(() => doc.get('/x')).to.not.throw();
+            expect(() => doc.set('/x', 11)).to.not.throw();
+            expect(() => doc.set('/y', 20)).to.not.throw();
 
             // read permission
             await writeFile(testDocPath, YAML.dump(testDocHash));
             doc = await RemoteDocument(store, testDocPath, Token({permission:'read'}));
-            expect(() => doc.get('/data/x')).to.not.throw();
-            expect(() => doc.set('/data/x', 11)).to.throw(errors.WritePermissionError);
+            expect(() => doc.get('/x')).to.not.throw();
+            expect(() => doc.set('/x', 11)).to.throw(errors.WritePermissionError);
             expect(() => doc.set('/y', 20)).to.throw(errors.WritePermissionError);
-
-            try {
-                await doc.save();
-                error = null;
-            } catch (e) {
-                error = e;
-            }
-            expect(error).to.be.instanceof(errors.WritePermissionError);
-
-            try {
-                await doc.sync();
-                error = null;
-            } catch (e) {
-                error = e;
-            }
-            expect(error).to.be.null;
 
             // no permission
             await writeFile(testDocPath, YAML.dump(testDocHash));
@@ -298,4 +157,150 @@ suite("olojs.RemoteDocument", () => {
         test().then(done).catch(done);
     });
 
+    test("RemoteDocument(store, auth, authToken) - async factory", (done) => {
+        async function test () {
+            await writeFile(testDocPath, YAML.dump(testDocHash));
+            const doc = await RemoteDocument(store, testDocPath, Token({permission:'admin'}));
+            expect(doc).to.be.instanceof(Document);
+            expect(doc.toHash()).to.deep.equal(testDocHash);
+        }
+        test().then(done).catch(done);
+    });
+
+    test("RemoteDocument instance 'save' method", (done) => {
+        async function test () {
+            var doc, error;
+
+            // admin permission
+            await writeFile(testDocPath, YAML.dump(testDocHash));
+            doc = await RemoteDocument(store, testDocPath, Token({permission:'admin'}));
+            doc.set('/pi', 3.14);
+            await doc.save();
+            const storedDoc = await RemoteDocument(store, testDocPath, Token({permission:'admin'}));
+            expect(storedDoc.get('/pi')).to.equal(3.14);
+            expect(storedDoc.toHash()).to.deep.equal(doc.toHash());
+            expect(storedDoc.version).to.equal(doc.version);
+
+            // write permission
+            await writeFile(testDocPath, YAML.dump(testDocHash));
+            doc = await RemoteDocument(store, testDocPath, Token({permission:'write'}));
+            try {
+                await doc.save();
+                error = null;
+            } catch (e) {
+                error = e;
+            }
+            expect(error).to.be.instanceof(errors.AdminPermissionError);
+
+            // read permission
+            await writeFile(testDocPath, YAML.dump(testDocHash));
+            doc = await RemoteDocument(store, testDocPath, Token({permission:'read'}));
+            try {
+                await doc.save();
+                error = null;
+            } catch (e) {
+                error = e;
+            }
+            expect(error).to.be.instanceof(errors.AdminPermissionError);
+        }
+        test().then(done).catch(done);
+    });
+
+    test("RemoteDocument instance 'sync' method", (done) => {
+        async function test () {
+            var doc, doc1, doc2, error;
+
+            // admin permission
+            await writeFile(testDocPath, YAML.dump(testDocHash));
+            doc1 = await RemoteDocument(store, testDocPath, Token({permission:'admin'}));
+            doc2 = await RemoteDocument(store, testDocPath, Token({permission:'admin'}));
+            doc2.set('/x', 100);
+            await doc2.save();
+            doc1.set('/y', 200);
+            await doc1.sync();
+            expect(doc1.get('/x')).to.equal(100);
+            expect(doc1.get('/y')).to.equal(200);
+            expect(doc1.version).to.equal('0.1.0-pre.2');
+            doc2 = await RemoteDocument(store, testDocPath, Token({permission:'admin'}));
+            expect(doc2.get('/x')).to.equal(100);
+            expect(doc2.get('/y')).to.equal(200);
+            expect(doc2.version).to.equal('0.1.0-pre.2');
+
+            await writeFile(testDocPath, YAML.dump(testDocHash));
+            doc1 = await RemoteDocument(store, testDocPath, Token({permission:'admin'}));
+            doc2 = await RemoteDocument(store, testDocPath, Token({permission:'admin'}));
+            doc2.set('/x', 100);
+            await doc2.save();
+            await doc1.sync();
+            expect(doc1.get('/x')).to.equal(100);
+            expect(doc1.version).to.equal('0.1.0-pre.1');
+            doc2 = await RemoteDocument(store, testDocPath, Token({permission:'admin'}));
+            expect(doc2.get('/x')).to.equal(100);
+            expect(doc2.version).to.equal('0.1.0-pre.1');
+
+            await writeFile(testDocPath, YAML.dump(testDocHash));
+            doc1 = await RemoteDocument(store, testDocPath, Token({permission:'admin'}));
+            doc1.set('/x', 100);
+            await doc1.sync();
+            doc2 = await RemoteDocument(store, testDocPath, Token({permission:'admin'}));
+            expect(doc2.get('/x')).to.equal(100);
+            expect(doc2.version).to.equal('0.1.0-pre.1');
+
+            // write permission
+            await writeFile(testDocPath, YAML.dump(testDocHash));
+            doc = await RemoteDocument(store, testDocPath, Token({permission:'write'}));
+            try {
+                await doc.sync();
+                error = null;
+            } catch (e) {
+                error = e;
+            }
+            expect(error).to.be.null;
+
+            // read permission
+            await writeFile(testDocPath, YAML.dump(testDocHash));
+            doc = await RemoteDocument(store, testDocPath, Token({permission:'read'}));
+            try {
+                await doc.sync();
+                error = null;
+            } catch (e) {
+                error = e;
+            }
+            expect(error).to.be.instanceof(errors.WritePermissionError);
+        }
+        test().then(done).catch(done);
+    });
+
+    test("RemoteDocument instance 'share' method", (done) => {
+        async function test () {
+            var doc, error, token;
+
+            // admin permission
+            await writeFile(testDocPath, YAML.dump(testDocHash));
+            doc = await RemoteDocument(store, testDocPath, Token({permission:'admin'}));
+            token = await doc.share("user@host", "write", "1y");
+            const qAuth = Auth.decode(token, secret);
+            expect(qAuth.user).to.equal("user@host");
+            expect(qAuth.permission).to.equal("write");
+            expect(qAuth.pattern).to.equal(testDocPath);
+
+            // expired permission
+            token = await doc.share("user@host", "write", "1ms");
+            await new Promise((resolve, reject) => {
+                setTimeout(resolve, 2);
+            });
+            expect(Auth.decode(token, secret)).to.be.null;
+
+            // write permission
+            doc = await RemoteDocument(store, testDocPath, Token({permission:'write'}));
+            try {
+                await doc.share("user@host", "write", "1y");
+                error = null;
+            } catch (e) {
+                error = e;
+            }
+            expect(error).to.be.instanceof(errors.AdminPermissionError);
+        }
+        test().then(done).catch(done);
+    });
 });
