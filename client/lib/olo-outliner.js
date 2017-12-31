@@ -1,6 +1,7 @@
 const Path = require("olojs/path");
 const Value = require("olojs/value");
 const Change = require("olojs/change");
+const Auth = require("olojs/auth");
 
 const Model = require("model");
 
@@ -12,8 +13,9 @@ const FontAwesome = require("/lib/themes/font-awesome");
 
 const keyString = require("utils/key-string");
 
-const Split = require("olo-outliner/Split");
 const oloOutlinerTemplate = require("olo-outliner/olo-outliner.html!text");
+
+const OloLayout = require("olo-outliner/olo-layout");
 
 
 
@@ -30,25 +32,6 @@ class OloOutliner extends OloComponent {
         // INIT MAIN LAYOUT
 
         if (!this.hasAttribute("mode")) this.setAttribute("mode", "view");
-
-        const splitOptions = {
-            sizes: [25, 75],
-            gutterSize: 6,
-            minSize: 200,
-            elementStyle: function (dimension, size, gutterSize) {
-                return {
-                    'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)'
-                }
-            },
-            gutterStyle: function gutterStyle (dimension, gutterSize) {
-                return {
-                    'flex-basis':  gutterSize + 'px'
-                }
-            },
-            onDragEnd: () => {splitOptions.sizes = this._split.getSizes()}
-        }
-
-        this._split = Split([this.$("nav"), this.$("#content")], splitOptions);
 
 
         // INIT VIEWER
@@ -70,8 +53,8 @@ class OloOutliner extends OloComponent {
             this.setAttribute("model", modelAttr);
         });
 
-        this.$("nav").tabIndex = 1;
-        this.$("nav").addEventListener("keydown", event => this._handleTreeKeyDown(event));
+        this.tree.tabIndex = 1;
+        this.tree.addEventListener("keydown", event => this._handleTreeKeyDown(event));
 
 
         // INIT HEADER
@@ -91,14 +74,12 @@ class OloOutliner extends OloComponent {
     }
 
     updateView () {
-        const auth = this.model.document.auth;
-        this.$("footer").innerHTML = auth ?
-                `version: ${this.model.document.version} | user: ${auth.user} | permission: ${auth.permission} | pattern: ${auth.pattern}`:
-                `version: ${this.model.document.version} | user: undefined`;
-    }
-
-    get dialog () {
-        return this.$("#dialog");
+        const auth = this.model.document.auth || Auth.root;
+        this.$("#info").innerHTML = `
+            <b>olo v0.1.0</b><br>
+            user <b>${auth.user}</b> can <b>${auth.permission}</b><br>
+            document <b>v${this.model.document.version}</b>
+        `;
     }
 
     get tree () {
@@ -114,67 +95,16 @@ class OloOutliner extends OloComponent {
     }
 
     pushMessage (message) {
-        const messageElt = document.createElement('span');
-        messageElt.setAttribute("class", "message");
-        messageElt.innerHTML = message;
-        this.dialog.appendChild(messageElt)
-
-        const done = () => this.dialog.removeChild(messageElt);
-        const timeout = (time=1500) => new Promise((resolve, reject) => {
-            setTimeout(() => {
-                done();
-                resolve();
-            }, time);
-        });
-
-        return {done:done, timeout:timeout};
+        return this.$("olo-layout").pushMessage(message);
     }
 
-    input (message, startVal="", type="text") {
-        return new Promise ((resolve, reject) => {
-            const messageElt = document.createElement('span');
-            messageElt.setAttribute("class", "message");
-            messageElt.innerHTML = `${message}: <input type="${type}"></input>`;
-            this.dialog.appendChild(messageElt);
-            const inputElt = messageElt.querySelector("input");
-            inputElt.value = startVal;
-            inputElt.addEventListener("keydown", event => {
-                if (keyString(event) === "esc") {
-                    inputElt.value = startVal;
-                    inputElt.dispatchEvent(new CustomEvent('change'));
-                }
-            });
-            inputElt.addEventListener('change', () => {
-                var value = inputElt.value;
-                this.dialog.removeChild(messageElt);
-                resolve(value);
-            });
-            inputElt.focus();
-        });
-    }
-
-    ask (question, ...options) {
-        return new Promise ((resolve, reject) => {
-            const messageElt = document.createElement('span');
-            messageElt.setAttribute("class", "message");
-            messageElt.innerHTML = question;
-            for (let option of options) {
-                let button = document.createElement('button');
-                button.setAttribute("style", "margin: 0 0.3em;")
-                button.textContent = option;
-                button.addEventListener('click', () => {
-                    this.dialog.removeChild(messageElt);
-                    resolve(option);
-                });
-                messageElt.appendChild(button);
-            }
-            this.dialog.appendChild(messageElt);
-        });
+    dialog (title, form) {
+        return this.$("olo-layout").dialog(title, form);
     }
 
     refreshDocument () {
         if (typeof this.model.document.sync !== "function") {
-            this.pushMessage("Document refresh not implemented!").timeout(1000);
+            this.pushMessage("Document refresh not implemented!").timeout(3000);
             return;
         }
 
@@ -182,53 +112,75 @@ class OloOutliner extends OloComponent {
         this.model.document.sync()
         .then(() => {
             message.done();
-            this.pushMessage("Synced!").timeout(1000);
+            this.pushMessage("Synced!").timeout(3000);
         })
         .catch(error => {
-            this.pushMessage("Failed!").timeout(1000);
+            this.pushMessage("Failed!").timeout(3000);
         });
 
     }
 
     commitDocument () {
         if (typeof this.model.document.save !== "function") {
-            this.pushMessage("Document commit not implemented!").timeout(1000);
+            this.pushMessage("Document commit not implemented!").timeout(3000);
             return;
         }
 
-        this.ask("Commit release:", "major", "minor", "patch", "cancel")
-        .then(releaseType => {
-            if (releaseType === "cancel") return
-            this.model.document.commit(releaseType);
-            this.updateView();
+        this.dialog("Commit", `
+            <label>Release type</label>
+            <select name="releasetype">
+                <option>major</option>
+                <option>minor</option>
+                <option selected>patch</option>
+            </select>
+        `)
+        .then(formData => {
+            if (formData !== null) {
+                let releaseType = formData.releasetype;
+                this.model.document.commit(releaseType);
+                this.updateView();
 
-            let message = this.pushMessage("Committing ...");
-            this.model.document.save()
-            .then(() => {
-                message.done();
-                this.pushMessage("Committed!").timeout(1000);
-            })
-            .catch(error => {
-                message.done();
-                this.pushMessage("Failed!").timeout(1000);
-            });
+                let message = this.pushMessage("Committing ...");
+                this.model.document.save()
+                .then(() => {
+                    message.done();
+                    this.pushMessage("Committed!").timeout(3000);
+                })
+                .catch(error => {
+                    message.done();
+                    this.pushMessage("Failed!").timeout(3000);
+                });
+            }
         })
     }
 
     async shareDocument () {
         if (typeof this.model.document.share !== "function") {
-            this.pushMessage("Document share not implemented!").timeout(1000);
+            this.pushMessage("Document share not implemented!").timeout(3000);
             return;
         }
 
-        const user = await this.input("User e-mail", "", "text");
-        if (user === "") return;
+        const formData = await this.dialog("Share", `
 
-        const permission = await this.ask("Granted permission", 'admin', 'write', 'read', 'none');
-        if (permission === 'none') return;
+            <label>User e-mail</label>
+            <input name="email" type="email"></input>
 
-        const expiresIn = await this.input("Permission expires in", "30d", "text");
-        if (expiresIn === "") return;
+            <label>Permission</label>
+            <select name="permission">
+                <option selected>read</option>
+                <option>write</option>
+                <option>admin</option>
+            </select>
+
+            <label>Expires in (eg. 1d, 3y, etc.)</label>
+            <input name="expiration" type="text"></input>
+
+        `);
+        if (formData === null) return;
+
+        const user = formData.email;
+        const permission = formData.permission;
+        const expiresIn = formData.expiration
 
         const message = this.pushMessage("Sharing document ...");
         try {
@@ -237,12 +189,14 @@ class OloOutliner extends OloComponent {
         } catch (error) {
             var token = null;
             message.done();
-            this.pushMessage("Failed!").timeout(1000);
+            this.pushMessage("Failed!").timeout(3000);
         }
 
         if (token) {
-            let url = `${location.origin}${location.pathname}?auth=${token}`;
-            window.prompt("Shared URL (Ctrl+C, Enter)", url);
+             let url = `${location.origin}${location.pathname}?auth=${token}`;
+             await this.dialog("Shared document link", `
+                <textarea autofocus rows="4" onfocus="this.select();">${url}</textarea>
+             `);
         }
     }
 
@@ -314,9 +268,12 @@ class OloOutliner extends OloComponent {
 
     _editItemName () {
         const oldName = this.model.path.leaf;
-        this.input("Change item name:", oldName)
-        .then(newName => {
-            if (newName !== oldName) {
+        this.dialog("Rename item", `
+            <label>Item name:</label>
+            <input name="newname" type="text" value="${oldName}"></input>
+        `).then(formData => {
+            if (formData !== null && formData.newname !== oldName) {
+                const newName = formData.newname;
                 const parentModel = this.model.getSubModel("..");
                 const modelValue = parentModel.get(oldName);
                 parentModel.delete(oldName);
@@ -373,7 +330,7 @@ class OloOutliner extends OloComponent {
 
     _saveTemplate () {
         const committed = this.editor.commit();
-        if (committed) this.pushMessage(`Saved: '${this.model.path}'`).timeout(1000);
+        if (committed) this.pushMessage(`Saved: '${this.model.path}'`).timeout(3000);
     }
 
     _setViewMode () {

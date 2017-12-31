@@ -14,7 +14,6 @@ olo-outliner {
     bottom: 0;
     left: 0;
     background-color: var(--olo-dark-bgcolor);
-    padding: var(--olo-spacing);
     font-family: var(--olo-sans-font);
     color: var(--olo-dark-color);
 }

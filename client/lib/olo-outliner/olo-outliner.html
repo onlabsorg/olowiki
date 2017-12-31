@@ -4,70 +4,25 @@
 <style>
 
     :host {
-        --olo-spacing: 6px;
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
         background-color: var(--olo-dark-bgcolor);
-        padding: var(--olo-spacing);
         font-family: var(--olo-sans-font);
         font-size: var(--olo-font-size);
+        box-sizing: border-box;
+        padding: 2px;
     }
-
-    .card {
-        border: 1px solid var(olo-text-bgcolor);
-        box-shadow: 2px 2px 1px 0px rgba(0,0,0,0.75);
-        margin: 0;
-        background-color: var(--olo-text-bgcolor);
-    }
-
-    .card:focus {
-        outline: none;
-        border: 1px solid red;
-    }
-
-    .gutter.gutter-horizontal {
-        cursor: ew-resize;
-    }
-
-    .gutter.gutter-vertical {
-        cursor: ns-resize;
-    }
-
 
 
     /* HEADER */
 
-    header {
-        flex: 0 0 48px;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        margin: 0;
-        margin-bottom: var(--olo-spacing);
-        padding: 0;
-        background-color: var(--olo-dark-bgcolor);
-    }
-
-    header #logo {
-        flex: 0 0 auto;
-        padding: 0 var(--olo-spacing);
+    olo-layout [slot="title"] {
+        font-size: 2em;
         color: var(--olo-light-bgcolor);
         font-weight: bold;
         font-style: italic;
         text-shadow: 0px 1px 0px rgba(255,255,255,.3), 0px -1px 0px rgba(0,0,0,.7);
     }
 
-    header #dialog {
-        flex: 3 1 100%;
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        font-size: var(--olo-font-size);
-    }
-
-    header #dialog .message {
+    olo-layout [slot="snackbar"] {
         display: block;
         border-radius: var(--olo-spacing);
         padding: 0.3em;
@@ -77,118 +32,83 @@
         color: var(--olo-text-color);
     }
 
-    header #buttons {
-        flex: 1 0 auto;
-        display: flex;
-        justify-content: flex-end;
-    }
-
-    header #buttons .button {
+    olo-layout .button {
         flex: 0 0 auto;
-        margin: var(--olo-spacing);
+        margin: 0 0.25em;
         color: var(--olo-dark-color);
-        font-size: 0.8em;
+        font-size: 1.5em;
     }
 
-    header #buttons .button:hover {
+    olo-layout .button:hover {
         color: var(--olo-dark-hicolor);
     }
 
-    :host([mode="view"]) header #buttons .edit.button {
+    :host([mode="view"]) olo-layout .edit.button {
         display: none;
     }
 
-    :host([mode="edit"]) header #buttons .view.button {
+    :host([mode="edit"]) olo-layout .view.button {
         display: none;
-    }
-
-    header #buttons .control:hover {
-        color: var(--olo-dark-hicolor);
     }
 
 
 
     /* MAIN */
 
-    main {
-        flex: 1 1 100%;
-        display: flex;
-        flex-direction: row;
-        align-items: stretch;
+    olo-tree {
+        padding: 0.5em;
     }
 
-    main olo-tree {
-        flex: 1 1 20%;
-        display: block;
+    #info {
+        background-color: var(--olo-text-bgcolor);
+        flex: 1 0 auto;
+        margin-top: 2px;
         padding: var(--olo-spacing);
+        color: var(--olo-text-locolor);
+        text-align: center;
+        font-size: 9pt;
     }
 
-    main #content {
-        flex: 1 1 80%;
-        display: flex;
-        align-items: stretch;
-        flex-direction: column;
-    }
-
-    main #content olo-viewer {
+    olo-viewer {
         flex: 1 1 100%;
         padding: 1em 2em;
     }
 
-    main #content olo-editor {
+    olo-editor {
         flex: 1 1 100%;
         padding: 0;
     }
 
-    :host([mode="view"]) main #content olo-viewer {
+    :host([mode="view"]) olo-viewer {
         display: block;
     }
 
-    :host([mode="view"]) main #content olo-editor {
+    :host([mode="view"]) olo-editor {
         display: none;
     }
 
-    :host([mode="edit"]) main #content olo-viewer {
+    :host([mode="edit"]) olo-viewer {
         display: none;
     }
 
-    :host([mode="edit"]) main #content olo-editor {
+    :host([mode="edit"]) olo-editor {
         display: flex;
-    }
-
-
-    /* FOOTER */
-
-    footer {
-        flex: 0 0 16px;
-        display: flex;
-        flex-direction: row;
-        margin-top: var(--olo-spacing);
-        font-size: 10pt;
     }
 
 </style>
 
+<olo-layout>
+    <div slot="title" id="logo">OnLabs.org</div>
 
-<header style="font-size: 2em;">
-    <div id="logo">OnLabs.org</div>
-    <div id="dialog"></div>
-    <div id="buttons">
-        <span id="button-edit"    class="view button fa fa-edit"></span>
-        <span id="button-done"    class="edit button fa fa-check"></span>
-        <span id="button-refresh" class="button fa fa-refresh"></span>
-        <span id="button-commit"  class="button fa fa-save"></span>
-        <span id="button-share"   class="button fa fa-share-alt"></span>
-    </div>
-</header>
-<main>
-    <nav class="card">
-        <olo-tree model="."></olo-tree>
-    </nav>
-    <div id="content">
-        <olo-viewer class="card" model="."></olo-viewer>
-        <olo-editor class="card" model="./__template__"></olo-editor>
-    </div>
-</main>
-<footer>
-</footer>
+    <span slot="control" id="button-edit"    class="view button fa fa-edit"></span>
+    <span slot="control" id="button-done"    class="edit button fa fa-check"></span>
+    <span slot="control" id="button-refresh" class="button fa fa-refresh"></span>
+    <span slot="control" id="button-commit"  class="button fa fa-save"></span>
+    <span slot="control" id="button-share"   class="button fa fa-share-alt"></span>
+
+    <olo-tree slot="menu-item" model="."></olo-tree>
+    <div slot="info" id="info"></div>
+
+    <olo-viewer slot="content-element" model="."></olo-viewer>
+    <olo-editor slot="content-element" model="./__template__"></olo-editor>
+</olo-layout>
