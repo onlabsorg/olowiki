@@ -75,11 +75,9 @@ class OloOutliner extends OloComponent {
 
     updateView () {
         const auth = this.model.document.auth || Auth.root;
-        this.$("#info").innerHTML = `
-            <b>olo v0.1.0</b><br>
-            user <b>${auth.user}</b> can <b>${auth.permission}</b><br>
-            document <b>v${this.model.document.version}</b>
-        `;
+        this.$('div[slot="footer-start"]').innerHTML = `olo v0.1.0`;
+        this.$('div[slot="footer-middle"]').innerHTML = `user <b>${auth.user}</b> can <b>${auth.permission}</b>`;
+        this.$('div[slot="footer-end"]').innerHTML = `document <b>v${this.model.document.version}`;
     }
 
     get tree () {

@@ -92,6 +92,37 @@
     }
 
 
+    /* FOOTER */
+
+    footer {
+        flex: 0 0 16px;
+        align-items: center;
+        margin: 0;
+        margin-top: 2px;
+        padding: 0 4px;
+        background-color: var(--olo-dark-bgcolor);
+        color: var(--olo-dark-locolor);
+        font-size: 0.8em;
+    }
+
+    footer ::slotted([slot="footer-start"]) {
+        flex: 1 1 auto;
+        text-align: left;
+    }
+
+    footer ::slotted([slot="footer-middle"]) {
+        flex: 1 1 auto;
+        text-align: center;
+    }
+
+    footer ::slotted([slot="footer-end"]) {
+        flex: 1 1 auto;
+        text-align: right;
+    }
+
+
+
+
 
     /* SNACKBARS */
 
@@ -129,6 +160,18 @@
         border: 1px solid var(--olo-text-locolor);
         box-shadow: 4px 4px 8px 4px rgba(0,0,0,0.75);
         border-radius: 4px;
+        z-index: 999;
+    }
+
+    #dialog-background {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 998;
+        background-color: #000000;
+        opacity: 0.5;
     }
 
     #dialog h1 {
@@ -200,12 +243,17 @@
 <main class="hflex">
     <div id="menu" class="vflex">
         <slot name="menu-item"></slot>
-        <slot name="info"></slot>
     </div>
     <div id="content" class="vflex">
         <slot name="content-element"></slot>
     </div>
 </main>
+
+<footer class="hflex">
+    <slot name="footer-start"></slot>
+    <slot name="footer-middle"></slot>
+    <slot name="footer-end"></slot>
+</footer>
 
 <div id="snackbars" class="hflex"></div>
 
@@ -226,3 +274,4 @@
         <button id="dialog-submit-button">OK</button>
     </div>
 </div>
+<div id="dialog-background"></div>

@@ -32,6 +32,7 @@ class OloLayout extends OloElement {
         this._split = Split([this.$("#menu"), this.$("#content")], splitOptions);
 
         this.$("#dialog").style.display = "none";
+        this.$("#dialog-background").style.display = "none";
     }
 
     pushMessage (message) {
@@ -53,6 +54,7 @@ class OloLayout extends OloElement {
 
     async dialog (title, form) {
         this.$("#dialog").style.display = "block";
+        this.$("#dialog-background").style.display = "block";
         this.$("#dialog-title").innerHTML = title;
         this.$("form").innerHTML = form;
 
@@ -92,6 +94,7 @@ class OloLayout extends OloElement {
                 this.$("#dialog-cancel-button").removeEventListener('click', cancel);
                 this.$("#dialog-submit-button").removeEventListener('click', submit);
                 this.$("#dialog").style.display = "none";
+                this.$("#dialog-background").style.display = "none";        
             }
 
             this.$("#dialog").addEventListener('keydown', onKeyDown);
