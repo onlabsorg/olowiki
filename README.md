@@ -1,2 +1,2 @@
 # olo
-OnLabs.org application
+A framework for the collaborative web
