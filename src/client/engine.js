@@ -1,134 +1,178 @@
 
-const Handlebars = require('handlebars');
-const marked = require("marked");
-const sanitize = require("utils/sanitize");
+const DOM = require("./engine/dom");
+const expression = require("./engine/expression");
 
-const store = require("./store");
-
-const getOwnProperties = require("utils/get-own-properties");
+const getOwnProperties = require("./utils/get-own-properties");
 
 
-
-exports.render = async function (docData, context) {
-    const rendering = {};
+function parseDocument (html) {
     
-    for (let section of docData.sections) {
-        let scope = Object.create(context);                    
-        rendering[section.name] = await renderTemplate(section.template, scope);
-        context[section.name] = getOwnProperties(scope);            
+    const doc = {
+        title: "",
+        author: undefined,
+        template: undefined
     }
     
-    return rendering;            
-}
+    const nodes = DOM.parse(html);
+    const elements = nodes.findTags('title', 'meta', 'template');
 
-
-
-async function renderTemplate (template, scope) {
-    const config = exports.config;
-    
-    // resolve import statements
-    const importStatements = [];
-    template = template.replace(/\{\{\s*import\s*(.+)\s+as\s+([a-zA-Z0-9_]+)\s*\}\}/gm, (match, url, name) => {
-        importStatements.push({url, name});
-        return "";
-    });
-    for (let importStatement of importStatements) {
-        let importedDoc = await store.read(importStatement.url);
-        let importedContext = scope[importStatement.name] = {};
-        let rendering = await exports.render(importedDoc, importedContext);
+    if (elements.title.length > 0) {
+        doc.title = String(elements.title[0].children);
     }
-
-    // resolve assignment syntax
-    template = template.replace(/\{\{\s*([a-zA-Z_]+)\s*=\s*(.+)\s*\}\}/gm, (match, name, value) => {
-        return `{{set "${name}" ${value}}}`
-    });
     
-    // render handlebars template
-    const handlebars = Handlebars.create();
-    handlebars.registerHelper(config.handlebarsHelpers);
-    handlebars.registerPartial(config.handlebarsPartials);
-    handlebars.registerDecorator(config.handlebarsDecorators);
-    const renderTemplate = handlebars.compile(template, config.handlebarsOptions);    
-    const markdown = renderTemplate(scope);        
-    
-    // render markdown
-    const html = marked(markdown, config.markdownOptions);
-    
-    // sanitize and return
-    return sanitize(html, config.allowedTags);                
-}
-
-
-
-exports.config = {
-    
-    handlebarsOptions: {
-        noEscape: true
-    },
-
-    handlebarsHelpers: {
-        set: function (name, value) {
-            this[name] = value;
-            return "";
+    for (let metaElt of elements.meta) {
+        if (metaElt.attributes.name === "author") {
+            doc.author = metaElt.attributes.content;
+            break;
         }
-    },
+    }
+    
+    for (let templateElt of elements.template) {
+        if (templateElt.attributes.id === "source") {
+            doc.template = String(templateElt.children);
+            break;
+        }
+    }
+    
+    return doc;
+}
 
-    handlebarsPartials: {},
 
-    handlebarsDecorators: {},
 
-    markdownOptions: {},
+async function render (template, scope) {
+    const nodes = DOM.parse(template);
+    await nodes.render(scope);
+    return String(nodes);
+}
 
-    allowedTags: {
-       '*': [ 'http:', 'https:', 'ftp:', 'mailto:', 'class', 'style', 'id', 'slot' ],
 
-       // headers
-       'h1': [],
-       'h2': [],
-       'h3': [],
-       'h4': [],
-       'h5': [],
-       'h6': [],
 
-       // lists
-       'ul': [],
-       'ol': [ 'type', 'start' ],
-       'li': [],
-       'dl': [],
-       'dt': [],
-       'dd': [],
+DOM.Nodes.prototype.render = async function (scope) {
+    this.sanitize(Object.keys(config.elements));
+    for (let node of this) {
+        await node.render(scope);
+    }
+}
 
-       // tables
-       'table': [],
-       'thead': [],
-       'tbody': [],
 
-       'tfoot': [],
-       'caption': [],
-       'col': [],
-       'colgroup': [],
-       'tr': [],
-       'th': [],
-       'td': [],
 
-       // misc block tags
-       'p': [],
-       'blockquote': [],
-       'pre': [],
-       'div': [],
-       'br': [ '<>' ],
-       'hr': [ '<>' ],
+DOM.Element.prototype.render = async function (scope) {
+    const cfg = config.elements[this.tag];
 
-       // inline tags
-       'b': [],
-       'i': [],
-       'strong': [],
-       'em': [],
-       'code': [],
-       'a': [ 'href', 'name', 'target' ],
-       'img': [ 'src', 'alt', 'height', 'width' , '<>' , "http:"],
-
-       // olo-elements
-       'olo-link': ['href']
+    this.attributes.sanitize(cfg.allowedAttributes || []);    
+    await this.attributes.render(scope);    
+    
+    if (typeof cfg.beforeRendering === 'function') {
+        await cfg.beforeRendering.call(this, scope);
+    }
+    
+    await this.children.render(scope);
+    
+    if (typeof cfg.afterRendering === 'function') {
+        await cfg.afterRendering.call(this, scope);
     }    
 }
+
+
+
+DOM.Attributes.prototype.render = async function (scope) {
+    const attrNames = this.getNames();
+    for (let attrName of attrNames) {
+        let attrValue = this[attrName];
+        let matchExpr = attrValue.match(/^\{\{(.*)\}\}$/);
+        if (matchExpr) {
+            let expr = matchExpr[1];
+            this[attrName] = expression.eval(expr, scope);
+        }
+    }
+}
+
+
+
+DOM.Text.prototype.render = async function (scope) {
+    this.content = this.content.replace(/\{\{(.+?)\}\}/gm, (match, expr) => {
+        const assignment = expr.match(/^\s*([a-zA-Z_][a-zA-Z_.0-9]*)\s*=\s*(.+)\s*$/);
+        if (assignment) {
+            let path = assignment[1];
+            let value = expression.eval(assignment[2], scope);
+            assign(scope, path, value);
+            return "";
+        } else {
+            return expression.eval(expr, scope);
+        }
+    });
+}
+
+
+
+DOM.Comment.prototype.render = async function (scope) {};
+
+
+
+function assign (scope, path, value) {
+    const pathNames = path.split(".");
+    const key = pathNames.pop();
+    var obj = scope;
+    for (let name of pathNames) {
+        obj = obj[name];
+    }
+    obj[key] = value;
+}
+
+
+
+const config = {
+
+    elements: {
+
+        h1: {allowedAttributes: [ 'class', 'style', 'id' ]},
+        h2: {allowedAttributes: [ 'class', 'style', 'id' ]},
+        h3: {allowedAttributes: [ 'class', 'style', 'id' ]},
+        h4: {allowedAttributes: [ 'class', 'style', 'id' ]},
+        h5: {allowedAttributes: [ 'class', 'style', 'id' ]},
+        h6: {allowedAttributes: [ 'class', 'style', 'id' ]},
+
+        // lists
+        ul: {allowedAttributes: [ 'class', 'style', 'id' ]},
+        ol: {allowedAttributes: [ 'class', 'style', 'id', 'type', 'start' ]},
+        li: {allowedAttributes: [ 'class', 'style', 'id' ]},
+        dl: {allowedAttributes: [ 'class', 'style', 'id' ]},
+        dt: {allowedAttributes: [ 'class', 'style', 'id' ]},
+        dd: {allowedAttributes: [ 'class', 'style', 'id' ]},
+
+        // tables
+        table:    {allowedAttributes: [ 'class', 'style', 'id' ]},
+        thead:    {allowedAttributes: [ 'class', 'style', 'id' ]},
+        tbody:    {allowedAttributes: [ 'class', 'style', 'id' ]},
+        tfoot:    {allowedAttributes: [ 'class', 'style', 'id' ]},
+        caption:  {allowedAttributes: [ 'class', 'style', 'id' ]},
+        col:      {allowedAttributes: [ 'class', 'style', 'id' ]},
+        colgroup: {allowedAttributes: [ 'class', 'style', 'id' ]},
+        tr:       {allowedAttributes: [ 'class', 'style', 'id' ]},
+        th:       {allowedAttributes: [ 'class', 'style', 'id' ]},
+        td:       {allowedAttributes: [ 'class', 'style', 'id' ]},
+
+        // misc block tags
+        p:          {allowedAttributes: [ 'class', 'style', 'id' ]},
+        blockquote: {allowedAttributes: [ 'class', 'style', 'id' ]},
+        pre:        {allowedAttributes: [ 'class', 'style', 'id' ]},
+        div:        {allowedAttributes: [ 'class', 'style', 'id' ]},
+        br:         {allowedAttributes: [ 'class', 'style', 'id' ]},
+        hr:         {allowedAttributes: [ 'class', 'style', 'id' ]},
+
+        // inline tags
+        b:      {allowedAttributes: [ 'class', 'style', 'id' ]},
+        i:      {allowedAttributes: [ 'class', 'style', 'id' ]},
+        strong: {allowedAttributes: [ 'class', 'style', 'id' ]},
+        em:     {allowedAttributes: [ 'class', 'style', 'id' ]},
+        code:   {allowedAttributes: [ 'class', 'style', 'id' ]},
+        a:      {allowedAttributes: [ 'class', 'style', 'id', 'href', 'name', 'target' ]},
+        img:    {allowedAttributes: [ 'class', 'style', 'id', 'src', 'alt', 'height', 'width']},
+    },
+}
+
+
+
+exports.parseDocument = parseDocument;
+exports.render = render;
+exports.config = config;

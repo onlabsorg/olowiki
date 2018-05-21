@@ -10,44 +10,27 @@
         <script src="/jspm_packages/system.js"></script>
         <script src="/config.js"></script>
         <script>
-            SystemJS.import("/src/client.js");
+            SystemJS.import("/src/client.js").then(() => {
+                olo.engine.config.elements.h2 = {
+                    beforeRendering: async function (scope) {
+                        console.log('running beforeRendering callback')
+                    },
+                    afterRendering: async function (scope) {
+                        console.log('running afterRendering callback')
+                    }
+                }                
+            });
         </script>
 
     </head>
 
     <body>
-
-        <template   type="section" 
-                    name="section1" 
-                    title="Test section 1" 
-                    
-                    
-                    >Defining x = 10 {{ x = 10 }}</template>
-                
-        <template   type="section" 
-                    name="section2" 
-                    title="Test section 2" 
-                    
-                    
-                    >section1.x = {{ section1.x }}</template>
-                
-        <template   type="section" 
-                    name="section3" 
-                    title="Test section 3" 
-                    
-                    
-                    >This section imports olodoc2.html as 'doc2'.  
-{{ import ./olodoc2.html as doc2 }}  
-doc2.section1.pi = {{ doc2.section1.pi }}</template>
-                
-        <template   type="section" 
-                    name="section4" 
-                    title="Test section 4" 
-                    collapsed
-                    
-                    >Lorem ipsum 4.</template>
-                
-                
+        <template id="source">
+            <import href="./olodoc2.html" name="doc2"></import>
+            <h2>Hello new olo!</h2>
+            Assigning x = 10 {{x=10}} and retrieving it: x = {{x}}<br>
+            Imports: doc2.pi = {{doc2.pi}}
+        </template> 
     </body>
 
 </html>

@@ -2,7 +2,8 @@
 const URL = require("utils/url");
 const queryString = require("utils/query-string");
 
-const parser = require("./parser");
+const engine = require("./engine");
+
 
 
 const docCache = new Map();
@@ -19,7 +20,7 @@ exports.read = async function (href) {
     
     const response = await fetch(docURL);
     const html = await response.text();
-    return parser.parseHTML(html);
+    return engine.parseDocument(html);
 }
 
 

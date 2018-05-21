@@ -12,8 +12,8 @@ System.config({
     "brace": "npm:brace@0.11.1",
     "handlebars": "github:components/handlebars.js@4.0.11",
     "himalaya": "npm:himalaya@1.1.0",
-    "marked": "npm:marked@0.3.17",
-    "olo": "src/client/olo",
+    "jsep": "npm:jsep@0.3.4",
+    "marked": "npm:marked@0.3.19",
     "path": "src/client/utils/jspm-path-plugin",
     "query-string": "npm:query-string@6.1.0",
     "sanitize-html": "npm:sanitize-html@1.18.2",
@@ -22,6 +22,7 @@ System.config({
     "uuid": "npm:uuid@3.2.1",
     "vue": "npm:vue@2.5.16",
     "vue-material": "npm:vue-material@1.0.0-beta-8",
+    "vue2-ace-editor": "npm:vue2-ace-editor@0.0.9",
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.4.1"
     },
@@ -140,11 +141,11 @@ System.config({
       "base64-js": "npm:base64-js@1.3.0",
       "ieee754": "npm:ieee754@1.1.11"
     },
-    "npm:chalk@2.3.2": {
+    "npm:chalk@2.4.1": {
       "ansi-styles": "npm:ansi-styles@3.2.1",
       "escape-string-regexp": "npm:escape-string-regexp@1.0.5",
       "process": "github:jspm/nodelibs-process@0.1.2",
-      "supports-color": "npm:supports-color@5.3.0"
+      "supports-color": "npm:supports-color@5.4.0"
     },
     "npm:cipher-base@1.0.4": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.1",
@@ -220,7 +221,7 @@ System.config({
       "domelementtype": "npm:domelementtype@1.1.3",
       "entities": "npm:entities@1.1.1"
     },
-    "npm:domhandler@2.4.1": {
+    "npm:domhandler@2.4.2": {
       "domelementtype": "npm:domelementtype@1.3.0"
     },
     "npm:domutils@1.7.0": {
@@ -272,11 +273,11 @@ System.config({
     "npm:htmlparser2@3.9.2": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.1",
       "domelementtype": "npm:domelementtype@1.3.0",
-      "domhandler": "npm:domhandler@2.4.1",
+      "domhandler": "npm:domhandler@2.4.2",
       "domutils": "npm:domutils@1.7.0",
       "entities": "npm:entities@1.1.1",
       "events": "github:jspm/nodelibs-events@0.1.1",
-      "inherits": "npm:inherits@2.0.1",
+      "inherits": "npm:inherits@2.0.3",
       "process": "github:jspm/nodelibs-process@0.1.2",
       "stream": "github:jspm/nodelibs-stream@0.1.0",
       "string_decoder": "github:jspm/nodelibs-string_decoder@0.1.0",
@@ -287,6 +288,9 @@ System.config({
     },
     "npm:inherits@2.0.3": {
       "util": "github:jspm/nodelibs-util@0.1.0"
+    },
+    "npm:jsep@0.3.4": {
+      "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:lodash.clonedeep@4.5.0": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.1",
@@ -333,7 +337,7 @@ System.config({
       "safe-buffer": "npm:safe-buffer@5.1.1",
       "sha.js": "npm:sha.js@2.4.11"
     },
-    "npm:postcss@6.0.20": {
+    "npm:postcss@6.0.22": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.1",
       "path": "github:jspm/nodelibs-path@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.2",
@@ -394,7 +398,7 @@ System.config({
     },
     "npm:sanitize-html@1.18.2": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.1",
-      "chalk": "npm:chalk@2.3.2",
+      "chalk": "npm:chalk@2.4.1",
       "events": "github:jspm/nodelibs-events@0.1.1",
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "htmlparser2": "npm:htmlparser2@3.9.2",
@@ -404,7 +408,7 @@ System.config({
       "lodash.isstring": "npm:lodash.isstring@4.0.1",
       "lodash.mergewith": "npm:lodash.mergewith@4.6.1",
       "path": "github:jspm/nodelibs-path@0.1.0",
-      "postcss": "npm:postcss@6.0.20",
+      "postcss": "npm:postcss@6.0.22",
       "process": "github:jspm/nodelibs-process@0.1.2",
       "punycode": "github:jspm/nodelibs-punycode@0.1.0",
       "querystring": "github:jspm/nodelibs-querystring@0.1.0",
@@ -438,7 +442,7 @@ System.config({
     "npm:string_decoder@0.10.31": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.1"
     },
-    "npm:supports-color@5.3.0": {
+    "npm:supports-color@5.4.0": {
       "has-flag": "npm:has-flag@3.0.0",
       "os": "github:jspm/nodelibs-os@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.2"
@@ -463,6 +467,9 @@ System.config({
     "npm:vue-material@1.0.0-beta-8": {
       "process": "github:jspm/nodelibs-process@0.1.2",
       "vue": "npm:vue@2.5.16"
+    },
+    "npm:vue2-ace-editor@0.0.9": {
+      "brace": "npm:brace@0.11.1"
     },
     "npm:vue@2.5.16": {
       "process": "github:jspm/nodelibs-process@0.1.2"

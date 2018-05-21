@@ -4,11 +4,11 @@ const himalaya = require("himalaya");
 
 function parse (html) {
     const srcNodes = himalaya.parse(html);
-    return new NodeList(...srcNodes);
+    return new Nodes(...srcNodes);
 }
 
 
-class NodeList extends Array {
+class Nodes extends Array {
 
     constructor (...nodes) {
         super();
@@ -21,16 +21,16 @@ class NodeList extends Array {
                     break;
 
                 case 'text':
-                    this.push(new TextNode(node.content));
+                    this.push(new Text(node.content));
                     break;
 
                 case 'comment':
-                    this.push(new CommentNode(node.content));
+                    this.push(new Comment(node.content));
                     break;
             }
         }
     }
-    
+
     sanitize (allowedTags) {
         const blackList = [];
         for (let node of this) {
@@ -42,6 +42,24 @@ class NodeList extends Array {
             let index = this.indexOf(node);
             if (index !== -1) this.splice(index, 1);
         }
+    }
+    
+    findTags (...tagNames) {
+        const elements = {};
+        for (let name of tagNames) elements[name] = [];
+        for (let node of this) {
+            if (node instanceof Element) {
+                if (elements[node.tag]) {
+                    elements[node.tag].push(node);
+                } else {
+                    let subElements = node.children.findTags(...tagNames);
+                    for (let name of tagNames) {
+                        elements[name] = elements[name].concat(subElements[name]);
+                    }
+                }
+            }
+        }
+        return elements;
     }
 
     toJSON () {
@@ -63,16 +81,20 @@ class Node {
 }
 
 
-class ElementAttributes {
+class Attributes {
 
     constructor (attrList) {
         for (let attr of attrList) {
             this[attr.key] = attr.value;
         }
     }
-    
+
+    getNames () {
+        return Object.getOwnPropertyNames(this);
+    }
+
     sanitize (allowedAttributes) {
-        const attrNames = Object.getOwnPropertyNames(this); 
+        const attrNames = this.getNames();
         for (let attrName of attrNames) {
             if (allowedAttributes.indexOf(attrName) === -1) {
                 delete this[attrName];
@@ -82,10 +104,20 @@ class ElementAttributes {
 
     toJSON () {
         const attrList = [];
-        for (let name of Object.getOwnPropertyNames(this)) {
+        const names = this.getNames();
+        for (let name of names) {
             attrList.push({key:name, value:this[name]});
         }
         return attrList;
+    }
+    
+    toString () {
+        const attrString = "";
+        const names = this.getNames();
+        for (let name of names) {
+            attrString += `${name}="${this[name]}" `;
+        }
+        return attrString.trim();
     }
 }
 
@@ -95,8 +127,8 @@ class Element extends Node {
     constructor (tagName, attrList, children) {
         super();
         this.tag = tagName;
-        this.attributes = new ElementAttributes(attrList);
-        this.children = new NodeList(children);
+        this.attributes = new Attributes(attrList);
+        this.children = new Nodes(...children);
     }
 
     toJSON () {
@@ -111,7 +143,7 @@ class Element extends Node {
 
 
 
-class TextNode extends Node {
+class Text extends Node {
 
     constructor (content) {
         super();
@@ -128,7 +160,7 @@ class TextNode extends Node {
 
 
 
-class CommentNode extends Node {
+class Comment extends Node {
 
     constructor (content) {
         super();
@@ -144,10 +176,4 @@ class CommentNode extends Node {
 }
 
 
-exports.parse = parse;
-exports.NodeList = NodeList;
-exports.Node = Node;
-exports.Element = Element;
-exports.ElementAttributes = ElementAttributes;
-exports.TextNode = TextNode;
-exports.CommentNode = CommentNode;
+module.exports = {parse, Nodes, Node, Element, Attributes, Text, Comment};

@@ -16,17 +16,7 @@
     </head>
 
     <body>
-
-        {{#sections}}
-        <template   type="section" 
-                    name="{{name}}" 
-                    title="{{title}}" 
-                    {{#display}}{{#collapsed}}collapsed{{/collapsed}}{{/display}}
-                    {{#display}}{{#hidden}}hidden{{/hidden}}{{/display}}
-                    >{{{template}}}</template>
-                
-        {{/sections}}
-                
+        <template id="source">{{{template}}}</template> 
     </body>
 
 </html>

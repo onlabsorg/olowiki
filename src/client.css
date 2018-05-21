@@ -4,9 +4,6 @@
 @import "/jspm_packages/npm/vue-material@1.0.0-beta-8/dist/vue-material.min.css";
 @import "/jspm_packages/npm/vue-material@1.0.0-beta-8/dist/theme/default.css";
 
-@import "./client/view/olo-document.css";
-
-
 @font-face {
   font-family: 'Roboto';
   font-style: normal;
@@ -23,13 +20,59 @@
     url("/vendor/material-icons-font/MaterialIcons-Regular.ttf") format('truetype');
 }
 
-.olo-document {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
+.md-app {
+    min-height: 350px;
 }
+
+.md-app-toolbar {
+    display: flex;
+}
+
+.md-app-toolbar .md-title {
+    flex: 1 1 auto;
+    font-size: 20pt;
+}
+
+.md-app-toolbar .md-title {
+    flex: 1 1 auto;
+    font-size: 20pt;
+}
+
+
+.md-app-toolbar .md-button {
+    flex: 0 0 auto;
+}
+
+.md-app-content {
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+
+
+.md-drawer {
+    width: 230px;
+    max-width: calc(100vw - 125px);
+}
+
+.md-drawer .md-list-item {
+    height: 24pt;
+    margin-bottom: 16pt;
+}
+
+.md-dialog-overlay {
+    z-index: 1000;
+}
+
+.md-dialog {
+    z-index: 1001;
+    width: 60%;
+}
+
+.md-dialog .md-content {
+    padding: 1em;
+}
+
 
 
 /* Variables */

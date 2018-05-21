@@ -45,7 +45,8 @@
       "sanitize-html": "npm:sanitize-html@^1.18.2",
       "uuid": "npm:uuid@^3.2.1",
       "vue": "npm:vue@^2.5.16",
-      "vue-material": "npm:vue-material@^1.0.0-beta-8"
+      "vue-material": "npm:vue-material@^1.0.0-beta-8",
+      "vue2-ace-editor": "npm:vue2-ace-editor@^0.0.9"
     },
     "devDependencies": {}
   }
