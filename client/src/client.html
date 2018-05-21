@@ -1,0 +1,55 @@
+<div>
+    <olo-document>
+        
+        
+        <!--
+          --
+          -- User menu
+          --
+          -->
+        
+        <md-menu slot="toolbar-item" md-size="big" md-align-trigger>
+            
+            <md-button class="md-icon-button" md-menu-trigger>
+                <md-icon>account_circle</md-icon>
+            </md-button>
+
+            <md-menu-content>
+                
+                <md-menu-item>
+                    <strong>{{user.id || "Anonymous user"}}</strong>
+                </md-menu-item>
+                
+                <md-divider></md-divider>
+
+                <md-menu-item v-if="user.id == null" @click="signin">
+                    Sign in with Google
+                </md-menu-item>
+                
+                <md-menu-item v-if="user.id != null" @click="signout">
+                    Sign out
+                </md-menu-item>
+                
+            </md-menu-content>
+            
+        </md-menu>
+    
+    </olo-document>
+    
+
+
+    <!--     
+      --
+      --    Snackbars
+      --
+      -->
+
+    <md-snackbar md-position="left" :md-duration="4000" :md-active.sync="snackbars.showLoggedIn" md-persistent>
+        <span>Logged in as {{user.id}}</span>
+    </md-snackbar>
+
+    <md-snackbar md-position="left" :md-duration="4000" :md-active.sync="snackbars.showLoginFailed" md-persistent>
+        <span>Login failed: wrong username or password.</span>
+    </md-snackbar>
+    
+</div>

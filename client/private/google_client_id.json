@@ -1,0 +1,12 @@
+{
+    "web": {
+        "client_id":"541027474798-bcr909hl7jouca52k974tcgusg5r4htm.apps.googleusercontent.com",
+        "project_id":"imposing-gadget-186105",
+        "auth_uri":"https://accounts.google.com/o/oauth2/auth",
+        "token_uri":"https://accounts.google.com/o/oauth2/token",
+        "auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs",
+        "client_secret":"WfzheGFyZ28ANlVmmjK3Ukpe",
+        "redirect_uris":["http://localhost:8080/auth/google/callback"],
+        "javascript_origins":["http://localhost:8080"]
+    }
+}

@@ -1,0 +1,32 @@
+<html>
+
+    <head>
+        
+        <title>{{title}}</title>
+        <meta name="author" content="{{author}}">
+
+        <link rel="stylesheet" href="/src/client.css"></link>
+
+        <script src="/jspm_packages/system.js"></script>
+        <script src="/config.js"></script>
+        <script>
+            SystemJS.import("/src/client.js");
+        </script>
+
+    </head>
+
+    <body>
+
+        {{#sections}}
+        <template   type="section" 
+                    name="{{name}}" 
+                    title="{{title}}" 
+                    {{#display}}{{#collapsed}}collapsed{{/collapsed}}{{/display}}
+                    {{#display}}{{#hidden}}hidden{{/hidden}}{{/display}}
+                    >{{{template}}}</template>
+                
+        {{/sections}}
+                
+    </body>
+
+</html>

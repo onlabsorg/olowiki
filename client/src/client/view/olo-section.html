@@ -1,0 +1,45 @@
+<md-card class="olo-section md-elevation-1" :class="section.display">
+    
+    <md-toolbar md-elevation="0" class="md-dense">
+        
+        <md-button class="md-icon-button toggle-button" @click="toggleCollapsed">
+            <md-icon>keyboard_arrow_down</md-icon>
+        </md-button>
+        
+        <span class="title" v-if="!section.display.editMode">{{section.title}}</span>
+        <div class="title" v-if="section.display.editMode">
+            <md-field>
+                <md-input v-model="section.title"></md-input>
+            </md-field>
+        </div>
+
+        <md-button class="md-icon-button menu-button" @click="toggleEditMode">
+            <md-icon v-if="!section.display.editMode">edit</md-icon>
+            <md-icon v-if="section.display.editMode">check</md-icon>
+        </md-button>
+        
+    </md-toolbar>
+
+
+    <main>
+
+        <md-content class="view" v-if="!section.display.editMode" v-html="rendering"></md-content>
+        <md-content class="edit" v-if="section.display.editMode">
+            
+            <md-field>
+                <label>Name</label>
+                <md-input v-model="section.name"></md-input>
+            </md-field>
+
+            <md-field>
+                <label>Template</label>
+                <md-textarea v-model="section.template"></md-textarea>
+            </md-field>
+            
+            <md-switch v-model="section.display.hidden">Hidden</md-switch>
+            
+        </md-content>
+
+    </main>
+
+</md-card>

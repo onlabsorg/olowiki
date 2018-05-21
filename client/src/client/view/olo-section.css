@@ -1,0 +1,88 @@
+
+/* Container style */
+
+.olo-section {
+    margin: 1rem;
+    border: 1px solid #9E9E9E;
+}
+
+.olo-section.active {
+    border: 1px solid #000000;    
+}
+
+.olo-section.hidden {
+    opacity: 0.3;
+}
+
+
+
+
+/* Toolbar style */
+
+
+
+.olo-section .md-toolbar {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+}
+
+.olo-section .md-toolbar .title {
+    flex: 1 1 auto;
+    font-size: 16pt;
+}
+
+.olo-section.active .md-toolbar .title {
+    font-weight: bold;
+}
+
+
+.olo-section .md-toolbar button {
+    flex: 0 0 auto;
+}
+
+.olo-section.collapsed .md-toolbar .toggle-button {
+    transform:rotate(-90deg);
+}
+
+
+
+
+
+
+
+/* Content style */
+
+.olo-section main {
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+
+.olo-section.collapsed main {
+    display: none;
+}
+
+.olo-section main .md-content.view {
+    background: white;
+    color: black;
+}
+
+.olo-section main .md-content.view {
+    margin: 0;
+    padding: 1em 56px;    
+}
+
+.olo-section main .md-content.edit {
+    margin: 0;
+    padding: 1em 5%;
+}
+
+.olo-section .md-field.md-has-textarea {
+    padding-top: 32px;
+}
+
+.olo-section .md-textarea {
+    font-family: 'Roboto Mono', monospace;
+    height: 16em;
+}
