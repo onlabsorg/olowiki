@@ -11,12 +11,16 @@
         
         <md-app-toolbar class="md-small" md-large>
             
-            <md-button class="md-icon-button" v-if="!editMode">
-                <md-icon md-src="/src/olo.svg"/>            
-            </md-button>
-            
-            <span class="md-title">{{doc.title}}</span>
+            <img src="/src/olo.svg" height="40" width="40">
 
+            <div class="md-title">
+                <span v-if="!editMode">{{doc.title}}</span>
+                <md-field md-inline v-if="editMode">
+                    <label>Title</label>
+                    <md-input v-model="doc.title"></md-input>
+                </md-field>
+            </div>
+            
             <md-button class="md-icon-button" v-if="!editMode" @click="reload">
                 <md-icon>autorenew</md-icon>
             </md-button>
@@ -25,14 +29,18 @@
                 <md-icon>edit</md-icon>
             </md-button>
             
-            <md-button class="md-icon-button" v-if="editMode" @click="editMode=false">
-                <md-icon>done</md-icon>
-            </md-button>
-
-            <md-button class="md-icon-button" @click="save">
+            <md-button class="md-icon-button" v-if="editMode" @click="save">
                 <md-icon>save</md-icon>
             </md-button>
             
+            <md-button class="md-icon-button" v-if="editMode" @click="editMode=false">
+                <md-icon>clear</md-icon>
+            </md-button>
+
+            <md-button class="md-icon-button" v-if="editMode" @click="editMode=false; save()">
+                <md-icon>done</md-icon>
+            </md-button>
+
             <md-menu md-size="big" md-align-trigger>
                 
                 <md-button class="md-icon-button" md-menu-trigger>

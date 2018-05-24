@@ -1,8 +1,6 @@
 
-const DOM = require("./engine/dom");
-const expression = require("./engine/expression");
-
-const getOwnProperties = require("./utils/get-own-properties");
+const DOM = require("./dom");
+const expression = require("./expression");
 
 
 function parseDocument (html) {
@@ -118,6 +116,7 @@ function assign (scope, path, value) {
     }
     obj[key] = value;
 }
+
 
 
 

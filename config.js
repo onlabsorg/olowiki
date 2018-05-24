@@ -1,7 +1,13 @@
 System.config({
   baseURL: "/",
   defaultJSExtensions: true,
-  transpiler: false,
+  transpiler: "babel",
+  babelOptions: {
+    "optional": [
+      "runtime",
+      "optimisation.modules.system"
+    ]
+  },
   paths: {
     "github:*": "jspm_packages/github/*",
     "npm:*": "jspm_packages/npm/*"
@@ -9,7 +15,10 @@ System.config({
 
   map: {
     "Vue": "npm:vue@2.5.16/dist/vue.js",
+    "babel": "npm:babel-core@5.8.38",
+    "babel-runtime": "npm:babel-runtime@5.8.38",
     "brace": "npm:brace@0.11.1",
+    "core-js": "npm:core-js@1.2.7",
     "handlebars": "github:components/handlebars.js@4.0.11",
     "himalaya": "npm:himalaya@1.1.0",
     "jsep": "npm:jsep@0.3.4",
@@ -83,6 +92,9 @@ System.config({
       "buffer": "github:jspm/nodelibs-buffer@0.1.1",
       "process": "github:jspm/nodelibs-process@0.1.2",
       "util": "npm:util@0.10.3"
+    },
+    "npm:babel-runtime@5.8.38": {
+      "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:brace@0.11.1": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.1",
@@ -161,6 +173,12 @@ System.config({
       "assert": "github:jspm/nodelibs-assert@0.1.0"
     },
     "npm:constants-browserify@0.0.1": {
+      "systemjs-json": "github:systemjs/plugin-json@0.1.2"
+    },
+    "npm:core-js@1.2.7": {
+      "fs": "github:jspm/nodelibs-fs@0.1.2",
+      "path": "github:jspm/nodelibs-path@0.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.2",
       "systemjs-json": "github:systemjs/plugin-json@0.1.2"
     },
     "npm:core-util-is@1.0.2": {

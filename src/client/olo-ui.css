@@ -1,0 +1,53 @@
+.md-app {
+    min-height: 350px;
+}
+
+.md-app-toolbar {
+    display: flex;
+}
+
+.md-app-toolbar .md-title {
+    flex: 1 1 auto;
+    font-size: 20pt;
+    padding-left: 0.5em;
+}
+
+.md-app-toolbar .md-title {
+    flex: 1 1 auto;
+    font-size: 20pt;
+}
+
+
+.md-app-toolbar .md-button {
+    flex: 0 0 auto;
+}
+
+.md-app-content {
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+
+
+.md-drawer {
+    width: 230px;
+    max-width: calc(100vw - 125px);
+}
+
+.md-drawer .md-list-item {
+    height: 24pt;
+    margin-bottom: 16pt;
+}
+
+.md-dialog-overlay {
+    z-index: 1000;
+}
+
+.md-dialog {
+    z-index: 1001;
+    width: 60%;
+}
+
+.md-dialog .md-content {
+    padding: 1em;
+}
