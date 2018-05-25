@@ -5,13 +5,19 @@ const Vue = require("vue/dist/vue.js");
 const VueMaterial = require("vue-material/dist/vue-material.min.js");
 Vue.use(VueMaterial.default);
 
+require('vue-material/dist/vue-material.min.css');
+require('vue-material/dist/theme/default.css');
+
+require('./olo-ui.css');
+
+
 
 module.exports = (engine, store) => Object({
     
     template: require('./olo-ui.html'),
     
     components: {
-        'ace-editor': require('vue2-ace-editor'),
+        'ace-editor': () => import(/* webpackChunkName: "editor" */ 'vue2-ace-editor'),
     },
     
     data: () => Object({

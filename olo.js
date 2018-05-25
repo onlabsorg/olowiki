@@ -17,6 +17,15 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 
 
+// addresses code chunks requests
+app.get('*/:fname(*\.bundle\.js)', (req, res, next) => {
+    fs.readFile(`${__dirname}/dist/${req.params.fname}`, {encoding:'utf8'}, (err, chunk) => {
+        if (err) res.status(500).send(err);
+        else res.status(200).send(chunk);
+    });                
+});
+
+
 
 // add olo services
 const OloServer = require("./src/server");
@@ -31,6 +40,8 @@ app.use( OloServer(store, "/store") );
 const GoogleAuth = require("./src/server/google-auth");
 const googleClientSecret = JSON.parse(fs.readFileSync(`${dataPath}/google_client_secret.json`, {encoding:'utf8'}));
 app.use( GoogleAuth(store, googleClientSecret) );
+
+
 
 
 

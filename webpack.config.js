@@ -1,4 +1,13 @@
-const path = require('path')
+const path = require('path');
+
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const cssPlugin = new MiniCssExtractPlugin({
+    // Options similar to the same options in webpackOptions.output
+    // both options are optional
+    filename: "[name].css",
+    chunkFilename: "[id].css"
+});
+
 
 const htmlRule = {
     test: /\.(html)$/,
@@ -10,17 +19,25 @@ const htmlRule = {
     }                    
 }
 
+const cssRule = {
+    test: /\.css$/,
+    use: [ MiniCssExtractPlugin.loader, "css-loader" ]
+}
+
 
 module.exports = {
-    
+        
     entry: './src/client.js',
     
     output: {
         filename: 'client.js',
+        chunkFilename: '[name].bundle.js',
         path: path.resolve(__dirname, 'dist')
     },
     
     module: {
-        rules: [ htmlRule ]
-    }
+        rules: [ htmlRule, cssRule ]
+    },
+
+    plugins: [ cssPlugin ],
 }
