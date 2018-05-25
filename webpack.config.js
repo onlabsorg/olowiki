@@ -21,7 +21,7 @@ const htmlRule = {
 
 const cssRule = {
     test: /\.css$/,
-    use: [ MiniCssExtractPlugin.loader, "css-loader" ]
+    use: [ MiniCssExtractPlugin.loader, {loader:"css-loader", options:{minimize:true}} ]
 }
 
 
