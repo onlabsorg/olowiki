@@ -2,14 +2,20 @@
 const path = require("path");
 const fs = require("fs");
 
-const port = 8010;
 const rootPath = __dirname;
-const dataPath = path.join(rootPath, "..", ".olo");
-const storePath = path.join(dataPath, "/store");
+
+const configFilePath = path.resolve(rootPath, process.argv[2]);
+const config = JSON.parse(fs.readFileSync(configFilePath, {encoding:'utf8'}));
+
+const port = config.http.port;
+
+const storePath = path.resolve(path.dirname(configFilePath), config.store.path);
+
+
+
 
 const express = require("express");
 const app = express();
-
 
 
 // parse the json request body
@@ -26,28 +32,21 @@ app.get('*/:fname(*\.bundle\.js)', (req, res, next) => {
 });
 
 
-
 // add olo services
 const OloServer = require("./src/server");
 const Store = require("./src/server/fs-store");
-const jwtKey = require(dataPath+"/jwt-key");
-const store = new Store(storePath, {jwtKey});
+const store = new Store(storePath, {jwtKey:config.auth.jwtKey});
 app.use( OloServer(store, "/store") );
-
 
 
 // add authentication services
 const GoogleAuth = require("./src/server/google-auth");
-const googleClientSecret = JSON.parse(fs.readFileSync(`${dataPath}/google_client_secret.json`, {encoding:'utf8'}));
+const googleClientSecret = {web: config.auth.google};
 app.use( GoogleAuth(store, googleClientSecret) );
-
-
-
 
 
 // serve static files
 app.use(express.static(rootPath));
-
 
 
 // start listening for HTTP requests
