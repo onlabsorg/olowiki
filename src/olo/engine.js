@@ -46,7 +46,7 @@ async function render (template, scope) {
 
 
 DOM.Nodes.prototype.render = async function (scope) {
-    this.sanitize(Object.keys(config.elements));
+    this.sanitize(Object.keys(tags));
     for (let node of this) {
         await node.render(scope);
     }
@@ -55,19 +55,15 @@ DOM.Nodes.prototype.render = async function (scope) {
 
 
 DOM.Element.prototype.render = async function (scope) {
-    const cfg = config.elements[this.tag];
+    const tagConfig = tags[this.tag];
 
-    this.attributes.sanitize(cfg.allowedAttributes || []);    
+    this.attributes.sanitize(tagConfig.allowedAttributes || []);    
     await this.attributes.render(scope);    
-    
-    if (typeof cfg.beforeRendering === 'function') {
-        await cfg.beforeRendering.call(this, scope);
-    }
     
     await this.children.render(scope);
     
-    if (typeof cfg.afterRendering === 'function') {
-        await cfg.afterRendering.call(this, scope);
+    if (typeof tagConfig.decorator === 'function') {
+        await tagConfig.decorator.call(this, scope);
     }    
 }
 
@@ -120,58 +116,68 @@ function assign (scope, path, value) {
 
 
 
-const config = {
+const tags = {
 
-    elements: {
+    h1: {allowedAttributes: [ 'class', 'style', 'id' ]},
+    h2: {allowedAttributes: [ 'class', 'style', 'id' ]},
+    h3: {allowedAttributes: [ 'class', 'style', 'id' ]},
+    h4: {allowedAttributes: [ 'class', 'style', 'id' ]},
+    h5: {allowedAttributes: [ 'class', 'style', 'id' ]},
+    h6: {allowedAttributes: [ 'class', 'style', 'id' ]},
 
-        h1: {allowedAttributes: [ 'class', 'style', 'id' ]},
-        h2: {allowedAttributes: [ 'class', 'style', 'id' ]},
-        h3: {allowedAttributes: [ 'class', 'style', 'id' ]},
-        h4: {allowedAttributes: [ 'class', 'style', 'id' ]},
-        h5: {allowedAttributes: [ 'class', 'style', 'id' ]},
-        h6: {allowedAttributes: [ 'class', 'style', 'id' ]},
+    // lists
+    ul: {allowedAttributes: [ 'class', 'style', 'id' ]},
+    ol: {allowedAttributes: [ 'class', 'style', 'id', 'type', 'start' ]},
+    li: {allowedAttributes: [ 'class', 'style', 'id' ]},
+    dl: {allowedAttributes: [ 'class', 'style', 'id' ]},
+    dt: {allowedAttributes: [ 'class', 'style', 'id' ]},
+    dd: {allowedAttributes: [ 'class', 'style', 'id' ]},
 
-        // lists
-        ul: {allowedAttributes: [ 'class', 'style', 'id' ]},
-        ol: {allowedAttributes: [ 'class', 'style', 'id', 'type', 'start' ]},
-        li: {allowedAttributes: [ 'class', 'style', 'id' ]},
-        dl: {allowedAttributes: [ 'class', 'style', 'id' ]},
-        dt: {allowedAttributes: [ 'class', 'style', 'id' ]},
-        dd: {allowedAttributes: [ 'class', 'style', 'id' ]},
+    // tables
+    table:    {allowedAttributes: [ 'class', 'style', 'id' ]},
+    thead:    {allowedAttributes: [ 'class', 'style', 'id' ]},
+    tbody:    {allowedAttributes: [ 'class', 'style', 'id' ]},
+    tfoot:    {allowedAttributes: [ 'class', 'style', 'id' ]},
+    caption:  {allowedAttributes: [ 'class', 'style', 'id' ]},
+    col:      {allowedAttributes: [ 'class', 'style', 'id' ]},
+    colgroup: {allowedAttributes: [ 'class', 'style', 'id' ]},
+    tr:       {allowedAttributes: [ 'class', 'style', 'id' ]},
+    th:       {allowedAttributes: [ 'class', 'style', 'id' ]},
+    td:       {allowedAttributes: [ 'class', 'style', 'id' ]},
 
-        // tables
-        table:    {allowedAttributes: [ 'class', 'style', 'id' ]},
-        thead:    {allowedAttributes: [ 'class', 'style', 'id' ]},
-        tbody:    {allowedAttributes: [ 'class', 'style', 'id' ]},
-        tfoot:    {allowedAttributes: [ 'class', 'style', 'id' ]},
-        caption:  {allowedAttributes: [ 'class', 'style', 'id' ]},
-        col:      {allowedAttributes: [ 'class', 'style', 'id' ]},
-        colgroup: {allowedAttributes: [ 'class', 'style', 'id' ]},
-        tr:       {allowedAttributes: [ 'class', 'style', 'id' ]},
-        th:       {allowedAttributes: [ 'class', 'style', 'id' ]},
-        td:       {allowedAttributes: [ 'class', 'style', 'id' ]},
+    // misc block tags
+    p:          {allowedAttributes: [ 'class', 'style', 'id' ]},
+    blockquote: {allowedAttributes: [ 'class', 'style', 'id' ]},
+    pre:        {allowedAttributes: [ 'class', 'style', 'id' ]},
+    div:        {allowedAttributes: [ 'class', 'style', 'id' ]},
+    br:         {allowedAttributes: [ 'class', 'style', 'id' ]},
+    hr:         {allowedAttributes: [ 'class', 'style', 'id' ]},
 
-        // misc block tags
-        p:          {allowedAttributes: [ 'class', 'style', 'id' ]},
-        blockquote: {allowedAttributes: [ 'class', 'style', 'id' ]},
-        pre:        {allowedAttributes: [ 'class', 'style', 'id' ]},
-        div:        {allowedAttributes: [ 'class', 'style', 'id' ]},
-        br:         {allowedAttributes: [ 'class', 'style', 'id' ]},
-        hr:         {allowedAttributes: [ 'class', 'style', 'id' ]},
-
-        // inline tags
-        b:      {allowedAttributes: [ 'class', 'style', 'id' ]},
-        i:      {allowedAttributes: [ 'class', 'style', 'id' ]},
-        strong: {allowedAttributes: [ 'class', 'style', 'id' ]},
-        em:     {allowedAttributes: [ 'class', 'style', 'id' ]},
-        code:   {allowedAttributes: [ 'class', 'style', 'id' ]},
-        a:      {allowedAttributes: [ 'class', 'style', 'id', 'href', 'name', 'target' ]},
-        img:    {allowedAttributes: [ 'class', 'style', 'id', 'src', 'alt', 'height', 'width']},
-    },
+    // inline tags
+    b:      {allowedAttributes: [ 'class', 'style', 'id' ]},
+    i:      {allowedAttributes: [ 'class', 'style', 'id' ]},
+    strong: {allowedAttributes: [ 'class', 'style', 'id' ]},
+    em:     {allowedAttributes: [ 'class', 'style', 'id' ]},
+    code:   {allowedAttributes: [ 'class', 'style', 'id' ]},
+    a:      {allowedAttributes: [ 'class', 'style', 'id', 'href', 'name', 'target' ]},
+    img:    {allowedAttributes: [ 'class', 'style', 'id', 'src', 'alt', 'height', 'width']},
 }
 
+function defineTag (tagName, tagConfig) {
+    if (tagConfig.type) {
+        DOM.defineTag(tagName, tagConfig.type);
+    }
+    tags[tagName] = tagConfig;
+}
+
+function defineTags (newTags) {
+    for (let tagName of newTags) {
+        defineTag(tagName, newTags[tagName]);
+    }
+}
 
 
 exports.parseDocument = parseDocument;
 exports.render = render;
-exports.config = config;
+exports.defineTag = defineTag;
+exports.defineTags = defineTags;

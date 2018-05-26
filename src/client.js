@@ -6,15 +6,16 @@ const store = HTTPStore(olo);
 
 
 
-olo.engine.config.elements.import = {
+olo.engine.defineTag('import', {
+    type: 'void',
     allowedAttributes: [ 'href', 'name' ],
-    beforeRendering: async function (scope) {
+    decorator: async function (scope) {
         const targetDoc = await store.read(this.attributes.href);
         const targetScope = {};
         await olo.engine.render(targetDoc.template, targetScope);
         scope[this.attributes.name] = targetScope;
     }
-};
+});
 
 
 const Vue = require("vue/dist/vue.js");
