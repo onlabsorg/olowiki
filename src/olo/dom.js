@@ -3,49 +3,6 @@ const himalaya = require("himalaya");
 const parseOptions = JSON.parse(JSON.stringify(himalaya.parseDefaults));
 
 
-function defineTag (tag, tagType) {
-    tag = tag.toLowerCase();
-    
-    switch (tagType) {
-        
-        /*
-          Tags which auto-close because they cannot be nested
-          For example: <p>Outer<p>Inner is <p>Outer</p><p>Inner</p>
-        */
-        case 'closing':
-            if (parseOptions.closingTags.indexOf(tag) === -1) {
-                parseOptions.closingTags.push(tag);
-            }
-            break;
-            
-        /*
-          Tags which do not need the closing tag
-          For example: <img> does not need </img>
-        */
-        case 'void':
-            if (parseOptions.voidTags.indexOf(tag) === -1) {
-                parseOptions.voidTags.push(tag);
-            }
-            break;
-            
-        /*
-          Tag which contain arbitary non-parsed content
-          For example: <script> JavaScript should not be parsed
-        */        
-        case 'childless':
-            if (parseOptions.childlessTags.indexOf(tag) === -1) {
-                parseOptions.childlessTags.push(tag);
-            }
-            break;
-    }
-}
-
-
-function parse (html) {
-    const srcNodes = himalaya.parse(html, parseOptions);
-    return new Nodes(...srcNodes);
-}
-
 
 class Nodes extends Array {
 
@@ -120,6 +77,7 @@ class Node {
 }
 
 
+
 class Attributes {
 
     constructor (attrList) {
@@ -159,6 +117,7 @@ class Attributes {
         return attrString.trim();
     }
 }
+
 
 
 class Element extends Node {
@@ -215,4 +174,60 @@ class Comment extends Node {
 }
 
 
-module.exports = {parse, defineTag, Nodes, Node, Element, Attributes, Text, Comment};
+
+module.exports = {
+
+    defineTag (tag, tagType) {
+        tag = tag.toLowerCase();
+        
+        switch (tagType) {
+            
+            /*
+              Tags which auto-close because they cannot be nested
+              For example: <p>Outer<p>Inner is <p>Outer</p><p>Inner</p>
+            */
+            case 'closing':
+                if (parseOptions.closingTags.indexOf(tag) === -1) {
+                    parseOptions.closingTags.push(tag);
+                }
+                break;
+                
+            /*
+              Tags which do not need the closing tag
+              For example: <img> does not need </img>
+            */
+            case 'void':
+                if (parseOptions.voidTags.indexOf(tag) === -1) {
+                    parseOptions.voidTags.push(tag);
+                }
+                break;
+                
+            /*
+              Tag which contain arbitary non-parsed content
+              For example: <script> JavaScript should not be parsed
+            */        
+            case 'childless':
+                if (parseOptions.childlessTags.indexOf(tag) === -1) {
+                    parseOptions.childlessTags.push(tag);
+                }
+                break;
+        }
+    },
+    
+    parse (html) {
+        const srcNodes = himalaya.parse(html, parseOptions);
+        return new Nodes(...srcNodes);
+    },
+
+    Nodes: Nodes,
+    
+    Node: Node,
+    
+    Attributes: Attributes,
+    
+    Element: Element,
+    
+    Text: Text,
+    
+    Comment: Comment
+};

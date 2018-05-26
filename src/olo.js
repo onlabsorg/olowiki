@@ -1,5 +1,7 @@
-const DOM = require("./olo/dom");
-const engine = require("./olo/engine");
-const expression = require("./olo/expression");
 
-module.exports = {DOM, engine, expression};
+module.exports = {
+    DOM:        require("./olo/dom"),
+    engine:     require("./olo/engine"),
+    expression: require("./olo/expression"),
+    tools:      require("./olo/tools")
+}

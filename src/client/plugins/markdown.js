@@ -10,10 +10,8 @@ module.exports = function (options={}) {
         
         async decorator (scope) {
             const marked = (await import(/* webpackChunkName: "marked" */ "marked")).default;        
-            const markdown = String(this.children);
-            console.log(markdown)
+            const markdown = olo.tools.unindent( String(this.children) );
             const html = marked(markdown, options);
-            console.log(html);
             this.children = olo.engine.parseHTML(html);
         }
     });

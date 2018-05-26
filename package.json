@@ -40,6 +40,7 @@
     "webpack-cli": "^2.1.4"
   },
   "scripts": {
+    "test": "node olo ./private/config.json",
     "develop": "webpack --mode development --watch",
     "build": "webpack --mode production"
   },

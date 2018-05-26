@@ -1,47 +1,65 @@
 
 const DOM = require("./dom");
 const expression = require("./expression");
+const tools = require("./tools");
 
 
-function parseDocument (html) {
-    
-    const doc = {
-        title: "",
-        author: undefined,
-        template: undefined
-    }
-    
-    const nodes = DOM.parse(html);
-    const elements = nodes.findTags('title', 'meta', 'template');
 
-    if (elements.title.length > 0) {
-        doc.title = String(elements.title[0].children);
-    }
-    
-    for (let metaElt of elements.meta) {
-        if (metaElt.attributes.name === "author") {
-            doc.author = metaElt.attributes.content;
-            break;
+const engine = module.exports = {
+
+    parseHTML: DOM.parse,
+
+    parseDocument (html) {
+        
+        const doc = {
+            title: "",
+            author: undefined,
+            template: undefined
         }
-    }
-    
-    for (let templateElt of elements.template) {
-        if (templateElt.attributes.id === "source") {
-            doc.template = String(templateElt.children);
-            break;
+        
+        const nodes = this.parseHTML(html);
+        const elements = nodes.findTags('title', 'meta', 'template');
+
+        if (elements.title.length > 0) {
+            doc.title = String(elements.title[0].children);
         }
-    }
-    
-    return doc;
-}
+        
+        for (let metaElt of elements.meta) {
+            if (metaElt.attributes.name === "author") {
+                doc.author = metaElt.attributes.content;
+                break;
+            }
+        }
+        
+        for (let templateElt of elements.template) {
+            if (templateElt.attributes.id === "source") {
+                doc.template = String(templateElt.children);
+                break;
+            }
+        }
+        
+        return doc;
+    },
 
+    async render (template, scope) {
+        const nodes = this.parseHTML(template);
+        await nodes.render(scope);
+        return String(nodes);
+    },
 
+    defineTag (tagName, tagConfig) {
+        if (tagConfig.type) {
+            DOM.defineTag(tagName, tagConfig.type);
+        }
+        tags[tagName] = tagConfig;
+    },
 
-async function render (template, scope) {
-    const nodes = DOM.parse(template);
-    await nodes.render(scope);
-    return String(nodes);
-}
+    defineTags (newTags) {
+        for (let tagName of newTags) {
+            this.defineTag(tagName, newTags[tagName]);
+        }
+    }    
+};
 
 
 
@@ -89,7 +107,7 @@ DOM.Text.prototype.render = async function (scope) {
         if (assignment) {
             let path = assignment[1];
             let value = expression.eval(assignment[2], scope);
-            assign(scope, path, value);
+            tools.assign(scope, path, value);
             return "";
         } else {
             return expression.eval(expr, scope);
@@ -100,19 +118,6 @@ DOM.Text.prototype.render = async function (scope) {
 
 
 DOM.Comment.prototype.render = async function (scope) {};
-
-
-
-function assign (scope, path, value) {
-    const pathNames = path.split(".");
-    const key = pathNames.pop();
-    var obj = scope;
-    for (let name of pathNames) {
-        obj = obj[name];
-    }
-    obj[key] = value;
-}
-
 
 
 
@@ -162,23 +167,3 @@ const tags = {
     a:      {allowedAttributes: [ 'class', 'style', 'id', 'href', 'name', 'target' ]},
     img:    {allowedAttributes: [ 'class', 'style', 'id', 'src', 'alt', 'height', 'width']},
 }
-
-function defineTag (tagName, tagConfig) {
-    if (tagConfig.type) {
-        DOM.defineTag(tagName, tagConfig.type);
-    }
-    tags[tagName] = tagConfig;
-}
-
-function defineTags (newTags) {
-    for (let tagName of newTags) {
-        defineTag(tagName, newTags[tagName]);
-    }
-}
-
-
-exports.parseDocument = parseDocument;
-exports.parseHTML = DOM.parse;
-exports.render = render;
-exports.defineTag = defineTag;
-exports.defineTags = defineTags;
