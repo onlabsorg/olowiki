@@ -178,6 +178,7 @@ function defineTags (newTags) {
 
 
 exports.parseDocument = parseDocument;
+exports.parseHTML = DOM.parse;
 exports.render = render;
 exports.defineTag = defineTag;
 exports.defineTags = defineTags;

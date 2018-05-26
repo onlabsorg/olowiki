@@ -6,6 +6,7 @@ const store = HTTPStore(olo);
 
 
 require("./client/plugins/import")(store);
+require("./client/plugins/markdown")();
 
 
 const Vue = require("vue/dist/vue.js");

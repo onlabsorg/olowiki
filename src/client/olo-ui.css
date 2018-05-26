@@ -9,10 +9,14 @@
     url("/vendor/material-icons-font/MaterialIcons-Regular.ttf") format('truetype');
 }
 
-
-.md-app {
-    min-height: 350px;
+.olo-ui, .md-app {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
+
 
 .md-app-toolbar {
     display: flex;
