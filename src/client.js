@@ -1,8 +1,8 @@
 
 const olo = require("./olo");
 
-const HTTPStore = require("./client/http-store");
-const store = HTTPStore(olo);
+const HTTPStore = require("./olo/http-store");
+const store = HTTPStore();
 
 
 require("./client/plugins/import")(store);

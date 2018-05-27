@@ -26,6 +26,11 @@ const tools = module.exports = {
         }
 
         return lines.join("\n");        
-    }
+    },
     
+    URL (href) {
+        
+    },
+    
+    queryString: require('query-string')
 };
