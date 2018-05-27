@@ -67,6 +67,11 @@ module.exports = (engine, store) => Object({
             .then(() => {
                 this.message.text = "Document saved";
                 this.message.show = true;
+            })
+            .catch((err) => {
+                console.dir(err);
+                this.message.text = String(err);
+                this.message.show = true;                
             });
         },
         

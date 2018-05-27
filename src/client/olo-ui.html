@@ -68,8 +68,8 @@
             </md-menu>
 
         </md-app-toolbar>
-                
-        
+
+
         <!--    
           --
           --    Content
@@ -84,6 +84,9 @@
                     </ace-editor>
         </md-app-content>
 
+
+
+
     </md-app>
 
 
@@ -94,7 +97,7 @@
       --
       -->
 
-    <md-snackbar md-position="left" :md-duration="4000" :md-active.sync="message.show" md-persistent>
+    <md-snackbar md-position="center" :md-duration="4000" :md-active.sync="message.show" md-persistent>
         <span>{{message.text}}</span>
         <md-button class="md-primary" @click="message.show = false">OK</md-button>        
     </md-snackbar>

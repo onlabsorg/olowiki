@@ -59,8 +59,7 @@ function Server (store, storePath) {
                 res.status(200).send(html);
 
             }).catch(error => {
-                res.status(500).send(error);
-                                
+                res.status(500).send(error);        
             });                
         }
     ]);
@@ -71,11 +70,9 @@ function Server (store, storePath) {
         // throw permission error if the user is undefined
         (req, res, next) => {
             if (!req.olo.user.id) {
-                res.status(403).send();
-                
+                res.status(403).send("Write access denied!");
             } else {
                 next();
-                
             }
         },
         
