@@ -11,8 +11,7 @@ require('vue-material/dist/theme/default.css');
 require('./olo-ui.css');
 
 
-
-module.exports = (engine, store) => Object({
+module.exports = (doc, store) => Object({
     
     template: require('./olo-ui.html'),
     
@@ -21,7 +20,8 @@ module.exports = (engine, store) => Object({
     },
     
     data: () => Object({
-        doc: engine.parseDocument(document.documentElement.innerHTML),
+        
+        doc: doc,
         
         rendering: "",
         
@@ -57,8 +57,7 @@ module.exports = (engine, store) => Object({
         
         async render () {
             const scope = {};
-            const html = await engine.render(this.doc.template, scope);
-            this.rendering = html;
+            this.rendering = await this.doc.renderTemplate(scope);
         },
         
         save () {

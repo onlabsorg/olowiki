@@ -3,7 +3,7 @@ const olo = require("../../olo");
 
 module.exports = function (store) {
     
-    olo.engine.defineTag('import', {
+    olo.Document.defineTag('import', {
         
         type: 'void',
         
@@ -12,7 +12,7 @@ module.exports = function (store) {
         async decorator (scope) {
             const targetDoc = await store.read(this.attributes.href);
             const targetScope = {};
-            await olo.engine.render(targetDoc.template, targetScope);
+            await targetDoc.renderTemplate(targetScope);
             scope[this.attributes.name] = targetScope;
         }
     });

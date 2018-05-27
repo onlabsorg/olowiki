@@ -2,7 +2,7 @@
 const URL = require("./utils/url");
 const queryString = require("./utils/query-string");
 
-const engine = require("../olo/engine");
+const olo = require("../olo");
 
 
 
@@ -24,7 +24,7 @@ const HTTPStore = (olo) => {
         
         const response = await fetch(docURL);
         const html = await response.text();
-        return engine.parseDocument(html);
+        return new olo.Document(html);
     }
 
 

@@ -2,7 +2,7 @@ const olo = require("../../olo");
 
 module.exports = function (options={}) {
     
-    olo.engine.defineTag('markdown', {
+    olo.Document.defineTag('markdown', {
         
         type: 'childless',
         
@@ -12,7 +12,7 @@ module.exports = function (options={}) {
             const marked = (await import(/* webpackChunkName: "marked" */ "marked")).default;        
             const markdown = olo.tools.unindent( String(this.children) );
             const html = marked(markdown, options);
-            this.children = olo.engine.parseHTML(html);
+            this.children = olo.Document.parseHTML(html);
         }
     });
 }
