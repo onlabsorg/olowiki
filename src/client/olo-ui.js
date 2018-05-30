@@ -1,4 +1,6 @@
 
+const queryString = require('query-string');
+const URL = require("url");
 
 const Vue = require("vue/dist/vue.js");
 
@@ -61,8 +63,9 @@ module.exports = (doc, store) => Object({
         },
         
         save () {
-            console.log("Saving document ...");
-            store.write(location.pathname, this.doc)
+            const token = getToken();
+            const url = URL.parse(location.href);
+            store.setDocument(url.pathname, this.doc, token)
             .then(() => {
                 this.message.text = "Document saved";
                 this.message.show = true;
@@ -84,11 +87,26 @@ module.exports = (doc, store) => Object({
         },
         
         signin () {
-            store.signin();
+            localStorage.setItem('callbackURL', location.origin + location.pathname);
+            const anchor = document.createElement('a');
+            anchor.href = "/auth/google";
+            anchor.click();
         },
         
-        signout () {
-            store.signout();
+        async signout () {
+            const token = getToken();
+            
+            const response = await fetch('/auth/google/revoke', {
+                method: 'post',
+                headers: {
+                    'Authorization': `Bearer ${token}`,            
+                }
+            });
+            if (!response.ok) {
+                let err = await response.text();
+                throw new Error(err);
+            }
+            location.href = location.origin + location.pathname;
         },
         
         initEditor () {
@@ -99,10 +117,37 @@ module.exports = (doc, store) => Object({
     },
     
     mounted () {
-        store.getUser()
+        getUser()
         .then((user) => {
             this.user.id = user.id;
         });
         this.render();
     }
 });
+
+
+
+function getToken () {
+    const query = queryString.parse(location.search);
+    return query.user;
+}
+
+
+async function getUser () {
+    const token = getToken();
+    
+    const response = await fetch('/user', {
+        method: 'get',
+        headers: {
+            'Authorization': `Bearer ${token}`,            
+        }
+    });
+    if (!response.ok) {
+        let err = await response.text();
+        throw new Error(err);
+    }
+    else {
+        let user = await response.json();
+        return user;
+    }
+}

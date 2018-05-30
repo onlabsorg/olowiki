@@ -1,4 +1,6 @@
 const olo = require("../../olo");
+const unindent = require("../utils/unindent");
+
 
 module.exports = function (options={}) {
     
@@ -10,7 +12,7 @@ module.exports = function (options={}) {
         
         async decorator (scope) {
             const marked = (await import(/* webpackChunkName: "marked" */ "marked")).default;        
-            const markdown = olo.tools.unindent( String(this.children) );
+            const markdown = unindent( String(this.children) );
             const html = marked(markdown, options);
             this.children = olo.Document.parseHTML(html);
         }

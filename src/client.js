@@ -1,8 +1,8 @@
 
 const olo = require("./olo");
 
-const HTTPStore = require("./olo/http-store");
-const store = HTTPStore();
+const HTTPStore = require("./olo/stores/http-store-client");
+const store = new HTTPStore();
 
 
 require("./client/plugins/import")(store);
@@ -15,7 +15,7 @@ const OloUI = require("./client/olo-ui.js");
 const domready = require('./client/utils/domready');
 domready().then(() => {
 
-    const doc = new olo.Document(document.documentElement.innerHTML);
+    const doc = olo.Document.parse(document.documentElement.innerHTML);
 
     const oloVueRoot = document.createElement('olo-ui');
     document.body.appendChild(oloVueRoot);

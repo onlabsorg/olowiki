@@ -4,9 +4,11 @@ const express = require("express");
 const passport = require('passport');
 const passportGoogleOpenIdConnect = require( 'passport-google-openidconnect' );
 
+const Token = require("../olo/tools/token");
 
 
-function Router (store, googleClientSecret) {
+
+function Router (googleClientSecret, jwtSecret) {
     const router = express.Router();
 
     // handle google openidconnect signin
@@ -28,7 +30,12 @@ function Router (store, googleClientSecret) {
         };
         
         const callback = (iss, sub, profile, accessToken, refreshToken, done) => {
-            process.nextTick(function () {   
+    exports.verify = function (token, secret) {
+    
+}
+
+
+        process.nextTick(function () {   
                 return done(null, {
                     name: profile.displayName,
                     id: profile._json.email,
@@ -53,7 +60,7 @@ function Router (store, googleClientSecret) {
         }),
 
         (req, res) => {
-            const token = store.generateToken(req.user);                
+            const token = Token.sign(req.user, jwtSecret);                
             res.redirect(`/src/server/callback.html?user=${token}`);
         }    
     ]);

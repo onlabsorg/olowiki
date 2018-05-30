@@ -32,17 +32,24 @@ app.get('*/:fname(*\.bundle\.js)', (req, res, next) => {
 });
 
 
-// add olo services
-const OloServer = require("./src/server");
-const Store = require("./src/server/fs-store");
-const store = new Store(storePath, {jwtKey:config.auth.jwtKey});
-app.use( OloServer(store, "/store") );
+
+const Backend = require("./src/olo/stores/fs-store");
+const backend = new Backend(storePath);
+
+const HTTPStoreServer = require("./src/olo/stores/http-store-server");
+app.use( new HTTPStoreServer(backend, '/store', config.auth.jwtKey) );
+
+
+app.get('/user', (req, res, next) => {
+    res.status(200).json(req.olo.user);
+});
+
 
 
 // add authentication services
 const GoogleAuth = require("./src/server/google-auth");
 const googleClientSecret = {web: config.auth.google};
-app.use( GoogleAuth(store, googleClientSecret) );
+app.use( GoogleAuth(googleClientSecret, config.auth.jwtKey) );
 
 
 // serve static files

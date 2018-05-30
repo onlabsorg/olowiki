@@ -1,6 +1,6 @@
 
 const expression = require("./expression");
-const tools = require("./tools");
+const assign = require("./tools/assign");
 
 const himalaya = require("himalaya");
 const parseOptions = JSON.parse(JSON.stringify(himalaya.parseDefaults));
@@ -8,32 +8,10 @@ const parseOptions = JSON.parse(JSON.stringify(himalaya.parseDefaults));
 
 class Document {
     
-    constructor (html) {
-        
-        this.title = "";
-        this.author = undefined;
-        this.template = "";
-        
-        const nodes = Document.parseHTML(html);
-        const elements = nodes.findTags('title', 'meta', 'template');
-
-        if (elements.title.length > 0) {
-            this.title = String(elements.title[0].children);
-        }
-        
-        for (let metaElt of elements.meta) {
-            if (metaElt.attributes.name === "author") {
-                this.author = metaElt.attributes.content;
-                break;
-            }
-        }
-        
-        for (let templateElt of elements.template) {
-            if (templateElt.attributes.id === "source") {
-                this.template = String(templateElt.children);
-                break;
-            }
-        }        
+    constructor (docData) {        
+        this.title = docData.title;
+        this.author = docData.author;
+        this.template = docData.template;
     }
     
     async renderTemplate (scope) {
@@ -87,10 +65,56 @@ class Document {
         }
     }    
     
+    toJSON () {
+        return {
+            title: this.title,
+            author: this.author,
+            template: this.template
+        }
+    }
+    
+    toHTML () {
+        return documentTemplate
+        .replace("{{title}}", this.title)
+        .replace("{{author}}", this.author)
+        .replace("{{template}}", this.template);
+    }
+    
     static parseHTML (html) {
         const srcNodes = himalaya.parse(html, parseOptions);
         return new Document.Nodes(...srcNodes);        
     }
+    
+    static parse (html) {
+        const docData = {
+            title: "",
+            author: undefined,
+            template: ""
+        };
+        
+        const nodes = this.parseHTML(html);
+        const elements = nodes.findTags('title', 'meta', 'template');
+
+        if (elements.title.length > 0) {
+            docData.title = String(elements.title[0].children);
+        }
+        
+        for (let metaElt of elements.meta) {
+            if (metaElt.attributes.name === "author") {
+                docData.author = metaElt.attributes.content;
+                break;
+            }
+        }
+        
+        for (let templateElt of elements.template) {
+            if (templateElt.attributes.id === "source") {
+                docData.template = String(templateElt.children);
+                break;
+            }
+        }
+        
+        return new Document(docData);
+    }    
 }
 
 
@@ -287,7 +311,7 @@ Document.Text = class extends Document.Node {
             if (assignment) {
                 let path = assignment[1];
                 let value = expression.eval(assignment[2], scope);
-                tools.assign(scope, path, value);
+                assign(scope, path, value);
                 return "";
             } else {
                 return expression.eval(expr, scope);
@@ -360,6 +384,27 @@ const tags = {
     a:      {allowedAttributes: [ 'class', 'style', 'id', 'href', 'name', 'target' ]},
     img:    {allowedAttributes: [ 'class', 'style', 'id', 'src', 'alt', 'height', 'width']},
 }
+
+
+
+const documentTemplate = `
+<html>
+
+<head>
+<title>{{title}}</title>
+<meta name="author" content="{{author}}">
+<link rel="stylesheet" href="/dist/main.css"></link>
+<script src="/dist/client.js"></script>
+</head>
+
+<body>
+<template id="source">
+{{template}}
+</template> 
+</body>
+
+</html>
+`;
 
 
 
