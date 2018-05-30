@@ -7,13 +7,6 @@ const rootPath = __dirname;
 const configFilePath = path.resolve(rootPath, process.argv[2]);
 const config = JSON.parse(fs.readFileSync(configFilePath, {encoding:'utf8'}));
 
-const port = config.http.port;
-
-const storePath = path.resolve(path.dirname(configFilePath), config.store.path);
-
-
-
-
 const express = require("express");
 const app = express();
 
@@ -32,18 +25,16 @@ app.get('*/:fname(*\.bundle\.js)', (req, res, next) => {
 });
 
 
-
-const Backend = require("./src/olo/stores/fs-store");
-const backend = new Backend(storePath);
-
-const HTTPStoreServer = require("./src/olo/stores/http-store-server");
-app.use( new HTTPStoreServer(backend, '/store', config.auth.jwtKey) );
+// olo store document server
+const storePath = path.resolve(path.dirname(configFilePath), config.store.path);
+const StoreServer = require("./src/server").HTTPFileStoreServer;
+app.use( new StoreServer(storePath, '/store', config.auth.jwtKey) );
 
 
+// handles user info requests
 app.get('/user', (req, res, next) => {
     res.status(200).json(req.olo.user);
 });
-
 
 
 // add authentication services
@@ -57,6 +48,7 @@ app.use(express.static(rootPath));
 
 
 // start listening for HTTP requests
+const port = config.http.port;
 app.listen(port, () => {
     console.log(`olo server listening on port ${port} ...`);
 });

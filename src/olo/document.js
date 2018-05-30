@@ -108,7 +108,7 @@ class Document {
         
         for (let templateElt of elements.template) {
             if (templateElt.attributes.id === "source") {
-                docData.template = String(templateElt.children);
+                docData.template = String(templateElt.children).trim();
                 break;
             }
         }
