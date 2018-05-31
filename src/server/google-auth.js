@@ -30,12 +30,7 @@ function Router (googleClientSecret, jwtSecret) {
         };
         
         const callback = (iss, sub, profile, accessToken, refreshToken, done) => {
-    exports.verify = function (token, secret) {
-    
-}
-
-
-        process.nextTick(function () {   
+            process.nextTick(function () {   
                 return done(null, {
                     name: profile.displayName,
                     id: profile._json.email,

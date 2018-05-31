@@ -177,6 +177,9 @@ Document.Nodes = class extends Array {
     }
 
     toString () {
+        var html = "";
+        for (let node of this) html += String(node);
+        return html;
         return himalaya.stringify(this.toJSON());
     }
 
@@ -222,6 +225,10 @@ Document.Element = class extends Document.Node {
         };
     }
     
+    toString () {
+        return `<${this.tag} ${this.attributes}>${this.children}</${this.tag}>`;
+    }
+    
     async render (scope) {
         const tagConfig = tags[this.tag];
 
@@ -231,7 +238,10 @@ Document.Element = class extends Document.Node {
         await this.children.render(scope);
         
         if (typeof tagConfig.decorator === 'function') {
-            await tagConfig.decorator.call(this, scope);
+            let retval = await tagConfig.decorator.call(this, scope);
+            if (retval !== undefined) {
+                this.toString = () => String(retval);
+            }
         }    
     }    
 }
@@ -268,7 +278,7 @@ Document.Element.Attributes = class {
     }
     
     toString () {
-        const attrString = "";
+        var attrString = "";
         const names = this.getNames();
         for (let name of names) {
             attrString += `${name}="${this[name]}" `;
@@ -305,6 +315,10 @@ Document.Text = class extends Document.Node {
         }
     }
     
+    toString () {
+        return this.content;
+    }
+    
     async render (scope) {
         this.content = this.content.replace(/\{\{(.+?)\}\}/gm, (match, expr) => {
             const assignment = expr.match(/^\s*([a-zA-Z_][a-zA-Z_.0-9]*)\s*=\s*(.+)\s*$/);
@@ -334,6 +348,10 @@ Document.Comment = class extends Document.Node {
             type: 'comment',
             content: this.content
         }
+    }
+
+    toString () {
+        return this.content;
     }
 }
 

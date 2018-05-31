@@ -14,6 +14,7 @@ module.exports = function (store) {
             const targetScope = {};
             await targetDoc.renderTemplate(targetScope);
             scope[this.attributes.name] = targetScope;
+            return "";
         }
     });
 }
