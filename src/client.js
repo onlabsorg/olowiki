@@ -1,5 +1,5 @@
 
-const olo = require("./olo");
+const olo = module.exports = window.olo = require("./olo");
 
 const HTTPStore = require("./olo/stores/http-store-client");
 const store = new HTTPStore();
@@ -29,7 +29,3 @@ domready().then(() => {
         }        
     });    
 });
-
-
-
-module.exports = window.olo = olo;

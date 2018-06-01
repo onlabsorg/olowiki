@@ -231,18 +231,27 @@ Document.Element = class extends Document.Node {
     
     async render (scope) {
         const tagConfig = tags[this.tag];
-
-        this.attributes.sanitize(tagConfig.allowedAttributes || []);    
-        await this.attributes.render(scope);    
-        
-        await this.children.render(scope);
-        
-        if (typeof tagConfig.decorator === 'function') {
-            let retval = await tagConfig.decorator.call(this, scope);
-            if (retval !== undefined) {
-                this.toString = () => String(retval);
+        if (tagConfig) {
+            try {
+                this.attributes.sanitize(tagConfig.allowedAttributes);    
+                await this.attributes.render(scope);    
+                
+                await this.children.render(scope);
+                
+                if (typeof tagConfig.decorator === 'function') {
+                    let retval = await tagConfig.decorator.call(this, scope);
+                    if (retval !== undefined) {
+                        this.toString = () => String(retval);
+                    }
+                }                    
             }
-        }    
+            catch (err) {
+                this.toString = () => inlineError(err);
+            }
+        }
+        else {
+            this.toString = () => "";
+        }
     }    
 }
 
@@ -260,9 +269,17 @@ Document.Element.Attributes = class {
     }
 
     sanitize (allowedAttributes) {
+        if (allowedAttributes === true) return;
         const attrNames = this.getNames();
-        for (let attrName of attrNames) {
-            if (allowedAttributes.indexOf(attrName) === -1) {
+        if (Array.isArray(allowedAttributes)) {
+            for (let attrName of attrNames) {
+                if (allowedAttributes.indexOf(attrName) === -1) {
+                    delete this[attrName];
+                }
+            }
+        }
+        else {
+            for (let attrName of attrNames) {
                 delete this[attrName];
             }
         }
@@ -322,16 +339,22 @@ Document.Text = class extends Document.Node {
     async render (scope) {
         this.content = this.content.replace(/\{\{(.+?)\}\}/gm, (match, expr) => {
             const assignment = expr.match(/^\s*([a-zA-Z_][a-zA-Z_.0-9]*)\s*=\s*(.+)\s*$/);
-            if (assignment) {
-                let path = assignment[1];
-                let value = expression.eval(assignment[2], scope);
-                assign(scope, path, value);
-                return "";
-            } else {
-                return expression.eval(expr, scope);
+            try {
+                if (assignment) {
+                    let path = assignment[1];
+                    let value = expression.eval(assignment[2], scope);
+                    assign(scope, path, value);
+                    return "";
+                } else {
+                    let value = expression.eval(expr, scope);
+                    return `<span class="expression">${value}</span>`;
+                }                
+            }
+            catch (err) {
+                return inlineError(err);
             }
         });
-    }    
+    }        
 }
 
 
@@ -353,6 +376,11 @@ Document.Comment = class extends Document.Node {
     toString () {
         return this.content;
     }
+}
+
+
+function inlineError (err) {
+    return `<span class="error">${err}</span>`;
 }
 
 
@@ -401,6 +429,7 @@ const tags = {
     code:   {allowedAttributes: [ 'class', 'style', 'id' ]},
     a:      {allowedAttributes: [ 'class', 'style', 'id', 'href', 'name', 'target' ]},
     img:    {allowedAttributes: [ 'class', 'style', 'id', 'src', 'alt', 'height', 'width']},
+    span:   {allowedAttributes: [ 'class', 'style', 'id' ]}
 }
 
 

@@ -1,5 +1,5 @@
 
-const olo = require("../../olo");
+const olo = window.olo;
 
 module.exports = function (store) {
     
