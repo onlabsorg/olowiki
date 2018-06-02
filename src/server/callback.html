@@ -1,4 +1,4 @@
 <script>
-    var callbackURL = localStorage.getItem('callbackURL');
-    location.href = callbackURL + location.search;
+    localStorage.query = location.search;
+    location.href = localStorage.getItem('callbackURL');
 </script>

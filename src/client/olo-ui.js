@@ -1,6 +1,7 @@
 
-const queryString = require('query-string');
 const URL = require("url");
+
+const user = require('./user');
 
 const Vue = require("vue/dist/vue.js");
 
@@ -58,12 +59,12 @@ module.exports = (doc, store) => Object({
     methods: {
         
         async render () {
-            const scope = {};
-            this.rendering = await this.doc.renderTemplate(scope);
+            const context = {};
+            this.rendering = await this.doc.renderTemplate(context);
         },
         
         save () {
-            const token = getToken();
+            const token = user.getToken();
             const url = URL.parse(location.href);
             store.setDocument(url.pathname, this.doc, token)
             .then(() => {
@@ -87,26 +88,11 @@ module.exports = (doc, store) => Object({
         },
         
         signin () {
-            localStorage.setItem('callbackURL', location.origin + location.pathname);
-            const anchor = document.createElement('a');
-            anchor.href = "/auth/google";
-            anchor.click();
+            user.signin();
         },
         
-        async signout () {
-            const token = getToken();
-            
-            const response = await fetch('/auth/google/revoke', {
-                method: 'post',
-                headers: {
-                    'Authorization': `Bearer ${token}`,            
-                }
-            });
-            if (!response.ok) {
-                let err = await response.text();
-                throw new Error(err);
-            }
-            location.href = location.origin + location.pathname;
+        signout () {
+            user.signout();
         },
         
         initEditor () {
@@ -117,37 +103,10 @@ module.exports = (doc, store) => Object({
     },
     
     mounted () {
-        getUser()
-        .then((user) => {
-            this.user.id = user.id;
+        user.getInfo()
+        .then((userInfo) => {
+            this.user.id = userInfo.id;
         });
         this.render();
     }
 });
-
-
-
-function getToken () {
-    const query = queryString.parse(location.search);
-    return query.user;
-}
-
-
-async function getUser () {
-    const token = getToken();
-    
-    const response = await fetch('/user', {
-        method: 'get',
-        headers: {
-            'Authorization': `Bearer ${token}`,            
-        }
-    });
-    if (!response.ok) {
-        let err = await response.text();
-        throw new Error(err);
-    }
-    else {
-        let user = await response.json();
-        return user;
-    }
-}

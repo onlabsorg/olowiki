@@ -9,11 +9,11 @@ module.exports = function (store) {
         
         allowedAttributes: [ 'href', 'name' ],
         
-        async decorator (scope) {
+        async decorator (context) {
             const targetDoc = await store.getDocument(this.attributes.href);
             const targetScope = {};
             await targetDoc.renderTemplate(targetScope);
-            scope[this.attributes.name] = targetScope;
+            context[this.attributes.name] = targetScope;
             return "";
         }
     });

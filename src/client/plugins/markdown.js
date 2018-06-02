@@ -8,7 +8,7 @@ module.exports = function (options={}) {
         
         allowedAttributes: [],
         
-        async decorator (scope) {
+        async decorator (context) {
             const marked = (await import(/* webpackChunkName: "marked" */ "marked")).default;        
             const markdown = unindent( String(this.children) );
             return marked(markdown, options);

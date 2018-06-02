@@ -14,9 +14,9 @@ class Document {
         this.template = docData.template;
     }
     
-    async renderTemplate (scope) {
+    async renderTemplate (context) {
         const nodes = Document.parseHTML(this.template);
-        await nodes.render(scope);
+        await nodes.render(context);
         return String(nodes);        
     }    
     
@@ -183,10 +183,10 @@ Document.Nodes = class extends Array {
         return himalaya.stringify(this.toJSON());
     }
 
-    async render (scope) {
+    async render (context) {
         this.sanitize(Object.keys(tags));
         for (let node of this) {
-            await node.render(scope);
+            await node.render(context);
         }
     }
 }
@@ -199,7 +199,7 @@ Document.Node = class {
         himalaya.stringify(this.toJSON());
     }
     
-    async render (scope) {}
+    async render (context) {}
 }
 
 
@@ -229,17 +229,17 @@ Document.Element = class extends Document.Node {
         return `<${this.tag} ${this.attributes}>${this.children}</${this.tag}>`;
     }
     
-    async render (scope) {
+    async render (context) {
         const tagConfig = tags[this.tag];
         if (tagConfig) {
             try {
                 this.attributes.sanitize(tagConfig.allowedAttributes);    
-                await this.attributes.render(scope);    
+                await this.attributes.render(context);    
                 
-                await this.children.render(scope);
+                await this.children.render(context);
                 
                 if (typeof tagConfig.decorator === 'function') {
-                    let retval = await tagConfig.decorator.call(this, scope);
+                    let retval = await tagConfig.decorator.call(this, context);
                     if (retval !== undefined) {
                         this.toString = () => String(retval);
                     }
@@ -303,14 +303,14 @@ Document.Element.Attributes = class {
         return attrString.trim();
     }
 
-    async render (scope) {
+    async render (context) {
         const attrNames = this.getNames();
         for (let attrName of attrNames) {
             let attrValue = this[attrName];
             let matchExpr = attrValue.match(/^\{\{(.*)\}\}$/);
             if (matchExpr) {
                 let expr = matchExpr[1];
-                this[attrName] = expression.eval(expr, scope);
+                this[attrName] = expression.eval(expr, context);
             }
         }
     }
@@ -336,17 +336,17 @@ Document.Text = class extends Document.Node {
         return this.content;
     }
     
-    async render (scope) {
+    async render (context) {
         this.content = this.content.replace(/\{\{(.+?)\}\}/gm, (match, expr) => {
             const assignment = expr.match(/^\s*([a-zA-Z_][a-zA-Z_.0-9]*)\s*=\s*(.+)\s*$/);
             try {
                 if (assignment) {
                     let path = assignment[1];
-                    let value = expression.eval(assignment[2], scope);
-                    assign(scope, path, value);
+                    let value = expression.eval(assignment[2], context);
+                    assign(context, path, value);
                     return "";
                 } else {
-                    let value = expression.eval(expr, scope);
+                    let value = expression.eval(expr, context);
                     return `<span class="expression">${value}</span>`;
                 }                
             }
