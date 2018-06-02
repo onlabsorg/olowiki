@@ -6,18 +6,7 @@ module.exports = {
     
     getToken () {
         const query = queryString.parse(location.search);
-        if (query.user) return query.user;
-        
-        const localStorageToken = localStorage.getItem('token');
-        if (localStorageToken) return localStorageToken;
-        
-        const localStorageQuery = queryString.parse(localStorage.getItem('query'));
-        if (localStorageQuery.user) {
-            let token = localStorageQuery.user;
-            localStorage.setItem('token', token);
-            localStorage.removeItem('query');
-            return token;
-        }
+        return query.user ? query.user : localStorage.getItem('token');
     },
     
     
