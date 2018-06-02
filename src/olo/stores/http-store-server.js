@@ -31,12 +31,11 @@ function HTTPStoreServer (backend, storePath, jwtKey) {
             req.olo.user = {};
         }
         
-        next();
-        
+        next();        
     });
     
     // read document request
-    router.get(`${storePath}/:subPath(*)`, (req, res, next) => {         
+    router.get(`${storePath}/:subPath(*)`, (req, res, next) => {   
         backend.getDocument(req.params.subPath, req.olo.user.id)
         .then(doc => {
             res.status(200).send(doc.toHTML());
@@ -49,7 +48,7 @@ function HTTPStoreServer (backend, storePath, jwtKey) {
     // write document request
     router.put(`${storePath}/:subPath(*)`, (req, res, next) => {         
         const doc = new Document(req.body);
-        
+
         backend.setDocument(req.params.subPath, doc, req.olo.user.id)
         .then(doc => {
             res.status(200).send();

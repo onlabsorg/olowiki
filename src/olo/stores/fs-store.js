@@ -31,11 +31,13 @@ class FSStore extends Store {
     
     async setDocument (path, doc, userId) {
         const oldDoc = await this.getDocument(path);
-        if (oldDoc.author !== userId) {
+        if (!oldDoc.author || oldDoc.author === "undefined" || oldDoc.author === userId) {
+            await this._writeFile(path, doc.toHTML());            
+        }
+        else {
             throw new Error("Write access denied");
         }
         
-        this._writeFile(path, doc.toHTML());
     }
     
     _getFullPath (path) {

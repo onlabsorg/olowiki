@@ -16,7 +16,12 @@ class HTTPStoreClient extends Store {
             return this._cache.get(url);
         }
         
-        const response = await fetch(url);
+        const response = await fetch(url, {
+            method: 'get',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
         const html = await response.text();
         return Document.parse(html);
     }
