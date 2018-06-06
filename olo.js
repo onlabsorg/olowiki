@@ -27,7 +27,7 @@ app.get('*/:fname(*\.bundle\.js)', (req, res, next) => {
 
 // olo store document server
 const storePath = path.resolve(path.dirname(configFilePath), config.store.path);
-const StoreServer = require("./src/server").HTTPFileStoreServer;
+const StoreServer = require("./lib/server").HTTPFileStoreServer;
 app.use( new StoreServer(storePath, '/store', config.auth.jwtKey) );
 
 
@@ -38,7 +38,7 @@ app.get('/user', (req, res, next) => {
 
 
 // add authentication services
-const GoogleAuth = require("./src/server/google-auth");
+const GoogleAuth = require("./lib/server/google-auth");
 const googleClientSecret = {web: config.auth.google};
 app.use( GoogleAuth(googleClientSecret, config.auth.jwtKey) );
 

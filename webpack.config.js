@@ -27,7 +27,7 @@ const cssRule = {
 
 module.exports = {
         
-    entry: './src/client.js',
+    entry: './lib/client.js',
     
     output: {
         filename: 'client.js',
