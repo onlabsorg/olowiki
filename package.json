@@ -37,7 +37,7 @@
   "scripts": {
     "test": "node olo ./private/config.json",
     "develop": "webpack --mode development --watch",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production --display-modules"
   },
   "author": "Marcello Del Buono",
   "license": "MIT"
