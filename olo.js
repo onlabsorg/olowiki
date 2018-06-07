@@ -28,7 +28,7 @@ app.get('*/:fname(*\.bundle\.js)', (req, res, next) => {
 // olo store document server
 const storePath = path.resolve(path.dirname(configFilePath), config.store.path);
 const StoreServer = require("./lib/server").HTTPFileStoreServer;
-app.use( new StoreServer(storePath, '/store', config.auth.jwtKey) );
+app.use( new StoreServer(storePath, '/docs', config.auth.jwtKey) );
 
 
 // handles user info requests
