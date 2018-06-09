@@ -43,6 +43,12 @@ const googleClientSecret = {web: config.auth.google};
 app.use( GoogleAuth(googleClientSecret, config.auth.jwtKey) );
 
 
+// handles root request
+app.get('/', (req, res, next) => {
+    res.redirect(`/docs/home.html`);
+});
+
+
 // serve static files
 app.use(express.static(rootPath));
 
