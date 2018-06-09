@@ -11,12 +11,8 @@ const express = require("express");
 const app = express();
 
 
-// parse the json request body
-const bodyParser = require("body-parser");
-app.use(bodyParser.json());
 
-
-// addresses code chunks requests
+// addresses webpack code chunks requests
 app.get('*/:fname(*\.bundle\.js)', (req, res, next) => {
     fs.readFile(`${__dirname}/dist/${req.params.fname}`, {encoding:'utf8'}, (err, chunk) => {
         if (err) res.status(500).send(err);
@@ -25,22 +21,19 @@ app.get('*/:fname(*\.bundle\.js)', (req, res, next) => {
 });
 
 
-// olo store document server
-const storePath = path.resolve(path.dirname(configFilePath), config.store.path);
-const StoreServer = require("./lib/server").HTTPFileStoreServer;
-app.use( new StoreServer(storePath, '/docs', config.auth.jwtKey) );
-
-
-// handles user info requests
-app.get('/user', (req, res, next) => {
-    res.status(200).json(req.olo.user);
-});
-
 
 // add authentication services
 const GoogleAuth = require("./lib/server/google-auth");
-const googleClientSecret = {web: config.auth.google};
-app.use( GoogleAuth(googleClientSecret, config.auth.jwtKey) );
+app.use( GoogleAuth(config.auth.googleClientSecret, config.auth.jwtKey) );
+
+
+
+// olo store document server
+const storePath = path.resolve(path.dirname(configFilePath), config.store.path);
+const storeRoute = "/docs";
+const StoreServer = require("./lib/server/fs-store-server");
+app.use( new StoreServer(storePath, storeRoute) );
+
 
 
 // handles root request
@@ -49,8 +42,10 @@ app.get('/', (req, res, next) => {
 });
 
 
+
 // serve static files
 app.use(express.static(rootPath));
+
 
 
 // start listening for HTTP requests
