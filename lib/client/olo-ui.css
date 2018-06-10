@@ -20,6 +20,7 @@
 
 .md-app-toolbar {
     display: flex;
+    flex-wrap: nowrap;
 }
 
 .md-app-toolbar .md-title {
