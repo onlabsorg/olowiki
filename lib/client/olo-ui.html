@@ -25,18 +25,22 @@
             
             <md-button class="md-icon-button" v-if="!editMode" @click="reload">
                 <md-icon>autorenew</md-icon>
+                <md-tooltip delay="500">Reload [ctrl-alt-s]</md-tooltip>
             </md-button>
 
             <md-button class="md-icon-button" @click="save" :disabled="saved || readOnly">
                 <md-icon>save</md-icon>
+                <md-tooltip delay="500">Save [ctrl-s]</md-tooltip>
             </md-button>
             
             <md-button class="md-icon-button" v-if="!editMode" @click="editMode=true">
                 <md-icon>edit</md-icon>
+                <md-tooltip delay="500">Edit [ctrl-e]</md-tooltip>
             </md-button>
             
             <md-button class="md-icon-button" v-if="editMode" @click="editMode=false">
                 <md-icon>done</md-icon>
+                <md-tooltip delay="500">Render [ctrl-e]</md-tooltip>
             </md-button>
 
         </md-app-toolbar>
