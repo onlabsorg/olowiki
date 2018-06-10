@@ -11,8 +11,10 @@
         
         <md-app-toolbar class="md-small" md-large>
             
-            <img src="/lib/olo.svg" height="40" width="40">
-
+            <md-button class="md-icon-button" @click="showMenu = !showMenu">
+                <img src="/lib/olo.svg" height="40" width="40">
+            </md-button>
+            
             <div class="md-title">
                 <span v-if="!editMode">{{doc.title}}</span>
                 <md-field md-inline v-if="editMode">
@@ -25,49 +27,50 @@
                 <md-icon>autorenew</md-icon>
             </md-button>
 
+            <md-button class="md-icon-button" @click="save">
+                <md-icon>save</md-icon>
+            </md-button>
+            
             <md-button class="md-icon-button" v-if="!editMode" @click="editMode=true">
                 <md-icon>edit</md-icon>
             </md-button>
             
-            <md-button class="md-icon-button" v-if="editMode" @click="save">
-                <md-icon>save</md-icon>
-            </md-button>
-            
             <md-button class="md-icon-button" v-if="editMode" @click="editMode=false">
-                <md-icon>clear</md-icon>
-            </md-button>
-
-            <md-button class="md-icon-button" v-if="editMode" @click="editMode=false; save()">
                 <md-icon>done</md-icon>
             </md-button>
 
-            <md-menu md-size="big" md-align-trigger>
-                
-                <md-button class="md-icon-button" md-menu-trigger>
-                    <md-icon>account_circle</md-icon>
-                </md-button>
-
-                <md-menu-content>
-                    
-                    <md-menu-item>
-                        <strong>{{user.id || "Anonymous user"}}</strong>
-                    </md-menu-item>
-                    
-                    <md-divider></md-divider>
-
-                    <md-menu-item v-if="user.id == null" @click="signin">
-                        Sign in with Google
-                    </md-menu-item>
-                    
-                    <md-menu-item v-if="user.id != null" @click="signout">
-                        Sign out
-                    </md-menu-item>
-                    
-                </md-menu-content>
-                
-            </md-menu>
-
         </md-app-toolbar>
+
+
+        <md-app-drawer :md-active.sync="showMenu" md-persistent="full">
+            <md-toolbar class="md-transparent" md-elevation="0">
+                <span>olo docs</span>
+                <div class="md-toolbar-section-end">
+                    <md-button class="md-icon-button md-dense" @click="showMenu=false">
+                        <md-icon>keyboard_arrow_left</md-icon>
+                    </md-button>
+                </div>
+            </md-toolbar>
+
+            <md-list>
+                
+                <md-subheader>
+                    User:&nbsp;<strong>{{user.id || "Anonymous user"}}</strong>
+                </md-subheader>
+                
+                <md-list-item v-if="user.id == null" @click="signin">
+                    <md-icon>arrow_forward</md-icon>
+                    <span class="md-list-item-text">Sign in with Google</span>                    
+                </md-list-item>
+                
+                <md-list-item v-if="user.id != null" @click="signout">
+                    <md-icon>arrow_back</md-icon>
+                    <span class="md-list-item-text">Sign out</span>                    
+                </md-list-item>
+                
+            </md-list>
+        </md-app-drawer>
+
 
 
         <!--    

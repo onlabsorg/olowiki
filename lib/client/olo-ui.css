@@ -24,23 +24,16 @@
 
 .md-app-toolbar .md-title {
     flex: 1 1 auto;
-    font-size: 20pt;
     padding-left: 0.5em;
 }
-
-.md-app-toolbar .md-title {
-    flex: 1 1 auto;
-    font-size: 20pt;
-}
-
 
 .md-app-toolbar .md-button {
     flex: 0 0 auto;
 }
 
 .md-app-content {
-    padding-left: 10%;
-    padding-right: 10%;
+    padding-left: 5%;
+    padding-right: 5%;
 }
 
 
