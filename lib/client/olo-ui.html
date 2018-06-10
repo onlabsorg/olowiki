@@ -27,7 +27,7 @@
                 <md-icon>autorenew</md-icon>
             </md-button>
 
-            <md-button class="md-icon-button" @click="save">
+            <md-button class="md-icon-button" @click="save" :disabled="saved || readOnly">
                 <md-icon>save</md-icon>
             </md-button>
             
@@ -54,9 +54,14 @@
 
             <md-list>
                 
-                <md-subheader>
-                    User:&nbsp;<strong>{{user.id || "Anonymous user"}}</strong>
-                </md-subheader>
+                <md-subheader>User</md-subheader>
+                
+                <md-list-item>
+                    <md-icon>account_circle</md-icon>
+                    <span class="md-list-item-text">
+                        <strong>{{user.id || "Anonymous user"}}</strong>
+                    </span>                    
+                </md-list-item>
                 
                 <md-list-item v-if="user.id == null" @click="signin">
                     <md-icon>arrow_forward</md-icon>
