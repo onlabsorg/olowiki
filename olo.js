@@ -22,6 +22,17 @@ app.get('*/:fname(*\.bundle\.js)', (req, res, next) => {
 
 
 
+// addresses olo document html requests
+const storeRoute = "/docs";
+const clientTemplate = fs.readFileSync(`${__dirname}/lib/client.html`, {encoding:'utf8'});
+app.get(`${storeRoute}/:docURL(*\.html)`, (req, res, next) => {
+    const docURL = req.path.substr(0, req.path.lastIndexOf(".")) + ".xml";
+    const html = clientTemplate.replace("{{docURL}}", docURL);
+    res.status(200).send(html);
+});
+
+
+
 // add authentication services
 const GoogleAuth = require("./lib/server/google-auth");
 app.use( GoogleAuth(config.auth.googleClientSecret, config.auth.jwtKey) );
@@ -30,7 +41,6 @@ app.use( GoogleAuth(config.auth.googleClientSecret, config.auth.jwtKey) );
 
 // olo store document server
 const storePath = path.resolve(path.dirname(configFilePath), config.store.path);
-const storeRoute = "/docs";
 const StoreServer = require("./lib/server/fs-store-server");
 app.use( new StoreServer(storePath, storeRoute) );
 

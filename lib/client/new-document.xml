@@ -1,0 +1,6 @@
+<title>New document</title>
+<author id="{{author}}" />
+<content>
+    This document doesn't exist.<br>
+    Edit and save it to create it.
+</content>

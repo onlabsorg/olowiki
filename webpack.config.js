@@ -24,6 +24,11 @@ const cssRule = {
     use: [ MiniCssExtractPlugin.loader, {loader:"css-loader", options:{minimize:true}} ]
 }
 
+const xmlRule = {
+    test: /\.xml$/,
+    use: 'raw-loader'
+}
+
 
 module.exports = {
         
@@ -36,7 +41,7 @@ module.exports = {
     },
     
     module: {
-        rules: [ htmlRule, cssRule ]
+        rules: [ htmlRule, cssRule, xmlRule ]
     },
 
     plugins: [ cssPlugin ],

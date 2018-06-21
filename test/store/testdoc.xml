@@ -1,0 +1,12 @@
+
+<title>Test document</title>
+<author id="m.delbuono@gmail.com" />
+<content>
+<h1 >Header 1</h1>
+            <div >Some content</div>
+            <span >Some other content</span>
+<span >Content added by http-store-client test script</span>
+<span >Content added by http-store-client test script</span>
+<span >Content added by http-store-client test script</span>
+<span >Content added by http-store-client test script</span>
+</content>
