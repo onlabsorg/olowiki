@@ -1,6 +1,6 @@
 {
   "name": "@onlabsorg/olo",
-  "version": "0.2.1-0",
+  "version": "0.2.2-0",
   "description": "A framework for the collaborative web",
   "main": "olo.js",
   "repository": {
