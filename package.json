@@ -1,6 +1,6 @@
 {
   "name": "@onlabsorg/olo",
-  "version": "0.2.2-14",
+  "version": "0.2.0-41",
   "description": "A framework for the collaborative web",
   "main": "olo.js",
   "repository": {
@@ -25,7 +25,8 @@
     "query-string": "^6.1.0",
     "vue": "^2.5.16",
     "vue-material": "^1.0.0-beta-10.2",
-    "vue2-ace-editor": "0.0.9"
+    "vue2-ace-editor": "0.0.9",
+    "winston": "^3.0.0"
   },
   "devDependencies": {
     "css-loader": "^0.28.11",
