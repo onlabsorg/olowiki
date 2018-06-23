@@ -64,6 +64,14 @@ app.get('*/:fname(*\.bundle\.js)', (req, res, next) => {
 });
 
 
+// ... address info requests;
+app.get('/info', (req, res, next) => {
+    res.status(200).json({
+        version: packageInfo.version
+    });
+});
+
+
 // ... address olo document html requests;
 const storeRoute = "/docs";
 const clientTemplate = fs.readFileSync(`${__dirname}/lib/client.html`, {encoding:'utf8'});
