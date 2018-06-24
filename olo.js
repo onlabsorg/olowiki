@@ -72,16 +72,6 @@ app.get('/info', (req, res, next) => {
 });
 
 
-// ... address olo document html requests;
-const storeRoute = "/docs";
-const clientTemplate = fs.readFileSync(`${__dirname}/lib/client.html`, {encoding:'utf8'});
-app.get(`${storeRoute}/:docURL(*\.html)`, (req, res, next) => {
-    const docURL = req.path.substr(0, req.path.lastIndexOf(".")) + ".xml";
-    const html = clientTemplate.replace("{{docURL}}", docURL);
-    res.status(200).send(html);
-});
-
-
 // ... load authentication services;
 const GoogleAuth = require("./lib/server/google-auth");
 app.use( GoogleAuth(config.auth.googleClientSecret, config.auth.jwtKey) );
@@ -89,6 +79,7 @@ app.use( GoogleAuth(config.auth.googleClientSecret, config.auth.jwtKey) );
 
 // ... load olo store document server;
 const storePath = path.resolve(path.dirname(configFilePath), config.store.path);
+const storeRoute = "/docs";
 const StoreServer = require("./lib/server/fs-store-server");
 app.use( new StoreServer(storePath, storeRoute) );
 
@@ -96,6 +87,14 @@ app.use( new StoreServer(storePath, storeRoute) );
 // ... handles root request;
 app.get('/', (req, res, next) => {
     res.redirect(`/docs/home.html`);
+});
+
+
+// ... address olo document html requests;
+const clientTemplate = fs.readFileSync(`${__dirname}/lib/client.html`, {encoding:'utf8'});
+app.get(`${storeRoute}/:docURL(*)`, (req, res, next) => {
+    const html = clientTemplate.replace("{{docURL}}", req.path);
+    res.status(200).send(html);
 });
 
 
