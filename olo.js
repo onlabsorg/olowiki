@@ -86,7 +86,7 @@ app.use( new StoreServer(storePath, storeRoute) );
 
 // ... handles root request;
 app.get('/', (req, res, next) => {
-    res.redirect(`/docs/home.html`);
+    res.redirect(`/docs/home`);
 });
 
 
