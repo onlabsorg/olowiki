@@ -11,7 +11,7 @@
         
         <md-app-toolbar class="md-small" md-large>
             
-            <md-button class="md-icon-button" @click="showMenu = !showMenu">
+            <md-button class="md-icon-button" @click="showAppMenu = !showAppMenu">
                 <img src="/lib/olo.svg" height="40" width="40">
             </md-button>
             
@@ -23,11 +23,8 @@
                 </md-field>
             </div>
             
-            <md-button class="md-icon-button" v-if="!editMode" @click="reload">
-                <md-icon>autorenew</md-icon>
-                <md-tooltip delay="500">Reload [ctrl-alt-s]</md-tooltip>
-            </md-button>
-
+            
+            
             <md-button class="md-icon-button" @click="save" :disabled="readOnly">
                 <md-icon>save</md-icon>
                 <md-tooltip delay="500">Save [ctrl-s]</md-tooltip>
@@ -43,14 +40,28 @@
                 <md-tooltip delay="500">Render [ctrl-e]</md-tooltip>
             </md-button>
 
+            
+            <md-menu md-size="medium" md-align-trigger>
+                <md-button md-menu-trigger class="md-icon-button">
+                    <md-icon>more_vert</md-icon>
+                    <md-tooltip delay="500">More</md-tooltip>
+                </md-button>
+
+                <md-menu-content>
+                    <md-menu-item>
+                        <md-switch v-model="public" :disabled="readOnly">Public</md-switch>
+                    </md-menu-item>
+                </md-menu-content>
+            </md-menu>            
+            
         </md-app-toolbar>
 
 
-        <md-app-drawer :md-active.sync="showMenu" md-persistent="full">
+        <md-app-drawer :md-active.sync="showAppMenu" md-persistent="full">
             <md-toolbar class="md-transparent" md-elevation="0">
                 <strong>olo docs v.{{appInfo.version}}</strong>
                 <div class="md-toolbar-section-end">
-                    <md-button class="md-icon-button md-dense" @click="showMenu=false">
+                    <md-button class="md-icon-button md-dense" @click="showAppMenu=false">
                         <md-icon>keyboard_arrow_left</md-icon>
                     </md-button>
                 </div>

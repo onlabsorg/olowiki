@@ -1,6 +1,6 @@
 <title>New document</title>
 <author id="{{author}}" />
 <content>
-    This document doesn't exist.<br>
-    Edit and save it to create it.
+    <h1>Not found!</h1>
+    This document doesn't exist, but you can create it by just editing and saving it.
 </content>
