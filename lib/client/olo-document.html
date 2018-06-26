@@ -23,17 +23,17 @@
                 </md-field>
             </div>
             
-            <md-button class="md-icon-button" v-if="editMode && !public" @click="public=true" :disabled="readOnly">
+            <md-button class="md-icon-button" v-if="editMode && !doc.public" @click="doc.public=true" :disabled="doc.readOnly">
                 <md-icon>lock</md-icon>
                 <md-tooltip delay="500">Make public</md-tooltip>
             </md-button>            
             
-            <md-button class="md-icon-button" v-if="editMode && public" @click="public=false" :disabled="readOnly">
+            <md-button class="md-icon-button" v-if="editMode && doc.public" @click="doc.public=false" :disabled="doc.readOnly">
                 <md-icon>lock_open</md-icon>
                 <md-tooltip delay="500">Make private</md-tooltip>
             </md-button>            
             
-            <md-button class="md-icon-button" @click="save" :disabled="readOnly">
+            <md-button class="md-icon-button" @click="save" :disabled="doc.readOnly">
                 <md-icon>save</md-icon>
                 <md-tooltip delay="500">Save [ctrl-s]</md-tooltip>
             </md-button>
@@ -47,6 +47,7 @@
                 <md-icon>done</md-icon>
                 <md-tooltip delay="500">Render [ctrl-e]</md-tooltip>
             </md-button>
+
 
         </md-app-toolbar>
 
@@ -94,7 +95,7 @@
           -->
           
         <md-app-content class="main-window">
-            <div v-if="!editMode" v-html="rendering"></div>
+            <div v-if="!editMode" v-html="doc.html"></div>
             <olo-editor v-if="editMode" :doc="doc" width="100%" height="100%"> </olo-editor>
         </md-app-content>
 
