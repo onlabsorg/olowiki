@@ -36,6 +36,17 @@
     padding-right: 15%;
 }
 
+.olo-sandbox {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    outline: 0;
+}
+
+.opaque {
+    height: 0;
+}
+
 @media (max-width: 480px) { 
     .md-app-content {
         padding-left: 3%;

@@ -95,7 +95,7 @@
           -->
           
         <md-app-content class="main-window">
-            <div v-if="!editMode" v-html="doc.html"></div>
+            <olo-sandbox v-bind:style="{height: (editMode ? '0px' : '100%')}" :content="doc.html"></olo-sandbox>
             <olo-editor v-if="editMode" :doc="doc" width="100%" height="100%"> </olo-editor>
         </md-app-content>
 
