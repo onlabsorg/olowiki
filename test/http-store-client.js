@@ -8,22 +8,18 @@ const client = new Client();
 
 
 async function runtest () {
-    const docURL = "http://localhost:8888/docs/testdoc.xml";
+    const docURL = "http://localhost:8888/docs/testdoc";
     const userId = "m.delbuono@gmail.com";
     
     // read existing document
+    console.log("Reading document", docURL);
     const doc = await client.readDocument(docURL, userId);
-    console.log(String(doc));
+    console.log(doc.toJSON());
     
     // write existing document
-    const newChild = new Document.Element("span");
-    newChild.children.push(new Document.Text("Content added by http-store-client test script"));
-    doc.content.children.push(newChild);
+    doc.template += " Added content.";
+    console.log("Writing document", docURL);
     await client.writeDocument(docURL, doc, userId);
-    
-    // render document 
-    const html = await doc.render({});
-    console.log(html);
     
     // read new Document
     //const newDoc = await client.readDocument("http://localhost:8888/docs/non-existing-document.xml", userId);

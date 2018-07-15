@@ -9,23 +9,17 @@ const store = new Store(`${__dirname}/store`);
 
 async function runtest () {
     
-    const doc = new Document(`
-        <title>Test document</title>
-        <author id="m.delbuono@gmail.com" />
-        <content>
-            <h1>Header 1</h1>
-            <div>Some content</div>
-            <span>Some other content</span>
-        </content>
-    `);
+    const doc = new Document({
+        title: "Test document",
+        author: "m.delbuono@gmail.com",
+        public: true,
+        template: "Test document template."
+    });
     
-    await store.writeDocument("testdoc.xml", doc, "m.delbuono@gmail.com");
+    await store.writeDocument("testdoc", doc, "m.delbuono@gmail.com");
     
-    const doc2 = await store.readDocument("testdoc.xml", "m.delbuono@gmail.com");
-    console.log(String(doc2));
-    
-    if (String(doc2) === String(doc)) console.log("*** OK ***");
-    else console.log("*** :( BAD! ***");
+    const doc2 = await store.readDocument("testdoc", "m.delbuono@gmail.com");
+    console.log(String(doc2));    
 }
 
 

@@ -20,7 +20,9 @@ body {
 }
 */
 
-
+error {
+    color: red;
+}
 
 .pl-c {
   color: #6a737d;

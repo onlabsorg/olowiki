@@ -1,6 +1,6 @@
 <div class="olo-ui">
 
-    <md-app md-waterfall md-mode="fixed" class="olo-document">
+    <md-app md-waterfall md-mode="fixed" class="olo-webui">
         
         
         <!--    
@@ -23,17 +23,17 @@
                 </md-field>
             </div>
             
-            <md-button class="md-icon-button" v-if="editMode && !doc.public" @click="doc.public=true" :disabled="doc.readOnly">
+            <md-button class="md-icon-button" v-if="editMode && !doc.public" @click="doc.public=true" :disabled="readOnly">
                 <md-icon>lock</md-icon>
                 <md-tooltip delay="500">Make public</md-tooltip>
             </md-button>            
             
-            <md-button class="md-icon-button" v-if="editMode && doc.public" @click="doc.public=false" :disabled="doc.readOnly">
+            <md-button class="md-icon-button" v-if="editMode && doc.public" @click="doc.public=false" :disabled="readOnly">
                 <md-icon>lock_open</md-icon>
                 <md-tooltip delay="500">Make private</md-tooltip>
             </md-button>            
             
-            <md-button class="md-icon-button" @click="save" :disabled="doc.readOnly">
+            <md-button class="md-icon-button" @click="save" :disabled="readOnly">
                 <md-icon>save</md-icon>
                 <md-tooltip delay="500">Save [ctrl-s]</md-tooltip>
             </md-button>
@@ -93,7 +93,7 @@
           -->
           
         <md-app-content class="main-window">
-            <olo-sandbox :content="editMode ? '' : doc.html"></olo-sandbox>
+            <olo-viewer :content="editMode ? '' : html"></olo-viewer>
             <olo-editor v-if="editMode" :doc="doc" width="100%" height="100%"> </olo-editor>
         </md-app-content>
 
