@@ -23,22 +23,22 @@
                 </md-field>
             </div>
             
-            <md-button class="md-icon-button" v-if="editMode && !doc.public" @click="doc.public=true" :disabled="readOnly">
-                <md-icon>lock</md-icon>
-                <md-tooltip delay="500">Make public</md-tooltip>
-            </md-button>            
-            
-            <md-button class="md-icon-button" v-if="editMode && doc.public" @click="doc.public=false" :disabled="readOnly">
-                <md-icon>lock_open</md-icon>
-                <md-tooltip delay="500">Make private</md-tooltip>
-            </md-button>            
-            
             <md-button class="md-icon-button" @click="save" :disabled="readOnly">
                 <md-icon>save</md-icon>
                 <md-tooltip delay="500">Save [ctrl-s]</md-tooltip>
             </md-button>
 
-            <md-button class="md-icon-button" v-if="!editMode" @click="editMode=true">
+            <md-button class="md-icon-button" v-if="editMode == 'template'" @click="editMode='settings'" :disabled="readOnly">
+                <md-icon>settings</md-icon>
+                <md-tooltip delay="500">Edit settings</md-tooltip>
+            </md-button>
+
+            <md-button class="md-icon-button" v-if="editMode == 'settings'" @click="editMode='template'" :disabled="readOnly">
+                <md-icon>subject</md-icon>
+                <md-tooltip delay="500">Edit template</md-tooltip>
+            </md-button>
+            
+            <md-button class="md-icon-button" v-if="!editMode" @click="editMode='template'">
                 <md-icon>edit</md-icon>
                 <md-tooltip delay="500">Edit [ctrl-e]</md-tooltip>
             </md-button>
@@ -94,7 +94,7 @@
           
         <md-app-content class="main-window">
             <olo-viewer :content="editMode ? '' : html"></olo-viewer>
-            <olo-editor v-if="editMode" :doc="doc" width="100%" height="100%"> </olo-editor>
+            <olo-editor v-if="editMode" :content="editorContent" width="100%" height="100%"> </olo-editor>
         </md-app-content>
 
     </md-app>
