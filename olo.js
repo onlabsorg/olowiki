@@ -55,6 +55,13 @@ const express = require("express");
 const app = express();
 
 
+// ... log the requests
+app.all('*', (req, res, next) => {
+    logger.debug(`${req.method} ${req.path}`);
+    next();
+});
+
+
 // ... address webpack code chunks requests;
 app.get('*/:fname(*\.bundle\.js)', (req, res, next) => {
     fs.readFile(`${__dirname}/dist/${req.params.fname}`, {encoding:'utf8'}, (err, chunk) => {

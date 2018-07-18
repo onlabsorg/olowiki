@@ -7,7 +7,7 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("module.exports = \"<ace-editor class=\\\"olo-editor\\\"\\n            v-model=\\\"content.value\\\"\\n            @init=\\\"initEditor\\\"\\n            :lang=\\\"content.type\\\"\\n            theme=\\\"chrome\\\"\\n            :options=\\\"editorOptions\\\">\\n        </ace-editor>\\n\";\n\n//# sourceURL=webpack:///./lib/client/olo-editor.html?");
+eval("module.exports = \"<ace-editor class=\\\"olo-editor\\\"\\n            v-model=\\\"content.value\\\"\\n            @init=\\\"initEditor\\\"\\n            :lang=\\\"content.doctype\\\"\\n            theme=\\\"chrome\\\"\\n            :options=\\\"editorOptions\\\">\\n        </ace-editor>\\n\";\n\n//# sourceURL=webpack:///./lib/client/olo-editor.html?");
 
 /***/ }),
 
