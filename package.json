@@ -27,6 +27,7 @@
     "passport-google-openidconnect": "0.0.4",
     "query-string": "^6.1.0",
     "sax": "^1.2.4",
+    "strip-indent": "^2.0.0",
     "vue": "^2.5.16",
     "vue-material": "^1.0.0-beta-10.2",
     "vue2-ace-editor": "0.0.9",
