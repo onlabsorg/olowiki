@@ -15,13 +15,7 @@
                 <img src="/lib/olo.svg" height="40" width="40">
             </md-button>
             
-            <div class="md-title">
-                <span v-if="!editMode">{{doc.title}}</span>
-                <md-field md-inline v-if="editMode">
-                    <label>Title</label>
-                    <md-input v-model="doc.title"></md-input>
-                </md-field>
-            </div>
+            <div class="md-title">{{doc.title}}</div>
             
             <md-button class="md-icon-button" v-if="editMode" @click="save" :disabled="readOnly">
                 <md-icon>save</md-icon>

@@ -9,15 +9,6 @@
     url("/vendor/material-icons-font/MaterialIcons-Regular.ttf") format('truetype');
 }
 
-.olo-webui, .md-app {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-}
-
-
 .md-app-toolbar {
     display: flex;
     flex-wrap: nowrap;
@@ -40,8 +31,8 @@
 .olo-viewer {
     border: 0;
     margin: 0;
-    padding-left: 15%;
-    padding-right: 15%;
+    padding-left: 20%;
+    padding-right: 20%;
     outline: 0;
 }
 
