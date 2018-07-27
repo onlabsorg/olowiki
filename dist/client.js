@@ -41,7 +41,7 @@
 /******/
 /******/ 	// script path function
 /******/ 	function jsonpScriptSrc(chunkId) {
-/******/ 		return __webpack_require__.p + "" + ({"vendors~markdown-engine":"vendors~markdown-engine","markdown-engine":"markdown-engine","vendors~mustache-engine":"vendors~mustache-engine","mustache-engine":"mustache-engine","vendors~olo-editor":"vendors~olo-editor","olo-editor":"olo-editor"}[chunkId]||chunkId) + ".bundle.js"
+/******/ 		return __webpack_require__.p + "" + ({"vendors~olo-editor":"vendors~olo-editor","olo-editor":"olo-editor"}[chunkId]||chunkId) + ".bundle.js"
 /******/ 	}
 /******/
 /******/ 	// The require function
@@ -199,7 +199,7 @@ eval("// extracted by mini-css-extract-plugin\n\n//# sourceURL=webpack:///./lib/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("\nconst olo = window.olo = {};\n\nconst Store = __webpack_require__(/*! ./client/store */ \"./lib/client/store.js\");\nconst auth = __webpack_require__(/*! ./client/auth */ \"./lib/client/auth.js\");\nconst OloWebUI = __webpack_require__(/*! ./client/olo-webui.js */ \"./lib/client/olo-webui.js\");\n\n__webpack_require__(/*! ./client.css */ \"./lib/client.css\");\n\nOloWebUI({\n    \n    store: new Store(), \n    \n    auth: auth,\n    \n    engineLoaders: {\n        markdown: () => Promise.all(/*! import() | markdown-engine */[__webpack_require__.e(\"vendors~markdown-engine\"), __webpack_require__.e(\"markdown-engine\")]).then(function() { var module = __webpack_require__(/*! ./olojs/engines/markdown */ \"./lib/olojs/engines/markdown.js\"); return typeof module === \"object\" && module && module.__esModule ? module : Object.assign({/* fake namespace object */}, typeof module === \"object\" && module, { \"default\": module }); }),\n        mustache: () => Promise.all(/*! import() | mustache-engine */[__webpack_require__.e(\"vendors~mustache-engine\"), __webpack_require__.e(\"mustache-engine\")]).then(function() { var module = __webpack_require__(/*! ./olojs/engines/mustache */ \"./lib/olojs/engines/mustache.js\"); return typeof module === \"object\" && module && module.__esModule ? module : Object.assign({/* fake namespace object */}, typeof module === \"object\" && module, { \"default\": module }); }),        \n    }\n    \n}).then(oloWebUI => {\n    olo.webui = oloWebUI;\n})\n\n\n//# sourceURL=webpack:///./lib/client.js?");
+eval("\nconst olo = window.olo = {};\n\nconst Store = __webpack_require__(/*! ./client/store */ \"./lib/client/store.js\");\nconst auth = __webpack_require__(/*! ./client/auth */ \"./lib/client/auth.js\");\nconst OloWebUI = __webpack_require__(/*! ./client/olo-webui.js */ \"./lib/client/olo-webui.js\");\nconst oloWebUIComponent = OloWebUI({\n    \n    store: new Store(), \n    \n    auth: auth,\n    \n});\n\n__webpack_require__(/*! ./client.css */ \"./lib/client.css\");\n\nconst Vue = __webpack_require__(/*! vue/dist/vue.js */ \"./node_modules/vue/dist/vue.js\");\ndocument.addEventListener(\"DOMContentLoaded\", event => {\n    olo.webui = new Vue({\n        el: \"olo-webui\",\n        components: { \n            'olo-webui': oloWebUIComponent \n        }        \n    });    \n});        \n\n\n//# sourceURL=webpack:///./lib/client.js?");
 
 /***/ }),
 
@@ -254,7 +254,7 @@ eval("// extracted by mini-css-extract-plugin\n\n//# sourceURL=webpack:///./lib/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("module.exports = \"<div class=\\\"olo-ui\\\">\\n\\n    <md-app md-waterfall md-mode=\\\"fixed\\\" class=\\\"olo-webui\\\">\\n        \\n        \\n        <!--    \\n          --\\n          --    Toolbar\\n          --\\n          -->\\n        \\n        <md-app-toolbar class=\\\"md-small\\\" md-large>\\n            \\n            <md-button class=\\\"md-icon-button\\\" @click=\\\"showAppMenu = !showAppMenu\\\">\\n                <img src=\\\"/lib/olo.svg\\\" height=\\\"40\\\" width=\\\"40\\\">\\n            </md-button>\\n            \\n            <div class=\\\"md-title\\\">{{doc.title}}</div>\\n            \\n            <md-button class=\\\"md-icon-button\\\" v-if=\\\"editMode\\\" @click=\\\"save\\\" :disabled=\\\"readOnly\\\">\\n                <md-icon>save</md-icon>\\n                <md-tooltip delay=\\\"500\\\">Save [ctrl-s]</md-tooltip>\\n            </md-button>\\n\\n            <md-button class=\\\"md-icon-button\\\" v-if=\\\"editMode == 'template'\\\" @click=\\\"editMode='settings'\\\" :disabled=\\\"readOnly\\\">\\n                <md-icon>settings</md-icon>\\n                <md-tooltip delay=\\\"500\\\">Edit settings</md-tooltip>\\n            </md-button>\\n\\n            <md-button class=\\\"md-icon-button\\\" v-if=\\\"editMode == 'settings'\\\" @click=\\\"editMode='template'\\\" :disabled=\\\"readOnly\\\">\\n                <md-icon>subject</md-icon>\\n                <md-tooltip delay=\\\"500\\\">Edit template</md-tooltip>\\n            </md-button>\\n            \\n            <md-button class=\\\"md-icon-button\\\" v-if=\\\"!editMode\\\" @click=\\\"editMode='template'\\\">\\n                <md-icon>edit</md-icon>\\n                <md-tooltip delay=\\\"500\\\">Edit [ctrl-e]</md-tooltip>\\n            </md-button>\\n            \\n            <md-button class=\\\"md-icon-button\\\" v-if=\\\"editMode\\\" @click=\\\"editMode=false\\\">\\n                <md-icon>done</md-icon>\\n                <md-tooltip delay=\\\"500\\\">Render [ctrl-e]</md-tooltip>\\n            </md-button>\\n        </md-app-toolbar>\\n\\n\\n        <md-app-drawer :md-active.sync=\\\"showAppMenu\\\" md-persistent=\\\"full\\\">\\n            <md-toolbar class=\\\"md-transparent\\\" md-elevation=\\\"0\\\">\\n                <strong>olo docs v.{{appInfo.version}}</strong>\\n                <div class=\\\"md-toolbar-section-end\\\">\\n                    <md-button class=\\\"md-icon-button md-dense\\\" @click=\\\"showAppMenu=false\\\">\\n                        <md-icon>keyboard_arrow_left</md-icon>\\n                    </md-button>\\n                </div>\\n            </md-toolbar>\\n\\n            <md-list>\\n                \\n                <md-subheader>User</md-subheader>\\n                \\n                <md-list-item>\\n                    <md-icon>account_circle</md-icon>\\n                    <span class=\\\"md-list-item-text\\\">\\n                        <strong>{{user.id || \\\"Anonymous user\\\"}}</strong>\\n                    </span>                    \\n                </md-list-item>\\n                \\n                <md-list-item v-if=\\\"user.id == null\\\" @click=\\\"signin\\\">\\n                    <md-icon>arrow_forward</md-icon>\\n                    <span class=\\\"md-list-item-text\\\">Sign in with Google</span>                    \\n                </md-list-item>\\n                \\n                <md-list-item v-if=\\\"user.id != null\\\" @click=\\\"signout\\\">\\n                    <md-icon>arrow_back</md-icon>\\n                    <span class=\\\"md-list-item-text\\\">Sign out</span>                    \\n                </md-list-item>\\n                \\n            </md-list>\\n        </md-app-drawer>\\n\\n\\n\\n        <!--    \\n          --\\n          --    Content\\n          --\\n          -->\\n          \\n        <md-app-content class=\\\"main-window\\\">\\n            <olo-viewer :content=\\\"editMode ? '' : html\\\"></olo-viewer>\\n            <olo-editor v-if=\\\"editMode\\\" :content=\\\"editorContent\\\" width=\\\"100%\\\" height=\\\"100%\\\"> </olo-editor>\\n        </md-app-content>\\n\\n    </md-app>\\n\\n\\n\\n    <!--     \\n      --\\n      --    Snackbars\\n      --\\n      -->\\n\\n    <md-snackbar md-position=\\\"center\\\" :md-duration=\\\"4000\\\" :md-active.sync=\\\"message.show\\\" md-persistent>\\n        <span>{{message.text}}</span>\\n        <md-button class=\\\"md-primary\\\" @click=\\\"message.show = false\\\">OK</md-button>        \\n    </md-snackbar>\\n\\n</div>\\n\";\n\n//# sourceURL=webpack:///./lib/client/olo-webui.html?");
+eval("module.exports = \"<div class=\\\"olo-ui\\\">\\n\\n    <md-app md-waterfall md-mode=\\\"fixed\\\" class=\\\"olo-webui\\\">\\n        \\n        \\n        <!--    \\n          --\\n          --    Toolbar\\n          --\\n          -->\\n        \\n        <md-app-toolbar class=\\\"md-small\\\" md-large>\\n            \\n            <md-button class=\\\"md-icon-button\\\" @click=\\\"showAppMenu = !showAppMenu\\\">\\n                <img src=\\\"/lib/olo.svg\\\" height=\\\"40\\\" width=\\\"40\\\">\\n            </md-button>\\n            \\n            <div class=\\\"md-title\\\">{{docData.title}}</div>\\n            \\n            <md-button class=\\\"md-icon-button\\\" @click=\\\"save\\\" :disabled=\\\"readOnly\\\">\\n                <md-icon>save</md-icon>\\n                <md-tooltip delay=\\\"500\\\">Save [ctrl-s]</md-tooltip>\\n            </md-button>\\n\\n            <md-button class=\\\"md-icon-button\\\" v-if=\\\"!editMode\\\" @click=\\\"editMode=true\\\">\\n                <md-icon>edit</md-icon>\\n                <md-tooltip delay=\\\"500\\\">Edit [ctrl-e]</md-tooltip>\\n            </md-button>\\n            \\n            <md-button class=\\\"md-icon-button\\\" v-if=\\\"editMode\\\" @click=\\\"editMode=false\\\">\\n                <md-icon>done</md-icon>\\n                <md-tooltip delay=\\\"500\\\">Render [ctrl-e]</md-tooltip>\\n            </md-button>\\n        </md-app-toolbar>\\n\\n\\n        <md-app-drawer :md-active.sync=\\\"showAppMenu\\\" md-persistent=\\\"full\\\">\\n            <md-toolbar class=\\\"md-transparent\\\" md-elevation=\\\"0\\\">\\n                <strong>olo docs v.{{appInfo.version}}</strong>\\n                <div class=\\\"md-toolbar-section-end\\\">\\n                    <md-button class=\\\"md-icon-button md-dense\\\" @click=\\\"showAppMenu=false\\\">\\n                        <md-icon>keyboard_arrow_left</md-icon>\\n                    </md-button>\\n                </div>\\n            </md-toolbar>\\n\\n            <md-list>\\n                \\n                <md-subheader>User</md-subheader>\\n                \\n                <md-list-item>\\n                    <md-icon>account_circle</md-icon>\\n                    <span class=\\\"md-list-item-text\\\">\\n                        <strong>{{user.id || \\\"Anonymous user\\\"}}</strong>\\n                    </span>                    \\n                </md-list-item>\\n                \\n                <md-list-item v-if=\\\"user.id == null\\\" @click=\\\"signin\\\">\\n                    <md-icon>arrow_forward</md-icon>\\n                    <span class=\\\"md-list-item-text\\\">Sign in with Google</span>                    \\n                </md-list-item>\\n                \\n                <md-list-item v-if=\\\"user.id != null\\\" @click=\\\"signout\\\">\\n                    <md-icon>arrow_back</md-icon>\\n                    <span class=\\\"md-list-item-text\\\">Sign out</span>                    \\n                </md-list-item>\\n                \\n            </md-list>\\n        </md-app-drawer>\\n\\n\\n\\n        <!--    \\n          --\\n          --    Content\\n          --\\n          -->\\n          \\n        <md-app-content class=\\\"main-window\\\">\\n            <olo-viewer :content=\\\"editMode ? '' : docData.html\\\"></olo-viewer>\\n            <olo-editor v-if=\\\"editMode\\\" :docData=\\\"docData\\\" width=\\\"100%\\\" height=\\\"100%\\\"> </olo-editor>\\n        </md-app-content>\\n\\n    </md-app>\\n\\n\\n\\n    <!--     \\n      --\\n      --    Snackbars\\n      --\\n      -->\\n\\n    <md-snackbar md-position=\\\"center\\\" :md-duration=\\\"4000\\\" :md-active.sync=\\\"message.show\\\" md-persistent>\\n        <span>{{message.text}}</span>\\n        <md-button class=\\\"md-primary\\\" @click=\\\"message.show = false\\\">OK</md-button>        \\n    </md-snackbar>\\n\\n</div>\\n\";\n\n//# sourceURL=webpack:///./lib/client/olo-webui.html?");
 
 /***/ }),
 
@@ -265,7 +265,7 @@ eval("module.exports = \"<div class=\\\"olo-ui\\\">\\n\\n    <md-app md-waterfal
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("\nconst URL = __webpack_require__(/*! url */ \"./node_modules/url/url.js\");\nconst keyString = __webpack_require__(/*! ./utils/key-string */ \"./lib/client/utils/key-string.js\");\n\nconst Store = __webpack_require__(/*! ../olojs/store */ \"./lib/olojs/store.js\");\nconst errors = __webpack_require__(/*! ../olojs/errors */ \"./lib/olojs/errors.js\");\n\nconst engine = __webpack_require__(/*! ../olojs/engine */ \"./lib/olojs/engine.js\");\n\nconst YAML = __webpack_require__(/*! js-yaml */ \"./node_modules/js-yaml/index.js\");\n\nconst Vue = __webpack_require__(/*! vue/dist/vue.js */ \"./node_modules/vue/dist/vue.js\");\nVue.use( __webpack_require__(/*! vue-material/dist/components/MdApp */ \"./node_modules/vue-material/dist/components/MdApp/index.js\").default );\nVue.use( __webpack_require__(/*! vue-material/dist/components/MdToolbar */ \"./node_modules/vue-material/dist/components/MdToolbar/index.js\").default );\nVue.use( __webpack_require__(/*! vue-material/dist/components/MdDrawer */ \"./node_modules/vue-material/dist/components/MdDrawer/index.js\").default );\nVue.use( __webpack_require__(/*! vue-material/dist/components/MdSubheader */ \"./node_modules/vue-material/dist/components/MdSubheader/index.js\").default );\nVue.use( __webpack_require__(/*! vue-material/dist/components/MdContent */ \"./node_modules/vue-material/dist/components/MdContent/index.js\").default );\nVue.use( __webpack_require__(/*! vue-material/dist/components/MdField */ \"./node_modules/vue-material/dist/components/MdField/index.js\").default );\nVue.use( __webpack_require__(/*! vue-material/dist/components/MdButton */ \"./node_modules/vue-material/dist/components/MdButton/index.js\").default );\nVue.use( __webpack_require__(/*! vue-material/dist/components/MdIcon */ \"./node_modules/vue-material/dist/components/MdIcon/index.js\").default );\nVue.use( __webpack_require__(/*! vue-material/dist/components/MdList */ \"./node_modules/vue-material/dist/components/MdList/index.js\").default );\nVue.use( __webpack_require__(/*! vue-material/dist/components/MdDivider */ \"./node_modules/vue-material/dist/components/MdDivider/index.js\").default );\nVue.use( __webpack_require__(/*! vue-material/dist/components/MdSnackbar */ \"./node_modules/vue-material/dist/components/MdSnackbar/index.js\").default );\nVue.use( __webpack_require__(/*! vue-material/dist/components/MdTooltip */ \"./node_modules/vue-material/dist/components/MdTooltip/index.js\").default );\n\n__webpack_require__(/*! vue-material/dist/vue-material.css */ \"./node_modules/vue-material/dist/vue-material.css\");\n__webpack_require__(/*! vue-material/dist/theme/default.css */ \"./node_modules/vue-material/dist/theme/default.css\");\n\n__webpack_require__(/*! ./olo-webui.css */ \"./lib/client/olo-webui.css\");\n__webpack_require__(/*! ./olo-editor.css */ \"./lib/client/olo-editor.css\");\n\n\nfunction OloWebUI (options) {\n    \n    const store = options.store;\n    const auth = options.auth;\n    \n    for (let name in options.engineLoaders) {\n        engine.loaders[name] = options.engineLoaders[name];\n    }    \n    \n    const oloWebUIComponent = {\n    \n        template: __webpack_require__(/*! ./olo-webui.html */ \"./lib/client/olo-webui.html\"),\n        \n        components: {\n            'olo-viewer': __webpack_require__(/*! ./olo-viewer */ \"./lib/client/olo-viewer.js\"),\n            'olo-editor': () => Promise.all(/*! import() | olo-editor */[__webpack_require__.e(\"vendors~olo-editor\"), __webpack_require__.e(\"olo-editor\")]).then(function() { var module = __webpack_require__(/*! ./olo-editor */ \"./lib/client/olo-editor.js\"); return typeof module === \"object\" && module && module.__esModule ? module : Object.assign({/* fake namespace object */}, typeof module === \"object\" && module, { \"default\": module }); }),\n        },\n        \n        props: ['href'],\n        \n        data: () => Object({\n            \n            doc: store.createDocument(location.href, {}),\n            \n            html: \"\",\n            \n            user: {\n                id: null,\n                token: null\n            },\n            \n            appInfo: {},\n            \n            editMode: false,\n            \n            editorContent: {\n                type: \"html\",\n                value: \"\",\n            },\n            \n            showAppMenu: false,\n            \n            message: {\n                show: false,\n                text: \"\",\n            }\n        }),\n        \n        computed: {\n            \n            readOnly: function () {\n                return this.doc.author && this.doc.author !== \"undefined\" && this.doc.author !== this.user.id            \n            },\n            \n            editorLanguage: function () {\n                if (this.editMeta) {\n                    return \"yaml\";\n                } \n                else switch (this.doc.doctype) {\n                    case \"markdown\": return \"markdown\";\n                    case \"mustache\": return \"mustache\";\n                    default:         return \"html\";\n                }            \n            }\n        },\n        \n        watch: {\n            \n            \"doc.template\": function () {\n                this.render();\n            },\n            \n            \"doc.title\": function () {\n                document.head.querySelector(\"title\").innerHTML = this.doc.title;\n            },\n            \n            \"editMode\": function (newMode, oldMode) {            \n                this.applyChanges(oldMode);\n                \n                if (newMode === \"template\") {\n                    switch (this.doc.doctype) {\n                        case \"markdown\": this.editorContent.doctype = \"markdown\"; break;\n                        case \"mustache\": this.editorContent.doctype = \"mustache\"; break;\n                        default:         this.editorContent.doctype = \"html\"; break;\n                    }            \n                    this.editorContent.value = this.doc.template;\n                }\n                else if (newMode === \"settings\") {\n                    this.editorContent.doctype = \"yaml\";\n                    let meta = this.doc.toJSON();\n                    delete meta.template;\n                    this.editorContent.value = YAML.dump(meta, {\n                        indent: 4,\n                    });                \n                }\n                else {\n                    this.render();\n                }\n                \n            }\n        },    \n        \n        methods: {\n            \n            async load () {\n                \n                try {\n                    this.doc = await store.readDocument(location.href, auth.getToken());\n                } \n                catch (error) {\n                    if (error instanceof errors.DocumentNotFoundError) {\n                        this.doc = store.createEmptyDocument(location.href, this.user.id);\n                        \n                    } else {\n                        this.doc = store.createErrorDocument(location.href, error);\n                        this.message.text = \"Server error (see console).\";\n                        this.message.show = true;                    \n                    }                \n                }\n            },\n            \n            async render () {\n                if (this.editMode) return;\n                const context = {};\n                const content = await this.doc.render(context, auth.getToken());\n                this.html = String(content);\n            },\n            \n            applyChanges (editMode) {\n                if (!editMode) {\n                    return;\n                }\n                else if (editMode === \"template\") {\n                    this.doc.template = this.editorContent.value;\n                }\n                else if (editMode === \"settings\") {\n                    let meta = Object(YAML.load(this.editorContent.value));\n                    let keys = Object.keys(this.doc.toJSON());\n                    for (let key of keys) {\n                        if (key !== \"template\") this.doc[key] = meta[key];\n                    }                \n                }            \n            },\n            \n            save () {\n                const token = auth.getToken();\n                const url = URL.parse(location.href);\n                this.applyChanges(this.editMode);\n                store.writeDocument(url.pathname, this.doc, token)\n                .then(() => {\n                    this.message.text = \"Document saved\";\n                    this.message.show = true;\n                })\n                .catch((err) => {\n                    this.message.text = String(err);\n                    this.message.show = true;                \n                });\n            },\n            \n            signin () {\n                auth.signin();\n            },\n            \n            signout () {\n                auth.signout();\n            }\n        },\n        \n        async mounted () {\n                    \n            const userInfo = await auth.getInfo()\n            this.user.id = userInfo.id;\n            \n            const infoResponse = await fetch(\"/info\");\n            this.appInfo = await infoResponse.json();\n            \n            await this.load();\n            \n            document.body.addEventListener(\"keydown\", (event) => {\n                const keyStr = keyString(event);\n                switch (keyStr) {\n                    \n                    case \"ctrl-s\":\n                        event.preventDefault();\n                        if (!this.readOnly) {\n                            this.save();\n                        }\n                        break;\n                        \n                    case \"ctrl-e\":\n                        event.preventDefault();\n                        this.editMode = !this.editMode;\n                        break;\n                        \n                    case \"alt-ctrl-r\":\n                        this.reload();\n                        break;\n                }\n            });\n            \n            this.render();\n        }\n    }\n    \n\n    return new Promise((resolve, reject) => {\n        document.addEventListener(\"DOMContentLoaded\", event => {\n            let vue = new Vue({\n                el: \"olo-webui\",\n                components: { 'olo-webui':oloWebUIComponent }        \n            });    \n            resolve(vue);\n        });        \n    });\n}\n\nmodule.exports = OloWebUI;\n\n\n//# sourceURL=webpack:///./lib/client/olo-webui.js?");
+eval("\nconst URL = __webpack_require__(/*! url */ \"./node_modules/url/url.js\");\nconst keyString = __webpack_require__(/*! ./utils/key-string */ \"./lib/client/utils/key-string.js\");\n\nconst Store = __webpack_require__(/*! ../olojs/store */ \"./lib/olojs/store.js\");\nconst errors = __webpack_require__(/*! ../olojs/errors */ \"./lib/olojs/errors.js\");\n\nconst Vue = __webpack_require__(/*! vue/dist/vue.js */ \"./node_modules/vue/dist/vue.js\");\nVue.use( __webpack_require__(/*! vue-material/dist/components/MdApp */ \"./node_modules/vue-material/dist/components/MdApp/index.js\").default );\nVue.use( __webpack_require__(/*! vue-material/dist/components/MdToolbar */ \"./node_modules/vue-material/dist/components/MdToolbar/index.js\").default );\nVue.use( __webpack_require__(/*! vue-material/dist/components/MdDrawer */ \"./node_modules/vue-material/dist/components/MdDrawer/index.js\").default );\nVue.use( __webpack_require__(/*! vue-material/dist/components/MdSubheader */ \"./node_modules/vue-material/dist/components/MdSubheader/index.js\").default );\nVue.use( __webpack_require__(/*! vue-material/dist/components/MdContent */ \"./node_modules/vue-material/dist/components/MdContent/index.js\").default );\nVue.use( __webpack_require__(/*! vue-material/dist/components/MdField */ \"./node_modules/vue-material/dist/components/MdField/index.js\").default );\nVue.use( __webpack_require__(/*! vue-material/dist/components/MdButton */ \"./node_modules/vue-material/dist/components/MdButton/index.js\").default );\nVue.use( __webpack_require__(/*! vue-material/dist/components/MdIcon */ \"./node_modules/vue-material/dist/components/MdIcon/index.js\").default );\nVue.use( __webpack_require__(/*! vue-material/dist/components/MdList */ \"./node_modules/vue-material/dist/components/MdList/index.js\").default );\nVue.use( __webpack_require__(/*! vue-material/dist/components/MdDivider */ \"./node_modules/vue-material/dist/components/MdDivider/index.js\").default );\nVue.use( __webpack_require__(/*! vue-material/dist/components/MdSnackbar */ \"./node_modules/vue-material/dist/components/MdSnackbar/index.js\").default );\nVue.use( __webpack_require__(/*! vue-material/dist/components/MdTooltip */ \"./node_modules/vue-material/dist/components/MdTooltip/index.js\").default );\n\n__webpack_require__(/*! vue-material/dist/vue-material.css */ \"./node_modules/vue-material/dist/vue-material.css\");\n__webpack_require__(/*! vue-material/dist/theme/default.css */ \"./node_modules/vue-material/dist/theme/default.css\");\n\n__webpack_require__(/*! ./olo-webui.css */ \"./lib/client/olo-webui.css\");\n__webpack_require__(/*! ./olo-editor.css */ \"./lib/client/olo-editor.css\");\n\n\nfunction OloWebUI (options) {\n    \n    const store = options.store;\n    const auth = options.auth;\n    \n    var doc = store.createDocument(location.href, \"\");\n    \n    const oloWebUIComponent = {\n    \n        template: __webpack_require__(/*! ./olo-webui.html */ \"./lib/client/olo-webui.html\"),\n        \n        components: {\n            'olo-viewer': __webpack_require__(/*! ./olo-viewer */ \"./lib/client/olo-viewer.js\"),\n            'olo-editor': () => Promise.all(/*! import() | olo-editor */[__webpack_require__.e(\"vendors~olo-editor\"), __webpack_require__.e(\"olo-editor\")]).then(function() { var module = __webpack_require__(/*! ./olo-editor */ \"./lib/client/olo-editor.js\"); return typeof module === \"object\" && module && module.__esModule ? module : Object.assign({/* fake namespace object */}, typeof module === \"object\" && module, { \"default\": module }); }),\n        },\n        \n        props: ['href'],\n        \n        data: () => Object({\n            \n            docData: {\n                title: \"\",\n                html: \"\",\n                source: \"\"\n            },\n            \n            editMode: false,\n            \n            user: {\n                id: null,\n                token: null\n            },\n            \n            appInfo: {},\n            \n            showAppMenu: false,\n            \n            message: {\n                show: false,\n                text: \"\",\n            }\n        }),\n        \n        computed: {\n            \n            readOnly: function () {\n                return doc.author && doc.author !== \"undefined\" && doc.author !== this.user.id            \n            },            \n        },\n        \n        watch: {\n            \n            \"editMode\": function (newMode, oldMode) {            \n                if (this.editMode) {\n                    this.docData.source = String(doc);\n                }\n                else {\n                    this.applyChanges();\n                    this.render();\n                }\n            }\n        },    \n        \n        methods: {\n            \n            async load () {\n                \n                try {\n                    doc = await store.readDocument(location.href, auth.getToken());\n                } \n                catch (error) {\n                    if (error instanceof errors.DocumentNotFoundError) {\n                        doc = store.createEmptyDocument(location.href, this.user.id);\n                        \n                    } else {\n                        doc = store.createErrorDocument(location.href, error);\n                        this.message.text = \"Server error (see console).\";\n                        this.message.show = true;                    \n                    }                \n                }\n            },\n            \n            applyChanges () {\n                doc = store.createDocument(doc.url, this.docData.source)\n            },\n            \n            async render () {\n                if (this.editMode) return;\n                const content = await doc.render();\n                this.docData.html = String(content);\n                this.docData.title = doc.data.title;\n            },\n            \n            save () {\n                const token = auth.getToken();\n                const url = URL.parse(location.href);\n                this.applyChanges();\n                store.writeDocument(url.pathname, doc, token)\n                .then(() => {\n                    this.message.text = \"Document saved\";\n                    this.message.show = true;\n                })\n                .catch((err) => {\n                    this.message.text = String(err);\n                    this.message.show = true;                \n                });\n            },\n            \n            signin () {\n                auth.signin();\n            },\n            \n            signout () {\n                auth.signout();\n            }\n        },\n        \n        async mounted () {\n                    \n            const userInfo = await auth.getInfo()\n            this.user.id = userInfo.id;\n            \n            const infoResponse = await fetch(\"/info\");\n            this.appInfo = await infoResponse.json();\n            \n            await this.load();\n            \n            document.body.addEventListener(\"keydown\", (event) => {\n                const keyStr = keyString(event);\n                switch (keyStr) {\n                    \n                    case \"ctrl-s\":\n                        event.preventDefault();\n                        if (!this.readOnly) {\n                            this.save();\n                        }\n                        break;\n                        \n                    case \"ctrl-e\":\n                        event.preventDefault();\n                        this.editMode = !this.editMode;\n                        break;\n                        \n                }\n            });\n            \n            this.render();\n        }\n    }\n    \n    return oloWebUIComponent;\n}\n\nmodule.exports = OloWebUI;\n\n\n//# sourceURL=webpack:///./lib/client/olo-webui.js?");
 
 /***/ }),
 
@@ -276,7 +276,7 @@ eval("\nconst URL = __webpack_require__(/*! url */ \"./node_modules/url/url.js\"
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("\n\nconst HTTPStore = __webpack_require__(/*! ../olojs/stores/http-store-client */ \"./lib/olojs/stores/http-store-client.js\");\n\nconst URL = __webpack_require__(/*! url */ \"./node_modules/url/url.js\");\nconst stripIndent = __webpack_require__(/*! strip-indent */ \"./node_modules/strip-indent/index.js\");\n\n\nclass Store extends HTTPStore {\n    \n    createDocument (path, content) {\n        const url = this._getDocURL(path);\n        return super.createDocument(url, content);\n    }\n    \n    async readDocument (path, user) {\n        const url = this._getDocURL(path);\n        return await super.readDocument(url, user);\n    }\n    \n    async writeDocument (path, doc, user) {\n        const url = this._getDocURL(path);\n        await super.writeDocument(url, doc, user);        \n    }\n    \n    createEmptyDocument (path, author) {\n        const url = this._getDocURL(path);\n        return this.createDocument(url, {\n            title: \"New document\",\n            author: author,\n            template: stripIndent(`\n                <h1>Not found!</h1>\n                This document doesn't exist, but you can create it by just editing and saving it.\n                `)\n        });\n    }\n    \n    createErrorDocument (path, error) {\n        const url = this._getDocURL(path);\n        return this.createDocument(url, {\n            title: \"Error\",\n            template: String(error)\n        });\n    }\n    \n    _getDocURL (path) {\n        return URL.resolve(location.href, path);\n    }\n}\n\nmodule.exports = Store;\n\n\n//# sourceURL=webpack:///./lib/client/store.js?");
+eval("\n\nconst HTTPStore = __webpack_require__(/*! ../olojs/stores/http-store-client */ \"./lib/olojs/stores/http-store-client.js\");\n\nconst URL = __webpack_require__(/*! url */ \"./node_modules/url/url.js\");\nconst stripIndent = __webpack_require__(/*! strip-indent */ \"./node_modules/strip-indent/index.js\");\n\n\nclass Store extends HTTPStore {\n    \n    createDocument (path, content) {\n        const url = this._getDocURL(path);\n        return super.createDocument(url, content);\n    }\n    \n    async readDocument (path, user) {\n        const url = this._getDocURL(path);\n        return await super.readDocument(url, user);\n    }\n    \n    async writeDocument (path, doc, user) {\n        const url = this._getDocURL(path);\n        await super.writeDocument(url, doc, user);        \n    }\n    \n    createEmptyDocument (path, author) {\n        const url = this._getDocURL(path);\n        return this.createDocument(url, stripIndent(`\n            title: New document\n            author: ${author}\n            main: !template |\n                <h1>Not found!</h1>\n                This document doesn't exist, but you can create it by just editing and saving it.\n            `));\n    }\n    \n    createErrorDocument (path, error) {\n        const url = this._getDocURL(path);\n        return this.createDocument(url, JSON.stringify({\n            title: \"Error\",\n            main: String(error)\n        }));\n    }\n    \n    _getDocURL (path) {\n        return URL.resolve(location.href, path);\n    }\n}\n\n\nmodule.exports = Store;\n\n\n//# sourceURL=webpack:///./lib/client/store.js?");
 
 /***/ }),
 
@@ -291,14 +291,14 @@ eval("function keyString (event) {\n    var metaKeys,key;\n\n    metaKeys = (eve
 
 /***/ }),
 
-/***/ "./lib/olojs/engine.js":
-/*!*****************************!*\
-  !*** ./lib/olojs/engine.js ***!
-  \*****************************/
+/***/ "./lib/olojs/document.js":
+/*!*******************************!*\
+  !*** ./lib/olojs/document.js ***!
+  \*******************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("\nconst expression = __webpack_require__(/*! ./utils/expression */ \"./lib/olojs/utils/expression.js\");\n\n\nexports.renderTemplate = async function (template, context) {\n    return template.replace(/\\{\\{(.+?)\\}\\}/gm, (match, expr) => {\n        try {\n            return expression.eval(expr, context);\n        } catch (error) {\n            return this.renderError(error);\n        }\n    });        \n}\n    \nexports.renderError = function (error) {\n    return `ERROR:[[${error}]]`;\n}\n\nexports.loaders = {}\n\nexports.load = async function (engineName) {\n    const loader = this.loaders[engineName];\n    if (typeof loader === \"function\") {\n        return await loader();\n    } else {\n        return this;\n    }\n}\n\n\n//# sourceURL=webpack:///./lib/olojs/engine.js?");
+eval("\nconst URL = __webpack_require__(/*! url */ \"./node_modules/url/url.js\");\nconst YAML = __webpack_require__(/*! js-yaml */ \"./node_modules/js-yaml/index.js\");\n\nconst {Template, TemplateYamlType} = __webpack_require__(/*! ./types/template */ \"./lib/olojs/types/template.js\");\n\n\n\nclass Document {\n\n    constructor (store, url, content) {\n        this.store = store;\n        this.url = url;\n        this.content = content;\n        this.schema = YAML.Schema.create(this.constructor.types);\n        this.data = Object(YAML.load(content, {schema:this.schema}));\n    }\n    \n    get author () {\n        return this.data.author;\n    }\n    \n    set author (value) {\n        this.data.author = value;\n    }\n    \n    get public () {\n        return this.data.public;\n    }\n    \n    set public (value) {\n        this.data.public = Boolean(value);\n    }\n    \n    async render () {\n        if (this.data.main && typeof this.data.main.call === \"function\") {\n            let context = Object.create(this.data);\n            return await this.data.main.call(context);\n        }\n        else if (this.data.main) {\n            return this.data.main;\n        }\n        else {\n            return this.renderDefault();\n        }\n    }\n    \n    renderDefault () {\n        return \"No main view defined.\"\n    }\n    \n    toString () {\n        return YAML.dump(this.data, {\n            schema: this.schema,\n            indent: 4,\n        });\n    }\n    \n    static get types () {\n        return [TemplateYamlType];\n    }\n}\n\n\n\n\n\n\nmodule.exports = Document;\n\n\n//# sourceURL=webpack:///./lib/olojs/document.js?");
 
 /***/ }),
 
@@ -313,6 +313,17 @@ eval("\nexports.DocumentNotFoundError = class extends Error {\n    constructor (
 
 /***/ }),
 
+/***/ "./lib/olojs/oloxp.js":
+/*!****************************!*\
+  !*** ./lib/olojs/oloxp.js ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("\nconst jsep = __webpack_require__(/*! jsep */ \"./node_modules/jsep/build/jsep.js\");\nconst extend = __webpack_require__(/*! lodash/extend */ \"./node_modules/lodash/extend.js\");\n\n\nexports.evaluate = function (expression, context) {\n    if (!context.__this__) context.__this__ = context;\n    const ast = jsep(expression);\n    return evaluateNode(ast, context);\n}\n\n\n\nfunction evaluateNode ( node, context ) {\n\n    switch ( node.type ) {\n\n        case 'ArrayExpression':\n            return evaluateArray( node.elements, context );\n\n        case 'BinaryExpression':\n            return binops[ node.operator ]( evaluateNode( node.left, context ), evaluateNode( node.right, context ) );\n\n        case 'CallExpression':\n            return evaluateFunction(node.callee, node.arguments, context);\n\n        case 'ConditionalExpression':\n            return evaluateNode( node.test, context )\n                    ? evaluateNode( node.consequent, context )\n                    : evaluateNode( node.alternate, context );\n\n        case 'Identifier':\n            return context[node.name];\n\n        case 'Literal':\n            return node.value;\n\n        case 'LogicalExpression':\n            return binops[ node.operator ]( evaluateNode( node.left, context ), evaluateNode( node.right, context ) );\n\n        case 'MemberExpression':\n            return evaluateMember(node, context)[1];\n\n        case 'ThisExpression':\n            return context.__this__;\n\n        case 'UnaryExpression':\n            return unops[ node.operator ]( evaluateNode( node.argument, context ) );\n\n        default:\n            return undefined;\n    }\n}\n\n\n\nfunction evaluateArray ( list, context ) {\n    return list.map(function (v) { return evaluateNode(v, context); });\n}\n\n\n\nfunction evaluateMember ( node, context ) {\n    var object = evaluateNode(node.object, context);\n    if ( node.computed ) {\n        return [object, object[evaluateNode(node.property, context)]];\n    } \n    else if (typeof(object) === \"function\" || node.property.name[0] === \"_\") {\n        return undefined;\n    }\n    else {\n        return [object, object[node.property.name]];\n    }\n}\n\n\n\nfunction evaluateFunction (callee, args, context) {\n    var caller, fn;\n    if (callee.type === 'MemberExpression') {\n        [caller, fn] = evaluateMember( callee, context );\n    } else {\n        fn = evaluateNode( callee, context );\n    }\n    if (fn && typeof fn.call === 'function') { \n        let fnContext = Object.create(context);\n        fnContext.__this__ = caller;\n        return fn.call( fnContext, ...evaluateArray( args, context ) );\n    } else {\n        return undefined;\n    }\n}\n\n\njsep.removeBinaryOp(\"||\");\njsep.removeBinaryOp(\"&&\");\njsep.removeBinaryOp(\"===\");\njsep.removeBinaryOp(\"!==\");\n\njsep.addBinaryOp(\"or\", 1);\njsep.addBinaryOp(\"and\", 2);\n\nconst binops = {\n    'or':  function (a, b) { return a || b; },\n    'and':  function (a, b) { return a && b; },\n    '|':   function (a, b) { return a | b; },\n    '^':   function (a, b) { return a ^ b; },\n    '&':   function (a, b) { return a & b; },\n    '==':  function (a, b) { return a === b; }, // jshint ignore:line\n    '!=':  function (a, b) { return a !== b; }, // jshint ignore:line\n    '<':   function (a, b) { return a < b; },\n    '>':   function (a, b) { return a > b; },\n    '<=':  function (a, b) { return a <= b; },\n    '>=':  function (a, b) { return a >= b; },\n    '<<':  function (a, b) { return a << b; },\n    '>>':  function (a, b) { return a >> b; },\n    '>>>': function (a, b) { return a >>> b; },\n    '+':   function (a, b) { return a + b; },\n    '-':   function (a, b) { return a - b; },\n    '*':   function (a, b) { return a * b; },\n    '/':   function (a, b) { return a / b; },\n    '%':   function (a, b) { return a % b; }\n};\n\nconst unops = {\n  '-' :  function (a) { return -a; },\n  '+' :  function (a) { return a; },\n  '~' :  function (a) { return ~a; },\n  '!' :  function (a) { return !a; },\n};\n\n\n//# sourceURL=webpack:///./lib/olojs/oloxp.js?");
+
+/***/ }),
+
 /***/ "./lib/olojs/store.js":
 /*!****************************!*\
   !*** ./lib/olojs/store.js ***!
@@ -320,7 +331,7 @@ eval("\nexports.DocumentNotFoundError = class extends Error {\n    constructor (
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("const engine = __webpack_require__(/*! ./engine */ \"./lib/olojs/engine.js\");\nconst defaultEngineType = \"expression\";\n\nconst cloneDeep = __webpack_require__(/*! lodash/cloneDeep */ \"./node_modules/lodash/cloneDeep.js\");\nconst assignIn = __webpack_require__(/*! lodash/assignIn */ \"./node_modules/lodash/assignIn.js\");\n\nconst URL = __webpack_require__(/*! url */ \"./node_modules/url/url.js\");\n\n\n\nclass Store {\n    \n    createDocument (url, content) {\n        return new this.constructor.Document(this, url, content);\n    }\n    \n    async readDocument (docLocation, user) {}\n    \n    async writeDocument (docLoaction, doc, user) {}    \n    \n    static get Document () {\n        return Document;\n    }\n}\n\n\nclass Document {\n\n    constructor (store, url, docData={}) {\n        this.store = store;\n        this.url = url;\n        assignDocData(this, docData);\n    }\n    \n    async render (context, user) {\n        const docEngine = await engine.load(this.doctype);        \n        assignIn(context, this.context);\n        assignIn(context, await this._loadReferences(user));\n        return await docEngine.renderTemplate(this.template, context);\n    }\n    \n    toJSON () {\n        return assignDocData({}, this);\n    }\n    \n    async _loadReferences (user) {\n        const refContexts = {}\n        for (let refName in this.references) {\n            let refURL = URL.resolve(this.url, this.references[refName]);\n            let refDoc = await this.store.readDocument(refURL, user);\n            let refDocContext = {};\n            let refHTML = await refDoc.render(refDocContext, user);\n            refContexts[refName] = refDocContext;\n        }\n        return refContexts;\n    }\n}\n\n\n\nfunction assignDocData (dest, origin) {\n    dest.title = String(origin.title);\n    dest.author = String(origin.author);\n    dest.public = Boolean(origin.public);\n    dest.doctype = String(origin.doctype);\n    dest.context = Object(origin.context);\n    dest.references = Object(origin.references);\n    dest.template = String(origin.template);    \n    return dest;\n}\n\n\n\nmodule.exports = Store;\n\n\n//# sourceURL=webpack:///./lib/olojs/store.js?");
+eval("\nconst Document = __webpack_require__(/*! ./document */ \"./lib/olojs/document.js\");\n\n\nclass Store {\n    \n    createDocument (url, content) {\n        return new this.constructor.Document(this, url, content);\n    }\n    \n    async readDocument (docLocation, user) {}\n    \n    async writeDocument (docLoaction, doc, user) {}    \n    \n    static get Document () {\n        return Document;\n    }\n}\n\n\nmodule.exports = Store;\n\n\n//# sourceURL=webpack:///./lib/olojs/store.js?");
 
 /***/ }),
 
@@ -331,18 +342,18 @@ eval("const engine = __webpack_require__(/*! ./engine */ \"./lib/olojs/engine.js
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("const errors = __webpack_require__(/*! ../errors */ \"./lib/olojs/errors.js\");\nconst Store = __webpack_require__(/*! ../store */ \"./lib/olojs/store.js\");\n\n\n\nclass HTTPStoreClient extends Store {\n    \n    constructor () {\n        super();\n        this._cache = new Map();\n    }\n    \n    \n    async readDocument (url, token) {    \n        if (this._cache.has(url)) {\n            return this._cache.get(url);\n        }\n        \n        const response = await fetch(url, {\n            method: 'get',\n            headers: {\n                'Authorization': `Bearer ${token}`,\n                'Content-Type': 'application/json'\n            },\n        });\n        if (response.ok) {\n            let docData = await response.json();\n            return this.createDocument(url, docData);\n        }\n        else if (response.status === 404) {\n            throw new errors.DocumentNotFoundError();\n        }\n        else {\n            let message = await response.text();\n            throw new Error(message);\n        }\n    }\n\n\n    async writeDocument (url, doc, token) {\n        const response = await fetch(url, {\n            method: 'put',\n            headers: {\n                'Authorization': `Bearer ${token}`,\n                'Content-Type': 'application/json',                \n            },\n            body: JSON.stringify(doc)\n        });\n        if (!response.ok) {\n            if (response.status === 403) {\n                throw new errors.WriteAccessDeniedError();\n            }\n            else {\n                let message = await response.text();\n                throw new Error(message);\n            }\n        }    \n    }\n}\n\n\nmodule.exports = HTTPStoreClient;\n\n\n//# sourceURL=webpack:///./lib/olojs/stores/http-store-client.js?");
+eval("const errors = __webpack_require__(/*! ../errors */ \"./lib/olojs/errors.js\");\nconst Store = __webpack_require__(/*! ../store */ \"./lib/olojs/store.js\");\n\nconst docMimeType = \"application/x-yaml\";\n\n\nclass HTTPStoreClient extends Store {\n    \n    constructor () {\n        super();\n        this._cache = new Map();\n    }\n    \n    \n    async readDocument (url, token) {    \n        if (this._cache.has(url)) {\n            return this._cache.get(url);\n        }\n        \n        const response = await fetch(url, {\n            method: 'get',\n            headers: {\n                'Authorization': `Bearer ${token}`,\n                'Content-Type': docMimeType\n            },\n        });\n        if (response.ok) {\n            let docSource = await response.text();\n            return this.createDocument(url, docSource);\n        }\n        else if (response.status === 404) {\n            throw new errors.DocumentNotFoundError();\n        }\n        else {\n            let message = await response.text();\n            throw new Error(message);\n        }\n    }\n\n\n    async writeDocument (url, doc, token) {\n        const response = await fetch(url, {\n            method: 'put',\n            headers: {\n                'Authorization': `Bearer ${token}`,\n                'Content-Type': docMimeType                \n            },\n            body: String(doc)\n        });\n        if (!response.ok) {\n            if (response.status === 403) {\n                throw new errors.WriteAccessDeniedError();\n            }\n            else {\n                let message = await response.text();\n                throw new Error(message);\n            }\n        }    \n    }\n}\n\n\nmodule.exports = HTTPStoreClient;\n\n\n//# sourceURL=webpack:///./lib/olojs/stores/http-store-client.js?");
 
 /***/ }),
 
-/***/ "./lib/olojs/utils/expression.js":
-/*!***************************************!*\
-  !*** ./lib/olojs/utils/expression.js ***!
-  \***************************************/
+/***/ "./lib/olojs/types/template.js":
+/*!*************************************!*\
+  !*** ./lib/olojs/types/template.js ***!
+  \*************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("const jsep = __webpack_require__(/*! jsep */ \"./node_modules/jsep/build/jsep.js\");\r\n\r\n\r\n/**\r\n * Evaluation code from JSEP project, under MIT License.\r\n * Copyright (c) 2013 Stephen Oney, http://jsep.from.so/\r\n */\r\n\r\nvar binops = {\r\n  '||':  function (a, b) { return a || b; },\r\n  '&&':  function (a, b) { return a && b; },\r\n  '|':   function (a, b) { return a | b; },\r\n  '^':   function (a, b) { return a ^ b; },\r\n  '&':   function (a, b) { return a & b; },\r\n  '==':  function (a, b) { return a === b; }, // jshint ignore:line\r\n  '!=':  function (a, b) { return a !== b; }, // jshint ignore:line\r\n  '<':   function (a, b) { return a < b; },\r\n  '>':   function (a, b) { return a > b; },\r\n  '<=':  function (a, b) { return a <= b; },\r\n  '>=':  function (a, b) { return a >= b; },\r\n  '<<':  function (a, b) { return a << b; },\r\n  '>>':  function (a, b) { return a >> b; },\r\n  '>>>': function (a, b) { return a >>> b; },\r\n  '+':   function (a, b) { return a + b; },\r\n  '-':   function (a, b) { return a - b; },\r\n  '*':   function (a, b) { return a * b; },\r\n  '/':   function (a, b) { return a / b; },\r\n  '%':   function (a, b) { return a % b; }\r\n};\r\n\r\nvar unops = {\r\n  '-' :  function (a) { return -a; },\r\n  '+' :  function (a) { return a; },\r\n  '~' :  function (a) { return ~a; },\r\n  '!' :  function (a) { return !a; },\r\n};\r\n\r\nfunction evaluateArray ( list, context ) {\r\n  return list.map(function (v) { return evaluate(v, context); });\r\n}\r\n\r\nfunction evaluateMember ( node, context ) {\r\n  var object = evaluate(node.object, context);\r\n  if ( node.computed ) {\r\n    return [object, object[evaluate(node.property, context)]];\r\n  } else {\r\n    return [object, object[node.property.name]];\r\n  }\r\n}\r\n\r\nfunction evaluate ( node, context ) {\r\n\r\n  switch ( node.type ) {\r\n\r\n    case 'ArrayExpression':\r\n      return evaluateArray( node.elements, context );\r\n\r\n    case 'BinaryExpression':\r\n      return binops[ node.operator ]( evaluate( node.left, context ), evaluate( node.right, context ) );\r\n\r\n    case 'CallExpression':\r\n      var caller, fn, assign;\r\n      if (node.callee.type === 'MemberExpression') {\r\n        assign = evaluateMember( node.callee, context );\r\n        caller = assign[0];\r\n        fn = assign[1];\r\n      } else {\r\n        fn = evaluate( node.callee, context );\r\n      }\r\n      if (typeof fn  !== 'function') { return undefined; }\r\n      return fn.apply( caller, evaluateArray( node.arguments, context ) );\r\n\r\n    case 'ConditionalExpression':\r\n      return evaluate( node.test, context )\r\n        ? evaluate( node.consequent, context )\r\n        : evaluate( node.alternate, context );\r\n\r\n    case 'Identifier':\r\n      return context[node.name];\r\n\r\n    case 'Literal':\r\n      return node.value;\r\n\r\n    case 'LogicalExpression':\r\n      return binops[ node.operator ]( evaluate( node.left, context ), evaluate( node.right, context ) );\r\n\r\n    case 'MemberExpression':\r\n      return evaluateMember(node, context)[1];\r\n\r\n    case 'ThisExpression':\r\n      return context;\r\n\r\n    case 'UnaryExpression':\r\n      return unops[ node.operator ]( evaluate( node.argument, context ) );\r\n\r\n    default:\r\n      return undefined;\r\n  }\r\n\r\n}\r\n\r\n\r\n\r\nexports.eval = function (expression, context) {\r\n    const matchAssignment = expression.match(/\\s*([a-zA-Z_$][a-zA-Z_$]*)\\s*=\\s*(.+)/);\r\n    if (matchAssignment) {\r\n        let name = matchAssignment[1];\r\n        let value = this.eval(matchAssignment[2], context);\r\n        context[name] = value;\r\n        return value;\r\n    }\r\n    else {\r\n        let ast = jsep(expression);\r\n        return evaluate(ast, context);                \r\n    }\r\n}\r\n\n\n//# sourceURL=webpack:///./lib/olojs/utils/expression.js?");
+eval("\nconst YAML = __webpack_require__(/*! js-yaml */ \"./node_modules/js-yaml/index.js\");\nconst oloxp = __webpack_require__(/*! ../oloxp */ \"./lib/olojs/oloxp.js\");\n\nconst isPlainObject = __webpack_require__(/*! lodash/isPlainObject */ \"./node_modules/lodash/isPlainObject.js\");\n\n\nconst Template = exports.Template = class {\n    \n    constructor (source) {\n        this.source = String(source);\n    }\n    \n    call (context) {\n        return this.source.replace(/\\{\\{(.+?)\\}\\}/gm, (match, expr) => {\n            try {\n                return oloxp.evaluate(expr, context);\n            } catch (error) {\n                return this.renderError(error);\n            }\n        });                        \n    }\n    \n    renderError (error) {\n        return `ERROR:[[${error}]]`;        \n    }\n    \n    toString () {\n        return this.source;\n    }\n}\n\nexports.TemplateYamlType = new YAML.Type('!template', {\n    \n    kind: 'scalar',\n    \n    resolve: data => data !== null,\n    \n    construct: data => new Template(data),\n    \n    instanceOf: Template,\n    \n    represent: template => String(template)\n});\n\n\n//# sourceURL=webpack:///./lib/olojs/types/template.js?");
 
 /***/ }),
 
@@ -786,94 +797,6 @@ eval("//     JavaScript Expression Parser (JSEP) 0.3.4\r\n//     JSEP may be fre
 
 /***/ }),
 
-/***/ "./node_modules/lodash/_DataView.js":
-/*!******************************************!*\
-  !*** ./node_modules/lodash/_DataView.js ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var getNative = __webpack_require__(/*! ./_getNative */ \"./node_modules/lodash/_getNative.js\"),\n    root = __webpack_require__(/*! ./_root */ \"./node_modules/lodash/_root.js\");\n\n/* Built-in method references that are verified to be native. */\nvar DataView = getNative(root, 'DataView');\n\nmodule.exports = DataView;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_DataView.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_Hash.js":
-/*!**************************************!*\
-  !*** ./node_modules/lodash/_Hash.js ***!
-  \**************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var hashClear = __webpack_require__(/*! ./_hashClear */ \"./node_modules/lodash/_hashClear.js\"),\n    hashDelete = __webpack_require__(/*! ./_hashDelete */ \"./node_modules/lodash/_hashDelete.js\"),\n    hashGet = __webpack_require__(/*! ./_hashGet */ \"./node_modules/lodash/_hashGet.js\"),\n    hashHas = __webpack_require__(/*! ./_hashHas */ \"./node_modules/lodash/_hashHas.js\"),\n    hashSet = __webpack_require__(/*! ./_hashSet */ \"./node_modules/lodash/_hashSet.js\");\n\n/**\n * Creates a hash object.\n *\n * @private\n * @constructor\n * @param {Array} [entries] The key-value pairs to cache.\n */\nfunction Hash(entries) {\n  var index = -1,\n      length = entries == null ? 0 : entries.length;\n\n  this.clear();\n  while (++index < length) {\n    var entry = entries[index];\n    this.set(entry[0], entry[1]);\n  }\n}\n\n// Add methods to `Hash`.\nHash.prototype.clear = hashClear;\nHash.prototype['delete'] = hashDelete;\nHash.prototype.get = hashGet;\nHash.prototype.has = hashHas;\nHash.prototype.set = hashSet;\n\nmodule.exports = Hash;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_Hash.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_ListCache.js":
-/*!*******************************************!*\
-  !*** ./node_modules/lodash/_ListCache.js ***!
-  \*******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var listCacheClear = __webpack_require__(/*! ./_listCacheClear */ \"./node_modules/lodash/_listCacheClear.js\"),\n    listCacheDelete = __webpack_require__(/*! ./_listCacheDelete */ \"./node_modules/lodash/_listCacheDelete.js\"),\n    listCacheGet = __webpack_require__(/*! ./_listCacheGet */ \"./node_modules/lodash/_listCacheGet.js\"),\n    listCacheHas = __webpack_require__(/*! ./_listCacheHas */ \"./node_modules/lodash/_listCacheHas.js\"),\n    listCacheSet = __webpack_require__(/*! ./_listCacheSet */ \"./node_modules/lodash/_listCacheSet.js\");\n\n/**\n * Creates an list cache object.\n *\n * @private\n * @constructor\n * @param {Array} [entries] The key-value pairs to cache.\n */\nfunction ListCache(entries) {\n  var index = -1,\n      length = entries == null ? 0 : entries.length;\n\n  this.clear();\n  while (++index < length) {\n    var entry = entries[index];\n    this.set(entry[0], entry[1]);\n  }\n}\n\n// Add methods to `ListCache`.\nListCache.prototype.clear = listCacheClear;\nListCache.prototype['delete'] = listCacheDelete;\nListCache.prototype.get = listCacheGet;\nListCache.prototype.has = listCacheHas;\nListCache.prototype.set = listCacheSet;\n\nmodule.exports = ListCache;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_ListCache.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_Map.js":
-/*!*************************************!*\
-  !*** ./node_modules/lodash/_Map.js ***!
-  \*************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var getNative = __webpack_require__(/*! ./_getNative */ \"./node_modules/lodash/_getNative.js\"),\n    root = __webpack_require__(/*! ./_root */ \"./node_modules/lodash/_root.js\");\n\n/* Built-in method references that are verified to be native. */\nvar Map = getNative(root, 'Map');\n\nmodule.exports = Map;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_Map.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_MapCache.js":
-/*!******************************************!*\
-  !*** ./node_modules/lodash/_MapCache.js ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var mapCacheClear = __webpack_require__(/*! ./_mapCacheClear */ \"./node_modules/lodash/_mapCacheClear.js\"),\n    mapCacheDelete = __webpack_require__(/*! ./_mapCacheDelete */ \"./node_modules/lodash/_mapCacheDelete.js\"),\n    mapCacheGet = __webpack_require__(/*! ./_mapCacheGet */ \"./node_modules/lodash/_mapCacheGet.js\"),\n    mapCacheHas = __webpack_require__(/*! ./_mapCacheHas */ \"./node_modules/lodash/_mapCacheHas.js\"),\n    mapCacheSet = __webpack_require__(/*! ./_mapCacheSet */ \"./node_modules/lodash/_mapCacheSet.js\");\n\n/**\n * Creates a map cache object to store key-value pairs.\n *\n * @private\n * @constructor\n * @param {Array} [entries] The key-value pairs to cache.\n */\nfunction MapCache(entries) {\n  var index = -1,\n      length = entries == null ? 0 : entries.length;\n\n  this.clear();\n  while (++index < length) {\n    var entry = entries[index];\n    this.set(entry[0], entry[1]);\n  }\n}\n\n// Add methods to `MapCache`.\nMapCache.prototype.clear = mapCacheClear;\nMapCache.prototype['delete'] = mapCacheDelete;\nMapCache.prototype.get = mapCacheGet;\nMapCache.prototype.has = mapCacheHas;\nMapCache.prototype.set = mapCacheSet;\n\nmodule.exports = MapCache;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_MapCache.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_Promise.js":
-/*!*****************************************!*\
-  !*** ./node_modules/lodash/_Promise.js ***!
-  \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var getNative = __webpack_require__(/*! ./_getNative */ \"./node_modules/lodash/_getNative.js\"),\n    root = __webpack_require__(/*! ./_root */ \"./node_modules/lodash/_root.js\");\n\n/* Built-in method references that are verified to be native. */\nvar Promise = getNative(root, 'Promise');\n\nmodule.exports = Promise;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_Promise.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_Set.js":
-/*!*************************************!*\
-  !*** ./node_modules/lodash/_Set.js ***!
-  \*************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var getNative = __webpack_require__(/*! ./_getNative */ \"./node_modules/lodash/_getNative.js\"),\n    root = __webpack_require__(/*! ./_root */ \"./node_modules/lodash/_root.js\");\n\n/* Built-in method references that are verified to be native. */\nvar Set = getNative(root, 'Set');\n\nmodule.exports = Set;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_Set.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_Stack.js":
-/*!***************************************!*\
-  !*** ./node_modules/lodash/_Stack.js ***!
-  \***************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var ListCache = __webpack_require__(/*! ./_ListCache */ \"./node_modules/lodash/_ListCache.js\"),\n    stackClear = __webpack_require__(/*! ./_stackClear */ \"./node_modules/lodash/_stackClear.js\"),\n    stackDelete = __webpack_require__(/*! ./_stackDelete */ \"./node_modules/lodash/_stackDelete.js\"),\n    stackGet = __webpack_require__(/*! ./_stackGet */ \"./node_modules/lodash/_stackGet.js\"),\n    stackHas = __webpack_require__(/*! ./_stackHas */ \"./node_modules/lodash/_stackHas.js\"),\n    stackSet = __webpack_require__(/*! ./_stackSet */ \"./node_modules/lodash/_stackSet.js\");\n\n/**\n * Creates a stack cache object to store key-value pairs.\n *\n * @private\n * @constructor\n * @param {Array} [entries] The key-value pairs to cache.\n */\nfunction Stack(entries) {\n  var data = this.__data__ = new ListCache(entries);\n  this.size = data.size;\n}\n\n// Add methods to `Stack`.\nStack.prototype.clear = stackClear;\nStack.prototype['delete'] = stackDelete;\nStack.prototype.get = stackGet;\nStack.prototype.has = stackHas;\nStack.prototype.set = stackSet;\n\nmodule.exports = Stack;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_Stack.js?");
-
-/***/ }),
-
 /***/ "./node_modules/lodash/_Symbol.js":
 /*!****************************************!*\
   !*** ./node_modules/lodash/_Symbol.js ***!
@@ -882,28 +805,6 @@ eval("var ListCache = __webpack_require__(/*! ./_ListCache */ \"./node_modules/l
 /***/ (function(module, exports, __webpack_require__) {
 
 eval("var root = __webpack_require__(/*! ./_root */ \"./node_modules/lodash/_root.js\");\n\n/** Built-in value references. */\nvar Symbol = root.Symbol;\n\nmodule.exports = Symbol;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_Symbol.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_Uint8Array.js":
-/*!********************************************!*\
-  !*** ./node_modules/lodash/_Uint8Array.js ***!
-  \********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var root = __webpack_require__(/*! ./_root */ \"./node_modules/lodash/_root.js\");\n\n/** Built-in value references. */\nvar Uint8Array = root.Uint8Array;\n\nmodule.exports = Uint8Array;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_Uint8Array.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_WeakMap.js":
-/*!*****************************************!*\
-  !*** ./node_modules/lodash/_WeakMap.js ***!
-  \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var getNative = __webpack_require__(/*! ./_getNative */ \"./node_modules/lodash/_getNative.js\"),\n    root = __webpack_require__(/*! ./_root */ \"./node_modules/lodash/_root.js\");\n\n/* Built-in method references that are verified to be native. */\nvar WeakMap = getNative(root, 'WeakMap');\n\nmodule.exports = WeakMap;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_WeakMap.js?");
 
 /***/ }),
 
@@ -918,28 +819,6 @@ eval("/**\n * A faster alternative to `Function#apply`, this function invokes `f
 
 /***/ }),
 
-/***/ "./node_modules/lodash/_arrayEach.js":
-/*!*******************************************!*\
-  !*** ./node_modules/lodash/_arrayEach.js ***!
-  \*******************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("/**\n * A specialized version of `_.forEach` for arrays without support for\n * iteratee shorthands.\n *\n * @private\n * @param {Array} [array] The array to iterate over.\n * @param {Function} iteratee The function invoked per iteration.\n * @returns {Array} Returns `array`.\n */\nfunction arrayEach(array, iteratee) {\n  var index = -1,\n      length = array == null ? 0 : array.length;\n\n  while (++index < length) {\n    if (iteratee(array[index], index, array) === false) {\n      break;\n    }\n  }\n  return array;\n}\n\nmodule.exports = arrayEach;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_arrayEach.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_arrayFilter.js":
-/*!*********************************************!*\
-  !*** ./node_modules/lodash/_arrayFilter.js ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("/**\n * A specialized version of `_.filter` for arrays without support for\n * iteratee shorthands.\n *\n * @private\n * @param {Array} [array] The array to iterate over.\n * @param {Function} predicate The function invoked per iteration.\n * @returns {Array} Returns the new filtered array.\n */\nfunction arrayFilter(array, predicate) {\n  var index = -1,\n      length = array == null ? 0 : array.length,\n      resIndex = 0,\n      result = [];\n\n  while (++index < length) {\n    var value = array[index];\n    if (predicate(value, index, array)) {\n      result[resIndex++] = value;\n    }\n  }\n  return result;\n}\n\nmodule.exports = arrayFilter;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_arrayFilter.js?");
-
-/***/ }),
-
 /***/ "./node_modules/lodash/_arrayLikeKeys.js":
 /*!***********************************************!*\
   !*** ./node_modules/lodash/_arrayLikeKeys.js ***!
@@ -948,17 +827,6 @@ eval("/**\n * A specialized version of `_.filter` for arrays without support for
 /***/ (function(module, exports, __webpack_require__) {
 
 eval("var baseTimes = __webpack_require__(/*! ./_baseTimes */ \"./node_modules/lodash/_baseTimes.js\"),\n    isArguments = __webpack_require__(/*! ./isArguments */ \"./node_modules/lodash/isArguments.js\"),\n    isArray = __webpack_require__(/*! ./isArray */ \"./node_modules/lodash/isArray.js\"),\n    isBuffer = __webpack_require__(/*! ./isBuffer */ \"./node_modules/lodash/isBuffer.js\"),\n    isIndex = __webpack_require__(/*! ./_isIndex */ \"./node_modules/lodash/_isIndex.js\"),\n    isTypedArray = __webpack_require__(/*! ./isTypedArray */ \"./node_modules/lodash/isTypedArray.js\");\n\n/** Used for built-in method references. */\nvar objectProto = Object.prototype;\n\n/** Used to check objects for own properties. */\nvar hasOwnProperty = objectProto.hasOwnProperty;\n\n/**\n * Creates an array of the enumerable property names of the array-like `value`.\n *\n * @private\n * @param {*} value The value to query.\n * @param {boolean} inherited Specify returning inherited property names.\n * @returns {Array} Returns the array of property names.\n */\nfunction arrayLikeKeys(value, inherited) {\n  var isArr = isArray(value),\n      isArg = !isArr && isArguments(value),\n      isBuff = !isArr && !isArg && isBuffer(value),\n      isType = !isArr && !isArg && !isBuff && isTypedArray(value),\n      skipIndexes = isArr || isArg || isBuff || isType,\n      result = skipIndexes ? baseTimes(value.length, String) : [],\n      length = result.length;\n\n  for (var key in value) {\n    if ((inherited || hasOwnProperty.call(value, key)) &&\n        !(skipIndexes && (\n           // Safari 9 has enumerable `arguments.length` in strict mode.\n           key == 'length' ||\n           // Node.js 0.10 has enumerable non-index properties on buffers.\n           (isBuff && (key == 'offset' || key == 'parent')) ||\n           // PhantomJS 2 has enumerable non-index properties on typed arrays.\n           (isType && (key == 'buffer' || key == 'byteLength' || key == 'byteOffset')) ||\n           // Skip index properties.\n           isIndex(key, length)\n        ))) {\n      result.push(key);\n    }\n  }\n  return result;\n}\n\nmodule.exports = arrayLikeKeys;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_arrayLikeKeys.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_arrayPush.js":
-/*!*******************************************!*\
-  !*** ./node_modules/lodash/_arrayPush.js ***!
-  \*******************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("/**\n * Appends the elements of `values` to `array`.\n *\n * @private\n * @param {Array} array The array to modify.\n * @param {Array} values The values to append.\n * @returns {Array} Returns `array`.\n */\nfunction arrayPush(array, values) {\n  var index = -1,\n      length = values.length,\n      offset = array.length;\n\n  while (++index < length) {\n    array[offset + index] = values[index];\n  }\n  return array;\n}\n\nmodule.exports = arrayPush;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_arrayPush.js?");
 
 /***/ }),
 
@@ -973,39 +841,6 @@ eval("var baseAssignValue = __webpack_require__(/*! ./_baseAssignValue */ \"./no
 
 /***/ }),
 
-/***/ "./node_modules/lodash/_assocIndexOf.js":
-/*!**********************************************!*\
-  !*** ./node_modules/lodash/_assocIndexOf.js ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var eq = __webpack_require__(/*! ./eq */ \"./node_modules/lodash/eq.js\");\n\n/**\n * Gets the index at which the `key` is found in `array` of key-value pairs.\n *\n * @private\n * @param {Array} array The array to inspect.\n * @param {*} key The key to search for.\n * @returns {number} Returns the index of the matched value, else `-1`.\n */\nfunction assocIndexOf(array, key) {\n  var length = array.length;\n  while (length--) {\n    if (eq(array[length][0], key)) {\n      return length;\n    }\n  }\n  return -1;\n}\n\nmodule.exports = assocIndexOf;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_assocIndexOf.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_baseAssign.js":
-/*!********************************************!*\
-  !*** ./node_modules/lodash/_baseAssign.js ***!
-  \********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var copyObject = __webpack_require__(/*! ./_copyObject */ \"./node_modules/lodash/_copyObject.js\"),\n    keys = __webpack_require__(/*! ./keys */ \"./node_modules/lodash/keys.js\");\n\n/**\n * The base implementation of `_.assign` without support for multiple sources\n * or `customizer` functions.\n *\n * @private\n * @param {Object} object The destination object.\n * @param {Object} source The source object.\n * @returns {Object} Returns `object`.\n */\nfunction baseAssign(object, source) {\n  return object && copyObject(source, keys(source), object);\n}\n\nmodule.exports = baseAssign;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_baseAssign.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_baseAssignIn.js":
-/*!**********************************************!*\
-  !*** ./node_modules/lodash/_baseAssignIn.js ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var copyObject = __webpack_require__(/*! ./_copyObject */ \"./node_modules/lodash/_copyObject.js\"),\n    keysIn = __webpack_require__(/*! ./keysIn */ \"./node_modules/lodash/keysIn.js\");\n\n/**\n * The base implementation of `_.assignIn` without support for multiple sources\n * or `customizer` functions.\n *\n * @private\n * @param {Object} object The destination object.\n * @param {Object} source The source object.\n * @returns {Object} Returns `object`.\n */\nfunction baseAssignIn(object, source) {\n  return object && copyObject(source, keysIn(source), object);\n}\n\nmodule.exports = baseAssignIn;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_baseAssignIn.js?");
-
-/***/ }),
-
 /***/ "./node_modules/lodash/_baseAssignValue.js":
 /*!*************************************************!*\
   !*** ./node_modules/lodash/_baseAssignValue.js ***!
@@ -1014,39 +849,6 @@ eval("var copyObject = __webpack_require__(/*! ./_copyObject */ \"./node_modules
 /***/ (function(module, exports, __webpack_require__) {
 
 eval("var defineProperty = __webpack_require__(/*! ./_defineProperty */ \"./node_modules/lodash/_defineProperty.js\");\n\n/**\n * The base implementation of `assignValue` and `assignMergeValue` without\n * value checks.\n *\n * @private\n * @param {Object} object The object to modify.\n * @param {string} key The key of the property to assign.\n * @param {*} value The value to assign.\n */\nfunction baseAssignValue(object, key, value) {\n  if (key == '__proto__' && defineProperty) {\n    defineProperty(object, key, {\n      'configurable': true,\n      'enumerable': true,\n      'value': value,\n      'writable': true\n    });\n  } else {\n    object[key] = value;\n  }\n}\n\nmodule.exports = baseAssignValue;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_baseAssignValue.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_baseClone.js":
-/*!*******************************************!*\
-  !*** ./node_modules/lodash/_baseClone.js ***!
-  \*******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var Stack = __webpack_require__(/*! ./_Stack */ \"./node_modules/lodash/_Stack.js\"),\n    arrayEach = __webpack_require__(/*! ./_arrayEach */ \"./node_modules/lodash/_arrayEach.js\"),\n    assignValue = __webpack_require__(/*! ./_assignValue */ \"./node_modules/lodash/_assignValue.js\"),\n    baseAssign = __webpack_require__(/*! ./_baseAssign */ \"./node_modules/lodash/_baseAssign.js\"),\n    baseAssignIn = __webpack_require__(/*! ./_baseAssignIn */ \"./node_modules/lodash/_baseAssignIn.js\"),\n    cloneBuffer = __webpack_require__(/*! ./_cloneBuffer */ \"./node_modules/lodash/_cloneBuffer.js\"),\n    copyArray = __webpack_require__(/*! ./_copyArray */ \"./node_modules/lodash/_copyArray.js\"),\n    copySymbols = __webpack_require__(/*! ./_copySymbols */ \"./node_modules/lodash/_copySymbols.js\"),\n    copySymbolsIn = __webpack_require__(/*! ./_copySymbolsIn */ \"./node_modules/lodash/_copySymbolsIn.js\"),\n    getAllKeys = __webpack_require__(/*! ./_getAllKeys */ \"./node_modules/lodash/_getAllKeys.js\"),\n    getAllKeysIn = __webpack_require__(/*! ./_getAllKeysIn */ \"./node_modules/lodash/_getAllKeysIn.js\"),\n    getTag = __webpack_require__(/*! ./_getTag */ \"./node_modules/lodash/_getTag.js\"),\n    initCloneArray = __webpack_require__(/*! ./_initCloneArray */ \"./node_modules/lodash/_initCloneArray.js\"),\n    initCloneByTag = __webpack_require__(/*! ./_initCloneByTag */ \"./node_modules/lodash/_initCloneByTag.js\"),\n    initCloneObject = __webpack_require__(/*! ./_initCloneObject */ \"./node_modules/lodash/_initCloneObject.js\"),\n    isArray = __webpack_require__(/*! ./isArray */ \"./node_modules/lodash/isArray.js\"),\n    isBuffer = __webpack_require__(/*! ./isBuffer */ \"./node_modules/lodash/isBuffer.js\"),\n    isMap = __webpack_require__(/*! ./isMap */ \"./node_modules/lodash/isMap.js\"),\n    isObject = __webpack_require__(/*! ./isObject */ \"./node_modules/lodash/isObject.js\"),\n    isSet = __webpack_require__(/*! ./isSet */ \"./node_modules/lodash/isSet.js\"),\n    keys = __webpack_require__(/*! ./keys */ \"./node_modules/lodash/keys.js\");\n\n/** Used to compose bitmasks for cloning. */\nvar CLONE_DEEP_FLAG = 1,\n    CLONE_FLAT_FLAG = 2,\n    CLONE_SYMBOLS_FLAG = 4;\n\n/** `Object#toString` result references. */\nvar argsTag = '[object Arguments]',\n    arrayTag = '[object Array]',\n    boolTag = '[object Boolean]',\n    dateTag = '[object Date]',\n    errorTag = '[object Error]',\n    funcTag = '[object Function]',\n    genTag = '[object GeneratorFunction]',\n    mapTag = '[object Map]',\n    numberTag = '[object Number]',\n    objectTag = '[object Object]',\n    regexpTag = '[object RegExp]',\n    setTag = '[object Set]',\n    stringTag = '[object String]',\n    symbolTag = '[object Symbol]',\n    weakMapTag = '[object WeakMap]';\n\nvar arrayBufferTag = '[object ArrayBuffer]',\n    dataViewTag = '[object DataView]',\n    float32Tag = '[object Float32Array]',\n    float64Tag = '[object Float64Array]',\n    int8Tag = '[object Int8Array]',\n    int16Tag = '[object Int16Array]',\n    int32Tag = '[object Int32Array]',\n    uint8Tag = '[object Uint8Array]',\n    uint8ClampedTag = '[object Uint8ClampedArray]',\n    uint16Tag = '[object Uint16Array]',\n    uint32Tag = '[object Uint32Array]';\n\n/** Used to identify `toStringTag` values supported by `_.clone`. */\nvar cloneableTags = {};\ncloneableTags[argsTag] = cloneableTags[arrayTag] =\ncloneableTags[arrayBufferTag] = cloneableTags[dataViewTag] =\ncloneableTags[boolTag] = cloneableTags[dateTag] =\ncloneableTags[float32Tag] = cloneableTags[float64Tag] =\ncloneableTags[int8Tag] = cloneableTags[int16Tag] =\ncloneableTags[int32Tag] = cloneableTags[mapTag] =\ncloneableTags[numberTag] = cloneableTags[objectTag] =\ncloneableTags[regexpTag] = cloneableTags[setTag] =\ncloneableTags[stringTag] = cloneableTags[symbolTag] =\ncloneableTags[uint8Tag] = cloneableTags[uint8ClampedTag] =\ncloneableTags[uint16Tag] = cloneableTags[uint32Tag] = true;\ncloneableTags[errorTag] = cloneableTags[funcTag] =\ncloneableTags[weakMapTag] = false;\n\n/**\n * The base implementation of `_.clone` and `_.cloneDeep` which tracks\n * traversed objects.\n *\n * @private\n * @param {*} value The value to clone.\n * @param {boolean} bitmask The bitmask flags.\n *  1 - Deep clone\n *  2 - Flatten inherited properties\n *  4 - Clone symbols\n * @param {Function} [customizer] The function to customize cloning.\n * @param {string} [key] The key of `value`.\n * @param {Object} [object] The parent object of `value`.\n * @param {Object} [stack] Tracks traversed objects and their clone counterparts.\n * @returns {*} Returns the cloned value.\n */\nfunction baseClone(value, bitmask, customizer, key, object, stack) {\n  var result,\n      isDeep = bitmask & CLONE_DEEP_FLAG,\n      isFlat = bitmask & CLONE_FLAT_FLAG,\n      isFull = bitmask & CLONE_SYMBOLS_FLAG;\n\n  if (customizer) {\n    result = object ? customizer(value, key, object, stack) : customizer(value);\n  }\n  if (result !== undefined) {\n    return result;\n  }\n  if (!isObject(value)) {\n    return value;\n  }\n  var isArr = isArray(value);\n  if (isArr) {\n    result = initCloneArray(value);\n    if (!isDeep) {\n      return copyArray(value, result);\n    }\n  } else {\n    var tag = getTag(value),\n        isFunc = tag == funcTag || tag == genTag;\n\n    if (isBuffer(value)) {\n      return cloneBuffer(value, isDeep);\n    }\n    if (tag == objectTag || tag == argsTag || (isFunc && !object)) {\n      result = (isFlat || isFunc) ? {} : initCloneObject(value);\n      if (!isDeep) {\n        return isFlat\n          ? copySymbolsIn(value, baseAssignIn(result, value))\n          : copySymbols(value, baseAssign(result, value));\n      }\n    } else {\n      if (!cloneableTags[tag]) {\n        return object ? value : {};\n      }\n      result = initCloneByTag(value, tag, isDeep);\n    }\n  }\n  // Check for circular references and return its corresponding clone.\n  stack || (stack = new Stack);\n  var stacked = stack.get(value);\n  if (stacked) {\n    return stacked;\n  }\n  stack.set(value, result);\n\n  if (isSet(value)) {\n    value.forEach(function(subValue) {\n      result.add(baseClone(subValue, bitmask, customizer, subValue, value, stack));\n    });\n\n    return result;\n  }\n\n  if (isMap(value)) {\n    value.forEach(function(subValue, key) {\n      result.set(key, baseClone(subValue, bitmask, customizer, key, value, stack));\n    });\n\n    return result;\n  }\n\n  var keysFunc = isFull\n    ? (isFlat ? getAllKeysIn : getAllKeys)\n    : (isFlat ? keysIn : keys);\n\n  var props = isArr ? undefined : keysFunc(value);\n  arrayEach(props || value, function(subValue, key) {\n    if (props) {\n      key = subValue;\n      subValue = value[key];\n    }\n    // Recursively populate clone (susceptible to call stack limits).\n    assignValue(result, key, baseClone(subValue, bitmask, customizer, key, value, stack));\n  });\n  return result;\n}\n\nmodule.exports = baseClone;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_baseClone.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_baseCreate.js":
-/*!********************************************!*\
-  !*** ./node_modules/lodash/_baseCreate.js ***!
-  \********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var isObject = __webpack_require__(/*! ./isObject */ \"./node_modules/lodash/isObject.js\");\n\n/** Built-in value references. */\nvar objectCreate = Object.create;\n\n/**\n * The base implementation of `_.create` without support for assigning\n * properties to the created object.\n *\n * @private\n * @param {Object} proto The object to inherit from.\n * @returns {Object} Returns the new object.\n */\nvar baseCreate = (function() {\n  function object() {}\n  return function(proto) {\n    if (!isObject(proto)) {\n      return {};\n    }\n    if (objectCreate) {\n      return objectCreate(proto);\n    }\n    object.prototype = proto;\n    var result = new object;\n    object.prototype = undefined;\n    return result;\n  };\n}());\n\nmodule.exports = baseCreate;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_baseCreate.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_baseGetAllKeys.js":
-/*!************************************************!*\
-  !*** ./node_modules/lodash/_baseGetAllKeys.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var arrayPush = __webpack_require__(/*! ./_arrayPush */ \"./node_modules/lodash/_arrayPush.js\"),\n    isArray = __webpack_require__(/*! ./isArray */ \"./node_modules/lodash/isArray.js\");\n\n/**\n * The base implementation of `getAllKeys` and `getAllKeysIn` which uses\n * `keysFunc` and `symbolsFunc` to get the enumerable property names and\n * symbols of `object`.\n *\n * @private\n * @param {Object} object The object to query.\n * @param {Function} keysFunc The function to get the keys of `object`.\n * @param {Function} symbolsFunc The function to get the symbols of `object`.\n * @returns {Array} Returns the array of property names and symbols.\n */\nfunction baseGetAllKeys(object, keysFunc, symbolsFunc) {\n  var result = keysFunc(object);\n  return isArray(object) ? result : arrayPush(result, symbolsFunc(object));\n}\n\nmodule.exports = baseGetAllKeys;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_baseGetAllKeys.js?");
 
 /***/ }),
 
@@ -1072,17 +874,6 @@ eval("var baseGetTag = __webpack_require__(/*! ./_baseGetTag */ \"./node_modules
 
 /***/ }),
 
-/***/ "./node_modules/lodash/_baseIsMap.js":
-/*!*******************************************!*\
-  !*** ./node_modules/lodash/_baseIsMap.js ***!
-  \*******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var getTag = __webpack_require__(/*! ./_getTag */ \"./node_modules/lodash/_getTag.js\"),\n    isObjectLike = __webpack_require__(/*! ./isObjectLike */ \"./node_modules/lodash/isObjectLike.js\");\n\n/** `Object#toString` result references. */\nvar mapTag = '[object Map]';\n\n/**\n * The base implementation of `_.isMap` without Node.js optimizations.\n *\n * @private\n * @param {*} value The value to check.\n * @returns {boolean} Returns `true` if `value` is a map, else `false`.\n */\nfunction baseIsMap(value) {\n  return isObjectLike(value) && getTag(value) == mapTag;\n}\n\nmodule.exports = baseIsMap;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_baseIsMap.js?");
-
-/***/ }),
-
 /***/ "./node_modules/lodash/_baseIsNative.js":
 /*!**********************************************!*\
   !*** ./node_modules/lodash/_baseIsNative.js ***!
@@ -1094,17 +885,6 @@ eval("var isFunction = __webpack_require__(/*! ./isFunction */ \"./node_modules/
 
 /***/ }),
 
-/***/ "./node_modules/lodash/_baseIsSet.js":
-/*!*******************************************!*\
-  !*** ./node_modules/lodash/_baseIsSet.js ***!
-  \*******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var getTag = __webpack_require__(/*! ./_getTag */ \"./node_modules/lodash/_getTag.js\"),\n    isObjectLike = __webpack_require__(/*! ./isObjectLike */ \"./node_modules/lodash/isObjectLike.js\");\n\n/** `Object#toString` result references. */\nvar setTag = '[object Set]';\n\n/**\n * The base implementation of `_.isSet` without Node.js optimizations.\n *\n * @private\n * @param {*} value The value to check.\n * @returns {boolean} Returns `true` if `value` is a set, else `false`.\n */\nfunction baseIsSet(value) {\n  return isObjectLike(value) && getTag(value) == setTag;\n}\n\nmodule.exports = baseIsSet;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_baseIsSet.js?");
-
-/***/ }),
-
 /***/ "./node_modules/lodash/_baseIsTypedArray.js":
 /*!**************************************************!*\
   !*** ./node_modules/lodash/_baseIsTypedArray.js ***!
@@ -1113,17 +893,6 @@ eval("var getTag = __webpack_require__(/*! ./_getTag */ \"./node_modules/lodash/
 /***/ (function(module, exports, __webpack_require__) {
 
 eval("var baseGetTag = __webpack_require__(/*! ./_baseGetTag */ \"./node_modules/lodash/_baseGetTag.js\"),\n    isLength = __webpack_require__(/*! ./isLength */ \"./node_modules/lodash/isLength.js\"),\n    isObjectLike = __webpack_require__(/*! ./isObjectLike */ \"./node_modules/lodash/isObjectLike.js\");\n\n/** `Object#toString` result references. */\nvar argsTag = '[object Arguments]',\n    arrayTag = '[object Array]',\n    boolTag = '[object Boolean]',\n    dateTag = '[object Date]',\n    errorTag = '[object Error]',\n    funcTag = '[object Function]',\n    mapTag = '[object Map]',\n    numberTag = '[object Number]',\n    objectTag = '[object Object]',\n    regexpTag = '[object RegExp]',\n    setTag = '[object Set]',\n    stringTag = '[object String]',\n    weakMapTag = '[object WeakMap]';\n\nvar arrayBufferTag = '[object ArrayBuffer]',\n    dataViewTag = '[object DataView]',\n    float32Tag = '[object Float32Array]',\n    float64Tag = '[object Float64Array]',\n    int8Tag = '[object Int8Array]',\n    int16Tag = '[object Int16Array]',\n    int32Tag = '[object Int32Array]',\n    uint8Tag = '[object Uint8Array]',\n    uint8ClampedTag = '[object Uint8ClampedArray]',\n    uint16Tag = '[object Uint16Array]',\n    uint32Tag = '[object Uint32Array]';\n\n/** Used to identify `toStringTag` values of typed arrays. */\nvar typedArrayTags = {};\ntypedArrayTags[float32Tag] = typedArrayTags[float64Tag] =\ntypedArrayTags[int8Tag] = typedArrayTags[int16Tag] =\ntypedArrayTags[int32Tag] = typedArrayTags[uint8Tag] =\ntypedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] =\ntypedArrayTags[uint32Tag] = true;\ntypedArrayTags[argsTag] = typedArrayTags[arrayTag] =\ntypedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] =\ntypedArrayTags[dataViewTag] = typedArrayTags[dateTag] =\ntypedArrayTags[errorTag] = typedArrayTags[funcTag] =\ntypedArrayTags[mapTag] = typedArrayTags[numberTag] =\ntypedArrayTags[objectTag] = typedArrayTags[regexpTag] =\ntypedArrayTags[setTag] = typedArrayTags[stringTag] =\ntypedArrayTags[weakMapTag] = false;\n\n/**\n * The base implementation of `_.isTypedArray` without Node.js optimizations.\n *\n * @private\n * @param {*} value The value to check.\n * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.\n */\nfunction baseIsTypedArray(value) {\n  return isObjectLike(value) &&\n    isLength(value.length) && !!typedArrayTags[baseGetTag(value)];\n}\n\nmodule.exports = baseIsTypedArray;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_baseIsTypedArray.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_baseKeys.js":
-/*!******************************************!*\
-  !*** ./node_modules/lodash/_baseKeys.js ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var isPrototype = __webpack_require__(/*! ./_isPrototype */ \"./node_modules/lodash/_isPrototype.js\"),\n    nativeKeys = __webpack_require__(/*! ./_nativeKeys */ \"./node_modules/lodash/_nativeKeys.js\");\n\n/** Used for built-in method references. */\nvar objectProto = Object.prototype;\n\n/** Used to check objects for own properties. */\nvar hasOwnProperty = objectProto.hasOwnProperty;\n\n/**\n * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.\n *\n * @private\n * @param {Object} object The object to query.\n * @returns {Array} Returns the array of property names.\n */\nfunction baseKeys(object) {\n  if (!isPrototype(object)) {\n    return nativeKeys(object);\n  }\n  var result = [];\n  for (var key in Object(object)) {\n    if (hasOwnProperty.call(object, key) && key != 'constructor') {\n      result.push(key);\n    }\n  }\n  return result;\n}\n\nmodule.exports = baseKeys;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_baseKeys.js?");
 
 /***/ }),
 
@@ -1182,83 +951,6 @@ eval("/**\n * The base implementation of `_.unary` without support for storing m
 
 /***/ }),
 
-/***/ "./node_modules/lodash/_cloneArrayBuffer.js":
-/*!**************************************************!*\
-  !*** ./node_modules/lodash/_cloneArrayBuffer.js ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var Uint8Array = __webpack_require__(/*! ./_Uint8Array */ \"./node_modules/lodash/_Uint8Array.js\");\n\n/**\n * Creates a clone of `arrayBuffer`.\n *\n * @private\n * @param {ArrayBuffer} arrayBuffer The array buffer to clone.\n * @returns {ArrayBuffer} Returns the cloned array buffer.\n */\nfunction cloneArrayBuffer(arrayBuffer) {\n  var result = new arrayBuffer.constructor(arrayBuffer.byteLength);\n  new Uint8Array(result).set(new Uint8Array(arrayBuffer));\n  return result;\n}\n\nmodule.exports = cloneArrayBuffer;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_cloneArrayBuffer.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_cloneBuffer.js":
-/*!*********************************************!*\
-  !*** ./node_modules/lodash/_cloneBuffer.js ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("/* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(/*! ./_root */ \"./node_modules/lodash/_root.js\");\n\n/** Detect free variable `exports`. */\nvar freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;\n\n/** Detect free variable `module`. */\nvar freeModule = freeExports && typeof module == 'object' && module && !module.nodeType && module;\n\n/** Detect the popular CommonJS extension `module.exports`. */\nvar moduleExports = freeModule && freeModule.exports === freeExports;\n\n/** Built-in value references. */\nvar Buffer = moduleExports ? root.Buffer : undefined,\n    allocUnsafe = Buffer ? Buffer.allocUnsafe : undefined;\n\n/**\n * Creates a clone of  `buffer`.\n *\n * @private\n * @param {Buffer} buffer The buffer to clone.\n * @param {boolean} [isDeep] Specify a deep clone.\n * @returns {Buffer} Returns the cloned buffer.\n */\nfunction cloneBuffer(buffer, isDeep) {\n  if (isDeep) {\n    return buffer.slice();\n  }\n  var length = buffer.length,\n      result = allocUnsafe ? allocUnsafe(length) : new buffer.constructor(length);\n\n  buffer.copy(result);\n  return result;\n}\n\nmodule.exports = cloneBuffer;\n\n/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../webpack/buildin/module.js */ \"./node_modules/webpack/buildin/module.js\")(module)))\n\n//# sourceURL=webpack:///./node_modules/lodash/_cloneBuffer.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_cloneDataView.js":
-/*!***********************************************!*\
-  !*** ./node_modules/lodash/_cloneDataView.js ***!
-  \***********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var cloneArrayBuffer = __webpack_require__(/*! ./_cloneArrayBuffer */ \"./node_modules/lodash/_cloneArrayBuffer.js\");\n\n/**\n * Creates a clone of `dataView`.\n *\n * @private\n * @param {Object} dataView The data view to clone.\n * @param {boolean} [isDeep] Specify a deep clone.\n * @returns {Object} Returns the cloned data view.\n */\nfunction cloneDataView(dataView, isDeep) {\n  var buffer = isDeep ? cloneArrayBuffer(dataView.buffer) : dataView.buffer;\n  return new dataView.constructor(buffer, dataView.byteOffset, dataView.byteLength);\n}\n\nmodule.exports = cloneDataView;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_cloneDataView.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_cloneRegExp.js":
-/*!*********************************************!*\
-  !*** ./node_modules/lodash/_cloneRegExp.js ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("/** Used to match `RegExp` flags from their coerced string values. */\nvar reFlags = /\\w*$/;\n\n/**\n * Creates a clone of `regexp`.\n *\n * @private\n * @param {Object} regexp The regexp to clone.\n * @returns {Object} Returns the cloned regexp.\n */\nfunction cloneRegExp(regexp) {\n  var result = new regexp.constructor(regexp.source, reFlags.exec(regexp));\n  result.lastIndex = regexp.lastIndex;\n  return result;\n}\n\nmodule.exports = cloneRegExp;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_cloneRegExp.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_cloneSymbol.js":
-/*!*********************************************!*\
-  !*** ./node_modules/lodash/_cloneSymbol.js ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var Symbol = __webpack_require__(/*! ./_Symbol */ \"./node_modules/lodash/_Symbol.js\");\n\n/** Used to convert symbols to primitives and strings. */\nvar symbolProto = Symbol ? Symbol.prototype : undefined,\n    symbolValueOf = symbolProto ? symbolProto.valueOf : undefined;\n\n/**\n * Creates a clone of the `symbol` object.\n *\n * @private\n * @param {Object} symbol The symbol object to clone.\n * @returns {Object} Returns the cloned symbol object.\n */\nfunction cloneSymbol(symbol) {\n  return symbolValueOf ? Object(symbolValueOf.call(symbol)) : {};\n}\n\nmodule.exports = cloneSymbol;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_cloneSymbol.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_cloneTypedArray.js":
-/*!*************************************************!*\
-  !*** ./node_modules/lodash/_cloneTypedArray.js ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var cloneArrayBuffer = __webpack_require__(/*! ./_cloneArrayBuffer */ \"./node_modules/lodash/_cloneArrayBuffer.js\");\n\n/**\n * Creates a clone of `typedArray`.\n *\n * @private\n * @param {Object} typedArray The typed array to clone.\n * @param {boolean} [isDeep] Specify a deep clone.\n * @returns {Object} Returns the cloned typed array.\n */\nfunction cloneTypedArray(typedArray, isDeep) {\n  var buffer = isDeep ? cloneArrayBuffer(typedArray.buffer) : typedArray.buffer;\n  return new typedArray.constructor(buffer, typedArray.byteOffset, typedArray.length);\n}\n\nmodule.exports = cloneTypedArray;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_cloneTypedArray.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_copyArray.js":
-/*!*******************************************!*\
-  !*** ./node_modules/lodash/_copyArray.js ***!
-  \*******************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("/**\n * Copies the values of `source` to `array`.\n *\n * @private\n * @param {Array} source The array to copy values from.\n * @param {Array} [array=[]] The array to copy values to.\n * @returns {Array} Returns `array`.\n */\nfunction copyArray(source, array) {\n  var index = -1,\n      length = source.length;\n\n  array || (array = Array(length));\n  while (++index < length) {\n    array[index] = source[index];\n  }\n  return array;\n}\n\nmodule.exports = copyArray;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_copyArray.js?");
-
-/***/ }),
-
 /***/ "./node_modules/lodash/_copyObject.js":
 /*!********************************************!*\
   !*** ./node_modules/lodash/_copyObject.js ***!
@@ -1267,28 +959,6 @@ eval("/**\n * Copies the values of `source` to `array`.\n *\n * @private\n * @pa
 /***/ (function(module, exports, __webpack_require__) {
 
 eval("var assignValue = __webpack_require__(/*! ./_assignValue */ \"./node_modules/lodash/_assignValue.js\"),\n    baseAssignValue = __webpack_require__(/*! ./_baseAssignValue */ \"./node_modules/lodash/_baseAssignValue.js\");\n\n/**\n * Copies properties of `source` to `object`.\n *\n * @private\n * @param {Object} source The object to copy properties from.\n * @param {Array} props The property identifiers to copy.\n * @param {Object} [object={}] The object to copy properties to.\n * @param {Function} [customizer] The function to customize copied values.\n * @returns {Object} Returns `object`.\n */\nfunction copyObject(source, props, object, customizer) {\n  var isNew = !object;\n  object || (object = {});\n\n  var index = -1,\n      length = props.length;\n\n  while (++index < length) {\n    var key = props[index];\n\n    var newValue = customizer\n      ? customizer(object[key], source[key], key, object, source)\n      : undefined;\n\n    if (newValue === undefined) {\n      newValue = source[key];\n    }\n    if (isNew) {\n      baseAssignValue(object, key, newValue);\n    } else {\n      assignValue(object, key, newValue);\n    }\n  }\n  return object;\n}\n\nmodule.exports = copyObject;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_copyObject.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_copySymbols.js":
-/*!*********************************************!*\
-  !*** ./node_modules/lodash/_copySymbols.js ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var copyObject = __webpack_require__(/*! ./_copyObject */ \"./node_modules/lodash/_copyObject.js\"),\n    getSymbols = __webpack_require__(/*! ./_getSymbols */ \"./node_modules/lodash/_getSymbols.js\");\n\n/**\n * Copies own symbols of `source` to `object`.\n *\n * @private\n * @param {Object} source The object to copy symbols from.\n * @param {Object} [object={}] The object to copy symbols to.\n * @returns {Object} Returns `object`.\n */\nfunction copySymbols(source, object) {\n  return copyObject(source, getSymbols(source), object);\n}\n\nmodule.exports = copySymbols;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_copySymbols.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_copySymbolsIn.js":
-/*!***********************************************!*\
-  !*** ./node_modules/lodash/_copySymbolsIn.js ***!
-  \***********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var copyObject = __webpack_require__(/*! ./_copyObject */ \"./node_modules/lodash/_copyObject.js\"),\n    getSymbolsIn = __webpack_require__(/*! ./_getSymbolsIn */ \"./node_modules/lodash/_getSymbolsIn.js\");\n\n/**\n * Copies own and inherited symbols of `source` to `object`.\n *\n * @private\n * @param {Object} source The object to copy symbols from.\n * @param {Object} [object={}] The object to copy symbols to.\n * @returns {Object} Returns `object`.\n */\nfunction copySymbolsIn(source, object) {\n  return copyObject(source, getSymbolsIn(source), object);\n}\n\nmodule.exports = copySymbolsIn;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_copySymbolsIn.js?");
 
 /***/ }),
 
@@ -1336,39 +1006,6 @@ eval("/* WEBPACK VAR INJECTION */(function(global) {/** Detect free variable `gl
 
 /***/ }),
 
-/***/ "./node_modules/lodash/_getAllKeys.js":
-/*!********************************************!*\
-  !*** ./node_modules/lodash/_getAllKeys.js ***!
-  \********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var baseGetAllKeys = __webpack_require__(/*! ./_baseGetAllKeys */ \"./node_modules/lodash/_baseGetAllKeys.js\"),\n    getSymbols = __webpack_require__(/*! ./_getSymbols */ \"./node_modules/lodash/_getSymbols.js\"),\n    keys = __webpack_require__(/*! ./keys */ \"./node_modules/lodash/keys.js\");\n\n/**\n * Creates an array of own enumerable property names and symbols of `object`.\n *\n * @private\n * @param {Object} object The object to query.\n * @returns {Array} Returns the array of property names and symbols.\n */\nfunction getAllKeys(object) {\n  return baseGetAllKeys(object, keys, getSymbols);\n}\n\nmodule.exports = getAllKeys;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_getAllKeys.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_getAllKeysIn.js":
-/*!**********************************************!*\
-  !*** ./node_modules/lodash/_getAllKeysIn.js ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var baseGetAllKeys = __webpack_require__(/*! ./_baseGetAllKeys */ \"./node_modules/lodash/_baseGetAllKeys.js\"),\n    getSymbolsIn = __webpack_require__(/*! ./_getSymbolsIn */ \"./node_modules/lodash/_getSymbolsIn.js\"),\n    keysIn = __webpack_require__(/*! ./keysIn */ \"./node_modules/lodash/keysIn.js\");\n\n/**\n * Creates an array of own and inherited enumerable property names and\n * symbols of `object`.\n *\n * @private\n * @param {Object} object The object to query.\n * @returns {Array} Returns the array of property names and symbols.\n */\nfunction getAllKeysIn(object) {\n  return baseGetAllKeys(object, keysIn, getSymbolsIn);\n}\n\nmodule.exports = getAllKeysIn;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_getAllKeysIn.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_getMapData.js":
-/*!********************************************!*\
-  !*** ./node_modules/lodash/_getMapData.js ***!
-  \********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var isKeyable = __webpack_require__(/*! ./_isKeyable */ \"./node_modules/lodash/_isKeyable.js\");\n\n/**\n * Gets the data for `map`.\n *\n * @private\n * @param {Object} map The map to query.\n * @param {string} key The reference key.\n * @returns {*} Returns the map data.\n */\nfunction getMapData(map, key) {\n  var data = map.__data__;\n  return isKeyable(key)\n    ? data[typeof key == 'string' ? 'string' : 'hash']\n    : data.map;\n}\n\nmodule.exports = getMapData;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_getMapData.js?");
-
-/***/ }),
-
 /***/ "./node_modules/lodash/_getNative.js":
 /*!*******************************************!*\
   !*** ./node_modules/lodash/_getNative.js ***!
@@ -1402,39 +1039,6 @@ eval("var Symbol = __webpack_require__(/*! ./_Symbol */ \"./node_modules/lodash/
 
 /***/ }),
 
-/***/ "./node_modules/lodash/_getSymbols.js":
-/*!********************************************!*\
-  !*** ./node_modules/lodash/_getSymbols.js ***!
-  \********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var arrayFilter = __webpack_require__(/*! ./_arrayFilter */ \"./node_modules/lodash/_arrayFilter.js\"),\n    stubArray = __webpack_require__(/*! ./stubArray */ \"./node_modules/lodash/stubArray.js\");\n\n/** Used for built-in method references. */\nvar objectProto = Object.prototype;\n\n/** Built-in value references. */\nvar propertyIsEnumerable = objectProto.propertyIsEnumerable;\n\n/* Built-in method references for those with the same name as other `lodash` methods. */\nvar nativeGetSymbols = Object.getOwnPropertySymbols;\n\n/**\n * Creates an array of the own enumerable symbols of `object`.\n *\n * @private\n * @param {Object} object The object to query.\n * @returns {Array} Returns the array of symbols.\n */\nvar getSymbols = !nativeGetSymbols ? stubArray : function(object) {\n  if (object == null) {\n    return [];\n  }\n  object = Object(object);\n  return arrayFilter(nativeGetSymbols(object), function(symbol) {\n    return propertyIsEnumerable.call(object, symbol);\n  });\n};\n\nmodule.exports = getSymbols;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_getSymbols.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_getSymbolsIn.js":
-/*!**********************************************!*\
-  !*** ./node_modules/lodash/_getSymbolsIn.js ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var arrayPush = __webpack_require__(/*! ./_arrayPush */ \"./node_modules/lodash/_arrayPush.js\"),\n    getPrototype = __webpack_require__(/*! ./_getPrototype */ \"./node_modules/lodash/_getPrototype.js\"),\n    getSymbols = __webpack_require__(/*! ./_getSymbols */ \"./node_modules/lodash/_getSymbols.js\"),\n    stubArray = __webpack_require__(/*! ./stubArray */ \"./node_modules/lodash/stubArray.js\");\n\n/* Built-in method references for those with the same name as other `lodash` methods. */\nvar nativeGetSymbols = Object.getOwnPropertySymbols;\n\n/**\n * Creates an array of the own and inherited enumerable symbols of `object`.\n *\n * @private\n * @param {Object} object The object to query.\n * @returns {Array} Returns the array of symbols.\n */\nvar getSymbolsIn = !nativeGetSymbols ? stubArray : function(object) {\n  var result = [];\n  while (object) {\n    arrayPush(result, getSymbols(object));\n    object = getPrototype(object);\n  }\n  return result;\n};\n\nmodule.exports = getSymbolsIn;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_getSymbolsIn.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_getTag.js":
-/*!****************************************!*\
-  !*** ./node_modules/lodash/_getTag.js ***!
-  \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var DataView = __webpack_require__(/*! ./_DataView */ \"./node_modules/lodash/_DataView.js\"),\n    Map = __webpack_require__(/*! ./_Map */ \"./node_modules/lodash/_Map.js\"),\n    Promise = __webpack_require__(/*! ./_Promise */ \"./node_modules/lodash/_Promise.js\"),\n    Set = __webpack_require__(/*! ./_Set */ \"./node_modules/lodash/_Set.js\"),\n    WeakMap = __webpack_require__(/*! ./_WeakMap */ \"./node_modules/lodash/_WeakMap.js\"),\n    baseGetTag = __webpack_require__(/*! ./_baseGetTag */ \"./node_modules/lodash/_baseGetTag.js\"),\n    toSource = __webpack_require__(/*! ./_toSource */ \"./node_modules/lodash/_toSource.js\");\n\n/** `Object#toString` result references. */\nvar mapTag = '[object Map]',\n    objectTag = '[object Object]',\n    promiseTag = '[object Promise]',\n    setTag = '[object Set]',\n    weakMapTag = '[object WeakMap]';\n\nvar dataViewTag = '[object DataView]';\n\n/** Used to detect maps, sets, and weakmaps. */\nvar dataViewCtorString = toSource(DataView),\n    mapCtorString = toSource(Map),\n    promiseCtorString = toSource(Promise),\n    setCtorString = toSource(Set),\n    weakMapCtorString = toSource(WeakMap);\n\n/**\n * Gets the `toStringTag` of `value`.\n *\n * @private\n * @param {*} value The value to query.\n * @returns {string} Returns the `toStringTag`.\n */\nvar getTag = baseGetTag;\n\n// Fallback for data views, maps, sets, and weak maps in IE 11 and promises in Node.js < 6.\nif ((DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag) ||\n    (Map && getTag(new Map) != mapTag) ||\n    (Promise && getTag(Promise.resolve()) != promiseTag) ||\n    (Set && getTag(new Set) != setTag) ||\n    (WeakMap && getTag(new WeakMap) != weakMapTag)) {\n  getTag = function(value) {\n    var result = baseGetTag(value),\n        Ctor = result == objectTag ? value.constructor : undefined,\n        ctorString = Ctor ? toSource(Ctor) : '';\n\n    if (ctorString) {\n      switch (ctorString) {\n        case dataViewCtorString: return dataViewTag;\n        case mapCtorString: return mapTag;\n        case promiseCtorString: return promiseTag;\n        case setCtorString: return setTag;\n        case weakMapCtorString: return weakMapTag;\n      }\n    }\n    return result;\n  };\n}\n\nmodule.exports = getTag;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_getTag.js?");
-
-/***/ }),
-
 /***/ "./node_modules/lodash/_getValue.js":
 /*!******************************************!*\
   !*** ./node_modules/lodash/_getValue.js ***!
@@ -1443,94 +1047,6 @@ eval("var DataView = __webpack_require__(/*! ./_DataView */ \"./node_modules/lod
 /***/ (function(module, exports) {
 
 eval("/**\n * Gets the value at `key` of `object`.\n *\n * @private\n * @param {Object} [object] The object to query.\n * @param {string} key The key of the property to get.\n * @returns {*} Returns the property value.\n */\nfunction getValue(object, key) {\n  return object == null ? undefined : object[key];\n}\n\nmodule.exports = getValue;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_getValue.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_hashClear.js":
-/*!*******************************************!*\
-  !*** ./node_modules/lodash/_hashClear.js ***!
-  \*******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var nativeCreate = __webpack_require__(/*! ./_nativeCreate */ \"./node_modules/lodash/_nativeCreate.js\");\n\n/**\n * Removes all key-value entries from the hash.\n *\n * @private\n * @name clear\n * @memberOf Hash\n */\nfunction hashClear() {\n  this.__data__ = nativeCreate ? nativeCreate(null) : {};\n  this.size = 0;\n}\n\nmodule.exports = hashClear;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_hashClear.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_hashDelete.js":
-/*!********************************************!*\
-  !*** ./node_modules/lodash/_hashDelete.js ***!
-  \********************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("/**\n * Removes `key` and its value from the hash.\n *\n * @private\n * @name delete\n * @memberOf Hash\n * @param {Object} hash The hash to modify.\n * @param {string} key The key of the value to remove.\n * @returns {boolean} Returns `true` if the entry was removed, else `false`.\n */\nfunction hashDelete(key) {\n  var result = this.has(key) && delete this.__data__[key];\n  this.size -= result ? 1 : 0;\n  return result;\n}\n\nmodule.exports = hashDelete;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_hashDelete.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_hashGet.js":
-/*!*****************************************!*\
-  !*** ./node_modules/lodash/_hashGet.js ***!
-  \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var nativeCreate = __webpack_require__(/*! ./_nativeCreate */ \"./node_modules/lodash/_nativeCreate.js\");\n\n/** Used to stand-in for `undefined` hash values. */\nvar HASH_UNDEFINED = '__lodash_hash_undefined__';\n\n/** Used for built-in method references. */\nvar objectProto = Object.prototype;\n\n/** Used to check objects for own properties. */\nvar hasOwnProperty = objectProto.hasOwnProperty;\n\n/**\n * Gets the hash value for `key`.\n *\n * @private\n * @name get\n * @memberOf Hash\n * @param {string} key The key of the value to get.\n * @returns {*} Returns the entry value.\n */\nfunction hashGet(key) {\n  var data = this.__data__;\n  if (nativeCreate) {\n    var result = data[key];\n    return result === HASH_UNDEFINED ? undefined : result;\n  }\n  return hasOwnProperty.call(data, key) ? data[key] : undefined;\n}\n\nmodule.exports = hashGet;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_hashGet.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_hashHas.js":
-/*!*****************************************!*\
-  !*** ./node_modules/lodash/_hashHas.js ***!
-  \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var nativeCreate = __webpack_require__(/*! ./_nativeCreate */ \"./node_modules/lodash/_nativeCreate.js\");\n\n/** Used for built-in method references. */\nvar objectProto = Object.prototype;\n\n/** Used to check objects for own properties. */\nvar hasOwnProperty = objectProto.hasOwnProperty;\n\n/**\n * Checks if a hash value for `key` exists.\n *\n * @private\n * @name has\n * @memberOf Hash\n * @param {string} key The key of the entry to check.\n * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.\n */\nfunction hashHas(key) {\n  var data = this.__data__;\n  return nativeCreate ? (data[key] !== undefined) : hasOwnProperty.call(data, key);\n}\n\nmodule.exports = hashHas;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_hashHas.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_hashSet.js":
-/*!*****************************************!*\
-  !*** ./node_modules/lodash/_hashSet.js ***!
-  \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var nativeCreate = __webpack_require__(/*! ./_nativeCreate */ \"./node_modules/lodash/_nativeCreate.js\");\n\n/** Used to stand-in for `undefined` hash values. */\nvar HASH_UNDEFINED = '__lodash_hash_undefined__';\n\n/**\n * Sets the hash `key` to `value`.\n *\n * @private\n * @name set\n * @memberOf Hash\n * @param {string} key The key of the value to set.\n * @param {*} value The value to set.\n * @returns {Object} Returns the hash instance.\n */\nfunction hashSet(key, value) {\n  var data = this.__data__;\n  this.size += this.has(key) ? 0 : 1;\n  data[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED : value;\n  return this;\n}\n\nmodule.exports = hashSet;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_hashSet.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_initCloneArray.js":
-/*!************************************************!*\
-  !*** ./node_modules/lodash/_initCloneArray.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("/** Used for built-in method references. */\nvar objectProto = Object.prototype;\n\n/** Used to check objects for own properties. */\nvar hasOwnProperty = objectProto.hasOwnProperty;\n\n/**\n * Initializes an array clone.\n *\n * @private\n * @param {Array} array The array to clone.\n * @returns {Array} Returns the initialized clone.\n */\nfunction initCloneArray(array) {\n  var length = array.length,\n      result = new array.constructor(length);\n\n  // Add properties assigned by `RegExp#exec`.\n  if (length && typeof array[0] == 'string' && hasOwnProperty.call(array, 'index')) {\n    result.index = array.index;\n    result.input = array.input;\n  }\n  return result;\n}\n\nmodule.exports = initCloneArray;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_initCloneArray.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_initCloneByTag.js":
-/*!************************************************!*\
-  !*** ./node_modules/lodash/_initCloneByTag.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var cloneArrayBuffer = __webpack_require__(/*! ./_cloneArrayBuffer */ \"./node_modules/lodash/_cloneArrayBuffer.js\"),\n    cloneDataView = __webpack_require__(/*! ./_cloneDataView */ \"./node_modules/lodash/_cloneDataView.js\"),\n    cloneRegExp = __webpack_require__(/*! ./_cloneRegExp */ \"./node_modules/lodash/_cloneRegExp.js\"),\n    cloneSymbol = __webpack_require__(/*! ./_cloneSymbol */ \"./node_modules/lodash/_cloneSymbol.js\"),\n    cloneTypedArray = __webpack_require__(/*! ./_cloneTypedArray */ \"./node_modules/lodash/_cloneTypedArray.js\");\n\n/** `Object#toString` result references. */\nvar boolTag = '[object Boolean]',\n    dateTag = '[object Date]',\n    mapTag = '[object Map]',\n    numberTag = '[object Number]',\n    regexpTag = '[object RegExp]',\n    setTag = '[object Set]',\n    stringTag = '[object String]',\n    symbolTag = '[object Symbol]';\n\nvar arrayBufferTag = '[object ArrayBuffer]',\n    dataViewTag = '[object DataView]',\n    float32Tag = '[object Float32Array]',\n    float64Tag = '[object Float64Array]',\n    int8Tag = '[object Int8Array]',\n    int16Tag = '[object Int16Array]',\n    int32Tag = '[object Int32Array]',\n    uint8Tag = '[object Uint8Array]',\n    uint8ClampedTag = '[object Uint8ClampedArray]',\n    uint16Tag = '[object Uint16Array]',\n    uint32Tag = '[object Uint32Array]';\n\n/**\n * Initializes an object clone based on its `toStringTag`.\n *\n * **Note:** This function only supports cloning values with tags of\n * `Boolean`, `Date`, `Error`, `Map`, `Number`, `RegExp`, `Set`, or `String`.\n *\n * @private\n * @param {Object} object The object to clone.\n * @param {string} tag The `toStringTag` of the object to clone.\n * @param {boolean} [isDeep] Specify a deep clone.\n * @returns {Object} Returns the initialized clone.\n */\nfunction initCloneByTag(object, tag, isDeep) {\n  var Ctor = object.constructor;\n  switch (tag) {\n    case arrayBufferTag:\n      return cloneArrayBuffer(object);\n\n    case boolTag:\n    case dateTag:\n      return new Ctor(+object);\n\n    case dataViewTag:\n      return cloneDataView(object, isDeep);\n\n    case float32Tag: case float64Tag:\n    case int8Tag: case int16Tag: case int32Tag:\n    case uint8Tag: case uint8ClampedTag: case uint16Tag: case uint32Tag:\n      return cloneTypedArray(object, isDeep);\n\n    case mapTag:\n      return new Ctor;\n\n    case numberTag:\n    case stringTag:\n      return new Ctor(object);\n\n    case regexpTag:\n      return cloneRegExp(object);\n\n    case setTag:\n      return new Ctor;\n\n    case symbolTag:\n      return cloneSymbol(object);\n  }\n}\n\nmodule.exports = initCloneByTag;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_initCloneByTag.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_initCloneObject.js":
-/*!*************************************************!*\
-  !*** ./node_modules/lodash/_initCloneObject.js ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var baseCreate = __webpack_require__(/*! ./_baseCreate */ \"./node_modules/lodash/_baseCreate.js\"),\n    getPrototype = __webpack_require__(/*! ./_getPrototype */ \"./node_modules/lodash/_getPrototype.js\"),\n    isPrototype = __webpack_require__(/*! ./_isPrototype */ \"./node_modules/lodash/_isPrototype.js\");\n\n/**\n * Initializes an object clone.\n *\n * @private\n * @param {Object} object The object to clone.\n * @returns {Object} Returns the initialized clone.\n */\nfunction initCloneObject(object) {\n  return (typeof object.constructor == 'function' && !isPrototype(object))\n    ? baseCreate(getPrototype(object))\n    : {};\n}\n\nmodule.exports = initCloneObject;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_initCloneObject.js?");
 
 /***/ }),
 
@@ -1556,17 +1072,6 @@ eval("var eq = __webpack_require__(/*! ./eq */ \"./node_modules/lodash/eq.js\"),
 
 /***/ }),
 
-/***/ "./node_modules/lodash/_isKeyable.js":
-/*!*******************************************!*\
-  !*** ./node_modules/lodash/_isKeyable.js ***!
-  \*******************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("/**\n * Checks if `value` is suitable for use as unique object key.\n *\n * @private\n * @param {*} value The value to check.\n * @returns {boolean} Returns `true` if `value` is suitable, else `false`.\n */\nfunction isKeyable(value) {\n  var type = typeof value;\n  return (type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean')\n    ? (value !== '__proto__')\n    : (value === null);\n}\n\nmodule.exports = isKeyable;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_isKeyable.js?");
-
-/***/ }),
-
 /***/ "./node_modules/lodash/_isMasked.js":
 /*!******************************************!*\
   !*** ./node_modules/lodash/_isMasked.js ***!
@@ -1586,138 +1091,6 @@ eval("var coreJsData = __webpack_require__(/*! ./_coreJsData */ \"./node_modules
 /***/ (function(module, exports) {
 
 eval("/** Used for built-in method references. */\nvar objectProto = Object.prototype;\n\n/**\n * Checks if `value` is likely a prototype object.\n *\n * @private\n * @param {*} value The value to check.\n * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.\n */\nfunction isPrototype(value) {\n  var Ctor = value && value.constructor,\n      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto;\n\n  return value === proto;\n}\n\nmodule.exports = isPrototype;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_isPrototype.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_listCacheClear.js":
-/*!************************************************!*\
-  !*** ./node_modules/lodash/_listCacheClear.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("/**\n * Removes all key-value entries from the list cache.\n *\n * @private\n * @name clear\n * @memberOf ListCache\n */\nfunction listCacheClear() {\n  this.__data__ = [];\n  this.size = 0;\n}\n\nmodule.exports = listCacheClear;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_listCacheClear.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_listCacheDelete.js":
-/*!*************************************************!*\
-  !*** ./node_modules/lodash/_listCacheDelete.js ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var assocIndexOf = __webpack_require__(/*! ./_assocIndexOf */ \"./node_modules/lodash/_assocIndexOf.js\");\n\n/** Used for built-in method references. */\nvar arrayProto = Array.prototype;\n\n/** Built-in value references. */\nvar splice = arrayProto.splice;\n\n/**\n * Removes `key` and its value from the list cache.\n *\n * @private\n * @name delete\n * @memberOf ListCache\n * @param {string} key The key of the value to remove.\n * @returns {boolean} Returns `true` if the entry was removed, else `false`.\n */\nfunction listCacheDelete(key) {\n  var data = this.__data__,\n      index = assocIndexOf(data, key);\n\n  if (index < 0) {\n    return false;\n  }\n  var lastIndex = data.length - 1;\n  if (index == lastIndex) {\n    data.pop();\n  } else {\n    splice.call(data, index, 1);\n  }\n  --this.size;\n  return true;\n}\n\nmodule.exports = listCacheDelete;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_listCacheDelete.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_listCacheGet.js":
-/*!**********************************************!*\
-  !*** ./node_modules/lodash/_listCacheGet.js ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var assocIndexOf = __webpack_require__(/*! ./_assocIndexOf */ \"./node_modules/lodash/_assocIndexOf.js\");\n\n/**\n * Gets the list cache value for `key`.\n *\n * @private\n * @name get\n * @memberOf ListCache\n * @param {string} key The key of the value to get.\n * @returns {*} Returns the entry value.\n */\nfunction listCacheGet(key) {\n  var data = this.__data__,\n      index = assocIndexOf(data, key);\n\n  return index < 0 ? undefined : data[index][1];\n}\n\nmodule.exports = listCacheGet;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_listCacheGet.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_listCacheHas.js":
-/*!**********************************************!*\
-  !*** ./node_modules/lodash/_listCacheHas.js ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var assocIndexOf = __webpack_require__(/*! ./_assocIndexOf */ \"./node_modules/lodash/_assocIndexOf.js\");\n\n/**\n * Checks if a list cache value for `key` exists.\n *\n * @private\n * @name has\n * @memberOf ListCache\n * @param {string} key The key of the entry to check.\n * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.\n */\nfunction listCacheHas(key) {\n  return assocIndexOf(this.__data__, key) > -1;\n}\n\nmodule.exports = listCacheHas;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_listCacheHas.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_listCacheSet.js":
-/*!**********************************************!*\
-  !*** ./node_modules/lodash/_listCacheSet.js ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var assocIndexOf = __webpack_require__(/*! ./_assocIndexOf */ \"./node_modules/lodash/_assocIndexOf.js\");\n\n/**\n * Sets the list cache `key` to `value`.\n *\n * @private\n * @name set\n * @memberOf ListCache\n * @param {string} key The key of the value to set.\n * @param {*} value The value to set.\n * @returns {Object} Returns the list cache instance.\n */\nfunction listCacheSet(key, value) {\n  var data = this.__data__,\n      index = assocIndexOf(data, key);\n\n  if (index < 0) {\n    ++this.size;\n    data.push([key, value]);\n  } else {\n    data[index][1] = value;\n  }\n  return this;\n}\n\nmodule.exports = listCacheSet;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_listCacheSet.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_mapCacheClear.js":
-/*!***********************************************!*\
-  !*** ./node_modules/lodash/_mapCacheClear.js ***!
-  \***********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var Hash = __webpack_require__(/*! ./_Hash */ \"./node_modules/lodash/_Hash.js\"),\n    ListCache = __webpack_require__(/*! ./_ListCache */ \"./node_modules/lodash/_ListCache.js\"),\n    Map = __webpack_require__(/*! ./_Map */ \"./node_modules/lodash/_Map.js\");\n\n/**\n * Removes all key-value entries from the map.\n *\n * @private\n * @name clear\n * @memberOf MapCache\n */\nfunction mapCacheClear() {\n  this.size = 0;\n  this.__data__ = {\n    'hash': new Hash,\n    'map': new (Map || ListCache),\n    'string': new Hash\n  };\n}\n\nmodule.exports = mapCacheClear;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_mapCacheClear.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_mapCacheDelete.js":
-/*!************************************************!*\
-  !*** ./node_modules/lodash/_mapCacheDelete.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var getMapData = __webpack_require__(/*! ./_getMapData */ \"./node_modules/lodash/_getMapData.js\");\n\n/**\n * Removes `key` and its value from the map.\n *\n * @private\n * @name delete\n * @memberOf MapCache\n * @param {string} key The key of the value to remove.\n * @returns {boolean} Returns `true` if the entry was removed, else `false`.\n */\nfunction mapCacheDelete(key) {\n  var result = getMapData(this, key)['delete'](key);\n  this.size -= result ? 1 : 0;\n  return result;\n}\n\nmodule.exports = mapCacheDelete;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_mapCacheDelete.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_mapCacheGet.js":
-/*!*********************************************!*\
-  !*** ./node_modules/lodash/_mapCacheGet.js ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var getMapData = __webpack_require__(/*! ./_getMapData */ \"./node_modules/lodash/_getMapData.js\");\n\n/**\n * Gets the map value for `key`.\n *\n * @private\n * @name get\n * @memberOf MapCache\n * @param {string} key The key of the value to get.\n * @returns {*} Returns the entry value.\n */\nfunction mapCacheGet(key) {\n  return getMapData(this, key).get(key);\n}\n\nmodule.exports = mapCacheGet;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_mapCacheGet.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_mapCacheHas.js":
-/*!*********************************************!*\
-  !*** ./node_modules/lodash/_mapCacheHas.js ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var getMapData = __webpack_require__(/*! ./_getMapData */ \"./node_modules/lodash/_getMapData.js\");\n\n/**\n * Checks if a map value for `key` exists.\n *\n * @private\n * @name has\n * @memberOf MapCache\n * @param {string} key The key of the entry to check.\n * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.\n */\nfunction mapCacheHas(key) {\n  return getMapData(this, key).has(key);\n}\n\nmodule.exports = mapCacheHas;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_mapCacheHas.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_mapCacheSet.js":
-/*!*********************************************!*\
-  !*** ./node_modules/lodash/_mapCacheSet.js ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var getMapData = __webpack_require__(/*! ./_getMapData */ \"./node_modules/lodash/_getMapData.js\");\n\n/**\n * Sets the map `key` to `value`.\n *\n * @private\n * @name set\n * @memberOf MapCache\n * @param {string} key The key of the value to set.\n * @param {*} value The value to set.\n * @returns {Object} Returns the map cache instance.\n */\nfunction mapCacheSet(key, value) {\n  var data = getMapData(this, key),\n      size = data.size;\n\n  data.set(key, value);\n  this.size += data.size == size ? 0 : 1;\n  return this;\n}\n\nmodule.exports = mapCacheSet;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_mapCacheSet.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_nativeCreate.js":
-/*!**********************************************!*\
-  !*** ./node_modules/lodash/_nativeCreate.js ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var getNative = __webpack_require__(/*! ./_getNative */ \"./node_modules/lodash/_getNative.js\");\n\n/* Built-in method references that are verified to be native. */\nvar nativeCreate = getNative(Object, 'create');\n\nmodule.exports = nativeCreate;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_nativeCreate.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_nativeKeys.js":
-/*!********************************************!*\
-  !*** ./node_modules/lodash/_nativeKeys.js ***!
-  \********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var overArg = __webpack_require__(/*! ./_overArg */ \"./node_modules/lodash/_overArg.js\");\n\n/* Built-in method references for those with the same name as other `lodash` methods. */\nvar nativeKeys = overArg(Object.keys, Object);\n\nmodule.exports = nativeKeys;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_nativeKeys.js?");
 
 /***/ }),
 
@@ -1809,61 +1182,6 @@ eval("/** Used to detect hot functions by number of calls within a span of milli
 
 /***/ }),
 
-/***/ "./node_modules/lodash/_stackClear.js":
-/*!********************************************!*\
-  !*** ./node_modules/lodash/_stackClear.js ***!
-  \********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var ListCache = __webpack_require__(/*! ./_ListCache */ \"./node_modules/lodash/_ListCache.js\");\n\n/**\n * Removes all key-value entries from the stack.\n *\n * @private\n * @name clear\n * @memberOf Stack\n */\nfunction stackClear() {\n  this.__data__ = new ListCache;\n  this.size = 0;\n}\n\nmodule.exports = stackClear;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_stackClear.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_stackDelete.js":
-/*!*********************************************!*\
-  !*** ./node_modules/lodash/_stackDelete.js ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("/**\n * Removes `key` and its value from the stack.\n *\n * @private\n * @name delete\n * @memberOf Stack\n * @param {string} key The key of the value to remove.\n * @returns {boolean} Returns `true` if the entry was removed, else `false`.\n */\nfunction stackDelete(key) {\n  var data = this.__data__,\n      result = data['delete'](key);\n\n  this.size = data.size;\n  return result;\n}\n\nmodule.exports = stackDelete;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_stackDelete.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_stackGet.js":
-/*!******************************************!*\
-  !*** ./node_modules/lodash/_stackGet.js ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("/**\n * Gets the stack value for `key`.\n *\n * @private\n * @name get\n * @memberOf Stack\n * @param {string} key The key of the value to get.\n * @returns {*} Returns the entry value.\n */\nfunction stackGet(key) {\n  return this.__data__.get(key);\n}\n\nmodule.exports = stackGet;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_stackGet.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_stackHas.js":
-/*!******************************************!*\
-  !*** ./node_modules/lodash/_stackHas.js ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("/**\n * Checks if a stack value for `key` exists.\n *\n * @private\n * @name has\n * @memberOf Stack\n * @param {string} key The key of the entry to check.\n * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.\n */\nfunction stackHas(key) {\n  return this.__data__.has(key);\n}\n\nmodule.exports = stackHas;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_stackHas.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/_stackSet.js":
-/*!******************************************!*\
-  !*** ./node_modules/lodash/_stackSet.js ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var ListCache = __webpack_require__(/*! ./_ListCache */ \"./node_modules/lodash/_ListCache.js\"),\n    Map = __webpack_require__(/*! ./_Map */ \"./node_modules/lodash/_Map.js\"),\n    MapCache = __webpack_require__(/*! ./_MapCache */ \"./node_modules/lodash/_MapCache.js\");\n\n/** Used as the size to enable large array optimizations. */\nvar LARGE_ARRAY_SIZE = 200;\n\n/**\n * Sets the stack `key` to `value`.\n *\n * @private\n * @name set\n * @memberOf Stack\n * @param {string} key The key of the value to set.\n * @param {*} value The value to set.\n * @returns {Object} Returns the stack cache instance.\n */\nfunction stackSet(key, value) {\n  var data = this.__data__;\n  if (data instanceof ListCache) {\n    var pairs = data.__data__;\n    if (!Map || (pairs.length < LARGE_ARRAY_SIZE - 1)) {\n      pairs.push([key, value]);\n      this.size = ++data.size;\n      return this;\n    }\n    data = this.__data__ = new MapCache(pairs);\n  }\n  data.set(key, value);\n  this.size = data.size;\n  return this;\n}\n\nmodule.exports = stackSet;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/_stackSet.js?");
-
-/***/ }),
-
 /***/ "./node_modules/lodash/_toSource.js":
 /*!******************************************!*\
   !*** ./node_modules/lodash/_toSource.js ***!
@@ -1886,17 +1204,6 @@ eval("var copyObject = __webpack_require__(/*! ./_copyObject */ \"./node_modules
 
 /***/ }),
 
-/***/ "./node_modules/lodash/cloneDeep.js":
-/*!******************************************!*\
-  !*** ./node_modules/lodash/cloneDeep.js ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var baseClone = __webpack_require__(/*! ./_baseClone */ \"./node_modules/lodash/_baseClone.js\");\n\n/** Used to compose bitmasks for cloning. */\nvar CLONE_DEEP_FLAG = 1,\n    CLONE_SYMBOLS_FLAG = 4;\n\n/**\n * This method is like `_.clone` except that it recursively clones `value`.\n *\n * @static\n * @memberOf _\n * @since 1.0.0\n * @category Lang\n * @param {*} value The value to recursively clone.\n * @returns {*} Returns the deep cloned value.\n * @see _.clone\n * @example\n *\n * var objects = [{ 'a': 1 }, { 'b': 2 }];\n *\n * var deep = _.cloneDeep(objects);\n * console.log(deep[0] === objects[0]);\n * // => false\n */\nfunction cloneDeep(value) {\n  return baseClone(value, CLONE_DEEP_FLAG | CLONE_SYMBOLS_FLAG);\n}\n\nmodule.exports = cloneDeep;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/cloneDeep.js?");
-
-/***/ }),
-
 /***/ "./node_modules/lodash/constant.js":
 /*!*****************************************!*\
   !*** ./node_modules/lodash/constant.js ***!
@@ -1916,6 +1223,17 @@ eval("/**\n * Creates a function that returns `value`.\n *\n * @static\n * @memb
 /***/ (function(module, exports) {
 
 eval("/**\n * Performs a\n * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)\n * comparison between two values to determine if they are equivalent.\n *\n * @static\n * @memberOf _\n * @since 4.0.0\n * @category Lang\n * @param {*} value The value to compare.\n * @param {*} other The other value to compare.\n * @returns {boolean} Returns `true` if the values are equivalent, else `false`.\n * @example\n *\n * var object = { 'a': 1 };\n * var other = { 'a': 1 };\n *\n * _.eq(object, object);\n * // => true\n *\n * _.eq(object, other);\n * // => false\n *\n * _.eq('a', 'a');\n * // => true\n *\n * _.eq('a', Object('a'));\n * // => false\n *\n * _.eq(NaN, NaN);\n * // => true\n */\nfunction eq(value, other) {\n  return value === other || (value !== value && other !== other);\n}\n\nmodule.exports = eq;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/eq.js?");
+
+/***/ }),
+
+/***/ "./node_modules/lodash/extend.js":
+/*!***************************************!*\
+  !*** ./node_modules/lodash/extend.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("module.exports = __webpack_require__(/*! ./assignIn */ \"./node_modules/lodash/assignIn.js\");\n\n\n//# sourceURL=webpack:///./node_modules/lodash/extend.js?");
 
 /***/ }),
 
@@ -1996,17 +1314,6 @@ eval("/** Used as references for various `Number` constants. */\nvar MAX_SAFE_IN
 
 /***/ }),
 
-/***/ "./node_modules/lodash/isMap.js":
-/*!**************************************!*\
-  !*** ./node_modules/lodash/isMap.js ***!
-  \**************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var baseIsMap = __webpack_require__(/*! ./_baseIsMap */ \"./node_modules/lodash/_baseIsMap.js\"),\n    baseUnary = __webpack_require__(/*! ./_baseUnary */ \"./node_modules/lodash/_baseUnary.js\"),\n    nodeUtil = __webpack_require__(/*! ./_nodeUtil */ \"./node_modules/lodash/_nodeUtil.js\");\n\n/* Node.js helper references. */\nvar nodeIsMap = nodeUtil && nodeUtil.isMap;\n\n/**\n * Checks if `value` is classified as a `Map` object.\n *\n * @static\n * @memberOf _\n * @since 4.3.0\n * @category Lang\n * @param {*} value The value to check.\n * @returns {boolean} Returns `true` if `value` is a map, else `false`.\n * @example\n *\n * _.isMap(new Map);\n * // => true\n *\n * _.isMap(new WeakMap);\n * // => false\n */\nvar isMap = nodeIsMap ? baseUnary(nodeIsMap) : baseIsMap;\n\nmodule.exports = isMap;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/isMap.js?");
-
-/***/ }),
-
 /***/ "./node_modules/lodash/isObject.js":
 /*!*****************************************!*\
   !*** ./node_modules/lodash/isObject.js ***!
@@ -2029,14 +1336,14 @@ eval("/**\n * Checks if `value` is object-like. A value is object-like if it's n
 
 /***/ }),
 
-/***/ "./node_modules/lodash/isSet.js":
-/*!**************************************!*\
-  !*** ./node_modules/lodash/isSet.js ***!
-  \**************************************/
+/***/ "./node_modules/lodash/isPlainObject.js":
+/*!**********************************************!*\
+  !*** ./node_modules/lodash/isPlainObject.js ***!
+  \**********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("var baseIsSet = __webpack_require__(/*! ./_baseIsSet */ \"./node_modules/lodash/_baseIsSet.js\"),\n    baseUnary = __webpack_require__(/*! ./_baseUnary */ \"./node_modules/lodash/_baseUnary.js\"),\n    nodeUtil = __webpack_require__(/*! ./_nodeUtil */ \"./node_modules/lodash/_nodeUtil.js\");\n\n/* Node.js helper references. */\nvar nodeIsSet = nodeUtil && nodeUtil.isSet;\n\n/**\n * Checks if `value` is classified as a `Set` object.\n *\n * @static\n * @memberOf _\n * @since 4.3.0\n * @category Lang\n * @param {*} value The value to check.\n * @returns {boolean} Returns `true` if `value` is a set, else `false`.\n * @example\n *\n * _.isSet(new Set);\n * // => true\n *\n * _.isSet(new WeakSet);\n * // => false\n */\nvar isSet = nodeIsSet ? baseUnary(nodeIsSet) : baseIsSet;\n\nmodule.exports = isSet;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/isSet.js?");
+eval("var baseGetTag = __webpack_require__(/*! ./_baseGetTag */ \"./node_modules/lodash/_baseGetTag.js\"),\n    getPrototype = __webpack_require__(/*! ./_getPrototype */ \"./node_modules/lodash/_getPrototype.js\"),\n    isObjectLike = __webpack_require__(/*! ./isObjectLike */ \"./node_modules/lodash/isObjectLike.js\");\n\n/** `Object#toString` result references. */\nvar objectTag = '[object Object]';\n\n/** Used for built-in method references. */\nvar funcProto = Function.prototype,\n    objectProto = Object.prototype;\n\n/** Used to resolve the decompiled source of functions. */\nvar funcToString = funcProto.toString;\n\n/** Used to check objects for own properties. */\nvar hasOwnProperty = objectProto.hasOwnProperty;\n\n/** Used to infer the `Object` constructor. */\nvar objectCtorString = funcToString.call(Object);\n\n/**\n * Checks if `value` is a plain object, that is, an object created by the\n * `Object` constructor or one with a `[[Prototype]]` of `null`.\n *\n * @static\n * @memberOf _\n * @since 0.8.0\n * @category Lang\n * @param {*} value The value to check.\n * @returns {boolean} Returns `true` if `value` is a plain object, else `false`.\n * @example\n *\n * function Foo() {\n *   this.a = 1;\n * }\n *\n * _.isPlainObject(new Foo);\n * // => false\n *\n * _.isPlainObject([1, 2, 3]);\n * // => false\n *\n * _.isPlainObject({ 'x': 0, 'y': 0 });\n * // => true\n *\n * _.isPlainObject(Object.create(null));\n * // => true\n */\nfunction isPlainObject(value) {\n  if (!isObjectLike(value) || baseGetTag(value) != objectTag) {\n    return false;\n  }\n  var proto = getPrototype(value);\n  if (proto === null) {\n    return true;\n  }\n  var Ctor = hasOwnProperty.call(proto, 'constructor') && proto.constructor;\n  return typeof Ctor == 'function' && Ctor instanceof Ctor &&\n    funcToString.call(Ctor) == objectCtorString;\n}\n\nmodule.exports = isPlainObject;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/isPlainObject.js?");
 
 /***/ }),
 
@@ -2051,17 +1358,6 @@ eval("var baseIsTypedArray = __webpack_require__(/*! ./_baseIsTypedArray */ \"./
 
 /***/ }),
 
-/***/ "./node_modules/lodash/keys.js":
-/*!*************************************!*\
-  !*** ./node_modules/lodash/keys.js ***!
-  \*************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("var arrayLikeKeys = __webpack_require__(/*! ./_arrayLikeKeys */ \"./node_modules/lodash/_arrayLikeKeys.js\"),\n    baseKeys = __webpack_require__(/*! ./_baseKeys */ \"./node_modules/lodash/_baseKeys.js\"),\n    isArrayLike = __webpack_require__(/*! ./isArrayLike */ \"./node_modules/lodash/isArrayLike.js\");\n\n/**\n * Creates an array of the own enumerable property names of `object`.\n *\n * **Note:** Non-object values are coerced to objects. See the\n * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)\n * for more details.\n *\n * @static\n * @since 0.1.0\n * @memberOf _\n * @category Object\n * @param {Object} object The object to query.\n * @returns {Array} Returns the array of property names.\n * @example\n *\n * function Foo() {\n *   this.a = 1;\n *   this.b = 2;\n * }\n *\n * Foo.prototype.c = 3;\n *\n * _.keys(new Foo);\n * // => ['a', 'b'] (iteration order is not guaranteed)\n *\n * _.keys('hi');\n * // => ['0', '1']\n */\nfunction keys(object) {\n  return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);\n}\n\nmodule.exports = keys;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/keys.js?");
-
-/***/ }),
-
 /***/ "./node_modules/lodash/keysIn.js":
 /*!***************************************!*\
   !*** ./node_modules/lodash/keysIn.js ***!
@@ -2070,17 +1366,6 @@ eval("var arrayLikeKeys = __webpack_require__(/*! ./_arrayLikeKeys */ \"./node_m
 /***/ (function(module, exports, __webpack_require__) {
 
 eval("var arrayLikeKeys = __webpack_require__(/*! ./_arrayLikeKeys */ \"./node_modules/lodash/_arrayLikeKeys.js\"),\n    baseKeysIn = __webpack_require__(/*! ./_baseKeysIn */ \"./node_modules/lodash/_baseKeysIn.js\"),\n    isArrayLike = __webpack_require__(/*! ./isArrayLike */ \"./node_modules/lodash/isArrayLike.js\");\n\n/**\n * Creates an array of the own and inherited enumerable property names of `object`.\n *\n * **Note:** Non-object values are coerced to objects.\n *\n * @static\n * @memberOf _\n * @since 3.0.0\n * @category Object\n * @param {Object} object The object to query.\n * @returns {Array} Returns the array of property names.\n * @example\n *\n * function Foo() {\n *   this.a = 1;\n *   this.b = 2;\n * }\n *\n * Foo.prototype.c = 3;\n *\n * _.keysIn(new Foo);\n * // => ['a', 'b', 'c'] (iteration order is not guaranteed)\n */\nfunction keysIn(object) {\n  return isArrayLike(object) ? arrayLikeKeys(object, true) : baseKeysIn(object);\n}\n\nmodule.exports = keysIn;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/keysIn.js?");
-
-/***/ }),
-
-/***/ "./node_modules/lodash/stubArray.js":
-/*!******************************************!*\
-  !*** ./node_modules/lodash/stubArray.js ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("/**\n * This method returns a new empty array.\n *\n * @static\n * @memberOf _\n * @since 4.13.0\n * @category Util\n * @returns {Array} Returns the new empty array.\n * @example\n *\n * var arrays = _.times(2, _.stubArray);\n *\n * console.log(arrays);\n * // => [[], []]\n *\n * console.log(arrays[0] === arrays[1]);\n * // => false\n */\nfunction stubArray() {\n  return [];\n}\n\nmodule.exports = stubArray;\n\n\n//# sourceURL=webpack:///./node_modules/lodash/stubArray.js?");
 
 /***/ }),
 

@@ -2,19 +2,27 @@
 const Document = require('../lib/olojs/document');
 
 
-const doc = new Document(`
-<title>Test document</title>
-<author id="m.delbuono@gmail.com" />
-<content>
-    <h1>Header 1</h1>
-    <div class="my-div" notallowedattr="doesntmatter">Some content</div>
-    <span>Some other content</span>
-    <not-allowed-tag />
-    <span>Hello {{name}}!</span>
-</content>
+const doc = new Document(null, "", `
+title: "Test Document"
+author: "m.delbuono@gmail.com"
+greet: "Hello"
+subject: "main template"
+sub:
+    subject: "sub template"
+    tpt: !template "{{greet}} {{this.subject}}!"
+view: !template |
+    {{greet}} {{this.subject}}!
+    {{sub.tpt(globals)}}
 `);
 
+
+
+
+console.log("\nDATA:");
+console.log(doc.data);
+
+console.log("\nSTRING:");
 console.log(String(doc));
-console.log();
-doc.render({name:"world"})
-.then(html => console.log(html));
+
+console.log("\nRENDER:");
+console.log(doc.render());

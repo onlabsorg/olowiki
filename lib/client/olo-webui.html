@@ -15,24 +15,14 @@
                 <img src="/lib/olo.svg" height="40" width="40">
             </md-button>
             
-            <div class="md-title">{{doc.title}}</div>
+            <div class="md-title">{{docData.title}}</div>
             
-            <md-button class="md-icon-button" v-if="editMode" @click="save" :disabled="readOnly">
+            <md-button class="md-icon-button" @click="save" :disabled="readOnly">
                 <md-icon>save</md-icon>
                 <md-tooltip delay="500">Save [ctrl-s]</md-tooltip>
             </md-button>
 
-            <md-button class="md-icon-button" v-if="editMode == 'template'" @click="editMode='settings'" :disabled="readOnly">
-                <md-icon>settings</md-icon>
-                <md-tooltip delay="500">Edit settings</md-tooltip>
-            </md-button>
-
-            <md-button class="md-icon-button" v-if="editMode == 'settings'" @click="editMode='template'" :disabled="readOnly">
-                <md-icon>subject</md-icon>
-                <md-tooltip delay="500">Edit template</md-tooltip>
-            </md-button>
-            
-            <md-button class="md-icon-button" v-if="!editMode" @click="editMode='template'">
+            <md-button class="md-icon-button" v-if="!editMode" @click="editMode=true">
                 <md-icon>edit</md-icon>
                 <md-tooltip delay="500">Edit [ctrl-e]</md-tooltip>
             </md-button>
@@ -87,8 +77,8 @@
           -->
           
         <md-app-content class="main-window">
-            <olo-viewer :content="editMode ? '' : html"></olo-viewer>
-            <olo-editor v-if="editMode" :content="editorContent" width="100%" height="100%"> </olo-editor>
+            <olo-viewer :content="editMode ? '' : docData.html"></olo-viewer>
+            <olo-editor v-if="editMode" :docData="docData" width="100%" height="100%"> </olo-editor>
         </md-app-content>
 
     </md-app>

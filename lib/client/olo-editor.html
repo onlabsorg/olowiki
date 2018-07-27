@@ -1,7 +1,7 @@
 <ace-editor class="olo-editor"
-            v-model="content.value"
+            v-model="docData.source"
             @init="initEditor"
-            :lang="content.doctype"
+            lang="yaml"
             theme="chrome"
             :options="editorOptions">
         </ace-editor>

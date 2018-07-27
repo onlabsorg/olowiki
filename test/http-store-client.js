@@ -14,10 +14,12 @@ async function runtest () {
     // read existing document
     console.log("Reading document", docURL);
     const doc = await client.readDocument(docURL, userId);
-    console.log(doc.toJSON());
+    console.log(String(doc));
+    console.log(await doc.render())
     
     // write existing document
-    doc.template += " Added content.";
+    if (!doc.data.modif) doc.data.modif = "x";
+    else doc.data.modif += "x";
     console.log("Writing document", docURL);
     await client.writeDocument(docURL, doc, userId);
     

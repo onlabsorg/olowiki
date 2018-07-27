@@ -1,6 +1,5 @@
 title: Test document
 author: m.delbuono@gmail.com
 public: true
-template: >-
-  Test document template. Added content. Added content. Added content. Added
-  content.
+main: !<!template> '{{this.title}} authored by {{author}}.'
+modif: xxxxxx
