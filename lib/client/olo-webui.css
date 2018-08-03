@@ -14,6 +14,10 @@
     flex-wrap: nowrap;
 }
 
+.md-app-toolbar #logo {
+    background-color: transparent;
+}
+
 .md-app-toolbar .md-title {
     flex: 1 1 auto;
 }
@@ -28,25 +32,9 @@
     border: 0;
 }
 
-.olo-viewer {
-    border: 0;
-    margin: 0;
-    padding-left: 20%;
-    padding-right: 20%;
-    outline: 0;
-}
-
 .opaque {
     height: 0;
 }
-
-@media (max-width: 480px) { 
-    .olo-viewer {
-        padding-left: 3%;
-        padding-right: 3%;
-    }
-}
-
 
 
 .md-drawer {

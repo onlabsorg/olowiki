@@ -10,11 +10,11 @@
           -->
         
         <md-app-toolbar class="md-small" md-large>
-            
-            <md-button class="md-icon-button" @click="showAppMenu = !showAppMenu">
-                <img src="/lib/olo.svg" height="40" width="40">
+
+            <md-button class="md-icon-button" @click="dialog.show=true">
+                <img id="logo" src="/lib/olo.svg" height="40" width="40">
             </md-button>
-            
+
             <div class="md-title">{{docData.title}}</div>
             
             <md-button class="md-icon-button" @click="save" :disabled="readOnly">
@@ -31,42 +31,8 @@
                 <md-icon>done</md-icon>
                 <md-tooltip delay="500">Render [ctrl-e]</md-tooltip>
             </md-button>
+            
         </md-app-toolbar>
-
-
-        <md-app-drawer :md-active.sync="showAppMenu" md-persistent="full">
-            <md-toolbar class="md-transparent" md-elevation="0">
-                <strong>olo docs v.{{appInfo.version}}</strong>
-                <div class="md-toolbar-section-end">
-                    <md-button class="md-icon-button md-dense" @click="showAppMenu=false">
-                        <md-icon>keyboard_arrow_left</md-icon>
-                    </md-button>
-                </div>
-            </md-toolbar>
-
-            <md-list>
-                
-                <md-subheader>User</md-subheader>
-                
-                <md-list-item>
-                    <md-icon>account_circle</md-icon>
-                    <span class="md-list-item-text">
-                        <strong>{{user.id || "Anonymous user"}}</strong>
-                    </span>                    
-                </md-list-item>
-                
-                <md-list-item v-if="user.id == null" @click="signin">
-                    <md-icon>arrow_forward</md-icon>
-                    <span class="md-list-item-text">Sign in with Google</span>                    
-                </md-list-item>
-                
-                <md-list-item v-if="user.id != null" @click="signout">
-                    <md-icon>arrow_back</md-icon>
-                    <span class="md-list-item-text">Sign out</span>                    
-                </md-list-item>
-                
-            </md-list>
-        </md-app-drawer>
 
 
 
@@ -77,11 +43,43 @@
           -->
           
         <md-app-content class="main-window">
-            <olo-viewer :content="editMode ? '' : docData.html"></olo-viewer>
+            <olo-viewer v-if="!editMode" :content="docData.html" :allowed_tags="allowedTags"></olo-viewer>
             <olo-editor v-if="editMode" :docData="docData" width="100%" height="100%"> </olo-editor>
         </md-app-content>
 
     </md-app>
+    
+    
+
+    <!--     
+      --
+      --    Dialog
+      --
+      -->
+    
+    <md-dialog :md-active.sync="dialog.show">
+        <md-dialog-title>OnLabs.org documents</md-dialog-title>
+
+        <md-tabs md-dynamic-height @md-changed="dialogTabChanged">
+            
+            <md-tab id="info" md-label="Info">
+                <p>version {{appInfo.version}}</p>
+            </md-tab>
+
+            <md-tab id="user" md-label="User">
+                <p>Logged in as <strong>{{user.id || "Anonymous user"}}</strong></p>
+            </md-tab>
+
+        </md-tabs>
+
+        <md-dialog-actions>
+            <md-button class="md-primary" v-if="dialog.tabId == 'user' && user.id == null" @click="signin">Sign in with Google</md-button>
+            <md-button class="md-primary" v-if="dialog.tabId == 'user' && user.id != null" @click="signout">Sign out</md-button>
+            <md-button class="md-primary" @click="dialog.show = false">Close</md-button>
+        </md-dialog-actions>
+        
+    </md-dialog>
+    
 
 
 

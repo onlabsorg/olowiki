@@ -25,7 +25,7 @@ const cssRule = {
 }
 
 const xmlRule = {
-    test: /\.xml$/,
+    test: /\.yaml$/,
     use: 'raw-loader'
 }
 

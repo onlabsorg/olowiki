@@ -1,0 +1,4 @@
+title: New document
+render: !markdown |
+    # This document doesn't exist yet!
+    You can create it by just editing and saving it.

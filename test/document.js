@@ -3,16 +3,16 @@ const Document = require('../lib/olojs/document');
 
 
 const doc = new Document(null, "", `
-title: "Test Document"
-author: "m.delbuono@gmail.com"
-greet: "Hello"
-subject: "main template"
-sub:
-    subject: "sub template"
-    tpt: !template "{{greet}} {{this.subject}}!"
-view: !template |
-    {{greet}} {{this.subject}}!
-    {{sub.tpt(globals)}}
+title: Sabdbox
+author: m.delbuono@gmail.com
+public: true
+section:
+    name: Section A
+    render: !<!template> '"{{this.name}}", authored by {{author}}'
+render: !<!template> |
+    <h1>"{{this.title}}", authored by {{author}}.</h1>
+    <b>{{section.render()}}</b><br>
+    {{section.name}}
 `);
 
 
