@@ -17,7 +17,7 @@
 
             <div class="md-title">{{docData.title}}</div>
             
-            <md-button class="md-icon-button" @click="save" :disabled="readOnly">
+            <md-button class="md-icon-button" v-if="!editMode" @click="save" :disabled="readOnly">
                 <md-icon>save</md-icon>
                 <md-tooltip delay="500">Save [ctrl-s]</md-tooltip>
             </md-button>
