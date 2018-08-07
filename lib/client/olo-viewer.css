@@ -11,6 +11,11 @@
   margin: 0;
 }
 
+.olo-viewer div.value {
+    font-size: 3em;
+    font-weight: bold;
+    text-align: center;
+}
 
 /*
 @font-face {
