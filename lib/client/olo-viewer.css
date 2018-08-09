@@ -17,6 +17,11 @@
     text-align: center;
 }
 
+.olo-viewer .error {
+    color: red;
+    font-weight: bold;
+}
+
 /*
 @font-face {
   font-family: 'Roboto';
