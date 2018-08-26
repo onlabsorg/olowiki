@@ -1,5 +1,3 @@
-title: Test document
-author: m.delbuono@gmail.com
-public: true
-main: !<!template> '{{this.title}} authored by {{author}}.'
-modif: xxxxxx
+public: Test document
+index: Test document modif
+author: owner

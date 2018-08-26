@@ -42,20 +42,29 @@
     max-width: calc(100vw - 125px);
 }
 
+.md-drawer .md-list {
+    width: 320px;
+    max-width: 100%;
+    display: inline-block;
+    vertical-align: top;
+    border: 1px solid rgba(#000, .12);
+}
+ 
 .md-drawer .md-list-item {
     height: 24pt;
     margin-bottom: 16pt;
 }
 
-.md-dialog-overlay {
-    z-index: 1000;
-}
 
-.md-dialog {
-    z-index: 1001;
-    width: 60%;
-}
-
-.md-dialog .md-content {
+.md-drawer .drawer-info-card {
+    display: block;
     padding: 1em;
+    text-align: center;
+    font-size: 14px;
+    color: var(--md-theme-default-text-accent-on-background,rgba(0,0,0,.54));
+}
+
+.md-drawer .drawer-info-card p {
+    padding: 2px;
+    margin: 0;
 }

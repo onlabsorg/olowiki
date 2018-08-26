@@ -9,7 +9,7 @@
     </head>
 
     <body>
-        <olo-webui href="{{docURL}}">
+        <olo-webui :href="docHREF" @signin="signin" @signout="signout">
             <strong>Loading ...</strong>
         </olo-webui>
     </body>
