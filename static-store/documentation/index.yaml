@@ -1,0 +1,30 @@
+title: olowiki documentation
+author: m.delbuono@gmail.com
+public: true
+refs:
+    gettingStarted: !link ./getting-started
+    fileFormat: !link ./file-format
+    expressionFields: !link ./expression-tag
+    templateFields: !link ./template-tag
+    linkFields: !link ./link-tag
+    markdownFields: !link ./markdown-tag
+    compositionFields: !link ./composition-tag
+    expressionSyntax: !link ./expression-syntax
+index: !markdown |
+    {{refs.gettingStarted().summary()}}
+
+    ### Resources
+
+    * [Getting started]({{refs.gettingStarted}})
+    * [olowiki language]({{refs.fileFormat}})
+    * [Expression Fields]({{refs.expressionFields}})
+    * [Template Fields]({{refs.templateFields}})
+    * [Link Fields]({{refs.linkFields}})
+    * [Markdown Fields]({{refs.markdownFields}})
+    * [Composition Fields]({{refs.compositionFields}})
+    * [olo expressions syntax]({{refs.expressionSyntax}})
+
+    ### Examples
+
+    * [Volume of cylinder](./example-cylinders)
+    * [Link example](./example-links)

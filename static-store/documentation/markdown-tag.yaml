@@ -1,0 +1,28 @@
+title: Markdown field type (!markdown)
+author: m.delbuono@gmail.com
+references:
+    template: !link ./template-tag
+braced: != '''{{'' + $1 + ''}}'''
+summary: !template |
+    A data field markded with the `!markdown` tag is a markdown field.
+    A markdown field is just as a <a href="{{references.template}}">template field</a>, 
+    with the only exception that the rendered text is treated as markdown markup 
+    and further rendered to HTML.
+index: !markdown |
+    {{summary()}}
+
+    Example:
+    ```
+    title: Markdowm example
+
+    author: name.surname@gmail.com
+
+    index: !markdown |
+        # {{braced("title")}} document authored by {{braced("author")}}
+        
+        About markdown templates:
+        
+        * Just an easier way to write a html template
+        * You can use a markdown template in place of any normal template
+        * Even the default `render` field can be a markdown template
+    ```

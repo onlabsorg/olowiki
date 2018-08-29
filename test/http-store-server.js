@@ -6,7 +6,13 @@ const Store = require("../lib/olojs/stores/fs-store");
 const store = new Store(`${__dirname}/store`);
 
 const Server = require("../lib/olojs/stores/http-store-server");
-const server = new Server(store, "/docs");
+
+const auth = {
+    read: (doc, user) => doc.get("public") || user.id === doc.get("author"),
+    write: (doc, user) => doc !== null && user && user.id === doc.get('author'),
+    create: (path, user) => user && user.id && user.id !== "undefined" && user.id !== "null",    
+}
+const server = new Server(store, "/docs", auth);
 
 const express = require("express");
 const app = express();

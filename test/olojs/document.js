@@ -2,9 +2,15 @@
 // mocha -u tdd test/olojs/document
 
 const Document = require("../../lib/olojs/document");
-const ExpressionType = require("../../lib/olojs/oloml-types/expression");
 const expect = require("chai").expect;
 const stripIndent = require("strip-indent");
+
+const oloml = require("../../lib/olojs/oloml");
+const ExpressionType = require("../../lib/olojs/oloml-types/expression");
+const TemplateType = require("../../lib/olojs/oloml-types/template");
+const MarkdownType = require("../../lib/olojs/oloml-types/markdown");
+const CompositionType = require("../../lib/olojs/oloml-types/composition");
+const LinkType = require("../../lib/olojs/oloml-types/link");
 
 
 
@@ -12,13 +18,16 @@ const stripIndent = require("strip-indent");
 suite("Document", () => {
     
     test("Document.prototype.constructor", () => {
+        const options = {};
         const source = stripIndent(`
             x: 10
             s: "abc"
             a: [1,2,3]
             `);
-        const doc = new Document();
+        const doc = new Document(options);
         expect(doc.data).to.deep.equal({});
+        expect(doc.parser).to.be.instanceof(oloml.Parser);
+        expect(doc.options).to.equal(options);
     });
     
     test("Document.prototype.get", () => {
@@ -84,6 +93,21 @@ suite("Document", () => {
             z: 30
             `), 'map.P');
         expect(doc.data.map.P).to.deep.equal({x:10, y:20, z:30});
+        
+        doc.load(stripIndent(`
+            exp: != 1+1
+            tpt: !template ""
+            mkd: !markdown ""
+            cmp: !composition 
+                - item 1
+                - item 2
+            lnk: !link ./doc2
+            `));
+        expect(doc.get('exp')).to.be.instanceof(ExpressionType);
+        expect(doc.get('tpt')).to.be.instanceof(TemplateType);
+        expect(doc.get('mkd')).to.be.instanceof(MarkdownType);
+        expect(doc.get('cmp')).to.be.instanceof(CompositionType);
+        expect(doc.get('lnk')).to.be.instanceof(LinkType);
     });
     
     test("Document.prototype.dump", () => {
@@ -107,15 +131,9 @@ suite("Document", () => {
     
     test("Document.prototype.render", (done) => {
         async function runtest () {
-            const doc = new Document();
-            doc.registerType("!=", ExpressionType, {
-                Context: (scope, arg1) => {
-                    const context = Object.create(doc.data);
-                    context.$0 = scope;
-                    context.$1 = arg1
-                    return context;
-                },
-                onError: (err) => String(err)
+            const doc = new Document({
+                path: "/docs/doc1",
+                store: { readDocument: path => Object({data:{path:path}}) }
             });
             doc.load(stripIndent(`
                 map: 
@@ -127,6 +145,8 @@ suite("Document", () => {
                     obj: {x:10}
                     exp1: != this.num + $1
                     exp2: != map.exp1(2)
+                    exp3: != map.lnk().path
+                    lnk: !link ./doc2
                 index: Hello!
                 `));         
             expect( await doc.render('index') ).to.equal("Hello!");
@@ -138,7 +158,8 @@ suite("Document", () => {
             expect( await doc.render('map.date') ).to.equal( Document.renderDate('map.date', new Date("1977-02-26")) );
             expect( await doc.render('map.arr') ).to.equal( Document.renderArray('map.arr', [1,2,3]) );
             expect( await doc.render('map.obj') ).to.equal( Document.renderArray('map.obj', {x:10}) );
-            expect( await doc.render('map.exp2') ).to.equal(12);
+            expect( await doc.render('map.exp2') ).to.equal( Document.renderNumber('map.exp2', 12) );
+            expect( await doc.render('map.exp3') ).to.equal("/docs/doc2");
         }
         runtest().then(done).catch(done);       
     });

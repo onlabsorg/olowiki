@@ -58,6 +58,25 @@ suite("OLOML", () => {
         parser.registerType("!customtype", oloml.ScalarType, options);
         const obj = parser.parse(`ct: !customtype "data content"`);
         expect(obj.ct).to.be.instanceof(oloml.ScalarType);
+        expect(obj.ct.options).to.equal(options);
+    });
+    
+    test("OLOML.Type", () => {
+        const data = {};
+        const options = {};
+        var type = new oloml.Type(data, options);
+        expect(type.data).to.equal(data);
+        expect(type.options).to.equal(options);    
+    
+        const contextPrototype = {};
+        const self = {};
+        const context = type.Context(contextPrototype, self, "a", "b", "c");
+        expect(Object.getPrototypeOf(context)).to.equal(contextPrototype);
+        expect(context.$0).to.equal(self);    
+        expect(context.$1).to.equal("a");    
+        expect(context.$2).to.equal("b");    
+        expect(context.$3).to.equal("c");    
+        expect(context.$4).to.be.undefined;
     });
     
     test("OLOML.ScalarType", () => {

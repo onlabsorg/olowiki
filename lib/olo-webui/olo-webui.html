@@ -89,16 +89,16 @@
                 <md-icon class="md-primary">person</md-icon>
                 <div class="md-list-item-text">
                     <span><strong>User</strong></span>
-                    <span>{{userId}}</span>
+                    <span>{{userid || "Guest"}}</span>
                 </div>
             </md-list-item>
         </md-list>
         <md-list>
-            <md-list-item v-if="userId == 'Guest'" @click="signin">
+            <md-list-item v-if="!userid" @click="signin">
                 <md-icon>arrow_forward</md-icon>
                 <span class="md-list-item-text">Sign in with Google</span>
             </md-list-item>
-            <md-list-item v-if="userId != 'Guest'" @click="signout">
+            <md-list-item v-if="userid" @click="signout">
                 <md-icon>arrow_back</md-icon>
                 <span class="md-list-item-text">Sign out</span>
             </md-list-item>

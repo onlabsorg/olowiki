@@ -1,0 +1,15 @@
+title: Composition field type (!composition)
+author: m.delbuono@gmail.com
+summary: !template |
+    A data field marked with the `!composition` tag is a composition field.
+    The value of a composition field is an array.
+    When called as a function, the field renders all the array items and
+    returns them concatenated.
+index: !composition 
+    - != '''<p>'' + summary() + ''</p>'''
+    - <p>An example of composition field is the `render` field of this document.</p>
+    - !markdown |
+        You may want to use a `composition` field for:
+
+        * Using different data types in the same piece of text
+        * Organizing a long text in small chunks (foldable in the editor)

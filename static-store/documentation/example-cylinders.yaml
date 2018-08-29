@@ -1,0 +1,22 @@
+title: Volume of cylinder
+author: m.delbuono@gmail.com
+pi: 3.14
+volume: != pi * $1.diameter^2 / 4 * $1.height
+cylinder1:
+    diameter: 10
+    height: 50
+cylinder2:
+    diameter: 7
+    height: 20
+calculation: !markdown |
+    * Diameter: {{$1.diameter}}
+    * Height: {{$1.height}}
+    * Volume: {{volume($1)}}
+index: !markdown |
+    This document calculates the volume of two cylinders.
+
+    ### Cylinder 1
+    {{calculation(cylinder1)}}
+
+    ### Cylinder 2
+    {{calculation(cylinder2)}}

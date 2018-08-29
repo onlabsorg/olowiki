@@ -14,19 +14,25 @@ suite("MarkdownType", () => {
         async function runtest () {
             const parser = new oloml.Parser();
             parser.registerType("!markdown", MarkdownType, {
-                Context: function (self, arg1, arg2) {
-                    return {$0:self, $1:arg1, $2:arg2}
-                },
-                onError (error) {
-                    return "ERROR";
-                }
+                renderError: (error) => "ERROR"
             });
-            const obj = parser.parse("mkdn: !markdown '# Hello {{$1}}!'");
+            var obj = parser.parse("mkdn: !markdown '# Hello {{$1}}!'");
             expect(obj.mkdn).to.be.instanceof(MarkdownType);
             expect(obj.mkdn.data).to.equal("# Hello {{$1}}!");
             
             const val1 = await obj.mkdn.evaluate(null, "you");
             expect(val1).to.equal(`<h1 id="hello-you-">Hello you!</h1>\n`);
+            
+            
+            parser.registerType("!markdown", MarkdownType, {
+                ContextPrototype: {x:10}
+            });
+            obj = parser.parse("mkdn: !markdown 'Hello!'");
+            expect(obj.mkdn.options.ContextPrototype()).to.deep.equal({x:10});
+            const error = {
+                toString: () => "DEFAULT ERROR"
+            }
+            expect(obj.mkdn.options.renderError(error)).to.equal("DEFAULT ERROR");                        
         }
         runtest().then(done).catch(done);
     });    
@@ -34,11 +40,7 @@ suite("MarkdownType", () => {
     test("stringifying", (done) => {
         async function runtest () {
             const parser = new oloml.Parser();
-            parser.registerType("!markdown", MarkdownType, {
-                Context: function (scope, ...args) {
-                    return {}
-                }
-            });
+            parser.registerType("!markdown", MarkdownType, {});
             const obj = parser.parse("mkdn: !markdown '# Hello {{$1}}!'");
             const source = parser.stringify(obj);
             expect(source).to.equal("mkdn: !markdown '# Hello {{$1}}!'\n");

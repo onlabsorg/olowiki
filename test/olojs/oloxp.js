@@ -263,7 +263,6 @@ suite("oloxp.evaluate", () => {
             expect(val1).to.equal(0.5+2*(100/2-context.P.x));
         }
         runtest().then(done).catch(err => done(err));
-        
     });
     
     test("sandbox", (done) => {

@@ -47,7 +47,7 @@ suite("Store", () => {
             expect(doc.get('map.mdn')).to.be.instanceof(MarkdownType);
             expect(doc.get('map.cps')).to.be.instanceof(CompositionType);
             expect(doc.get('map.lnk')).to.be.instanceof(LinkType);
-            expect(await doc.render('map.exp2')).to.equal(111);
+            expect(await doc.render('map.exp2')).to.equal(Store.Document.renderNumber('map.exp2', 111));
             expect(await doc.data.map.lnk.evaluate()).to.deep.equal({
                 path: "/docs/doc2"
             });

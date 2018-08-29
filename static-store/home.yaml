@@ -1,0 +1,139 @@
+title: Welcome
+author: m.delbuono@gmail.com
+public: false
+index: !markdown |    
+
+  ### In the beginning it was the world-wide web
+
+  The web started as a world-wide distributed archive of documents, linked
+
+  together with hyperlinks. From wikipedia:
+
+
+  > The World Wide Web (abbreviated WWW or the Web) is an information space
+  where 
+
+  > documents and other web resources are identified by Uniform Resource
+  Locators (URLs), 
+
+  > interlinked by hypertext links, and accessible via the Internet.
+
+
+  Browser are software that allow users to load and visualize web documents.  
+
+
+  Creating and publishing a document was not as straighforward as reading an
+
+  existing document from the internet. Therefore, for most of its users, the
+  web 
+
+  was a read-only store of documents.
+
+
+
+
+  ### Then javascript came in to play
+
+  Once web browsers implemented a scripting engine able to run code contained
+
+  in web documents, the web pages started to become interactive up to turn into
+
+  actual application (so called *web applications*).  
+
+
+  Besides turning documents into programs, web application changed the read-only
+
+  web into a read-write web. Users can often contribute content to the
+  application.  
+
+
+  Some web applications even allow users to input documents and organize your
+
+  documents in a store internal to the application: the document, turned into an
+
+  application, is now turned again into a document!
+
+
+
+
+  ### Back to just documents
+
+  Why don't we keep it simple? Why the original web document can't be a
+  read-write
+
+  document? This is what olo is trying to achieve.  
+
+  Nothing agains web application, just trying to keep simple things simple.
+
+
+
+  ### Definition of semantic web from Wikipedia
+
+  > The Semantic Web is an extension of the World Wide Web through standards by 
+
+  > the World Wide Web Consortium (W3C). The standards promote common data
+  formats 
+
+  > and exchange protocols on the Web, most fundamentally the Resource
+  Description 
+
+  > Framework (RDF). According to the W3C, "The Semantic Web provides a common 
+
+  > framework that allows data to be shared and reused across application, 
+
+  > enterprise, and community boundaries". The Semantic Web is therefore
+  regarded 
+
+  > as an integrator across different content, information applications and
+  systems.
+
+
+  ### Berner-Lee vision of semantic web
+
+  > I have a dream for the Web [in which computers] become capable of analyzing 
+
+  > all the data on the Web – the content, links, and transactions between
+  people 
+
+  > and computers. A "Semantic Web", which makes this possible, has yet to
+  emerge, 
+
+  > but when it does, the day-to-day mechanisms of trade, bureaucracy and our
+  daily 
+
+  > lives will be handled by machines talking to machines. The "intelligent
+  agents" 
+
+  > people have touted for ages will finally materialize.
+
+
+
+
+  The simplest way to look at it is as a publishing tool: you can create a web
+  document
+
+  and publish it with a click.
+
+
+  The web
+
+
+  The web started as a tool for sharing your documents with others.
+
+  Web documents could refer to each-other through hyperlinks.
+
+  A software called browser allows you to read web documents.
+
+  Publishing web documents requires other tools and it is still not
+  straightforward.
+
+
+  With time those documents became more and more complex, 
+
+
+  Olo adds a thin layer to that simple and powerful idea:
+
+  * It makes very easy to create and publish a document
+
+  * It allows you to, not only link your document to other documents, but also
+  to use their content in your document.

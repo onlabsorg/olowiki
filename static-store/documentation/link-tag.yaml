@@ -1,0 +1,22 @@
+title: Link field type (!link)
+author: m.delbuono@gmail.com
+public: true
+summary: !template |
+    A data field marked with the `!link` tag is a link field. 
+    The value of a link field is an URL string. 
+    If called as a function it loads the document pointed by the URL and
+    return the document data.
+index: !markdown |
+    {{summary()}}
+
+    Example:
+    ```
+    ref1: !link ./reference-example
+    exp1: != ref1            # returns: "./reference-example"
+    exp2: != ref1()          # returns the data root of the linked document
+    exp3: != ref1().title    # returns the title data field of the linked document
+    exp4: != ref1().render() # returns the rendered linked document
+    ```
+
+    The `!link` data type brings modularity in documents: in your document you 
+    can use data and functions defined in other documents.

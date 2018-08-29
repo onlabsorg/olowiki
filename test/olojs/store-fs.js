@@ -36,7 +36,9 @@ suite("FSStore", () => {
     
     test("FSStore.prototype.writeDocument", (done) => {
         var doc, doc2, store = new FSStore(storePath);
-        fs.unlinkSync(store.resolvePath('testdoc'));
+        try {
+            fs.unlinkSync(store.resolvePath('testdoc'));            
+        } catch (e) {}
         
         async function runtest () {
             doc = store.createDocument("testdoc", "");

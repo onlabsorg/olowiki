@@ -1,0 +1,48 @@
+title: Expression field type (!=)
+author: m.delbuono@gmail.com
+public: true
+references:
+    expressionSyntax: !link ./expression-syntax
+braced: != '''{{'' + $1 + ''}}'''
+summary: !template |
+    A data field marked with the `!=` tag is an expression field. 
+    The value of an expression field should be a valid 
+    <a href="{{references.expressionSyntax}}">olo expression</a>. 
+    If called as a function it returns the expression value.
+index: !markdown |
+    {{summary()}}
+
+    Example:
+    ```
+    x: 10
+    exp1: != "x+1"
+    exp2: != "exp1() * 3"
+    index: !template |
+        {{braced("exp1")}}    <!-- renders: "x+1" -->
+        {{braced("exp1()")}}  <!-- renders: "11"   -->
+        {{braced("exp2")}}    <!-- renders: "exp1() * 3" -->
+        {{braced("exp2()")}}  <!-- renders: "33"   -->
+    ```
+    
+    If an expression is called with parameters, the passed values will be
+    available in the expression scope as `$1`, `$2`, `$3`, etc.
+    
+    Example:
+    ```
+    sum: != "$1 + $2"
+    index: !template |
+        {{braced("exp1(10, 5)")}}    <!-- renders: "15" -->    
+    ```
+    
+    The scope of an expression always contains the special variables 
+    `$0` and `this`. These two variables are equivalent and they point to the 
+    object that contains the expression field as property.  
+      
+    Example:
+    ```
+    map1:
+        map2:
+            x: 10
+            exp1: != 'this.x'  # this is map1.map2 and this.x is 10
+            exp1: != '$0.x'    # $0 is map1.map2 and $0.x is 10
+    ```

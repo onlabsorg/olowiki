@@ -1,0 +1,56 @@
+title: Template field type (!template)
+author: m.delbuono@gmail.com
+references:
+    expressionSyntax: !link ./expression-syntax
+braced: != '''{{'' + $1 + ''}}'''
+summary: !template |
+    A data field marked with the `!template` tag is a template field. 
+    The value of a template field is a string that can contain
+    <a href="{{references.expressionSyntax}}">expressions</a> enclosed between 
+    double curly braces {{braced("...")}}. If called as a function it resolves the string by
+    evaluating and replacing the expressions with their value.
+index: !markdown |
+    {{summary()}}
+
+    Example:
+    ```
+    temp1: !template "Two plus one is {{braced("2+1")}}"
+    index: !template |
+        {{braced(" temp1 ")}}     <!-- renders: "Two plus one is {{braced("2+1")}}" -->
+        {{braced(" temp1() ")}}   <!-- renders: "Two plus one is 3" -->
+
+    ```
+
+    When a template is called as a function with parameters, the passed values
+    are available in the template expressions scope as `$1`, `$2`, `$3`, etc.
+      
+    Example:
+    ```
+    sum: !template "The sum of {{braced("$1")}} and {{braced("$2")}} is {{braced("$1+$2")}}
+    index: !template |
+        {{braced(" sum(10, 5) ")}}   <!-- renders: "The sum of 10 and 5 is 15" -->
+
+    ```
+
+    The scope of the template expressions always contains the special variables 
+    `$0` and `this`. These two variables are equivalent and they point to the 
+    object that contains the template field as property.  
+      
+    Example:
+    ```
+    map1:
+        map2:
+            x: 10
+            temp1: !template |
+                x = {{braced('this.x')}}  <!-- renders: "x = 10" -->
+            temp2: !template |
+                x = {{braced('$0.x')}}    <!-- renders: "x = 10" -->
+
+    ```
+
+    > Notice that the `index:` field is just a template that the application
+    > renders as default when the document is loaded. If you want to render
+    > another template instead, just specify its path in the URL hash.  
+    > For example, if the url is `/docs/doc1#map.temp`, then the field
+    > `temp` contained in the object `map` of document `doc1` will be rendered 
+    > instead of the default field `render`.

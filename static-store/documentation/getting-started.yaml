@@ -1,0 +1,70 @@
+title: Getting started with olowiki
+author: m.delbuono@gmail.com
+public: true
+summary: !markdown |
+    **`olowiki`** is a platform for creating web content in a cooperative way.
+    It is a simple, distraction-free and unobtrusive wiki aiming to provide you 
+    with nothing more than read-write web.
+index: !markdown |
+
+    {{summary()}}
+
+    ### Edit this document
+
+    The page you are reading now is an olowiki document. If you click on the
+    edit button (top-right icon) or if you hit `ctrl-e` on your keyboard, you 
+    enter in edit mode and you can change the document content.  
+
+    To do so, you need to know the wiki language of the olowiki documents.
+    You can dig later in the [olowiki format documentation](./file-format); 
+    for now, just modify the big chunk of markdown text you see under the 
+    `index:` key.
+
+    When you are done changing the document source, you can go back to view
+    mode by clicking the done button (top-right check mark in edit mode) or
+    hitting again `ctrl-e` on your keyboard.
+
+    If then you try to save the document by clicking on the save button or by
+    hitting `ctrl-s` on your keyboard, you will get a permission denied error.
+    That's because only the author is allowed update its documents.
+
+
+    ### Create your own document
+      
+    How do you create your own documents then? 
+    * First identify yourself by signing-in (top-left icon, next to the document title)
+    * Then type the url of the document you want to create in the address bar, 
+    e.g. `wiki.onlabs.org/docs/sandbox/your-document-name`. 
+    If a document with that URL doesn't exist yet, then you can create it by 
+    editing and saving it. 
+
+    Feel free to play around, but please, when you do so, be so kind to use the 
+    `/docs/sandbox` namespace.
+
+
+    ### Use others documents content in your document
+
+    In your document you can import other documents, both yours or from other
+    authors. You can use all the data contained in the imported document, like
+    numerical value, text, expressions, templates, etc.  
+      
+    This means that olowiki allows modularity in documents composition.
+
+
+    ### Share your dcuments with other people
+
+    Nobody can read your document unless you allow them to. To do so you need
+    to make your document public. Once your document is public, everybody
+    can read it and import it in their documents.  
+
+    You are now able to read this document because I made it public.  
+
+    To make a document public, you need to set the `public:` key to `true`.
+
+
+    ### Next learning step
+
+    Now that you know what olowiki is about, you should learn the
+    [olowiki language](./file-format) to write your documents.  
+      
+    Happy learning :-)

@@ -14,14 +14,10 @@ suite("LinkType", () => {
         async function runtest () {
             const parser = new oloml.Parser();
             parser.registerType("!link", LinkType, {
-                store: {
-                    readDocument (path) {
-                        return {data:{path:path}}
-                    }
-                },
-                path: "/store"
+                loadDocument: (path) => Object({data:{path:path}}),
+                basePath: "/store"
             });
-            const obj = parser.parse("lnk: !link 'docs/docName'");
+            var obj = parser.parse("lnk: !link 'docs/docName'");
             expect(obj.lnk).to.be.instanceof(LinkType);
             expect(obj.lnk.data).to.deep.equal("docs/docName");
             
@@ -29,6 +25,14 @@ suite("LinkType", () => {
             expect(val1).to.deep.equal({
                 path: "/store/docs/docName",
             });
+            
+            
+            // default options
+            parser.registerType("!link", LinkType, {});
+            obj = parser.parse("lnk: !link 'docs/docName'");
+            expect(obj.lnk.options.basePath).to.equal("/");
+            const val2 = await obj.lnk.evaluate();
+            expect(val2).to.deep.equal({});
         }
         runtest().then(done).catch(done);
     });    
