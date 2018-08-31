@@ -129,7 +129,7 @@ suite("Document", () => {
         expect(doc.data.exp).to.be.instanceof(ExpressionType);
     });
     
-    test("Document.prototype.render", (done) => {
+    test("Document.prototype.evaluate", (done) => {
         async function runtest () {
             const doc = new Document({
                 path: "/docs/doc1",
@@ -142,24 +142,23 @@ suite("Document", () => {
                     bool: true
                     date: 1977-02-26
                     arr: [1,2,3]
-                    obj: {x:10}
+                    obj: {x: 10}
                     exp1: != this.num + $1
                     exp2: != map.exp1(2)
                     exp3: != map.lnk().path
                     lnk: !link ./doc2
                 index: Hello!
                 `));         
-            expect( await doc.render('index') ).to.equal("Hello!");
-            expect( await doc.render() ).to.equal("Hello!");
-            expect( await doc.render('map.undef') ).to.equal( Document.renderUndefined('map.undef') );
-            expect( await doc.render('map.nul') ).to.equal( Document.renderNull('map.nul') );
-            expect( await doc.render('map.bool') ).to.equal( Document.renderBoolean('map.bool', true) );
-            expect( await doc.render('map.num') ).to.equal( Document.renderNumber('map.num', 10) );
-            expect( await doc.render('map.date') ).to.equal( Document.renderDate('map.date', new Date("1977-02-26")) );
-            expect( await doc.render('map.arr') ).to.equal( Document.renderArray('map.arr', [1,2,3]) );
-            expect( await doc.render('map.obj') ).to.equal( Document.renderArray('map.obj', {x:10}) );
-            expect( await doc.render('map.exp2') ).to.equal( Document.renderNumber('map.exp2', 12) );
-            expect( await doc.render('map.exp3') ).to.equal("/docs/doc2");
+            expect( await doc.evaluate('index') ).to.equal("Hello!");
+            expect( await doc.evaluate('map.undef') ).to.equal( undefined );
+            expect( await doc.evaluate('map.nul') ).to.equal( null );
+            expect( await doc.evaluate('map.bool') ).to.equal( true );
+            expect( await doc.evaluate('map.num') ).to.equal( 10 );
+            expect( await doc.evaluate('map.date') ).to.be.instanceof( Date );
+            expect( await doc.evaluate('map.arr') ).to.deep.equal( [1,2,3] );
+            expect( await doc.evaluate('map.obj') ).to.deep.equal( {x:10} );
+            expect( await doc.evaluate('map.exp2') ).to.equal( 12 );
+            expect( await doc.evaluate('map.exp3') ).to.equal("/docs/doc2");
         }
         runtest().then(done).catch(done);       
     });

@@ -36,13 +36,13 @@ suite("HTTPStoreClient", () => {
             
             store = new HTTPStoreClient(host, "owner");
             doc = await store.readDocument('/docs/public');
-            expect(await doc.render() ).to.equal("Public document");
+            expect(await doc.evaluate("index") ).to.equal("Public document");
             doc = await store.readDocument('/docs/private');
-            expect(await doc.render() ).to.equal("Private document");
+            expect(await doc.evaluate("index") ).to.equal("Private document");
             
             store = new HTTPStoreClient(host, "reader");
             doc = await store.readDocument('/docs/public');
-            expect(await doc.render() ).to.equal("Public document");
+            expect(await doc.evaluate("index") ).to.equal("Public document");
             try {
                 doc = await store.readDocument('/docs/private');
                 throw new Error("It didn't trow read access denied error.")
@@ -66,12 +66,12 @@ suite("HTTPStoreClient", () => {
                 `));            
             await store.writeDocument('/docs/testdoc', doc);
             doc2 = await store.readDocument("/docs/testdoc");
-            expect(await doc2.render() ).to.equal("Test document");            
+            expect(await doc2.evaluate("index") ).to.equal("Test document");            
             
             doc.set('index', "Test document modif");
             await store.writeDocument('/docs/testdoc', doc);
             doc2 = await store.readDocument("/docs/testdoc");
-            expect(await doc2.render() ).to.equal("Test document modif");
+            expect(await doc2.evaluate("index") ).to.equal("Test document modif");
 
             store = new HTTPStoreClient(host, "reader");
             

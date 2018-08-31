@@ -16,7 +16,6 @@ suite("ExpressionType", () => {
             const contextPrototype = {a:1}
             parser.registerType("!=", ExpressionType, {
                 ContextPrototype: () => contextPrototype,
-                renderError: error => "ERROR"
             });
             var obj = parser.parse("exp: != '$1*this.x+a'");
             expect(obj.exp).to.be.instanceof(ExpressionType);
@@ -24,21 +23,13 @@ suite("ExpressionType", () => {
             
             const self = {x:10};
             const val1 = await obj.exp.evaluate(self, 20);
-            expect(val1).to.equal(201);
-
-            const val2 = await obj.exp.evaluate(undefined, 20);
-            expect(val2).to.equal("ERROR");
-            
+            expect(val1).to.equal(201);            
             
             parser.registerType("!=", ExpressionType, {
                 ContextPrototype: {x:10}
             });
             obj = parser.parse("exp: != '$1*this.x+a'");
             expect(obj.exp.options.ContextPrototype()).to.deep.equal({x:10});
-            const error = {
-                toString: () => "DEFAULT ERROR"
-            }
-            expect(obj.exp.options.renderError(error)).to.equal("DEFAULT ERROR");            
         }
         runtest().then(done).catch(done);
     });    

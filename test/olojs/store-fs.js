@@ -29,7 +29,7 @@ suite("FSStore", () => {
         
         async function runtest () {            
             doc = await store.readDocument('public');
-            expect(await doc.render() ).to.equal("Public document");
+            expect(await doc.evaluate("index") ).to.equal("Public document");
         }
         runtest().then(done).catch(done);
     });   
@@ -48,12 +48,12 @@ suite("FSStore", () => {
             
             await store.writeDocument('testdoc', doc);
             doc2 = await store.readDocument("testdoc");
-            expect(await doc2.render() ).to.equal("Test document");
+            expect(await doc2.evaluate("index") ).to.equal("Test document");
             
             doc.set('index', "Test document modif");
             await store.writeDocument('testdoc', doc);
             doc2 = await store.readDocument("testdoc");
-            expect(await doc2.render() ).to.equal("Test document modif");
+            expect(await doc2.evaluate("index") ).to.equal("Test document modif");
         }
         runtest().then(done).catch(done);
     });
