@@ -28,6 +28,7 @@ suite("HTTPStoreClient", () => {
         const store = new HTTPStoreClient(host, "owner");
         const doc = store.createDocument("doc", "x: 10");
         expect(doc.data).to.deep.equal({x:10});
+        expect(doc.context.import).to.be.a("function");
     });
     
     test("HTTPStoreClient.prototype.readDocument", (done) => {

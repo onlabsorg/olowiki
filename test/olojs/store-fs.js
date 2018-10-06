@@ -14,7 +14,7 @@ const storePath = Path.normalize(`${__dirname}/../store`);
 suite("FSStore", () => {
         
     test("FSStore.constructor", () => {
-        const store = new FSStore(storePath);
+        const store = new FSStore(storePath, context);
         expect(store.rootPath).to.equal(storePath);
     });    
     
@@ -22,6 +22,7 @@ suite("FSStore", () => {
         const store = new FSStore(storePath);
         const doc = store.createDocument("doc", "x: 10");
         expect(doc.data).to.deep.equal({x:10});
+        expect(doc.context.import).to.be.a("function");
     });
     
     test("FSStore.prototype.readDocument", (done) => {

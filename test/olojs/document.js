@@ -9,8 +9,8 @@ const oloml = require("../../lib/olojs/oloml");
 const ExpressionType = require("../../lib/olojs/oloml-types/expression");
 const TemplateType = require("../../lib/olojs/oloml-types/template");
 const MarkdownType = require("../../lib/olojs/oloml-types/markdown");
-const CompositionType = require("../../lib/olojs/oloml-types/composition");
-const LinkType = require("../../lib/olojs/oloml-types/link");
+
+const globals = require("../../lib/olojs/globals");
 
 
 
@@ -18,16 +18,23 @@ const LinkType = require("../../lib/olojs/oloml-types/link");
 suite("Document", () => {
     
     test("Document.prototype.constructor", () => {
-        const options = {};
+        const context = {};
         const source = stripIndent(`
             x: 10
             s: "abc"
             a: [1,2,3]
             `);
-        const doc = new Document(options);
+        var doc = new Document(context);
         expect(doc.data).to.deep.equal({});
         expect(doc.parser).to.be.instanceof(oloml.Parser);
-        expect(doc.options).to.equal(options);
+        expect(doc.context).to.equal(context);
+        
+        doc = new Document(() => context);
+        expect(doc.context).to.equal(context);
+        
+        class Context {}
+        doc = new Document(Context);
+        expect(doc.context).to.be.instanceof(Context);
     });
     
     test("Document.prototype.get", () => {
@@ -98,16 +105,10 @@ suite("Document", () => {
             exp: != 1+1
             tpt: !template ""
             mkd: !markdown ""
-            cmp: !composition 
-                - item 1
-                - item 2
-            lnk: !link ./doc2
             `));
         expect(doc.get('exp')).to.be.instanceof(ExpressionType);
         expect(doc.get('tpt')).to.be.instanceof(TemplateType);
         expect(doc.get('mkd')).to.be.instanceof(MarkdownType);
-        expect(doc.get('cmp')).to.be.instanceof(CompositionType);
-        expect(doc.get('lnk')).to.be.instanceof(LinkType);
     });
     
     test("Document.prototype.dump", () => {
@@ -120,20 +121,23 @@ suite("Document", () => {
     });
     
     test("Document.prototype.registerType", () => {
-        const doc = new Document();
-        doc.registerType("!=", ExpressionType, {
-            Context: () => Object(),
-            onError: (err) => String(err)
-        });
+        const doc = new Document({a:1, b:2});
+        doc.registerType("!=", ExpressionType);
+        doc.data = {c:3, d:4};
         doc.load(`!= "1+1"`, 'exp');
         expect(doc.data.exp).to.be.instanceof(ExpressionType);
+        expect(doc.data.exp.context.a).to.equal(1);
+        expect(doc.data.exp.context.b).to.equal(2);
+        expect(doc.data.exp.context.c).to.equal(3);
+        expect(doc.data.exp.context.d).to.equal(4);
     });
     
     test("Document.prototype.evaluate", (done) => {
         async function runtest () {
             const doc = new Document({
-                path: "/docs/doc1",
-                store: { readDocument: path => Object({data:{path:path}}) }
+                import: function (path) {
+                    return {path};
+                }
             });
             doc.load(stripIndent(`
                 map: 
@@ -145,8 +149,7 @@ suite("Document", () => {
                     obj: {x: 10}
                     exp1: != this.num + $1
                     exp2: != map.exp1(2)
-                    exp3: != map.lnk().path
-                    lnk: !link ./doc2
+                    exp3: != import("/docs/doc2").path
                 index: Hello!
                 `));         
             expect( await doc.evaluate('index') ).to.equal("Hello!");

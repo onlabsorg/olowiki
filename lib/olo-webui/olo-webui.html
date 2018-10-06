@@ -15,7 +15,7 @@
                 <img id="logo" src="/lib/olo.svg" height="40" width="40">
             </md-button>
 
-            <div class="md-title">{{docTitle}}</div>
+            <div class="md-title">{{title}}</div>
             
             <md-button class="md-icon-button" @click="save">
                 <md-icon>save</md-icon>
@@ -39,8 +39,8 @@
           -->
           
         <md-app-content class="main-window">
-            <olo-viewer v-if="!editMode" :value="value" :allowed_tags="allowedTags"></olo-viewer>
-            <olo-editor v-if="editMode" v-model="docSource" :lang="sourceLanguage" width="100%" height="100%"> </olo-editor>
+            <olo-viewer v-if="!editMode" :path="dotPath" :value="value" :allowed_tags="allowedTags"></olo-viewer>
+            <olo-editor v-if="editMode" v-model="source" :lang="sourceLanguage" width="100%" height="100%"> </olo-editor>
         </md-app-content>
 
     </md-app>

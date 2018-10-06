@@ -54,46 +54,52 @@ suite("OLOML", () => {
     
     test("OLOML.Parser.prototype.registerType", () => {
         const parser = new oloml.Parser();
-        const options = {};
-        parser.registerType("!customtype", oloml.ScalarType, options);
+        const context = {};
+        parser.registerType("!customtype", oloml.ScalarType, context);
         const obj = parser.parse(`ct: !customtype "data content"`);
         expect(obj.ct).to.be.instanceof(oloml.ScalarType);
-        expect(obj.ct.options).to.equal(options);
+        expect(obj.ct.context).to.equal(context);
     });
     
     test("OLOML.Type", () => {
         const data = {};
-        const options = {};
-        var type = new oloml.Type(data, options);
+        const context = {};
+        var type = new oloml.Type(data, context);
         expect(type.data).to.equal(data);
-        expect(type.options).to.equal(options);    
-    
-        const contextPrototype = {};
-        const self = {};
-        const context = type.Context(contextPrototype, self, "a", "b", "c");
-        expect(Object.getPrototypeOf(context)).to.equal(contextPrototype);
-        expect(context.$0).to.equal(self);    
-        expect(context.$1).to.equal("a");    
-        expect(context.$2).to.equal("b");    
-        expect(context.$3).to.equal("c");    
-        expect(context.$4).to.be.undefined;
+        expect(type.context).to.equal(context);    
+        
+        var type = new oloml.Type(data, () => context);
+        expect(type.context).to.equal(context);
+        
+        class Context {}
+        var type = new oloml.Type(data, Context);
+        expect(type.context).to.be.instanceof(Context);
     });
     
     test("OLOML.ScalarType", () => {
         const parser = new oloml.Parser();
-        const options = {};
-        parser.registerType("!customtype", oloml.ScalarType, options);
-        const obj = parser.parse(`ct: !customtype "data content"`);
+        const context = {};
+        parser.registerType("!customtype", oloml.ScalarType, context);
+        var obj = parser.parse(`ct: !customtype "data content"`);
         expect(obj.ct).to.be.instanceof(oloml.ScalarType);        
         expect(obj.ct.data).to.equal("data content");
-        expect(obj.ct.options).to.equal(options);
+        expect(obj.ct.context).to.equal(context);
+
+        parser.registerType("!customtype", oloml.ScalarType, () => context);
+        obj = parser.parse(`ct: !customtype "data content"`);
+        expect(obj.ct.context).to.equal(context);
+
+        class Context {}
+        parser.registerType("!customtype", oloml.ScalarType, Context);
+        obj = parser.parse(`ct: !customtype "data content"`);
+        expect(obj.ct.context).to.be.instanceof(Context);
     });
     
     test("OLOML.SequenceType", () => {
         const parser = new oloml.Parser();
-        const options = {};
-        parser.registerType("!customtype", oloml.SequenceType, options);
-        const obj = parser.parse(stripIndent(`
+        const context = {};
+        parser.registerType("!customtype", oloml.SequenceType, context);
+        var obj = parser.parse(stripIndent(`
             ct: !customtype 
                 - 10
                 - 20
@@ -101,14 +107,23 @@ suite("OLOML", () => {
         `));
         expect(obj.ct).to.be.instanceof(oloml.SequenceType);        
         expect(obj.ct.data).to.deep.equal([10,20,30]);
-        expect(obj.ct.options).to.equal(options);        
+        expect(obj.ct.context).to.equal(context);        
+
+        parser.registerType("!customtype", oloml.SequenceType, () => context);
+        obj = parser.parse(stripIndent(`ct: !customtype [10, 20, 30]`));
+        expect(obj.ct.context).to.equal(context);        
+
+        class Context {}
+        parser.registerType("!customtype", oloml.SequenceType, Context);
+        obj = parser.parse(stripIndent(`ct: !customtype [10, 20, 30]`));
+        expect(obj.ct.context).to.be.instanceof(Context);
     });
     
     test("OLOML.MappingType", () => {
         const parser = new oloml.Parser();
-        const options = {};
-        parser.registerType("!customtype", oloml.MappingType, options);
-        const obj = parser.parse(stripIndent(`
+        const context = {};
+        parser.registerType("!customtype", oloml.MappingType, context);
+        var obj = parser.parse(stripIndent(`
             ct: !customtype 
                 x: 10
                 y: 20
@@ -116,6 +131,16 @@ suite("OLOML", () => {
         `));
         expect(obj.ct).to.be.instanceof(oloml.MappingType);        
         expect(obj.ct.data).to.deep.equal({x:10, y:20, z:30});
-        expect(obj.ct.options).to.equal(options);                
+        expect(obj.ct.context).to.equal(context);                
+
+        parser.registerType("!customtype", oloml.MappingType, () => context);
+        obj = parser.parse(stripIndent(`ct: !customtype {x:10, y:20, z:30}`));
+        expect(obj.ct.context).to.equal(context);        
+
+        class Context {}
+        parser.registerType("!customtype", oloml.MappingType, Context);
+        obj = parser.parse(stripIndent(`ct: !customtype {x:10, y:20, z:30}`));
+        expect(obj.ct.context).to.be.instanceof(Context);
+
     });
 });

@@ -13,23 +13,14 @@ suite("TemplateType", () => {
     test("parsing", (done) => {
         async function runtest () {
             const parser = new oloml.Parser();
-            parser.registerType("!template", TemplateType, {
-                ContextPrototype: () => Object({other:"him"}),
-            });
-            var obj = parser.parse("temp: !template 'Hello {{$0.name}} from {{$1}} and {{other}}!'");
+            parser.registerType("!template", TemplateType, {other:"him"});
+            var obj = parser.parse("temp: !template 'Hello {{this.name}} from {{$1}} and {{other}}!'");
             expect(obj.temp).to.be.instanceof(TemplateType);
-            expect(obj.temp.data).to.equal("Hello {{$0.name}} from {{$1}} and {{other}}!");
+            expect(obj.temp.data).to.equal("Hello {{this.name}} from {{$1}} and {{other}}!");
             
             const self = {name:"you"};
             const val1 = await obj.temp.evaluate(self, "me");
             expect(val1).to.equal("Hello you from me and him!");
-            
-            
-            parser.registerType("!template", TemplateType, {
-                ContextPrototype: {x:10}
-            });
-            obj = parser.parse("temp: !template 'Hello!'");
-            expect(obj.temp.options.ContextPrototype()).to.deep.equal({x:10});
         }
         runtest().then(done).catch(done);
     });    
