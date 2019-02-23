@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+case "$1" in
+
+    "document")
+        mocha lib/olojs/test/document.js
+        ;;
+
+    "expression")
+        mocha -u tdd lib/olojs/test/expression.js
+        ;;
+        
+    "dom")
+        mocha lib/olojs/test/dom.js
+        ;;    
+
+    "memory-store")
+        mocha lib/olojs/test/memory-store.js
+        ;;
+
+    "hub")
+        mocha -u tdd lib/olojs/test/hub.js
+        ;;
+
+    "auth")
+        mocha lib/http-store/test/auth.js
+        ;;
+
+    "fs-backend")
+        mocha lib/http-store/test/fs-backend.js
+        ;;
+        
+    "http-store")
+        node lib/http-store/test/http-store-server.js &
+        server_pid=$!
+        mocha lib/http-store/test/http-store-client.js
+        kill -KILL $server_pid
+        wait
+        ;;
+        
+    *)
+        echo "Syntax:"
+        echo "> npm test -- expression"
+        echo "> npm test -- document"
+        echo "> npm test -- memory-store"
+        echo "> npm test -- hub"
+        echo "> npm test -- auth"
+        echo "> npm test -- fs-backend"
+        echo "> npm test -- http-store"
+        echo ""
+        ;;
+
+esac

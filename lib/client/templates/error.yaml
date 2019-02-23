@@ -1,4 +1,0 @@
-title: Error!
-index: !markdown |
-    An error occurred while loading the document.
-    > {{message}}

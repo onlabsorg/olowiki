@@ -1,0 +1,25 @@
+#!/usr/bin/env node
+
+const fs = require("fs");
+const path = require("path");
+const cmd = require("commander");
+
+const package = JSON.parse( fs.readFileSync(`${__dirname}/../package.json`, 'utf8') );
+const version = package.version || "1.0.0";
+
+const params = cmd.version(version, "-v --version")
+    .option("-c, --config-path <value>", "Specify the config.json file path", "./config.json")
+    .option("-p, --port <value>", "Specify the port number.", 8010)
+    .parse(process.argv);
+
+const fullConfigPath = path.resolve(process.cwd(), params.configPath);
+const options = JSON.parse( fs.readFileSync(fullConfigPath, 'utf8') );
+options.version = version;
+options.basePath = options.basePath || path.dirname(fullConfigPath);
+
+const Server = require("../lib/server");
+const server = new Server(options);
+
+server.listen(params.port, () => {
+    console.log(`olowiki server listening on port ${params.port}`);
+});

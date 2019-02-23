@@ -1,0 +1,483 @@
+.oloml-viewer section.text {
+    display: block;
+    padding: 2em 20% 2em 20%;
+}
+
+.oloml-viewer section.dict,
+.oloml-viewer section.list {
+    display: block;
+    padding: 1em 10% 1em 10%;
+}
+
+.oloml-viewer section.primitive {
+    display: block;
+    padding: 2em 20% 2em 20%;    
+    text-align: center;
+    font-size: 3em;
+    font-weight: bold;
+}
+
+.oloml-viewer .card {
+    display: block;
+    box-shadow: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
+    margin: 8px;
+    background-color: rgb(0, 0, 0, 0.02);
+}
+
+.oloml-viewer .card .card-title {
+    display: block;
+    font-size: 0.8em;
+    color: rgb(0, 0, 0, 0.50);
+    font-weight: bold;
+}
+
+.oloml-viewer .card .card-content {
+    display: block;
+    padding: 0.5em 0 0.5em 0;
+    text-align: center;
+}
+
+.oloml-viewer .card .card-content .content-heading {
+    font-size: 8pt;
+    max-height: 120px;
+    overflow: hidden;
+}
+
+.oloml-viewer .card .card-content .content-description {
+    font-family: monospace;
+}
+
+
+
+/*** small screen styles ***/
+
+@media (max-width: 480px) { 
+    .oloml-viewer section.text,
+    .oloml-viewer section.primitive {
+        padding-left: 3%;
+        padding-right: 3%;
+    }
+    .oloml-viewer section.dict,
+    .oloml-viewer section.list {
+        padding-left: 3%;
+        padding-right: 3%;
+    }
+}    
+
+
+
+
+
+
+
+/******************************************************************************
+ *
+ *      TYPOGRAPHY
+ *
+ ******************************************************************************/
+
+.oloml-viewer p,
+.oloml-viewer blockquote,
+.oloml-viewer ul,
+.oloml-viewer ol,
+.oloml-viewer dl,
+.oloml-viewer table,
+.oloml-viewer pre {
+    margin-top: 0em;
+    margin-bottom: 1em;
+}
+
+
+
+
+
+/** HEADERS *******************************************************************/
+
+ .oloml-viewer h1,
+ .oloml-viewer h2,
+ .oloml-viewer h3,
+ .oloml-viewer h4,
+ .oloml-viewer h5,
+ .oloml-viewer h6 {
+     margin-top: 1em; 
+     margin-bottom: 0.5em;
+     line-height: 1.2em;
+     font-weight: bold;
+ }
+ 
+.oloml-viewer h1 {
+    font-size: 2.25em;
+}
+
+.oloml-viewer h2 {
+    font-size: 1.875em;
+}
+
+.oloml-viewer h3 {
+    font-size: 1.375em;
+}
+
+.oloml-viewer h4 {
+    font-size: 1.25em;
+}
+
+.oloml-viewer h5 {
+    font-size: 1.125em;
+}
+
+.oloml-viewer h6 {
+    font-size: 1em;
+}
+
+
+
+
+/** PARAGRAPH *****************************************************************/
+
+.oloml-viewer p {
+    margin-top: 0;
+    margin-bottom: 1em;
+}
+
+
+
+
+/** ANCHOR ********************************************************************/
+
+.oloml-viewer a {
+    background-color: transparent;
+    color: #0366d6;
+    text-decoration: none;
+}
+
+.oloml-viewer a:active,
+.oloml-viewer a:hover {
+    outline-width: 0;
+    text-decoration: underline;
+}
+
+.oloml-viewer a:not([href]) {
+    color: inherit;
+    text-decoration: none;
+}
+
+
+
+
+
+
+/*** Code ***/
+
+.oloml-viewer code,
+.oloml-viewer kbd,
+.oloml-viewer pre {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 1em;
+}
+
+.oloml-viewer code {
+    margin: 0;
+    border-radius: 3px;
+    padding: 0.2em 0.4em;
+    background-color: rgba(27,31,35,0.05);
+}
+
+.oloml-viewer pre {
+    margin-top: 0;
+    margin-bottom: 0;
+    border-radius: 3px;
+    padding: 16px;
+    overflow: auto;
+    background-color: #f6f8fa;
+    word-wrap: normal;
+    font-size: 85%;
+    line-height: 1.45;
+}
+
+.oloml-viewer pre>code {
+    margin: 0;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    word-break: normal;
+    white-space: pre;
+    font-size: 100%;
+}
+
+.oloml-viewer pre code {
+    display: inline;
+    margin: 0;
+    border: 0;
+    padding: 0;
+    background-color: transparent;
+    max-width: auto;
+    overflow: visible;
+    line-height: inherit;
+    word-wrap: normal;
+}
+
+.oloml-viewer kbd {
+  display: inline-block;
+  box-shadow: inset 0 -1px 0 #959da5;
+  border: solid 1px #c6cbd1;
+  border-bottom-color: #959da5;
+  border-radius: 3px;
+  padding: 3px 5px;
+  vertical-align: middle;
+  background-color: #fafbfc;
+  font-size: 1em;
+  line-height: 10px;
+  color: #444d56;
+}
+
+
+
+/*** Blockquotes ***/
+
+.oloml-viewer blockquote {
+    border-left: 0.25em solid #dfe2e5;
+    padding: 0 1em;
+    color: #6a737d;
+}
+
+.oloml-viewer blockquote>:first-child {
+    margin-top: 0;
+}
+
+.oloml-viewer blockquote>:last-child {
+    margin-bottom: 0;
+}
+
+
+
+/*** Images ***/
+
+.oloml-viewer img {
+    border-style: none;
+    max-width: 100%;
+    box-sizing: content-box;
+    background-color: #fff;
+}
+
+.oloml-viewer img[align=right] {
+    padding-left: 20px;
+}
+
+.oloml-viewer img[align=left] {
+    padding-right: 20px;
+}
+
+
+
+
+/*** Divider ***/
+
+.oloml-viewer hr {
+    box-sizing: content-box;
+    margin: 24px 0;
+    border: 0;
+    border-bottom: 1px solid #dfe2e5;
+    padding: 0;
+    height: 0.25em;
+    overflow: visible;
+    background: transparent;
+}
+
+.oloml-viewer hr::before {
+    display: table;
+    content: "";
+}
+
+.oloml-viewer hr::after {
+    display: table;
+    clear: both;
+    content: "";
+}
+
+
+
+
+/*** Tables ***/
+
+.oloml-viewer table {
+    border-spacing: 0;
+    border-collapse: collapse;
+    width: 100%;
+    overflow: auto;
+}
+
+.oloml-viewer td,
+.oloml-viewer th {
+    padding: 0;
+}
+
+.oloml-viewer table th {
+    font-weight: 600;
+}
+
+.oloml-viewer table th,
+.oloml-viewer table td {
+    border: 1px solid #dfe2e5;
+    padding: 6px 13px;
+}
+
+.oloml-viewer table tr {
+    border-top: 1px solid #c6cbd1;
+    background-color: #fff;
+}
+
+.oloml-viewer table tr:nth-child(2n) {
+    background-color: #f6f8fa;
+}
+
+
+
+/*** Lists ***/
+
+.oloml-viewer ul,
+.oloml-viewer ol {
+    padding-left: 0;
+    margin: 1em 0 1em 0;
+}
+
+.oloml-viewer ol ol,
+.oloml-viewer ul ol {
+    list-style-type: lower-alpha;
+}
+
+.oloml-viewer ol ul,
+.oloml-viewer ul ul {
+    list-style-type: circle;
+}
+
+.oloml-viewer ul ul ol,
+.oloml-viewer ul ol ol,
+.oloml-viewer ol ul ol,
+.oloml-viewer ol ol ol {
+    list-style-type: lower-roman;
+}
+
+.oloml-viewer ul ul ul,
+.oloml-viewer ul ol ul,
+.oloml-viewer ol ul ul,
+.oloml-viewer ol ol ul {
+    list-style-type: square;
+}
+
+.oloml-viewer dd {
+    margin-left: 0;
+}
+
+.oloml-viewer ul,
+.oloml-viewer ol {
+    padding-left: 2em;
+}
+
+.oloml-viewer ul ul,
+.oloml-viewer ul ol,
+.oloml-viewer ol ol,
+.oloml-viewer ol ul {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.oloml-viewer li {
+    word-wrap: break-all;
+}
+
+.oloml-viewer li>p {
+    margin-top: 16px;
+}
+
+.oloml-viewer li+li {
+    margin-top: 0.25em;
+}
+
+
+
+/* definition lists */
+
+.oloml-viewer dl {
+    margin: 1em 0 1em 0;
+    padding: 0;
+}
+
+.oloml-viewer dt,
+.oloml-viewer dd {
+    display: inline;
+    margin: 0;
+    padding: 0;
+    font-size: 1em;
+}
+
+.oloml-viewer dt {
+    font-weight: 600;
+}
+
+.oloml-viewer dt:after {
+    content: ": ";
+    white-space: pre;
+    text-decoration: none;
+}
+
+.oloml-viewer dd {
+    display: block;
+}
+
+.oloml-viewer dd:after {
+    content: "\A\A";
+    white-space: pre;
+    line-height: 0.75em;    
+}
+
+.oloml-viewer a.item {
+    display: block;
+    color: black;
+    text-decoration: none;
+    padding: 0.5em;
+}
+
+.oloml-viewer a.item:hover {
+    color: black;
+    background-color: #E8E8E8;
+}
+
+
+
+/*** Emphasis ***/
+
+.oloml-viewer strong {
+    font-weight: bolder;
+}
+
+
+
+/*** Input ***/
+
+.oloml-viewer input {
+    margin: 0;
+    overflow: visible;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+.oloml-viewer [type="checkbox"] {
+    box-sizing: border-box;
+    padding: 0;
+}
+
+
+
+/*** olowiki classes ***/
+
+.oloml-viewer div.value {
+    font-size: 3em;
+    font-weight: bold;
+    text-align: center;
+}
+
+.oloml-viewer .error {
+    color: red;
+    font-weight: bold;
+}

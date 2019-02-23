@@ -35,6 +35,9 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
+local_modules/oloml/node_modules
+local_modules/oloml-viewer/node_modules
+local_modules/olo-webui/node_modules
 
 # Typescript v1 declaration files
 typings/
@@ -57,8 +60,6 @@ typings/
 # dotenv environment variables file
 .env
 
-# private folder with app data for development
+# development folders
 private/
-
-# GTD
-TODO.md
+data/

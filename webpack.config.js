@@ -24,25 +24,48 @@ const cssRule = {
     use: [ MiniCssExtractPlugin.loader, {loader:"css-loader", options:{minimize:true}} ]
 }
 
-const xmlRule = {
-    test: /\.yaml$/,
-    use: 'raw-loader'
-}
+const fileRule = {
+    test: /\.(woff2|woff|ttf)$/,
+    use: [{
+        loader: 'file-loader',
+        options: {}
+    }]
+};
+
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const vueLoaderPlugin = new VueLoaderPlugin();
+const vueRule = {
+    // vue-loader config to load `.vue` files or single file components.
+    test: /\.vue$/,
+    loader: 'vue-loader',
+    options: {
+        loaders: {
+            // https://vue-loader.vuejs.org/guide/scoped-css.html#mixing-local-and-global-styles
+            css: ['vue-style-loader', {
+                loader: 'css-loader',
+            }],
+            // js: [
+            //     'babel-loader',
+            // ],
+        },
+        cacheBusting: true,
+    }
+};
 
 
 module.exports = {
         
-    entry: './lib/client.js',
+    entry: './src/main.js',
     
     output: {
-        filename: 'client.js',
+        filename: 'olowiki.js',
         chunkFilename: '[name].bundle.js',
-        path: path.resolve(__dirname, 'dist')
-    },
+        path: path.resolve(__dirname, 'public')
+    },    
     
     module: {
-        rules: [ htmlRule, cssRule, xmlRule ]
+        rules: [ htmlRule, cssRule, fileRule, vueRule ]
     },
 
-    plugins: [ cssPlugin ],
+    plugins: [ cssPlugin, vueLoaderPlugin ],    
 }
