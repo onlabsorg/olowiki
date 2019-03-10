@@ -10,6 +10,10 @@ case "$1" in
         mocha -u tdd lib/olojs/test/expression.js
         ;;
         
+    "context")
+        mocha -u tdd lib/olojs/test/context.js
+        ;;
+            
     "dom")
         mocha lib/olojs/test/dom.js
         ;;    
