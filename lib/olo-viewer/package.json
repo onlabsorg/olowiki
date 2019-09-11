@@ -1,0 +1,22 @@
+{
+  "name": "olo-viewer",
+  "version": "0.1.0",
+  "description": "Web renderer for olojs documents.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "develop": "webpack --mode development --watch"
+  },
+  "author": "Marcello Del Buono (m.delbuono@gmail.com)",
+  "license": "MIT",
+  "dependencies": {
+    "dompurify": "^1.0.10",
+    "sanitize-html": "^1.20.0",
+    "vue": "^2.6.10"
+  },
+  "devDependencies": {
+    "vue-loader": "^15.7.0",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0"
+  }
+}

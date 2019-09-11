@@ -1,0 +1,276 @@
+<% title = "Standard steel profiles" %>
+
+<% HProfile: (b, h, s, t, r) -> {
+    b = b, 
+    h = h, 
+    s = s, 
+    t = t, 
+    r = r,
+    A = b*h - (b-s)*(h-2*t) + (4-pi)*r^2,
+    Ix = b*h^3/12 - (b-s)*(h-2*t)^3/12 + 4 * ((1/3-pi/16)*r^4 + (h/2-t-r)*r^3/3 + (1-pi/4)*(h/2-t-r)^2*r^2),
+    Iy = 2*t*b^3/12 + (h-2*t)*s^3/12 + 4 * ((1-5/16*pi)*r^4 + (5/6-pi/4)*r^3*s + (1/4-pi/16)*r^2*s^2),
+    ix = (Ix/A)^0.5,
+    iy = (Iy/A)^0.5
+    } %>
+
+<% svg = {
+
+    arrow: (x1, y1, x2, y2, w) -> render(`<path d="M {x11} {y11} L {x2} {y2} L {x12} {y12}" stroke="black"/>`, {
+        x2=x2, y2=y2,
+        dx = x2-x1,
+        dy = y2-y1,
+        L = (dx^2 + dy^2)^0.5,
+        x11 = x1 - w/2 * dy/L,
+        y11 = y1 + w/2 * dx/L,
+        x12 = x1 + w/2 * dy/L,
+        y12 = y1 - w/2 * dx/L }),
+        
+    axes: (x0, y0, xmin, xmax, ymin, ymax, arrow_len, arrow_wid) -> render(`
+        <line x1="{ax1}" y1="{y0}" x2="{ax2}" y2="{y0}" stroke="black" stroke-width="0.5" stroke-dasharray="{arlen} {arwid}"/>
+        <line x1="{x0}" y1="{ay1}" x2="{x0}" y2="{ay2}" stroke="black" stroke-width="0.5" stroke-dasharray="{arlen} {arwid}"/>
+        {xarrow} <text x="{xtext_x}" y="{xtext_y}">x</text>
+        {yarrow} <text x="{ytext_x}" y="{ytext_y}">y</text>`, 
+        {
+            x0=x0, y0=y0, 
+            arlen = arrow_len,
+            arwid = arrow_wid,
+            ax1 = x0+xmin,
+            ax2 = x0+xmax,
+            ay1 = y0-ymax,
+            ay2 = y0-ymin,
+            xarrow = arrow(ax2, y0, ax2+arlen, y0, arwid),
+            yarrow = arrow(x0, ay1, x0, ay1-arlen, arwid),
+            xtext_x = ax2+1.2*arlen, xtext_y=y0,
+            ytext_x = x0, ytext_y=ay1-1.2*arlen
+        }),
+        
+    dimension: (x1, y1, x2, y2, arrow_len, arrow_wid, tx, ty, txt) -> render(`
+        {arrow1} 
+        <line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="black" stroke-width="0.5"/> 
+        <text x="{tx}" y="{ty}">{txt}</text>
+        {arrow2}
+        `, {
+            x1=x1, y1=y1, x2=x2, y2=y2, arlen=arrow_len, arwid=arrow_wid, 
+            tx=tx, ty=ty, txt=txt,
+            dx = x2 -x1,
+            dy = y2 - y1,
+            L = (dx^2 + dy^2)^0.5,
+            arrow1 = arrow(x1+dx/L*arlen, y1+dy/L*arlen, x1, y1, arwid),
+            arrow2 = arrow(x2-dx/L*arlen, y2-dy/L*arlen, x2, y2, arwid)
+        }),
+
+    thk_dimension: (x1, y1, x2, y2, arrow_len, arrow_wid, tx, ty, txt) -> render(`
+        {arrow1} 
+        <line x1="{lx1}" y1="{ly1}" x2="{lx2}" y2="{ly2}" stroke="black" stroke-width="0.5"/>
+        <text x="{tx}" y="{ty}">{txt}</text>
+        {arrow2}
+        `, {
+            x1=x1, x2=x2, y1=y1, y2=y2,
+            arlen=arrow_len, arwid=arrow_wid,
+            tx=tx, ty=ty, txt=txt,
+            dx = x2 -x1,
+            dy = y2 - y1,
+            L = (dx^2 + dy^2)^0.5,
+            lx1 = x1 - dx/L*1.25*arlen,
+            ly1 = y1 - dy/L*1.25*arlen,
+            lx2 = x2 + dx/L*1.25*arlen,
+            ly2 = y2 + dy/L*1.25*arlen,
+            arrow1 = arrow(x1-dx/L*arlen, y1-dy/L*arlen, x1, y1, arwid),
+            arrow2 = arrow(x2+dx/L*arlen, y2+dy/L*arlen, x2, y2, arwid)
+        }),
+    
+    rad_dimension: (x1, y1, x2, y2, arrow_len, arrow_wid, tx, ty, txt) -> render(`
+        <line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="black" stroke-width="0.5"/> 
+        <text x="{tx}" y="{ty}">{txt}</text>
+        {arrow2}
+        `, {
+            x1=x1, y1=y1, x2=x2, y2=y2, arlen=arrow_len, arwid=arrow_wid, 
+            tx=tx, ty=ty, txt=txt,
+            dx = x2 -x1,
+            dy = y2 - y1,
+            L = (dx^2 + dy^2)^0.5,
+            arrow2 = arrow(x2-dx/L*arlen, y2-dy/L*arlen, x2, y2, arwid)
+        })
+    
+    } %>
+
+<% HEDrawing: (profile) -> render(`
+    <svg height="{view_height}" width="{view_width}">
+        <!-- draw the profile perimeter -->
+        <path d="
+            M {nx3} {ny3}
+            L {px3} {ny3}
+            L {px3} {ny2}
+            L {px2} {ny2}
+            A {r} {r} 0 0 0 {px1} {ny1}
+            L {px1} {py1}
+            A {r} {r} 0 0 0 {px2} {py2}
+            L {px3} {py2}
+            L {px3} {py3}
+            L {nx3} {py3}
+            L {nx3} {py2}
+            L {nx2} {py2}
+            A {r} {r} 0 0 0 {nx1} {py1}
+            L {nx1} {ny1}
+            A {r} {r} 0 0 0 {nx2} {ny2}
+            L {nx3} {ny2}
+            L {nx3} {ny3}
+        " stroke="black" stroke-width="2" fill="transparent"/>
+        {axes} 
+        {bdimension}
+        {hdimension}
+        {tdimension}
+        {sdimension}
+        {rdimension}
+    </svg>
+    `, {
+        b = profile.b * 1000,
+        h = profile.h * 1000,
+        s = profile.s * 1000,
+        t = profile.t * 1000,
+        r = profile.r * 1000,
+        view_height = 2*h,
+        view_width = 2*b,
+        u = b/10,
+        xmin = 10,
+        ymin = 10,
+        xmax = xmin + b,
+        ymax = ymin + h,
+        x0=view_width/2, y0=view_height/2,
+        nx1=x0-s/2, nx2=nx1-r, nx3=x0-b/2,
+        px1=x0+s/2, px2=px1+r, px3=x0+b/2,
+        ny3=y0-h/2, ny2=ny3+t, ny1=ny2+r,
+        py3=y0+h/2, py2=py3-t, py1=py2-r,
+        axes = svg.axes(x0, y0, -0.35*b, 0.35*b, -0.65*h, 0.65*h, u, u/3),
+        ldash=u, lspace=u/3,
+        bdimension = svg.dimension(nx3, y0+0.65*h+u, px3, y0+0.65*h+u, u, u/3, x0, y0+0.65*h+2*u, "b"),
+        hdimension = svg.dimension(nx3-2*u, py3, nx3-2*u, ny3, u, u/3, nx3-3*u, y0, "h"),
+        tdimension = svg.thk_dimension(x0-0.35*b, ny3, x0-0.35*b, ny2, u, u/3, x0-0.35*b, ny3-1.5*u, "t"),
+        sdimension = svg.thk_dimension(nx1, y0+0.25*h, px1, y0+0.25*h, u, u/3, px1+1.5*u, y0+0.25*h, "s"),
+        rdimension = svg.rad_dimension(px2-r/2^0.5+u*2^0.5, ny1-r/2^0.5+u*2^0.5, px2-r/2^0.5, ny1-r/2^0.5, u, u/3, px2-r/2^0.5+u*2^0.5+0.25*u, ny1-r/2^0.5+u*2^0.5+0.25*u, "r") 
+        })
+    %>
+
+<% HEA100  = HProfile(0.100, 0.096, 0.0050, 0.0080, 0.012) %>
+<% HEA120  = HProfile(0.120, 0.114, 0.0050, 0.0080, 0.012) %>
+<% HEA140  = HProfile(0.140, 0.133, 0.0055, 0.0085, 0.012) %>
+<% HEA160  = HProfile(0.160, 0.152, 0.0060, 0.0090, 0.015) %>
+<% HEA180  = HProfile(0.180, 0.171, 0.0060, 0.0095, 0.015) %>
+<% HEA200  = HProfile(0.200, 0.190, 0.0065, 0.0100, 0.018) %>
+<% HEA220  = HProfile(0.220, 0.210, 0.0070, 0.0110, 0.018) %>
+<% HEA240  = HProfile(0.240, 0.230, 0.0075, 0.0120, 0.021) %>
+<% HEA260  = HProfile(0.260, 0.250, 0.0075, 0.0125, 0.024) %>
+<% HEA280  = HProfile(0.280, 0.270, 0.0080, 0.0130, 0.024) %>
+<% HEA300  = HProfile(0.300, 0.290, 0.0085, 0.0140, 0.027) %>
+<% HEA320  = HProfile(0.300, 0.310, 0.0090, 0.0155, 0.027) %>
+<% HEA340  = HProfile(0.300, 0.330, 0.0095, 0.0165, 0.027) %>
+<% HEA360  = HProfile(0.300, 0.350, 0.0100, 0.0175, 0.027) %>
+<% HEA400  = HProfile(0.300, 0.390, 0.0110, 0.0190, 0.027) %>
+<% HEA450  = HProfile(0.300, 0.440, 0.0115, 0.0210, 0.027) %>
+<% HEA500  = HProfile(0.300, 0.490, 0.0120, 0.0230, 0.027) %>
+<% HEA550  = HProfile(0.300, 0.540, 0.0125, 0.0240, 0.027) %>
+<% HEA600  = HProfile(0.300, 0.590, 0.0130, 0.0250, 0.027) %>
+<% HEA650  = HProfile(0.300, 0.640, 0.0135, 0.0260, 0.027) %>
+<% HEA700  = HProfile(0.300, 0.690, 0.0145, 0.0270, 0.027) %>
+<% HEA800  = HProfile(0.300, 0.790, 0.0150, 0.0280, 0.030) %>
+<% HEA900  = HProfile(0.300, 0.890, 0.0160, 0.0300, 0.030) %>
+<% HEA1000 = HProfile(0.300, 0.990, 0.0165, 0.0310, 0.030) %>
+
+<% HEB100  = HProfile(0.100, 0.100, 0.0060, 0.0100, 0.012) %>
+<% HEB120  = HProfile(0.120, 0.120, 0.0065, 0.0110, 0.012) %>
+<% HEB140  = HProfile(0.140, 0.140, 0.0070, 0.0120, 0.012) %>
+<% HEB160  = HProfile(0.160, 0.160, 0.0080, 0.0130, 0.015) %>
+<% HEB180  = HProfile(0.180, 0.180, 0.0085, 0.0140, 0.015) %>
+<% HEB200  = HProfile(0.200, 0.200, 0.0090, 0.0150, 0.018) %>
+<% HEB220  = HProfile(0.220, 0.220, 0.0095, 0.0160, 0.018) %>
+<% HEB240  = HProfile(0.240, 0.240, 0.0100, 0.0170, 0.021) %>
+<% HEB260  = HProfile(0.260, 0.260, 0.0100, 0.0175, 0.024) %>
+<% HEB280  = HProfile(0.280, 0.280, 0.0105, 0.0180, 0.024) %>
+<% HEB300  = HProfile(0.300, 0.300, 0.0110, 0.0190, 0.027) %>
+<% HEB320  = HProfile(0.300, 0.320, 0.0115, 0.0105, 0.027) %>
+<% HEB340  = HProfile(0.300, 0.340, 0.0120, 0.0215, 0.027) %>
+<% HEB360  = HProfile(0.300, 0.360, 0.0125, 0.0225, 0.027) %>
+<% HEB400  = HProfile(0.300, 0.400, 0.0135, 0.0240, 0.027) %>
+<% HEB450  = HProfile(0.300, 0.450, 0.0140, 0.0260, 0.027) %>
+<% HEB500  = HProfile(0.300, 0.500, 0.0145, 0.0280, 0.027) %>
+<% HEB550  = HProfile(0.300, 0.550, 0.0150, 0.0290, 0.027) %>
+<% HEB600  = HProfile(0.300, 0.600, 0.0155, 0.0300, 0.027) %>
+<% HEB650  = HProfile(0.300, 0.650, 0.0160, 0.0310, 0.027) %>
+<% HEB700  = HProfile(0.300, 0.700, 0.0170, 0.0320, 0.027) %>
+<% HEB800  = HProfile(0.300, 0.800, 0.0175, 0.0330, 0.030) %>
+<% HEB900  = HProfile(0.300, 0.900, 0.0185, 0.0350, 0.030) %>
+<% HEB1000 = HProfile(0.300, 1.000, 0.0190, 0.0360, 0.030) %>
+
+<% HEM100 = HProfile(0.106, 0.120, 0.0120, 0.0200, 0.0120) %>
+<% HEM120 = HProfile(0.126, 0.140, 0.0125, 0.0210, 0.0120) %>
+<% HEM140 = HProfile(0.146, 0.160, 0.0130, 0.0220, 0.0120) %>
+<% HEM160 = HProfile(0.166, 0.180, 0.0140, 0.0230, 0.0150) %>
+<% HEM180 = HProfile(0.186, 0.200, 0.0145, 0.0240, 0.0150) %>
+<% HEM200 = HProfile(0.206, 0.220, 0.0150, 0.0250, 0.0180) %>
+<% HEM220 = HProfile(0.226, 0.240, 0.0155, 0.0260, 0.0180) %>
+<% HEM240 = HProfile(0.248, 0.270, 0.0180, 0.0320, 0.0210) %>
+<% HEM260 = HProfile(0.268, 0.290, 0.0180, 0.0325, 0.0240) %>
+<% HEM280 = HProfile(0.288, 0.310, 0.0185, 0.0330, 0.0240) %>
+<% HEM300 = HProfile(0.310, 0.340, 0.0210, 0.0390, 0.0270) %>
+<% HEM320 = HProfile(0.309, 0.359, 0.0210, 0.0400, 0.0270) %>
+<% HEM340 = HProfile(0.309, 0.377, 0.0210, 0.0400, 0.0270) %>
+<% HEM360 = HProfile(0.308, 0.395, 0.0210, 0.0400, 0.0270) %>
+<% HEM400 = HProfile(0.307, 0.432, 0.0210, 0.0400, 0.0270) %>
+<% HEM450 = HProfile(0.307, 0.478, 0.0210, 0.0400, 0.0270) %>
+<% HEM500 = HProfile(0.306, 0.524, 0.0210, 0.0400, 0.0270) %>
+<% HEM550 = HProfile(0.306, 0.572, 0.0210, 0.0400, 0.0270) %>
+<% HEM650 = HProfile(0.305, 0.668, 0.0210, 0.0400, 0.0270) %>
+<% HEM600 = HProfile(0.305, 0.620, 0.0210, 0.0400, 0.0270) %>
+<% HEM700 = HProfile(0.304, 0.716, 0.0210, 0.0400, 0.0270) %>
+<% HEM800 = HProfile(0.303, 0.814, 0.0210, 0.0400, 0.0300) %>
+<% HEM900 = HProfile(0.302, 0.910, 0.0210, 0.0400, 0.0300) %>
+<% HEM1000 = HProfile(0.302, 1.008, 0.0210, 0.0400, 0.0300) %>
+  
+  
+Select the profile: <% input("profile", {
+        type = "select",
+        value = URI.query.profile or "HEA100",
+        values = List("HEA100","HEA120","HEA140","HEA160","HEA180","HEA200","HEA220","HEA240","HEA260","HEA280","HEA300","HEA320","HEA340","HEA360","HEA400","HEA450","HEA500","HEA550","HEA600","HEA650","HEA700","HEA800","HEA900","HEA1000")
+        })
+    %>
+
+<% profile = this[inputs.profile] %>
+
+<% row: (name, profile) -> render(`
+    <tr>
+        <td>{name}</td>
+        <td>{b}</td>
+        <td>{h}</td>
+        <td>{t}</td>
+        <td>{s}</td>
+        <td>{r}</td>
+        <td>{A}</td>
+        <td>{Ix}</td>
+        <td>{Iy}</td>
+        <td>{ix}</td>
+        <td>{iy}</td>
+    </tr>
+    `, {
+        name = name,
+        b = profile.b*1000,
+        h = profile.h*1000,
+        t = profile.t*1000,
+        s = profile.s*1000,
+        r = profile.r*1000,
+        A = round(profile.A*1000000, 1),
+        Ix = round(profile.Ix*100000000, 1),
+        Iy = round(profile.Iy*100000000, 1),
+        ix = round(profile.ix*1000, 1),
+        iy = round(profile.iy*1000, 1)
+    }) %>
+
+# Profile <% inputs.profile %>
+
+<% HEDrawing(profile) %>
+
+<table>
+    <tr>
+        <th>name</th><th>b</th><th>h</th><th>t</th><th>s</th><th>r</th><th>A</th><th>Ix</th><th>Iy</th><th>ix</th><th>iy</th>
+    </tr>
+    <% row(inputs.profile, profile) %>
+</table>

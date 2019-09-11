@@ -8,8 +8,15 @@
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "bin/test"
   },
   "author": "Marcello Del Buono (m.delbuono@gmail.com)",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "strip-indent": "^2.0.0"
+  },
+  "dependencies": {
+    "query-parse": "^2.0.0",
+    "uri-js": "^4.2.2"
+  }
 }

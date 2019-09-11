@@ -1,0 +1,6 @@
+author: "m.delbuono@gmail.com"
+public: true
+greet: "Hello " + root.author + "!"
+version: 5
+            
+    

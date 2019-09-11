@@ -4,22 +4,40 @@ const fs = require("fs");
 const path = require("path");
 const cmd = require("commander");
 
-const package = JSON.parse( fs.readFileSync(`${__dirname}/../package.json`, 'utf8') );
-const version = package.version || "1.0.0";
+const OloWiki = require("../index");
+const olowiki = new OloWiki( process.cwd() );
 
-const params = cmd.version(version, "-v --version")
-    .option("-c, --config-path <value>", "Specify the config.json file path", "./config.json")
-    .option("-p, --port <value>", "Specify the port number.", 8010)
-    .parse(process.argv);
+const cli = cmd.version(OloWiki.getVersion(), "-v --version");
 
-const fullConfigPath = path.resolve(process.cwd(), params.configPath);
-const options = JSON.parse( fs.readFileSync(fullConfigPath, 'utf8') );
-options.version = version;
-options.basePath = options.basePath || path.dirname(fullConfigPath);
+cli.command("start [port]")
+   .description("Start the olowiki server.")
+   .action(port => olowiki.start(port));
+   
+cli.command("init <ownerId> [smtpURL]")
+   .description("Initialize a new olowiki instance in the working directory.")
+   .action((ownerId, smtpURL) => olowiki.init(ownerId, smtpURL));
 
-const Server = require("../lib/server");
-const server = new Server(options);
+cli.command("set-smtp <host> <port> <user> <password>")
+  .description("Configure the access parameters for the SMTP server used to send identity tokens to users.")
+  .action((host, port, user, password) => olowiki.setSMTP(host, port, user, password));
+   
 
-server.listen(params.port, () => {
-    console.log(`olowiki server listening on port ${params.port}`);
-});
+cli.command("gen-token <user> [attributes...]")
+   .description("Generate and identity token for the passed user name.")
+   .action((userId, attributes) => {
+       const token = olowiki.generateToken(userId, attributes);
+       console.log(token);
+   });
+
+cli.command("parse-token <toekn>")
+  .description("Verifies a user token and displays its payload.")
+  .action((token) => {
+      const user = olowiki.parseToken(token);
+      console.log({
+          id: user.id,
+          attributes: user.attributes
+      });
+  });
+
+
+cli.parse( process.argv );

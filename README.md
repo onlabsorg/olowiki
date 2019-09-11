@@ -1,11 +1,44 @@
-**`olowiki`** is a platform for creating web content in a cooperative way.
-It is a simple, distraction-free and unobtrusive wiki aiming to provide you 
-with nothing more than read-write web.
-  
-You can see it in action [here](https://wiki.onlabs.org).
-  
-For now the only developers documentation available is the source code itself,
-but if you are interested in contributing, you can contact me:
-<m.delbuono@gmail.com>.
+**olowiki** is a distributed [wiki](https://en.wikipedia.org/wiki/Wiki) where
+documents can import information from each other across nodes.
 
-MIT License.
+My node is https://wiki.olnlabs.org/.
+
+You can [install and run your own node](/doc/installation.md) or contribute to mine. 
+
+
+# Documentation
+
+* [Getting started with olowiki](https://wiki.onlabs.org/doc/tutorials/basic)
+* [Olowiki documents](https://wiki.onlabs.org/doc/document)
+* [Olowiki expression language](http://localhost:8010/doc/expression/index)
+
+
+# Contribute to olowiki
+
+olowiki is in an early development stage and needs still a lot of work. If you 
+wish to contribute to its development, you are welcome to do so.
+
+I will publish some issues soon.
+  
+  
+# MIT License
+
+Copyright (c) 2017 OnLabs.org
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

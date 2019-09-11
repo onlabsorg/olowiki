@@ -21,7 +21,7 @@ const htmlRule = {
 
 const cssRule = {
     test: /\.css$/,
-    use: [ MiniCssExtractPlugin.loader, {loader:"css-loader", options:{minimize:true}} ]
+    use: [ MiniCssExtractPlugin.loader, {loader:"css-loader"} ]
 }
 
 const fileRule = {
@@ -30,6 +30,18 @@ const fileRule = {
         loader: 'file-loader',
         options: {}
     }]
+};
+
+const babelRule = {
+    test: /\.m?js$/,
+    exclude: /(node_modules|bower_components)/,
+    use: {
+        loader: 'babel-loader',
+        options: {
+            sourceType: 'unambiguous',
+            presets: [['@babel/preset-env', {useBuiltIns: "usage"}]]
+        }
+    }
 };
 
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
@@ -55,16 +67,21 @@ const vueRule = {
 
 module.exports = {
         
-    entry: './src/main.js',
+    entry: {
+        'root': './src/root.js',
+        'container': './src/container.js',
+        'document': './src/document.js',
+        'test': './test/index.js'
+    },
     
     output: {
-        filename: 'olowiki.js',
+        filename: '[name].js',
         chunkFilename: '[name].bundle.js',
         path: path.resolve(__dirname, 'public')
     },    
     
     module: {
-        rules: [ htmlRule, cssRule, fileRule, vueRule ]
+        rules: [ htmlRule, cssRule, fileRule, vueRule, babelRule ]
     },
 
     plugins: [ cssPlugin, vueLoaderPlugin ],    
