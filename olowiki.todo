@@ -1,37 +1,6 @@
 
-Release v0.4.0:
-    ✔ server: Move `doc/` and `lib/` in the public folder and update `config.json` @done(2019-08-02) @project(server)
-    ✔ server: Remove `users` store @done(2019-08-15) @project(server)
-    ✔ client: When switching between view and editor, apply focus @done(2019-08-15) @project(client)
-    ✔ client: Add `bin` store in root page and remove `users` store @done(2019-08-15) @project(client)
-    ✔ client: Refresh container view after deleting an item @done(2019-08-15) @project(client)
-    ✔ bin-store: define and document core libraries @done(2019-08-18) @project(olowiki-binaries)
-    ✔ lib: /lib/index @done(2019-08-16) @project(lib/)
-    ✔ doc: /doc/index @done(2019-08-27) @project(doc/)
-    ✔ doc: /doc/expression @done(2019-08-13) @project(doc/)
-    ✔ olo-viewer: improve markdown css @done(2019-08-27) @project(olo-viewer)
-    ✔ olojs: Expressions: make sure that `.` returns `NOTHING` on functions, numbers, strings and arrays @done(2019-08-14) @project(olojs)
-    ✔ olojs: Test `store.read("/")` @done(2019-08-02) @project(olojs)
-    ✔ olojs: Allow access to _names, _names_ and __names_, but not to __names__ @done(2019-08-18) @project(olojs)
-    ✔ olojs: Stringify to JSON @done(2019-08-18) @project(olojs)
-    ✔ Refine `olowiki` cli @done(2019-08-29) @project(distribution)
-    ✔ Cleanup folders and dependencies @done(2019-08-30) @project(distribution)
-    ✔ Implement build command @done(2019-08-30) @project(Release v0.4.0)
-    ✔ Write README.md @done(2019-08-30) @project(Release v0.4.0)
-    ✔ Finalize and test olowiki cli @done(2019-09-07) @project(Release v0.4.0)
-    ✔ client root app: add token field to /users @done(2019-09-07) @project(Release v0.4.0)
-    ✔ restore e-mail login @done(2019-09-07) @project(Release v0.4.0)
-    ✔ test token permissions @done(2019-09-07) @project(Release v0.4.0)
-    ✘ rs: remove public folder from remoteStorage @cancelled(2019-09-08) @project(Release v0.4.0)
-    ✘ rs: add google drive and dropbox to remote storage store @cancelled(2019-09-08) @project(Release v0.4.0)
-    ✘ rs: test storages and make sure it works offline @cancelled(2019-09-08) @project(Release v0.4.0)
-    ✔ update /doc documentation about stores @done(2019-09-08) @project(Release v0.4.0)
-    ✔ Update README.md and installation.md @done(2019-09-08) @project(Release v0.4.0)
-    ✔ Setup test page @done(2019-09-10) @project(Release v0.4.0)
-    ✔ Transpile to es5 @done(2019-09-10) @project(Release v0.4.0)
-    ☐ Build, commit, push, publish on npm, install on server
-
-Release v0.4.1:
+Release v0.4.2:
+    ☐ Replace local modules references with webpack aliases
 
 Release v0.5.0:
 

@@ -84,5 +84,18 @@ module.exports = {
         rules: [ htmlRule, cssRule, fileRule, vueRule, babelRule ]
     },
 
-    plugins: [ cssPlugin, vueLoaderPlugin ],    
+    plugins: [ cssPlugin, vueLoaderPlugin ],  
+    
+    resolve: {
+        alias: {
+            "http-store": path.resolve(__dirname, "lib/http-store/"),
+            "http-store$": path.resolve(__dirname, "lib/http-store/index"),
+            "olo-editor": path.resolve(__dirname, "lib/olo-editor/"),
+            "olo-editor$": path.resolve(__dirname, "lib/olo-editor/index"),
+            "olo-viewer": path.resolve(__dirname, "lib/olo-viewer/"),
+            "olo-viewer$": path.resolve(__dirname, "lib/olo-viewer/index"),
+            "olojs": path.resolve(__dirname, "lib/olojs/"),
+            "olojs$": path.resolve(__dirname, "lib/olojs/index"),
+        }
+    }  
 }
