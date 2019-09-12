@@ -3,6 +3,9 @@
         <olowiki-app title="olowiki" @key="handleKeyboardCommand">
             
             <md-icon slot="logo" md-src="/olowiki.svg"></md-icon>
+            <md-button slot="button" class="md-icon-button" @click="userDialog.show = true">
+                <md-icon>person</md-icon>
+            </md-button>
             
             <div slot="content" class="content">
 
@@ -64,26 +67,16 @@
                             address under the <em>users</em> store, where he can
                             publish his documents.
                             </p>
-
-                        <p v-if="user !== 'Guest'"> You are currently identifying yourself as <b>{{user}}</b>
-                            via the following token, therefore your public folder is
+                        <p v-if="user !== 'Guest'"> You are currently identifying 
+                            yourself as <b>{{user}}</b>, therefore your public folder is
                             <a :href="'/users/'+user+'/'">/users/{{user}}/</a>.
                             </p>
 
                         <p v-if="user === 'Guest'"> You are currently not identifying yourself as
                             olowiki user, therefore you don't have access to any public
-                            folder. To identify yourself, paste below your identity
-                            token and save it on this machine, or request one.
+                            folder.
                             </p>
-
-                        <md-field>
-                            <label>Token</label>
-                            <md-textarea v-model="token"></md-textarea>
-                            </md-field>
                     </article>
-                    <md-button slot="button" @click="tokenDialog.show = true">Request Token</md-button>
-                    <md-button slot="button" @click="storeToken">Save Token</md-button>
-                    <md-button slot="button" @click="clearToken">Clear Token</md-button>
                 </store-card>
 
                 <store-card name="local">
@@ -106,19 +99,39 @@
 
         </olowiki-app>
         
-        <md-dialog :md-active.sync="tokenDialog.show">
+        <md-dialog :md-active.sync="userDialog.show">
             <md-dialog-title>Request Identity Token</md-dialog-title>
-            <md-dialog-content>
-                <p>Fill in your e-mail address and send a token to yourself.</p>
-                <md-field>
-                    <label>e-mail</label>
-                    <md-input v-model="tokenDialog.email" type="email"></md-input>
-                </md-field>
-            </md-dialog-content>
-            <md-dialog-actions>
-                <md-button class="md-primary" @click="tokenDialog.show = false">Close</md-button>
-                <md-button class="md-primary" @click="requestToken">Send</md-button>
-            </md-dialog-actions>
+            <md-tabs>
+                <md-tab md-label="User">
+                    <p v-if="user !== 'Guest'"> You are currently identifying yourself as <b>{{user}}</b>
+                        via the following token.
+                        </p>
+                    <p v-if="user === 'Guest'"> You are currently not identifying 
+                        yourself as olowiki user; paste below your identity 
+                        token and save it on this machine, or request one.
+                        </p>
+                    <md-field>
+                        <label>Token</label>
+                        <md-textarea v-model="token"></md-textarea>
+                        </md-field>
+                    <md-dialog-actions>
+                        <md-button class="md-primary" @click="storeToken">Save Token</md-button>
+                        <md-button class="md-primary" @click="clearToken">Clear Token</md-button>
+                        <md-button class="md-primary" @click="userDialog.show = false">Close</md-button>
+                    </md-dialog-actions>
+                </md-tab>
+                <md-tab md-label="Request Token">
+                    <p>Fill in your e-mail address and send a token to yourself.</p>
+                    <md-field>
+                        <label>e-mail</label>
+                        <md-input v-model="userDialog.email" type="email"></md-input>
+                    </md-field>
+                    <md-dialog-actions>
+                        <md-button class="md-primary" @click="requestToken">Send</md-button>
+                        <md-button class="md-primary" @click="userDialog.show = false">Close</md-button>
+                    </md-dialog-actions>
+                </md-tab>
+            </md-tabs>
         </md-dialog>
     </div>        
 </template>
@@ -133,6 +146,7 @@
     Vue.use( require("vue-material/dist/components/MdButton").default );
     Vue.use( require("vue-material/dist/components/MdField").default );
     Vue.use( require("vue-material/dist/components/MdDialog").default );
+    Vue.use( require("vue-material/dist/components/MdTabs").default );
     // Vue.use( require('vue-async-computed').default );
 
     module.exports = {
@@ -145,7 +159,7 @@
         data: () => ({
             token: client.getToken(),
             user: "Guest",
-            tokenDialog: {
+            userDialog: {
                 show: false,
                 email: ""
             }
@@ -172,8 +186,8 @@
             },
             
             async requestToken () {
-                const userId = this.tokenDialog.email;
-                this.tokenDialog.show = false;
+                const userId = this.userDialog.email;
+                this.userDialog.show = false;
                 try {
                     await client.requestToken(userId);
                 } catch (error) {
@@ -197,7 +211,6 @@
             
             async updateUser () {
                 this.user = await client.getUser();
-                console.log(this.user);
             },
             
             handleKeyboardCommand (event) {

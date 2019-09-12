@@ -1,51 +1,25 @@
 
-Release v0.4.2:
-    ☐ Replace local modules references with webpack aliases
+Release v0.4.3:
+    ☐ WUI: Add spinner during loading
+    ☐ WUI: Move login to dialog
 
 Release v0.5.0:
 
 Release v1.0.0:
-    server:
+    olowiki web UI:
+        ☐ Fix scrollbar in edit mode
+        ☐ Use the `doc.writeable` to deactivate the save button
+        ☐ When switching between view and editor, restore the last cursor position
+        ☐ editor: Improve syntax highlighting and folding for oloml mode
+        ☐ viewer: Improve document css
+        ☐ improve mobile styles
+    olowiki client:
+        ☐ Fix: in order to load the /bin/markdown chunk, I need to require "marked" in client. Why?
+        ☐ Move to src as new entry point and decouple from web UI
+    olowiki server:
         ☐ Probably there is a memory leak in the server: find and fix it.
         ☐ Implement init command
-        ☐ Implement init templates: default, full-auth, ecc.
-        
-    client:
-        ☐ Fix scrollbar in edit mode
-        ✔ Rename `home.vue` to `root.vue` @done(2019-08-20) @project(client)
-        ☐ Use the `doc.writeable` to deactivate the save button
-        ☐ Remove `users` store
-        ☐ Fix: in order to load the /bin/markdown chunk, I need to require "marked" in client. Why?
-        ☐ When switching between view and editor, restore the last cursor position
-        
-    bin-store:
-        
-    lib/:
-        
-    doc/:
-        
-    rs/:
-        ☐ ./engineering 
-        ☐ ./engineering/structural
-        ☐ ./engineering/structural/steel_profiles
-
-    http-store:
-        ☐ Test ...
-        ☐ Documentation ...
-
-    rs-store:
-        ☐ Fix store.read("/"): in nodejs it appears to word with sore.read("")
-
-    olo-editor:
-        ☐ Improve syntax highlighting and folding for oloml mode
-        ☐ Test ...
-        ☐ Documentation ...
-        
-    olo-viewer:
-        ☐ Improve document css
-        ☐ Test ...
-        ☐ Documentation ...
-        
+        ☐ Implement init templates: default, full-auth, ecc.        
     olojs:
         ☐ Document constructor to always translate the `source` parameter to an object with $writeable defaulting to false
         ☐ Define comparison of functions
@@ -57,5 +31,5 @@ Release v1.0.0:
         ☐ Test ...
         ☐ Documentation ...
         ☐ @SomedayMaybe Implement expression language in WASM
-        ✘ Expressions: implement `-` operator as shortcut for `-1 * R` @cancelled(2019-08-06) @project(olojs)
+        
         
