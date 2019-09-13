@@ -81,7 +81,7 @@ module.exports = {
     },    
     
     module: {
-        rules: [ htmlRule, cssRule, fileRule, vueRule, babelRule ]
+        rules: [ htmlRule, cssRule, fileRule, vueRule]//, babelRule ]
     },
 
     plugins: [ cssPlugin, vueLoaderPlugin ],  
