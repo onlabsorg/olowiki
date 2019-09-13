@@ -1,9 +1,11 @@
 
 Release v0.4.3:
     ☐ WUI: Add spinner during loading
-    ☐ WUI: Move login to dialog
+    ✔ WUI: Move login to dialog @done(2019-09-12) @project(Release v0.4.3)
 
 Release v0.5.0:
+    ☐ Move personal store to pouchdb with sync and publishing to server => users folders points to public pouchdb documents
+    ☐ Replace local-forage based local store with pouchdb-based store (to be synchronized in a future version)
 
 Release v1.0.0:
     olowiki web UI:
@@ -21,6 +23,7 @@ Release v1.0.0:
         ☐ Implement init command
         ☐ Implement init templates: default, full-auth, ecc.        
     olojs:
+        ☐ Object hierarchy: Expression -> Document -> Store -> Hub
         ☐ Document constructor to always translate the `source` parameter to an object with $writeable defaulting to false
         ☐ Define comparison of functions
         ☐ In general, define all the operations between functions

@@ -100,9 +100,9 @@
         </olowiki-app>
         
         <md-dialog :md-active.sync="userDialog.show">
-            <md-dialog-title>Request Identity Token</md-dialog-title>
+            <md-dialog-title>User</md-dialog-title>
             <md-tabs>
-                <md-tab md-label="User">
+                <md-tab md-label="Token">
                     <p v-if="user !== 'Guest'"> You are currently identifying yourself as <b>{{user}}</b>
                         via the following token.
                         </p>
