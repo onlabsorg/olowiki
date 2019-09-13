@@ -1,14 +1,1 @@
-(window["webpackJsonp"] = window["webpackJsonp"] || []).push([["/bin_math"],{
-
-/***/ "./lib/bin-store/math.js":
-/*!*******************************!*\
-  !*** ./lib/bin-store/math.js ***!
-  \*******************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("\nconst olojs = __webpack_require__(/*! olojs */ \"./lib/olojs/index.js\");\nconst isNumber = __webpack_require__(/*! lodash/isNumber */ \"./node_modules/lodash/isNumber.js\");\nconst isString = __webpack_require__(/*! lodash/isString */ \"./node_modules/lodash/isString.js\");\n\n\nexports.PI = Math.PI;\nexports.sin = Math.sin;\nexports.cos = Math.cos;\nexports.tan = Math.tan;\nexports.asin = Math.asin;\nexports.acos = Math.acos;\nexports.atan = Math.atan;\n\nexports.int = async function (value) {\n    return isNumber(value) ? Math.round(value) : NOTHING;    \n}\n\nexports.hex = function (numStr) {\n    return isString(numStr) ? Number(`0x${numStr}`) || NOTHING : NOTHING;\n}\n\nexports.oct = function (numStr) {\n    return isString(numStr) ? Number(`0o${numStr}`) || NOTHING : NOTHING;\n}\n\nexports.bin = function (numStr) {\n    return isString(numStr) ? Number(`0b${numStr}`) || NOTHING : NOTHING;\n}\n\nexports.min = (...nums) => Math.min(...nums);\n\nexports.max = (...nums) => Math.max(...nums);\n\nexports.toString = () => exports.__text__;\n\nexports.title = \"Binary module: math\";\nexports.__text__ = `<p>\nFind the documentation at <a href=\"/doc/binaries/math\">/doc/binaries/math</a>\n</p>`;\n\n\n//# sourceURL=webpack:///./lib/bin-store/math.js?");
-
-/***/ })
-
-}]);
+(window.webpackJsonp=window.webpackJsonp||[]).push([[2],{249:function(n,t,a){function r(n,t,a,r,e,o,i){try{var u=n[o](i),c=u.value}catch(n){return void a(n)}u.done?t(c):Promise.resolve(c).then(r,e)}a(8),a(34),a(35),a(3),a(55),a(9);a(47);var e=a(135),o=a(136);t.PI=Math.PI,t.sin=Math.sin,t.cos=Math.cos,t.tan=Math.tan,t.asin=Math.asin,t.acos=Math.acos,t.atan=Math.atan,t.int=function(){var n,t=(n=regeneratorRuntime.mark((function n(t){return regeneratorRuntime.wrap((function(n){for(;;)switch(n.prev=n.next){case 0:return n.abrupt("return",e(t)?Math.round(t):NOTHING);case 1:case"end":return n.stop()}}),n)})),function(){var t=this,a=arguments;return new Promise((function(e,o){var i=n.apply(t,a);function u(n){r(i,e,o,u,c,"next",n)}function c(n){r(i,e,o,u,c,"throw",n)}u(void 0)}))});return function(n){return t.apply(this,arguments)}}(),t.hex=function(n){return o(n)&&Number("0x".concat(n))||NOTHING},t.oct=function(n){return o(n)&&Number("0o".concat(n))||NOTHING},t.bin=function(n){return o(n)&&Number("0b".concat(n))||NOTHING},t.min=function(){return Math.min.apply(Math,arguments)},t.max=function(){return Math.max.apply(Math,arguments)},t.toString=function(){return t.__text__},t.title="Binary module: math",t.__text__='<p>\nFind the documentation at <a href="/doc/binaries/math">/doc/binaries/math</a>\n</p>'}}]);
