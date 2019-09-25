@@ -1,0 +1,47 @@
+<% title = "olowiki document" %>
+<% __render__ = import("/bin/markdown") %>
+
+An olowiki document is a template containing inline code enclosed between &lt;%
+and %&gt;. The inline code can be of two types:
+
+* `Expressions` which are replaced by their value when the document is rendered
+* `Declaration statements` assigning a value to a name, which do not render any value
+
+For example the folllwing template:
+
+```
+Let's define some variable ... <% "<"+"%" %> v = "DONE" <% "%"+">" %> 
+and then use it: <% "<"+"%" %> v+"!" <% "%"+">" %>
+```
+
+will render to the following HTML:
+
+```
+Let's define some variable ... and then use it: DONE!
+```
+
+The inline expression language is documented [here](/doc/expression/index).
+
+The rendering process of a document's source code consists of the following
+steps:
+
+1. The document namespace is initialized with the global names
+2. The inline expressions are evaluated and the '&lt;% ... %&gt;' text is replaced
+   by the resulting value. Notice that a declaration statement evaluates to an
+   empty string, therefore it rendered nothing; instead, it creates a new name
+   in the document namespace.
+3. The resulting text is post-processed by the `__render__(text)` function, which
+   returns the HTML to be rendered. By default the `__render__` function returns
+   the text as it is, but you can redefine it. For example, this document is
+   written in markdown and the `__render__` function is set to `import("/bin/markdown")`
+   which translates markdown to HTML (see this source code in edit mode).
+4. The value of the `title` variable is shown in the header bar.
+5. Finally, the HTML gets sanitized and injected in the DOM.
+
+The `import` statement loads an external document and performs steps 1, 2 and 3,
+returning the document namespace. This way you can re-use in your document all 
+the variables and function defined in another document. Furthermore, stringifying
+the imported namespace results in the rendered text of the imported document.
+
+
+

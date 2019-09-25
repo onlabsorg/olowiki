@@ -1,0 +1,42 @@
+<%  title = "olowiki expression: L mod R"  %>
+<%  __render__ = import("/bin/markdown")  %>
+
+<% test = import("/lib/test") %>
+<% check = test.check %>
+
+##### When L is NOTHING
+* <% check(NOTHING mod NOTHING == NOTHING)        %> It should return NOTHING if R is NOTHING
+* <% check(NOTHING mod 10 == NOTHING)             %> It should return NOTHING if R is a number
+* <% check(NOTHING mod "abc" == NOTHING)          %> It should return NOTHING if R is a string
+* <% check(NOTHING mod [1,2,3] == NOTHING)        %> It should return NOTHING if R is a list
+* <% check(NOTHING mod {a=1,b=2,c=3} == NOTHING)  %> It should return NOTHING if R is a namespace
+
+##### When L is a number
+* <% check(10 mod NOTHING == NOTHING)        %> It should return NOTHING if R is NOTHING
+* <% check(10.5 mod 3 == 1.5)                %> It should return the remainder of L/R if R is a number
+* <% check(10 mod "abc" == NOTHING)          %> It should return NOTHING if R is a string
+* <% check(10 mod [1,2,3] == NOTHING)        %> It should return NOTHING if R is a list
+* <% check(10 mod {a=1,b=2,c=3} == NOTHING)  %> It should return NOTHING if R is a namespace
+
+##### When L is a string
+* <% check("abc" mod NOTHING == NOTHING)        %> It should return NOTHING if R is NOTHING
+* <% check("abc" mod 10 == NOTHING)             %> It should return NOTHING if R is a number
+* <% check("abc" mod "abc" == NOTHING)          %> It should return NOTHING if R is a string
+* <% check("abc" mod [1,2,3] == NOTHING)        %> It should return NOTHING if R is a list
+* <% check("abc" mod {a=1,b=2,c=3} == NOTHING)  %> It should return NOTHING if R is a namespace
+
+##### When L is a list
+* <% check([1,2,3] mod NOTHING == NOTHING)        %> It should return NOTHING if R is NOTHING
+* <% check([1,2,3] mod 10 == NOTHING)             %> It should return NOTHING if R is a number
+* <% check([1,2,3] mod "abc" == NOTHING)          %> It should return NOTHING if R is a string
+* <% check([1,2,3] mod [1,2,3] == NOTHING)        %> It should return NOTHING if R is a list
+* <% check([1,2,3] mod {a=1,b=2,c=3} == NOTHING)  %> It should return NOTHING if R is a namespace
+
+##### When L is a namespace
+<% L = {__mod__: (R) -> "L mod " + R.s} %>
+* <% check({a=1,b=2,c=3} mod NOTHING == NOTHING)      %> It should return NOTHING if R is NOTHING
+* <% check({a=1,b=2,c=3} mod 10 == NOTHING)           %> It should return NOTHING if R is a number
+* <% check({a=1,b=2,c=3} mod "abc" == NOTHING)        %> It should return NOTHING if R is a string
+* <% check({a=1,b=2,c=3} mod [1,2,3] == NOTHING)      %> It should return NOTHING if R is a list
+* <% check({a=1,b=2,c=3} mod {d=4,e=5} == NOTHING)    %> It should return NOTHING if R is a namespace
+* <% check(L mod {s="Rs"} == "L mod Rs")                %> It should delegate to `L.__mod__(R)` if it exists

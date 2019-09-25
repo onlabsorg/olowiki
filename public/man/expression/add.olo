@@ -1,0 +1,52 @@
+<%  title = "olowiki expression: L + R"  %>
+<%  __render__ = import("/bin/markdown")  %>
+
+<% test = import("/lib/test") %>
+<% check = test.check %>
+
+##### When L is NOTHING
+* <% check(NOTHING - NOTHING == NOTHING)        %> It should return NOTHING if R is NOTHING
+* <% check(NOTHING - 10 == NOTHING)             %> It should return NOTHING if R is a number
+* <% check(NOTHING - "abc" == NOTHING)          %> It should return NOTHING if R is a string
+* <% check(NOTHING - [1,2,3] == NOTHING)        %> It should return NOTHING if R is a list
+* <% check(NOTHING - {a=1,b=2,c=3} == NOTHING)  %> It should return NOTHING if R is a namespace
+
+##### When L is a number
+<% R = {__add__: (L) -> L + 1} %>
+* <% check(10 + NOTHING == 10)              %> It should return L if R is NOTHING
+* <% check(10 + 20 == 30)                   %> It should return the sum of L and R if R is a number
+* <% check(10 + "abc" == NOTHING)           %> It should return NOTHING if R is a string
+* <% check(10 + [1,2,3] == NOTHING)         %> It should return NOTHING if R is a list
+* <% check(10 + {a=1,b=2,c=3} == NOTHING)   %> It should return NOTHING if R is a namespace
+* <% check(10 + R == 11)                    %> It should delegate to `R.__add__(L)` if it exists
+
+##### When L is a string
+<% R = {__add__: (L) -> "R plus " + L} %>
+* <% check("abc" + NOTHING == "abc")            %> It should return L if R is NOTHING
+* <% check("abc" + 20 == NOTHING)               %> It should return NOTHING if R is a string
+* <% check("abc" + "def" == "abcdef")           %> It should return the concatenation of L and R if also R is a string
+* <% check("abc" + [1,2,3] == NOTHING)          %> It should return NOTHING if R is a list
+* <% check("abc" + {a=1,b=2,c=3} == NOTHING)    %> It should return NOTHING if R is a namespace
+* <% check("abc" + R == "R plus abc")           %> It should delegate to `R.__add__(L)` if it exists
+
+##### When L is a list
+<% L = [1,2,3] %>
+<% R = {__add__: (L) -> "R plus [" + L[1] + L[2] + L[3] + "]" } %>
+* <% check(L + NOTHING == L)                        %> It should return L if R is NOTHING
+* <% check(L + 10 == NOTHING )                      %> It should return NOTHING if R is a number
+* <% check(L + "abc" == NOTHING )                   %> It should return NOTHING if R is a string
+* <% check(L + [4,5,6] == [1,2,3,4,5,6] )           %> It should return L with R concatenated if R is a list
+* <% check(L + {a=1,b=2,c=3} == NOTHING )           %> It should return NOTHING if R is a namespace
+* <% check(['A','B','C'] + R == "R plus [ABC]" )    %> It should delegate to `R.__add__(L)` if it exists
+
+##### When L is a namespace
+<% L = {a=1,b=2,c=3} %>
+<% L1 = {__add__: (R) -> 1+R} %>
+<% R1 = {__add__: (L) -> L.b * 10} %>
+* <% check(L + NOTHING == L)                        %> It should return L if R is NOTHING
+* <% check(L + 10 == NOTHING )                      %> It should return NOTHING if R is a number
+* <% check(L + "abc" == NOTHING )                   %> It should return NOTHING if R is a string
+* <% check(L + [4,5,6] == NOTHING )                 %> It should return NOTHING if R is a list
+* <% check(L + {d=4,e=5} == {a=1,b=2,c=3,d=4,e=5} ) %> It should return L merged with R if it is a namespace
+* <% check(L1 + 10 == 11)                           %> It should delegate to `L.__add__(R)` if it exists
+* <% check(L + R1 == 20 )                           %> It should delegate to `R.__add__(L)` if it exists

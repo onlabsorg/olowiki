@@ -1,0 +1,84 @@
+<% title = "function: import(uri)" %>
+<% __render__ = import("/bin/markdown") %>
+<% test = import("/lib/test") %>
+
+The `import` function is a powerful function: it loads and return the global 
+scope of an external document given its path.  
+
+Let's, for example, import the document [/lib/importee](/lib/importee):
+
+
+```
+<% "<"+"%" %> importedNS = import("/lib/importee") <% "%"+">" %> <% importedNS = import("/lib/importee") %>
+```
+
+Now `importedNS` is a namespace containing all the names defined in the `importee`
+document. For example:
+
+```
+<% "<"+"%" %> pi = importedNS.round(importedNS.PI, 2) <% "%"+">" %> <% pi = importedNS.round(importedNS.PI, 2) %>
+```
+
+The value of `pi` should be `3.14`. <% test.check(pi == 3.14) %>
+
+
+### Import relative paths
+
+The `import` function accepts also relative paths, therefore we could also import
+the `importee` document as follows: <% test.check( import("../../lib/importee").title == importedNS.title ) %>
+
+```
+<% "<"+"%" %> importedNS = import("../../lib/importee") <% "%"+">" %> 
+```
+
+### Import from absolute HTTP URL's
+
+The `import` function allows to fetch documents also from absolute HTTP or 
+HTTPS URL's.
+
+For example the following statement should load the `importee` document that
+I published to my `/rs/public` folder. <% fetchedDoc = import("https://storage.5apps.com/mdelbuono/public/olo/importee") %> <% test.check(fetchedDoc.title == "My public importee") %>
+
+```
+<% "<"+"%" %> fetchedDoc = import("https://storage.5apps.com/mdelbuono/public/olo/importee") <% "%"+">" %> 
+```
+
+In general, any web text resource can be imported and rendered as a document.
+
+An external document cannot be visualized directly in olowiki, but it can be
+rendered inside another olowiki document as follows:
+
+```
+<% "<"+"%" %> fetchedDoc = import("https://storage.5apps.com/mdelbuono/public/olo/importee") <% "%"+">" %> 
+<% "<"+"%" %> str(fetchedDoc) <% "%"+">" %> 
+```
+
+This is possible because the document namespace returned by import (in this case
+the `fetchedDoc` namespace) stringifies to the document rendered content.
+
+Considering that inline expressions are rendered by implicitly calling the `str`
+function, the previous code can be shortened as follows:
+
+```
+<% "<"+"%" %> import("https://storage.5apps.com/mdelbuono/public/olo/importee") <% "%"+">" %> 
+```
+
+
+### Import with parameters
+
+The optional querystring of the passed uri, will be available to the document as 
+the namespace `URI.query`. This means that the document can behave like a function 
+and render a different text/namespace depending on the given query string.
+
+For example, the `importee` document contains a varable named `pi_digits` that
+defines the number of digits of the `PI` constant and defaults to `5`. <% test.check(importedNS.PI == 3.14159) %>
+
+The document allows to overwite the `pi_digits` variable by passign a `pidig` as 
+parameter via the query string:
+
+```
+<% "<"+"%" %> importedNS = import("/lib/importee?pidig=2") <% "%"+">" %> <% importedNS = import("/lib/importee?pidig=2") %>
+```
+
+If we do that, `importedNS.PI` will be `3.14`. <% test.check(importedNS.PI == 3.14) %>
+

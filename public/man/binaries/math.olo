@@ -1,0 +1,23 @@
+<% title = "Binary module: math" %>
+<% __render__ = import("/bin/markdown") %>
+<% test = import("/lib/test") %>
+<% math = import("/bin/math") %>
+
+The `math` binary module returns a namespace containing the following items:
+
+* `PI`: a contant with value 3.14159...                                         <% test.check(math.PI*100 - math.PI*100 mod 1 == 314) %>
+* `int(number)`: a function that rounds a given `number` to the closest integer   <% test.check(math.int(math.PI*10000) == 31416) %>
+* `hex(string)`: a function converts a string of hexadecimal digits to a number   <% test.check(math.hex("1AF") == 16^2*1 + 16*10 + 15) %>
+* `oct(string)`: a function converts a string of octal digits to a number         <% test.check(math.oct("463") == 8^2*4 + 8*6 + 3) %>
+* `bin(string)`: a function converts a string of binary digits to a number        <% test.check(math.bin("101") == 2^2*1 + 2*0 + 1) %>
+* `min(n1, n2, ...)`: a function returning the minimum of a list of numbers       <% test.check(math.min(1, 30, -2, 0.1, -3.5, 10) == -3.5) %>
+* `max(n1, n2, ...)`: a function returning the maximum of a list of numbers       <% test.check(math.max(1, 30, -2, 0.1, -3.5, 10) == 30) %>
+* `sin(a)`: a function returning the sinus of an angle in radians                 <% test.check(math.sin(math.PI/2) == 1) %>
+* `cos(a)`: a function returning the cosinus of an angle in radians               <% test.check(math.cos(math.PI) == -1) %>
+* `tan(a)`: a function returning the tangent of an angle in radians               <% test.check(math.int(math.tan(math.PI/4)) == 1) %>
+* `asin(a)`: a function returning the arcsinus of a number in radians             <% test.check(math.asin(1) == math.PI/2) %>
+* `acos(a)`: a function returning the arccosinus of a number in radians           <% test.check(math.acos(-1) == math.PI) %>
+* `atan(a)`: a function returning the arctangent of a number in radians           <% test.check(math.atan(1) == math.PI/4) %>
+
+
+

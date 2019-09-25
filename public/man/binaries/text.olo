@@ -1,0 +1,37 @@
+<% title = "Binary module: text" %>
+<% __render__ = import("/bin/markdown") %>
+<% test = import("/lib/test") %>
+<% text = import("/bin/text") %>
+
+
+### text.ucase(S)
+
+Returns a string obtained from converting `S` to uppercase.
+<% test.check( text.ucase("aBc") == "ABC") %>
+
+
+### text.lcase(S)
+
+Returns a string obtained from converting `S` to lowercase.
+<% test.check( text.lcase("aBC") == "abc") %>
+
+
+### text.trim(S)
+
+Returns a string obtained from `S` by removing leading and trailing spaces.
+<% test.check( text.trim(" abc   ") == "abc") %>
+
+
+### text.split(S, divider)
+
+Splits the string `S` in a list of substring.
+<% test.check( text.split("abc;;def;;ghi", ";;") == ["abc","def","ghi"]) %>
+
+
+### text.render(template)
+Returns a string obtained from `S` by replacing `{name}` fields with the value
+of the variable `name`. <% x=10 %> <% y=20 %> <% test.check(text.render("x={x}, y={y}") == "x=10, y=20") %>
+
+
+### text(X)
+Calling the `text` namespace is equivalent to calling `str`. <% test.check(text([1,2,3]) == str([1,2,3])) %>

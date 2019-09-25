@@ -1,0 +1,22 @@
+<% title = "function: bool(X)" %>
+<% __render__ = import("/bin/markdown") %>
+<% test = import("/lib/test") %>
+
+The `bool` function returns `TRUE` or `FALSE` according to the following rules:
+
+* <% test.check(bool(NOTHING) == FALSE) %>  It should return `FALSE` if `X` is `NOTHING`
+* <% test.check(bool(10) == TRUE) %>        It should return `TRUE` if `X` is a non-null number
+* <% test.check(bool(0) == FALSE) %>        It should return `FALSE` if `X` is 0
+* <% test.check(bool("abc") == TRUE) %>     It should return `TRUE` if `X` is a non-empty string
+* <% test.check(bool("") == FALSE) %>       It should return `FALSE` if `X` is an empty string
+* <% test.check(bool([1,2,3]) == TRUE) %>   It should return `TRUE` if `X` is a non-empty list
+* <% test.check(bool([]) == FALSE) %>       It should return `FALSE` if `X` is an empty list
+* <% test.check(bool({a=1}) == TRUE) %>     It should return `TRUE` if `X` is a non-empty namespace
+* <% test.check(bool({}) == FALSE) %>       It should return `FALSE` if `X` is an empty namespace
+
+<% tNS = {__size__: () -> 10} %>
+<% fNS = {__size__: () -> 0} %>
+
+In reality `bool(X)` returns `TRUE` when `size(X) > 0` and `FALSE` when `size(X) == 0`.
+You can customize the `bool` behaviour of a namespace by setting the `__size__`
+function. <% test.check(bool(tNS) == TRUE and bool(fNS) == FALSE) %>

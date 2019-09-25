@@ -1,0 +1,130 @@
+<% title = "namespace data type" %>
+<% __render__ = import("/bin/markdown") %>
+<% test = import("/lib/test") %>
+
+A `namespace` is a container for variables accessible with dot-notation.
+You define a namespace as follows:
+
+```
+<% "<"+"%" %> ns = {
+    
+    name1 = expression1,
+    
+    name2 = expression2,
+    
+    name3: (p1,p2,p3,...) -> expression3,
+    
+    ...
+
+    } <% "%"+">" %>
+```
+
+and you access its content as follows:
+
+```
+<% "<"+"%" %> val1 = ns.name1 <% "%"+">" %>
+<% "<"+"%" %> ns.name2 <% "%"+">" %>
+<% "<"+"%" %> val3 = ns.name3(arg1, arg2, arg3, ...) <% "%"+">" %>
+```
+
+### dot-reference
+
+Given the following namespace,
+
+```
+<% "<"+"%" %> ns = {
+      name   = 0,
+     _name   = 10,
+     _name_  = 11,
+     _name__ = 12,
+    __name_  = 21,
+    __name__ = 22
+    
+    } <% "%"+">" %>
+
+<% ns = {
+      name   = 0,
+     _name   = 10,
+     _name_  = 11,
+     _name__ = 12,
+    __name_  = 21,
+    __name__ = 22
+    
+    } %>
+```
+
+* expect `ns.name` to equal `0`             <% test.check(ns.name == 0) %>
+* expect `ns._name` to equal `10`           <% test.check(ns._name == 10) %>
+* expect `ns._name_` to equal `10`          <% test.check(ns._name_ == 11) %>
+* expect `ns._name__` to equal `10`         <% test.check(ns._name__ == 12) %>
+* expect `ns.__name_` to equal `10`         <% test.check(ns.__name_ == 21) %>
+* expect `ns.__name__` to equal `UNDEFINED` <% test.check(ns.__name__ == NOTHING) %>
+
+The bottom line is: `"_"` is always allowed in a name, but names starting with `"__"`
+and ending with `"__"` are not accessible with dot notation. They are used to
+define the behaviour of the namespace (e.g. `__add__` define the `+` behaviour).
+
+
+##### Namespace as data structure
+
+The most immediate application of a namespace is to define a data structure.
+For example we could represent a person with a namespace like this:
+
+<% "<"+"%" %> person1 = {
+    name = "Luigi",
+    surname "Latrottola",
+    bday = "25-03-1977",
+    age: () -> today() - date(bday)
+    } <% "%"+">" %>
+
+By defining some special functions in a namespace, we can define its behaviour
+inside expressions. For example, if a namespace A contains the `__add__` function,
+the expression A+B will result in calling A.__add__(B).  
+  
+To find out more about the namespace special function, read the expression 
+[documentation](../index).
+
+
+##### Namespace as data type
+
+A [function](../function) can return anything, including a namespace. Just a hint:
+a function returning a namespace can be thought as a class constructor.
+
+
+##### Namespace as expressions bundle
+
+The `olowiki` expression language is based on simple expressions. That's great,
+but in some cases expressions can become complex and we may want to break them
+down to more simple expressions. For example, take the following expression:
+
+```
+<% "<"+"%" %> volume = 3.14 * 10^2 * 100 <% "%"+">" %>
+```
+
+it calculates the volume of a cylinder with radius 10 and height 100. It is not a 
+particularly complex expression but we may want to break it down to make it more
+clear:
+
+```
+<% "<"+"%" %> PI = 3.14 <% "%"+">" %>
+<% "<"+"%" %> r = 10 <% "%"+">" %>
+<% "<"+"%" %> h = 100 <% "%"+">" %>
+<% "<"+"%" %> A = PI * r^2 <% "%"+">" %>
+<% "<"+"%" %> V = A * h <% "%"+">" %>
+```
+
+This works fine and it is clear, but we polluted the global namespace with a
+lot of names that we may not need. The alternative using namespaces is:
+
+```
+<% "<"+"%" %> volume = {
+    PI = 3.14,
+    r = 10,
+    h = 100,
+    A = PI * r^2,
+    V = A * h
+    }.V
+    <% "%"+">" %>
+```
+
+We expect `volume` to equal `31400`. <% test.check({PI=3.14, r=10, h=100, A=PI*r^2, V=A*h}.V == 31400) %>

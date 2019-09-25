@@ -1,0 +1,185 @@
+<% title = "Getting started with olowiki" %>
+<% __render__ = import("/bin/markdown") %> 
+
+You are reading an `olowiki document`. If looks like an ordinary HTML document
+but it's something more.
+
+* olowiki documents can be edited
+* olowiki documents can be shared and their content re-used in other documents
+* olowiki documents are stored on a distributed storage system, not in a centralized database
+
+
+### Editing documents
+
+First of all, you can edit it by clicking on the top-right icon or by pressing 
+`ctrl-enter`. Once you are done editing, you click on the `done` icon or you
+press `ctrl-enter` to return to view mode where the modified document will be 
+rendered.
+
+Although you are allowed to change this document, you cannot save the changes
+because you don't own it. When you will reload the page, the changes will be gone and
+the original document will be restored. 
+
+The good news is that you can create your own documents which you and only you
+can view, change and save. If you want you can also create public documents 
+(like this one), allowing other people to visualize them and play with the source code,
+but not to save them. Saving changes is something that only you, the owner, can do.
+
+Let's create a new document then:
+
+* Open [this link](/local/tutorials/my-first-document) in a new tab of your browser
+* Enter the edit mode and copy-paste the following source
+
+```
+<% "<"+"%" %> title = "My First Document" <% "%"+">" %>
+<% "<"+"%" %> name = "Marcello" <% "%"+">" %>
+<% "<"+"%" %> surname = "Del Buono" <% "%"+">" %>
+<% "<"+"%" %> age = 42 <% "%"+">" %>
+
+<p>Hello there!</p>
+<p> My name is <% "<"+"%" %> name + " " + surname <% "%"+">" %> and this is
+    my first olowiki document.</p>
+<p> I am <% "<"+"%" %> age <% "%"+">" %> years old and next year I will be
+    <% "<"+"%" %> age+1 <% "%"+">" %> year old.</p>
+```
+
+* Switch back to view mode and your document should render to:
+
+>   <p>Hello there!</p>
+>   <p> My name is Marcello Del Buono and this is my first olowiki document.</p>
+>   <p> I am 42 years old and next year I will be 43 year old.</p>
+
+* Save it! 
+
+Congratulations, you created your first document. You can bookmark it to access 
+it again later, or just remember its URL. It is a private document: no one else 
+except you can see it.
+
+Let's now walk throw the document source line by line and try to understand it.
+
+
+The first line is a variable definition: we create a variable named `title` and
+we assign the value `My First Document` to it. A variable definition renders to
+an empty string, therefore nothing will be shown in the rendered document as a
+consequence of this statement. But, the `name` variable is a special one: its
+value will be displayed in the title bar of the rendered document.
+
+```
+<% "<"+"%" %> title = "My First Document" <% "%"+">" %>
+
+...
+```
+
+The next three lines define some other variables: a string named `name`, a string
+named `surname` and a number named `age`.
+
+```
+...
+
+<% "<"+"%" %> name = "Marcello" <% "%"+">" %>
+<% "<"+"%" %> surname = "Del Buono" <% "%"+">" %>
+<% "<"+"%" %> age = 42 <% "%"+">" %>
+
+...
+```
+
+So far we haven't created any visible content of the rendered document, except for
+the document title. The next line is just HTML markup and it will be rendered as
+HTML.
+
+```
+...
+
+<p>Hello there!</p>
+
+...
+```
+
+The following HTML paragraph is a bit differen: it contains an expression between
+the special symbols `<% "<"+"%" %>` and `<% "%"+">" %>`. The resulting value of
+the expression evaluation will be rendered.
+
+```
+...
+
+<p> My name is <% "<"+"%" %> name + " " + surname <% "%"+">" %> and this is
+    my first olowiki document.</p>
+
+...
+```
+
+The last HTML paragraph is another piece of HTML markup with inline expressions,
+only this time the expressions deal with numbers.
+
+```
+...
+
+<p> I am <% "<"+"%" %> age <% "%"+">" %> years old and next year I will be
+    <% "<"+"%" %> age+1 <% "%"+">" %> year old.</p>
+```
+
+
+### Sharing documents
+
+Documents content can be reused in other documents under the terms of the
+[MIT](<% license %>) by defauls. If you want to specify a differen license for,
+your document, set the variable `license` to the URI of the license you want to use.
+
+The most simple way to reuse the content of another document in your document is
+to _fork_ it by copy-pasting its source code (or part of it) in your document.
+
+A better way is to _import_ the document content in your document. For example, 
+add the following code to your [first document](/rs/tutorials/my-first-document):
+
+```
+<% "<"+"%" %> importedDoc = import("<% URI.path %>") <% "%"+">" %>
+<p>The title of the imported document is "<% "<"+"%" %> importedDoc.title <% "%"+">" %>"</p>
+```
+
+The first line loads all the names defined in this document and stores them
+under the name `importedDoc`. The imported document variables and functions are
+then accessible with dot-notation.
+
+For example in the second line we use this document title as `importedDoc.title`.
+
+The impoted namespace stringifies to the rendered content of the imported document; 
+this means that if you type `<% "<"+"%" %> importedDoc <% "%"+">" %>` in your document,
+the entire content of this document will be rendered.
+
+Unlike sharing by _forking_, sharing by _importing_ is dynamic, which meansh that
+if the imported namespace will always contain the lastest version of the imported
+document.
+
+
+### Documents distributed storage system
+
+Documents are contained in so called _stores_, which are hierarichical repositories
+of documents implementing their own access control policies.
+
+Currently olowiki supports the following stores:
+
+* [doc](/doc/): a static store hosted on the olowiki server and containing the olowiki 
+  documentation. The documents contained in the doc store have an URI starting 
+  with <% URI.root + "/doc/" %>.
+* [lib](/lib/): a static store hosted on the olowiki server and containing olowiki 
+  documentats meant to be re-used as standard libraries. The documents contained 
+  in the `lib` store have an URI starting with <% URI.root + "/lib/" %>.
+* [bin](/bin/): a static store hosted on the olowiki server and containing document-like 
+  namespaces to be re-used as standard libraries. The documents contained 
+  in the `bin` store have an URI starting with <% URI.root + "/bin/" %>.
+* [local](/local/): your personal store. It is so personal that olowiki doesn't even
+  host it: you do, on your machine! 
+* [users](/users/): store containing the public folder of each user. You can also
+  have your own folder where you publish your documents. In order to get it, you 
+  just need to identify yourself by requesting an identitiy token via the [root](/) page.
+  
+You can browse the stores content starting at the olowiki [root](/), accessible 
+from any document via the top-left icon.
+
+
+### Learn more ...
+
+This was a quick introduction to olowiki and olowiki documents.
+
+* Learn more about [documents](/doc/document)
+* Learn mode about [document expressions](/doc/expression/index)

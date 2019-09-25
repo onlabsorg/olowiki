@@ -1,0 +1,22 @@
+<% title = "function: require(name)" %>
+<% __render__ = import("/bin/markdown") %>
+<% test = import("/lib/test") %>
+
+The require load a standard script and returns the namespace exported by that
+script.
+
+For example:
+
+```
+<% "<"+"%" %> math = import("/bin/math") <% "%"+">" %><% math = import("/bin/math") %>
+```
+
+should import the [math](/doc/binaries/math) library that contains useful mathematical
+functions and contants. One for all, `<% "<"+"%" %> math.PI <% "%"+">" %>` is
+the Pi number. <% test.check((math.PI*100 - math.PI*100 mod 1) / 100 == 3.14) %>
+
+It is not possible to create custom script unless you customize the olowiki
+application, but the existing standard scripts should be sufficient to create
+any type of module as olowiki document.
+
+The documentation about the standard scripts can be forund in [/doc/binaries/index](/doc/binaries/index).

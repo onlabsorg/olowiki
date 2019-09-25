@@ -1,0 +1,38 @@
+<% title = "list data type" %>
+<% __render__ = import("/bin/markdown") %>
+<% test = import("/lib/test") %>
+
+A `list` is an ordered sequence of items. You can define a list as follows:
+
+```
+<% "<"+"%" %> lst = [expression1, expression2, expression3, ...] <% "%"+">" %>
+```
+
+Then you can access each item of the list with [query notation](../query) `lst[i]`,
+where `i` is `1` for the first item, `2` for the sencond, etc.
+
+In the following example we define a list of 5 items and then we reference the
+second and the forth, assigning them to the variable `item2` and `item4`
+respectively.
+
+```
+<% "<"+"%" %> lst = [30+5, "bread", "jam", [1,2,3], "sun"] <% "%"+">" %>
+<% "<"+"%" %> item1 = lst[1] <% "%"+">" %>
+<% "<"+"%" %> item2 = lst[2] <% "%"+">" %>
+<% "<"+"%" %> item4 = lst[4] <% "%"+">" %>
+
+```
+
+<% lst = [35, "bread", "jam", [1,2,3], "sun"] %>
+<% item1 = lst[1] %>
+<% item2 = lst[2] %>
+<% item4 = lst[4] %>
+
+in this case we expect:
+
+* `item1` to be the number `35`         <% test.check(item1 == 35) %>
+* `item2` to be the string `"bread"`    <% test.check(item2 == "bread") %>
+* `item4` to be the list `[1,2,3]`      <% test.check(item4 == [1,2,3]) %>
+
+
+

@@ -1,0 +1,21 @@
+<% title = "A if B else C" %>
+<% __render__ = import("/bin/markdown") %>
+
+<% test = import("/lib/test") %>
+<% check = test.check %>
+
+This is a conditional expression: it returns `A` if `bool(B)` is `TRUE`,
+otherwise it returns `C`.
+
+* <% check((10 if TRUE else 20) == 10) %>   It should return `A` if `B` is `TRUE`
+* <% check((10 if "abc" else 20) == 10) %>  It should return `A` if `bool(B)` is `TRUE`
+* <% check((10 if FALSE else 20) == 20) %>  It should return `C` if `B` is `FALSE`
+* <% check((10 if "" else 20) == 20) %>     It should return `C` if `bool(B)` is `FALSE`
+  
+In reality `if` and `else` are two independent binary operators:
+* *`A if B`* returns `A` if `bool(B)` is `TRUE`, otherwise it returns `NOTHING`.
+    * <% check((10 if "abc") == 10) %>      It should return `A` if `bool(B)` is `TRUE`
+    * <% check((10 if "") == NOTHING) %>    It should return `NOTHING` if `bool(B)` is `FALSE`
+* *`A else B`* returns `A` if it is not `NOTHING`, otherwise it returns `B`.
+    * <% check((10 else 20) == 10) %>       It should return `A` if `A` is not `NOTHING`
+    * <% check((NOTHING else 20) == 20) %>  It should return `B` if `A` is `NOTHING`

@@ -1,0 +1,50 @@
+<%  title = "olowiki expression: L * R"  %>
+<%  __render__ = import("/bin/markdown")  %>
+
+<% test = import("/lib/test") %>
+<% check = test.check %>
+
+##### When L is NOTHING
+* <% check(NOTHING * NOTHING == NOTHING)        %> It should return NOTHING if R is NOTHING
+* <% check(NOTHING * 10 == NOTHING)             %> It should return NOTHING if R is a number
+* <% check(NOTHING * "abc" == NOTHING)          %> It should return NOTHING if R is a string
+* <% check(NOTHING * [1,2,3] == NOTHING)        %> It should return NOTHING if R is a list
+* <% check(NOTHING * {a=1,b=2,c=3} == NOTHING)  %> It should return NOTHING if R is a namespace
+
+##### When L is a number
+<% R = {__mul__: (L) -> L * 2} %>
+* <% check(10 * NOTHING == NOTHING)             %> It should return NOTHING if R is NOTHING
+* <% check(10 * 2 == 20)                        %> It should return the product of L and R if R is a number
+* <% check(3 * "abc" == "abcabcabc")            %> It should return L times R if R is a string
+* <% check(3 * [1,2,3] == [1,2,3,1,2,3,1,2,3])  %> It should return L times R if R is a list
+* <% check(3 * {a=1,b=2,c=3} == NOTHING)        %> It should return NOTHING if R is a namespace
+* <% check(10 * R == 20)                        %> It should delegate to `R.__mul__(L)` if it exists
+
+##### When L is a string
+<% R = {__mul__: (L) -> L + " * R"} %>
+* <% check("abc" * NOTHING == NOTHING)          %> It should return NOTHING if R is NOTHING
+* <% check("Abc" * 3 == "AbcAbcAbc")            %> It should repeat R times L if R is a number
+* <% check("abc" * "def" == NOTHING)            %> It should return NOTHING if R is a string
+* <% check("abc" * [1,2,3] == NOTHING)          %> It should return NOTHING if R is an array
+* <% check("abc" * {a=1,b=2,c=3} == NOTHING)    %> It should return NOTHING if R is a namespace
+* <% check("abc" * R == "abc * R")              %> It should delegate to `R.__mul__(L)` if it exists
+
+##### When L is a list
+<% R = {__mul__: (L) -> L[1]+L[2]+L[3] + " * R"} %>
+* <% check([1,2,3] * NOTHING == NOTHING)        %> It should return NOTHING if R is NOTHING
+* <% check([1,2,3] * 3 == [1,2,3,1,2,3,1,2,3])  %> It should repeat R times L if R is a number
+* <% check([1,2,3] * "def" == NOTHING)          %> It should return NOTHING if R is a string
+* <% check([1,2,3] * [4,5,6] == NOTHING)        %> It should return NOTHING if R is an array
+* <% check([1,2,3] * {a=1,b=2,c=3} == NOTHING)  %> It should return NOTHING if R is a namespace
+* <% check(['A','B','C'] * R == "ABC * R")      %> It should delegate to `R.__mul__(L)` if it exists
+
+##### When L is a namespace
+<% L = {__mul__: (R) -> "L * " + R.a} %>
+<% R = {__mul__: (L) -> L.b + " * R"} %>
+* <% check({a=1,b=2,c=3} * NOTHING == NOTHING)      %> It should return NOTHING if R is NOTHING
+* <% check({a=1,b=2,c=3} * 3 == NOTHING)            %> It should return NOTHING if R is a number
+* <% check({a=1,b=2,c=3} * "def" == NOTHING)        %> It should return NOTHING if R is a string
+* <% check({a=1,b=2,c=3} * [4,5,6] == NOTHING)      %> It should return NOTHING if R is an array
+* <% check({a=1,b=2,c=3} * {d=4,e=5} == NOTHING)    %> It should return NOTHING if R is a namespace
+* <% check(L * {a="Ra",b="Rb",c="Rc"} == "L * Ra")  %> It should delegate to `L.__mul__(R)` if it exists
+* <% check({a="La",b="Lb",c="Lc"} * R == "Lb * R")  %> It should delegate to `R.__mul__(L)` if it exists

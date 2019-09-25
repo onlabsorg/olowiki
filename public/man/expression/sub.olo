@@ -1,0 +1,42 @@
+<%  title = "olowiki expression: L - R"  %>
+<%  __render__ = import("/bin/markdown")  %>
+
+<% test = import("/lib/test") %>
+<% check = test.check %>
+
+##### When L is NOTHING
+* <% check(NOTHING + NOTHING == NOTHING)                %> It should return NOTHING if R is NOTHING
+* <% check(NOTHING + 10 == 10)                          %> It should return R if R is a number
+* <% check(NOTHING + "abc" == "abc")                    %> It should return R if R is a string
+* <% check(NOTHING + [1,2,3] == [1,2,3])                %> It should return R if R is a list
+* <% check(NOTHING + {a=1,b=2,c=3} == {a=1,b=2,c=3})    %> It should return R if R is a namespace
+
+##### When L is a number
+* <% check(10 - NOTHING == 10)              %> It should return L if R is NOTHING
+* <% check(10 - 2 == 8)                     %> It should return the difference between L and R if R is a number
+* <% check(10 - "abc" == NOTHING)           %> It should return NOTHING if R is a string
+* <% check(10 - [1,2,3] == NOTHING)         %> It should return NOTHING if R is a list
+* <% check(10 - {a=1,b=2,c=3} == NOTHING)   %> It should return NOTHING if R is a namespace
+
+##### When L is a string
+* <% check("abc" - NOTHING == "abc")         %> It should return L if R is NOTHING
+* <% check("abc" - 10 == NOTHING)            %> It should return NOTHING if R is a string
+* <% check("abc" - "def" == NOTHING)         %> It should return NOTHING if R is a string
+* <% check("abc" - [1,2,3] == NOTHING)       %> It should return NOTHING if R is a list
+* <% check("abc" - {a=1,b=2,c=3} == NOTHING) %> It should return NOTHING if R is a namespace
+
+##### When L is a list
+* <% check([1,2,3] - NOTHING == [1,2,3])       %> It should return L if R is NOTHING
+* <% check([1,2,3] - 10 == NOTHING)            %> It should return NOTHING if R is a string
+* <% check([1,2,3] - "def" == NOTHING)         %> It should return NOTHING if R is a string
+* <% check([1,2,3] - [1,2,3] == NOTHING)       %> It should return NOTHING if R is a list
+* <% check([1,2,3] - {a=1,b=2,c=3} == NOTHING) %> It should return NOTHING if R is a namespace
+
+##### When L is a namespace
+<% L = {__sub__: (R) -> 10 - R} %>
+* <% check({a=1,b=2,c=3} - NOTHING == {a=1,b=2,c=3})    %> It should return L if R is NOTHING
+* <% check({a=1,b=2,c=3} - 10 == NOTHING)               %> It should return NOTHING if R is a string
+* <% check({a=1,b=2,c=3} - "def" == NOTHING)            %> It should return NOTHING if R is a string
+* <% check({a=1,b=2,c=3} - [1,2,3] == NOTHING)          %> It should return NOTHING if R is a list
+* <% check({a=1,b=2,c=3} - {d=4,e=5} == NOTHING)        %> It should return NOTHING if R is a namespace
+* <% check(L - 2 == 8)                                  %> It should delegate to `L.__sub__(R)` if it exists

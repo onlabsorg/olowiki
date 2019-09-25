@@ -9,30 +9,13 @@
             
             <div slot="content" class="content">
 
-                <store-card name="doc">
+                <store-card name="man">
                     <article slot="content">
                         
-                        <p> The <em>doc</em> store contains documentation about
+                        <p> The <em>man</em> store contains documentation about
                             <em>olowiki</em> and how to use it. If you want to 
                             learn <em>olowiki</em>, you should start with the 
-                            <a href="/doc/index">/doc/index</a> document.
-                            </p>
-                            
-                        <p> This is a static store part of this olowiki distribution,
-                            which means that anyone can read the documents it contains, 
-                            but it gest uptated only with new versions of the app.
-                            </p>
-                            
-                    </article>
-                </store-card>
-
-                <store-card name="lib">
-                    <article slot="content">
-                        
-                        <p> The <em>lib</em> store contains standard libraries
-                            that you can use to develop your own documents.
-                            For an overview of the <em>lib</em> content, read
-                            the <a href="/lib/index">/lib/index</a> document.
+                            <a href="/man/index">/man/index</a> document.
                             </p>
                             
                         <p> This is a static store part of this olowiki distribution,
@@ -56,6 +39,38 @@
                         <p> This is a static store part of this olowiki distribution,
                             which means that anyone can read the documents it contains, 
                             but it gest uptated only with new versions of the app.
+                            </p>
+                            
+                    </article>
+                </store-card>
+
+                <store-card name="doc">
+                    <article slot="content">
+                        
+                        <p> The <em>doc</em> store contains documentation about
+                            this <em>olowiki</em> node.
+                            </p>
+                            
+                        <p> This is a public store, which means that anyone can 
+                            read the documents it contains, but only the owner
+                            of the node can update them.
+                            </p>
+                            
+                    </article>
+                </store-card>
+
+                <store-card name="lib">
+                    <article slot="content">
+                        
+                        <p> The <em>lib</em> store contains standard libraries
+                            that you can use to develop your own documents.
+                            For an overview of the <em>lib</em> content, read
+                            the <a href="/lib/index">/lib/index</a> document.
+                            </p>
+                            
+                        <p> This is a public store, which means that anyone can 
+                            read the documents it contains, but only the owner
+                            of the node can update them.
                             </p>
                             
                     </article>

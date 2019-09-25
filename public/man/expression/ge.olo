@@ -1,0 +1,86 @@
+<%  title = "olowiki expression: L >= R" %>
+<%  __render__ = import("/bin/markdown")  %>
+
+<% test = import("/lib/test") %>
+<% check = test.check %>
+
+<% LLT = {__vs__: (R) -> -100} %>
+<% LEQ = {__vs__: (R) -> 0} %>
+<% LGT = {__vs__: (R) -> 100} %>
+
+##### When L is NOTHING
+* <% check(NOTHING>=NOTHING)            %> Expect `TRUE` if R is NOTHING
+* <% check(not(NOTHING>=10))            %> Expect `FALSE` if R is a number
+* <% check(not(NOTHING>="abc"))         %> Expect `FALSE` if R is a string
+* <% check(not(NOTHING>=[10,20,30]))    %> Expect `FALSE` if R is a list
+* <% check(not(NOTHING>={}))            %> Expect `FALSE` if R is a namespace
+* <% check(not(NOTHING >= LLT))         %> Expect `FALSE` if `R.__vs__(L)` returns a negative number
+* <% check(not(NOTHING >= LEQ))         %> Expect `FALSE` if `R.__vs__(L)` returns 0
+* <% check(not(NOTHING >= LGT))         %> Expect `FALSE` if `R.__vs__(L)` returns a positive number
+
+##### When L is a number
+* <% check(10>=NOTHING)         %> Expect `TRUE` when R is `NOTHING`
+* <% check(10>=10)              %> Expect `TRUE` if R is the same number
+* <% check(not(10>=20))         %> Expect `FALSE` if R is a higher number
+* <% check(10>=5)               %> Expect `TRUE` if R is a lower number
+* <% check(not(10>="abc"))      %> Expect `FALSE` when R is a string
+* <% check(not(10>=[10,20,30])) %> Expect `FALSE` when R is a list
+* <% check(not(10>={}))         %> Expect `FALSE` when R is a namespace
+* <% check(not(10 >= LLT))      %> Expect `FALSE` if `R.__vs__(L)` returns a negative number
+* <% check(not(10 >= LEQ))      %> Expect `FALSE` if `R.__vs__(L)` returns 0
+* <% check(not(10 >= LGT))      %> Expect `FALSE` if `R.__vs__(L)` returns a positive number
+
+##### When L is a string
+* <% check("abc">=NOTHING)          %> Expect `TRUE` wher R is `NOTHING`
+* <% check("abc">=10)               %> Expect `TRUE` when R is a number
+* <% check("abc">="abc")            %> Expect `TRUE` when R is the same string
+* <% check(not("abc">="def"))       %> Expect `FALSE` when R comes after L in alphabetic order
+* <% check("def">="abc")            %> Expect `TRUE` when R comes before L in alphabetic order
+* <% check(not("abc">=[10,20,30]))  %> Expect `FALSE` when R is a list
+* <% check(not("abc">={}))          %> Expect `FALSE` when R is a namespace
+* <% check(not("abc" >= LLT))       %> Expect `FALSE` if `R.__vs__(L)` returns a negative number
+* <% check(not("abc" >= LEQ))       %> Expect `FALSE` if `R.__vs__(L)` returns 0
+* <% check(not("abc" >= LGT))       %> Expect `FALSE` if `R.__vs__(L)` returns a positive number
+
+##### When L is a list
+* <% check([10,20,30]>=NOTHING)                                         %> Expect `TRUE` wher R is `NOTHING`
+* <% check([10,20,30]>=10)                                              %> Expect `TRUE` when R is a number
+* <% check([10,20,30]>="abc")                                           %> Expect `TRUE` when R is a string
+* <% check([10,20,30]>=[10,20,30])                                      %> Expect `TRUE` when R is the same list
+* <% check(not([10,20,30]>=[10,20,40] and [10,20,30]>=[10,20,30,40]))   %> Expect `FALSE` when R is a list with the first non-equal item greater than the corresponding item in L
+* <% check([10,20,30]>=[10,20,25] and [10,20,30]>=[10,20])              %> Expect `TRUE` when R is a list with the first non-equal item less than the corresponding item in L
+* <% check(not([10,20,30]>={}))                                         %> Expect `FALSE` when R is a namespace
+* <% check(not([10,20,30] >= LLT))                                      %> Expect `FALSE` if `R.__vs__(L)` returns a negative number
+* <% check(not([10,20,30] >= LEQ))                                      %> Expect `FALSE` if `R.__vs__(L)` returns 0
+* <% check(not([10,20,30] >= LGT))                                      %> Expect `FALSE` if `R.__vs__(L)` returns a positive number
+
+
+##### When L is a namespace
+<% L = {a=10, b=20, c=30}  %>
+
+* <% check({a=10,b=20,c=30}>=NOTHING)                                                           %> Expect `TRUE` wher R is `NOTHING`
+* <% check(LLT >= NOTHING)                                                                      %> Expect `TRUE` wher R is `NOTHING` and `L.__vs__(R)` returns a negative number
+* <% check(LEQ >= NOTHING)                                                                      %> Expect `TRUE` wher R is `NOTHING` and `L.__vs__(R)` returns 0
+* <% check(LGT >= NOTHING)                                                                      %> Expect `TRUE` wher R is `NOTHING` and `L.__vs__(R)` returns a positive number
+* <% check({a=10,b=20,c=30}>=10)                                                                %> Expect `TRUE` when R is a number
+* <% check(LLT >= 10)                                                                           %> Expect `TRUE` wher R is a number and `L.__vs__(R)` returns a negative number
+* <% check(LEQ >= 10)                                                                           %> Expect `TRUE` wher R is a number and `L.__vs__(R)` returns 0
+* <% check(LGT >= 10)                                                                           %> Expect `TRUE` wher R is a number and `L.__vs__(R)` returns a positive number
+* <% check({a=10,b=20,c=30}>="abc")                                                             %> Expect `TRUE` when R is a string
+* <% check(LLT >= "abc")                                                                        %> Expect `TRUE` wher R is a string and `L.__vs__(R)` returns a negative number
+* <% check(LEQ >= "abc")                                                                        %> Expect `TRUE` wher R is a string and `L.__vs__(R)` returns 0
+* <% check(LGT >= "abc")                                                                        %> Expect `TRUE` wher R is a string and `L.__vs__(R)` returns a positive number
+* <% check({a=10,b=20,c=30}>=[10,20,30])                                                        %> Expect `TRUE` when R is a list
+* <% check(LLT >= [10,20,30])                                                                   %> Expect `TRUE` wher R is a list and `L.__vs__(R)` returns a negative number
+* <% check(LEQ >= [10,20,30])                                                                   %> Expect `TRUE` wher R is a list and `L.__vs__(R)` returns 0
+* <% check(LGT >= [10,20,30])                                                                   %> Expect `TRUE` wher R is a list and `L.__vs__(R)` returns a positive number
+* <% check({a=10,b=20,c=30}>={a=10,b=20,c=30})                                                  %> Expect `TRUE` when R is the same object
+* <% check(not({a=10,b=20,c=30}>={a=10,b=20,c=40} and {a=10,b=20,c=30}>={a=10,b=20,c=30,d=40})) %> Expect `FALSE` when R is a namespace with the first non-equal item greater than the corresponding item in L
+* <% check({a=10,b=20,c=30}>={a=10,b=20,c=25} and {a=10,b=20,c=30}>={a=10,b=20})                %> Expect `TRUE` when R is a namespace with the first non-equal item less than the corresponding item in L
+* <% check(not(LLT >= {a=1,b=2,c=3}))                                                           %> Expect `FALSE` wher R is a namespace and `L.__vs__(R)` returns a negative number
+* <% check(LEQ >= {a=1,b=2,c=3})                                                                %> Expect `FALSE` wher R is a namespace and `L.__vs__(R)` returns 0
+* <% check(LGT >= {a=1,b=2,c=3})                                                                %> Expect `TRUE` wher R is a namespace and `L.__vs__(R)` returns a positive number
+* <% check({a=1,b=2,c=3} >= LLT)                                                                %> Expect `TRUE` wher R is a namespace and `R.__vs__(L)` returns a negative number
+* <% check({a=1,b=2,c=3} >= LEQ)                                                                %> Expect `FALSE` wher R is a namespace and `R.__vs__(L)` returns 0
+* <% check(not({a=1,b=2,c=3} >= LGT))                                                           %> Expect `FALSE` wher R is a namespace and `R.__vs__(L)` returns a positive number
+

@@ -1,0 +1,38 @@
+<% title = "function: list(X)" %>
+<% __render__ = import("/bin/markdown") %>
+<% test = import("/lib/test") %>
+
+The `list` function converst its argument to a list according to the following
+rules:
+
+* <% test.check(list(NOTHING) == []) %>                      It should return an empty list if `X` is `NOTHING`
+* <% test.check(list(123.45) == []) %>                          It should return an empty list if `X` is a number
+* <% test.check(list("abc") == ['a','b','c']) %>                     It should a list having the characters of `X` as items if `X` is a string
+* <% test.check(list([10,20,30]) == [10,20,30]) %>       It should return `X` itself if it is a list
+
+If `X` is a namespace, `list(X)` returns a list of namespaces, one for each item
+of `X`. Each is defined as follows:
+
+* `item.name`: a string containing the item name
+* `item.value`: containing the item value
+
+For example:
+
+```
+<% "<"+"%" %> list({a=1, b=2, c=3}) <% "%"+">" %>
+```
+
+should return the following list: <% test.check(list({a=1,b=2,c=3}) == [{name="a",value=1}, {name="b",value=2}, {name="c",value=3}]) %>
+
+```
+[   
+    {name="a", value=1},
+    {name="b", value=2},
+    {name="c", value=3} 
+]
+```
+
+
+
+
+

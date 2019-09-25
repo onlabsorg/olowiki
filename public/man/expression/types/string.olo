@@ -1,0 +1,23 @@
+<% title = "string data type" %>
+<% __render__ = import("/bin/markdown") %>
+
+The string data type represent a piece of text as a sequence of characters.
+A string can be defined by enclosing the text between "", '' or ``.
+Examples of string definitions are given below:
+
+```
+<% "<"+"%" %> s1 = "this is a string" <% "%"+">" %>
+<% "<"+"%" %> s2 = 'this is another string' <% "%"+">" %>
+<% "<"+"%" %> s3 = `this is yet another string` <% "%"+">" %>
+```
+
+Strings can span multiple lines. In that case it will contain some new-line
+characters:
+
+```
+<% "<"+"%" %> s = "this is 
+    a multiline 
+    string"
+    <% "%"+">" %>
+```
+

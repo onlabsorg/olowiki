@@ -1,0 +1,14 @@
+<% title = "A and B" %>
+<% __render__ = import("/bin/markdown") %>
+
+<% test = import("/lib/test") %>
+<% check = test.check %>
+
+
+The `A and B` binary operation returns `TRUE` if both `bool(A)` and `bool(B)`
+are `TRUE`. If one of them, or both of them are `FALSE`, it returns `FALSE`.
+
+* <% check(("abc" and "def") == TRUE) %>    It should return `TRUE` if both `bool(A)` and `bool(B)` are true.
+* <% check(("" and "def") == FALSE) %>      It should return `FALSE` if `bool(A)` is `FALSE` and `bool(B)` is `TRUE`
+* <% check(("abc" and "") == FALSE) %>      It should return `FALSE` if `bool(A)` is `TRUE` and `bool(B)` is `FALSE`
+* <% check(("" and []) == FALSE) %>         It should return `FALSE` if `bool(A)` is `FALSE` and `bool(B)` is `FALSE`

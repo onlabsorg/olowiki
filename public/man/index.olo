@@ -1,0 +1,40 @@
+<% title = "olowiki documentation" %>
+<% __render__ = import("/bin/markdown") %>
+
+This is a [wiki](https://en.wikipedia.org/wiki/Wiki) application with the 
+following features:
+
+* Documents are literate programming scripts based on a functional expression 
+  language (still without a name), that render to HTML.
+* The content of a document (both data and text) can be imported and reused in
+  other documents, allowing for modular editing.
+* You can share some of your documents by making them public. This way, other 
+  users can read them and/or import them in their documents.
+* Each document is identified by an [URI](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier).
+  The URI query variables can be used inside the document expressions, allowing
+  to create parametric documents.
+  
+Documents are stored in a hierarchic structure (the familiar directory tree). At
+the top of the tree there is the [olowiki root](/) accessible via the top-left
+icon. The `root` contains a list of the available stores (`doc, lib, ecc.`). Each store
+has a different behavior: read-only, read-write, public, private, etc. 
+
+One of the store is `local`: your private store which lives locally on your machine 
+and can optionally be synchronized between your devices (sync not yet implemented, though).
+
+Each store can contain two types of item: a document or a a container 
+(i.e. a directory containing in turn other directories and documents).
+
+To learn more about `olowiki`, the following resources are available:
+
+* [Getting started](/doc/tutorials/basic): a tutorial that will introduce
+  you to the basics of using `olowiki`.
+* [Olowiki documents](/doc/document): a guide about how to write olowiki documents.
+* Existing documents: learning by examples. When you know the basics, you will be 
+  able to read and understand the source of existing documents. Take any document, 
+  switch to edit mode and play with the source: you can always read and change 
+  the source and re-render the document, but not always save the changes.
+
+>   `olowiki` is currently in `alpha` stage. It is not yet mature and a lot may
+>   change from here to the stable version 1.0.0. If you are a developer and
+>   want to help, visit the [olowiki GitHub repository](https://github.com/onlabsorg/olowiki).
