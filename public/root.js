@@ -43,7 +43,7 @@
 /******/
 /******/ 	// script path function
 /******/ 	function jsonpScriptSrc(chunkId) {
-/******/ 		return __webpack_require__.p + "" + ({"/bin_list":"/bin_list","/bin_markdown":"/bin_markdown","/bin_math":"/bin_math","/bin_text":"/bin_text"}[chunkId]||chunkId) + ".bundle.js"
+/******/ 		return __webpack_require__.p + "" + ({"/bin/list":"/bin/list","/bin/markdown":"/bin/markdown","/bin/math":"/bin/math","/bin/text":"/bin/text"}[chunkId]||chunkId) + ".bundle.js"
 /******/ 	}
 /******/
 /******/ 	// The require function
@@ -208,7 +208,7 @@
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("\nconst olojs = __webpack_require__(/*! olojs */ \"./lib/olojs/index.js\");\n\nconst bin = {\n    \"/math\": () => __webpack_require__.e(/*! import() | /bin_math */ \"/bin_math\").then(__webpack_require__.t.bind(null, /*! ./math */ \"./lib/bin-backend/math.js\", 7)),\n    \"/text\": () => __webpack_require__.e(/*! import() | /bin_text */ \"/bin_text\").then(__webpack_require__.t.bind(null, /*! ./text */ \"./lib/bin-backend/text.js\", 7)),\n    \"/list\": () => __webpack_require__.e(/*! import() | /bin_list */ \"/bin_list\").then(__webpack_require__.t.bind(null, /*! ./list */ \"./lib/bin-backend/list.js\", 7)),\n    \"/markdown\": () => __webpack_require__.e(/*! import() | /bin_markdown */ \"/bin_markdown\").then(__webpack_require__.t.bind(null, /*! ./markdown */ \"./lib/bin-backend/markdown.js\", 7)),\n}\n\n\nexports.get = async function (path) {\n    const load = bin[path];\n    return load ? await load() : \"\";\n}\n\nexports.list = async function (path) {\n    return path !== \"/\" ? [] : Object.keys(bin).map(path => path.slice(1));    return `<% items = ${JSON.stringify(items)} %>`;    \n}\n\nexports.put = async function (path, body) {\n    throw new olojs.errors.WriteAccessDenied(path);\n}\n\nexports.delete = async function (path) {\n    throw new olojs.errors.WriteAccessDenied(path);\n}\n\n\n//# sourceURL=webpack:///./lib/bin-backend/index.js?");
+eval("\nconst olojs = __webpack_require__(/*! olojs */ \"./lib/olojs/index.js\");\n\nconst bin = {\n    \"/math\": () => __webpack_require__.e(/*! import() | /bin/math */ \"/bin/math\").then(__webpack_require__.t.bind(null, /*! ./math */ \"./lib/bin-backend/math.js\", 7)),\n    \"/text\": () => __webpack_require__.e(/*! import() | /bin/text */ \"/bin/text\").then(__webpack_require__.t.bind(null, /*! ./text */ \"./lib/bin-backend/text.js\", 7)),\n    \"/list\": () => __webpack_require__.e(/*! import() | /bin/list */ \"/bin/list\").then(__webpack_require__.t.bind(null, /*! ./list */ \"./lib/bin-backend/list.js\", 7)),\n    \"/markdown\": () => __webpack_require__.e(/*! import() | /bin/markdown */ \"/bin/markdown\").then(__webpack_require__.t.bind(null, /*! ./markdown */ \"./lib/bin-backend/markdown.js\", 7)),\n}\n\n\nexports.get = async function (path) {\n    const load = bin[path];\n    return load ? await load() : \"\";\n}\n\nexports.list = async function (path) {\n    return path !== \"/\" ? [] : Object.keys(bin).map(path => path.slice(1));    return `<% items = ${JSON.stringify(items)} %>`;    \n}\n\nexports.put = async function (path, body) {\n    throw new olojs.errors.WriteAccessDenied(path);\n}\n\nexports.delete = async function (path) {\n    throw new olojs.errors.WriteAccessDenied(path);\n}\n\n\n//# sourceURL=webpack:///./lib/bin-backend/index.js?");
 
 /***/ }),
 

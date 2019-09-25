@@ -1,4 +1,4 @@
-(window["webpackJsonp"] = window["webpackJsonp"] || []).push([["/bin_markdown"],{
+(window["webpackJsonp"] = window["webpackJsonp"] || []).push([["/bin/markdown"],{
 
 /***/ "./lib/bin-backend/markdown.js":
 /*!*************************************!*\

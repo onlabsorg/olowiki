@@ -1,4 +1,4 @@
-(window["webpackJsonp"] = window["webpackJsonp"] || []).push([["/bin_math"],{
+(window["webpackJsonp"] = window["webpackJsonp"] || []).push([["/bin/math"],{
 
 /***/ "./lib/bin-backend/math.js":
 /*!*********************************!*\

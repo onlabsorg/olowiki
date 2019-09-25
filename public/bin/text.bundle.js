@@ -1,4 +1,4 @@
-(window["webpackJsonp"] = window["webpackJsonp"] || []).push([["/bin_text"],{
+(window["webpackJsonp"] = window["webpackJsonp"] || []).push([["/bin/text"],{
 
 /***/ "./lib/bin-backend/text.js":
 /*!*********************************!*\
