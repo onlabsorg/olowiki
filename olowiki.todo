@@ -1,8 +1,9 @@
 
 Release v0.4.4:
     ☐ WUI: Add spinner during loading
-    ☐ Replace local-forage based local store with pouchdb-based store (to be synchronized in a future version)
+    ✔ Replace local-forage based local store with pouchdb-based store (to be synchronized in a future version) @done(2019-09-13) @project(Release v0.4.4)
     ✔ WUI: Move login to dialog @done(2019-09-12) @project(Release v0.4.3)
+    ☐ Harmonize olojs object model
 
 Release v0.5.0:
     ☐ Move personal store to pouchdb with sync and publishing to server => users folders points to public pouchdb documents

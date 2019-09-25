@@ -42,11 +42,8 @@
         methods: {
         
             async render () {
-                const originalContext = this.doc.context;
-                this.doc.context = Object.create(originalContext);
-                Object.assign(this.doc.context, this.localScope);
-                const docNS = await this.doc.evaluate();
-                this.doc.context = originalContext;
+                const context = this.doc.createContext(this.localScope);
+                const docNS = await this.doc.evaluate(context);
                 
                 this.$emit("rendered", docNS);
                 

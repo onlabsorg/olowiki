@@ -73,17 +73,15 @@
         asyncComputed: {
             
             doc: {
-                default: client.createDocument(location.pathname, ""),
+                default: client.create(location.pathname, ""),
                 get: async function () {
                     try {
-                        const doc = await client.readDocument(this.url.pathname);
-                        const docVal = await doc.evaluate();
-                        return await client.readDocument(this.url.pathname);
+                        return await client.read(this.url.pathname);
                     } catch (error) {
                         console.error(error);
                         this.setState("error");
                         this.errorMessage = error.message;
-                        return new client.createDocument(location.pathname, "");
+                        return new client.create(location.pathname, "");
                     }
                 }
             }
@@ -97,7 +95,7 @@
             
             async save () {
                 try {
-                    await client.writeDocument(this.doc);
+                    await client.write(this.doc.uri, this.doc.body);
                     this.showMessage("Saved");
                 } catch (error) {
                     if (error instanceof olojs.errors.WriteAccessDenied) {

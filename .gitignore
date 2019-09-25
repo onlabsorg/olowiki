@@ -63,4 +63,5 @@ typings/
 # development folders
 test-instances/
 .trash/
+sandbox/
 olowiki.todo

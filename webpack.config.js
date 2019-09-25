@@ -88,8 +88,6 @@ module.exports = {
     
     resolve: {
         alias: {
-            "http-store": path.resolve(__dirname, "lib/http-store/"),
-            "http-store$": path.resolve(__dirname, "lib/http-store/index"),
             "olo-editor": path.resolve(__dirname, "lib/olo-editor/"),
             "olo-editor$": path.resolve(__dirname, "lib/olo-editor/index"),
             "olo-viewer": path.resolve(__dirname, "lib/olo-viewer/"),

@@ -78,8 +78,9 @@
         methods: {
             
             async loadItems () {
-                const containerDoc = await client.readDocument(location.pathname);
-                const containerDocValue = await containerDoc.evaluate();
+                const containerDoc = await client.read(location.pathname);
+                const context = containerDoc.createContext();
+                const containerDocValue = await containerDoc.evaluate(context);
                 const items = [];
                 for (let item of containerDocValue.items) {
                     if (item.slice(-1) === "/") {
@@ -119,7 +120,8 @@
             async deleteItem (itemPath) {
                 this.deleteDialog.show = false;
                 try {
-                    await client.deleteResource(itemPath);
+                    if (itemPath.slice(-1) !== "/") itemPath += "/";
+                    await client.delete(itemPath);
                     await this.loadItems();
                     this.showMessage(`Deleted ${itemPath}`);
                 } catch (error) {

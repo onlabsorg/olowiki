@@ -54,11 +54,11 @@
             },
             
             updateContent () {
-                this.content = this.doc.source;
+                this.content = this.doc.body;
             },
             
             commit () {
-                this.doc.source = this.content;                        
+                this.doc.body = this.content;                        
             },
             
             focus () {

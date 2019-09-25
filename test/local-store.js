@@ -1,23 +1,19 @@
-const LocalStore = require("../lib/pouchdb-store");
+const PouchdbBackend = require("../lib/pouchdb-backend");
+const olojs = require("olojs");
 
-async function Store (content) {
-    console.log(1);
-    var store = new LocalStore("test");
-    console.log(2);
-    const docPaths = await store._list();
-    console.log(3);
-    for (let docPath of docPaths) {
-        await store._deleteDocument(docPath);
-    }
-    console.log(4);
+async function createStore (content) {
+    var backend = new PouchdbBackend("test");
+    var store = new olojs.Store("//local-store/", backend);
+    await store.delete("/");
     for (let path in content) {
-        console.log(4, path);
-        await store._writeDocument(path, content[path]);
+        await store._put(path, content[path]);
     }
-    console.log(5);
     return store;
 }
 
 
 const test = require("olojs/test/store");
-test("LocalStore", Store);
+
+describe("PouchdbStore", () => {
+    test(createStore);    
+});
