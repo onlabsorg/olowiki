@@ -13,15 +13,26 @@ document.addEventListener("DOMContentLoaded", function () {
             'olowiki-document': require("./document.vue").default,
         },
         
-        data: {
-            href: location.href,
+        data: {    
+            locationHRef: location.href,
         },
         
-        //computed: {},
+        computed: {
+            
+            href: () => {
+                const url = new URL(this.locationHRef || location.href);
+                if (url.pathname.slice(-5) === ".html") {
+                    url.pathname = url.pathname.slice(0, -5);
+                }
+                return url.href;                    
+            }
+        },
+        
+        // methods: {},
         
         async mounted () {
             window.addEventListener("hashchange", (event) => {
-                this.href = location.href;
+                this.locationHRef = location.href;
             });
             console.log(`olowiki-document ready!`);
         }
