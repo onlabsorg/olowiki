@@ -9,7 +9,94 @@
             
             <div slot="content" class="content">
 
-                <store-card name="man">
+                <store-card name="doc" title="Documentation">
+                    <article slot="content">
+                        
+                        <p> The <em>doc</em> store contains documentation about
+                            this <em>olowiki</em> node. If you want to know about
+                            the purpose of this node or how to contribute to it, 
+                            you should start with reading <a href="/doc/index">/doc/index</a>.
+                            If you instead want to knwo what <em>olowiki</em> is
+                            and how it works, see <a href="/man/index">/man/index</a>.
+                            </p>
+                            
+                        <p> This is a public store, which means that anyone can 
+                            read the documents it contains, but only the owner
+                            of the node can update them.
+                            </p>
+                            
+                    </article>
+                </store-card>
+
+                <store-card name="lib" title="Public library">
+                    <article slot="content">
+                        
+                        <p> The <em>lib</em> store contains the documents publicly
+                            offered by this node. These documents can be used by
+                            anyone (contributors or not, or evan by other nodes)
+                            as they are or as building blocks for new documents. 
+                            </p>
+                            
+                        <p> This is a public store, which means that anyone can 
+                            use the documents it contains, but only the owner
+                            of the node can update them.
+                            </p>
+                            
+                    </article>
+                </store-card>
+
+                <store-card name="users" title="Contributions">
+                    <article slot="content">
+                        <p> This store contains the documents contributed to this
+                            node by its team members. Document contributions can
+                            be spontaneous or planned within projects aimed to
+                            produce a public library. </p>
+                            
+                        <p v-if="user !== 'Guest'"> You are currently identifying 
+                            yourself as <b>{{user}}</b>, and your personal public 
+                            container is <a :href="'/users/'+user+'/'">/users/{{user}}/</a>.
+                            The documents you put in there can be read by anyone
+                            but modifyied only by you.
+                            </p>
+
+                        <p v-if="user === 'Guest'"> This node is open to anyone 
+                            who wants to contribute: all you need to do to become 
+                            a contributor is obtain an identity token by clicking on
+                            the top-right user icon. With your token you will be
+                            able to access your own public container under this
+                            store.
+                            </p>
+                    </article>
+                </store-card>
+
+                <store-card name="local" title="Private">
+                    <article slot="content">
+                        <p> The <em>local</em> store lives on your machine and
+                            is your private offline store. Currently you get one 
+                            different local store on each of your devices, but 
+                            synchronization will be implemented in the future.
+                            </p>
+                    </article>
+                </store-card>
+
+                <store-card name="bin" title="Standard library">
+                    <article slot="content">
+                        
+                        <p> The <em>bin</em> store contains standard libraries
+                            that you can use to develop your own documents. All the
+                            node implementing <em>olowiki</em> share the same <em>bin</em>
+                            store, ensuring compatibility between stores.
+                            </p>
+                            
+                        <p> This is a static store part of the olowiki distribution,
+                            which means that anyone can read the documents it contains, 
+                            but it gest uptated only with new versions of the app.
+                            </p>
+                            
+                    </article>
+                </store-card>
+
+                <store-card name="man" title="Manual">
                     <article slot="content">
                         
                         <p> The <em>man</em> store contains documentation about
@@ -23,84 +110,6 @@
                             but it gest uptated only with new versions of the app.
                             </p>
                             
-                    </article>
-                </store-card>
-
-                <store-card name="bin">
-                    <article slot="content">
-                        
-                        <p> The <em>bin</em> store contains standard libraries
-                            that you can use to develop your own documents.
-                            Unlike the <em>lib</em> store, this store doesn't
-                            contain actual documents, but scripts wrapped as
-                            documents.
-                            </p>
-                            
-                        <p> This is a static store part of this olowiki distribution,
-                            which means that anyone can read the documents it contains, 
-                            but it gest uptated only with new versions of the app.
-                            </p>
-                            
-                    </article>
-                </store-card>
-
-                <store-card name="doc">
-                    <article slot="content">
-                        
-                        <p> The <em>doc</em> store contains documentation about
-                            this <em>olowiki</em> node.
-                            </p>
-                            
-                        <p> This is a public store, which means that anyone can 
-                            read the documents it contains, but only the owner
-                            of the node can update them.
-                            </p>
-                            
-                    </article>
-                </store-card>
-
-                <store-card name="lib">
-                    <article slot="content">
-                        
-                        <p> The <em>lib</em> store contains standard libraries
-                            that you can use to develop your own documents.
-                            For an overview of the <em>lib</em> content, read
-                            the <a href="/lib/index">/lib/index</a> document.
-                            </p>
-                            
-                        <p> This is a public store, which means that anyone can 
-                            read the documents it contains, but only the owner
-                            of the node can update them.
-                            </p>
-                            
-                    </article>
-                </store-card>
-
-                <store-card name="users">
-                    <article slot="content">
-                        <p> Each user can have a folder named after his e-mail
-                            address under the <em>users</em> store, where he can
-                            publish his documents.
-                            </p>
-                        <p v-if="user !== 'Guest'"> You are currently identifying 
-                            yourself as <b>{{user}}</b>, therefore your public folder is
-                            <a :href="'/users/'+user+'/'">/users/{{user}}/</a>.
-                            </p>
-
-                        <p v-if="user === 'Guest'"> You are currently not identifying yourself as
-                            olowiki user, therefore you don't have access to any public
-                            folder.
-                            </p>
-                    </article>
-                </store-card>
-
-                <store-card name="local">
-                    <article slot="content">
-                        <p> The <em>local</em> store lives on your machine and
-                            is your private offline store. Currently you get one 
-                            different local store on each of your devices, but 
-                            synchronization will be implemented in the future.
-                            </p>
                     </article>
                 </store-card>
 
@@ -240,6 +249,10 @@
 </script>
 
 <style>
+    .olowiki-app .md-app-scroller, .olowiki-app .md-content {
+        background-color: #F5F5F5;
+    }
+
     .olowiki-root div.content {
         margin: 2em 10% 2em 10%;
     }

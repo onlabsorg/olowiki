@@ -111,6 +111,9 @@ body {
 }
 
 
+.olowiki-app .md-app-scroller, .olowiki-app .md-content {
+    background-color: #F5F5F5;
+}
 .olowiki-root div.content {
     margin: 2em 10% 2em 10%;
 }

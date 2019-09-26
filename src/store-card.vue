@@ -2,7 +2,7 @@
     <md-card class="store-card">
         <md-card-header>
             <md-icon>folder</md-icon>
-            <a class="md-title" :href="path">{{name}}</a>
+            <a class="md-title" :href="path">{{title}}</a>
         </md-card-header>
 
         <md-card-content>
@@ -26,7 +26,7 @@
         
         //components: {},
         
-        props: ['name'],
+        props: ['name', 'title'],
         
         // data: () => Object({}),  
         

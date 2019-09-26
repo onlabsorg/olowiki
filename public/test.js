@@ -274,7 +274,7 @@ eval("\nconst Path = __webpack_require__(/*! path */ \"./node_modules/path-brows
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("throw new Error(\"Module parse failed: Unexpected token (6:0)\\nYou may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders\\n| exports.isOloRequest = function (req) {\\n|     const mimeType\\n> }\\n| \");\n\n//# sourceURL=webpack:///./lib/olojs/lib/backends/http-backend-mimetypes.js?");
+eval("\nexports.DOCUMENT = \"application/x-olo-document\";\nexports.CONTAINER = \"application/x-olo-container\";\n\n\n//# sourceURL=webpack:///./lib/olojs/lib/backends/http-backend-mimetypes.js?");
 
 /***/ }),
 
