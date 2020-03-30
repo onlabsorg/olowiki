@@ -20,7 +20,7 @@ will render to the following HTML:
 Let's define some variable ... and then use it: DONE!
 ```
 
-The inline expression language is documented [here](/doc/expression/index).
+The inline expression language is documented [here](/man/expression/index).
 
 The rendering process of a document's source code consists of the following
 steps:

@@ -1,5 +1,5 @@
-**olowiki** is a distributed [wiki](https://en.wikipedia.org/wiki/Wiki) where
-documents can import information from each other across nodes.
+**olowiki** is a minimalistic wiki based on [olojs](https://github.com/onlabsorg/olojs/blob/master/README.md),
+a distributed content management framework.
 
 My node is https://wiki.olnlabs.org/.
 
@@ -8,9 +8,9 @@ You can [install and run your own node](/doc/installation.md) or contribute to m
 
 # Documentation
 
-* [Getting started with olowiki](https://wiki.onlabs.org/doc/tutorials/basic)
-* [Olowiki documents](https://wiki.onlabs.org/doc/document)
-* [Olowiki expression language](http://localhost:8010/doc/expression/index)
+* [Getting started with olowiki](https://wiki.onlabs.org#/doc/olowiki/getting-started)
+* [Olowiki documents](https://wiki.onlabs.org#/doc/olowiki/document)
+* [Olowiki expression language](https://wiki.onlabs.org#/doc/olowiki/swan)
 
 
 # Contribute to olowiki

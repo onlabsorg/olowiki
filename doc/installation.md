@@ -1,6 +1,6 @@
 You can install and run olowiki on your server in a few steps.
 
-First of all you install the `olowiki` command line interface.
+First of all you should install the `olowiki` command line interface.
 
 ```
 npm install -g @onlabsorg/olowiki
@@ -15,23 +15,14 @@ cd <your-olowiki-node-folder>
 olowiki init <your-email-address>
 ```
 
-The `olowiki init` command creates a configuration files and the three directories
-`doc`, `lib` and `users` where your node documents will be stored as plain text
-files. 
+The `olowiki init` command creates a configuration file named `olonv.js` and the 
+three directories `doc`, `lib` and `users` where your node documents will be 
+stored as plain text files. 
 
-You are almost done. In order to complete the setup of your node, you need to provide the configuration parameters of a SMTP server that olowiki will use to 
-send identity tokens to your users.
-
-```
-olowiki set-smtp <host> <port> <user> <password>
-```
-
->   Olowiki uses [Nodemailer](https://nodemailer.com/about/) to send emails.
->   The `olowiki set-smtp` command creates an `email` field in your `olowiki.json`
->   configuration file, which is the `options` parameter passed to
->   [nodemailer.createTransport](https://nodemailer.com/smtp/). If your mail
->   server needs more advanced configuration (e.g. gmail), you can edit the
->   `email` object directly in `olowiki.json`.
+You are almost done. In order to complete the setup of your node, you need to provide 
+the configuration parameters of a SMTP server that olowiki will use to 
+send identity tokens to your users. To do that open the `olonv.js` file in your
+favorite editor and fill-in the missing parameters of the `dispatch` function.
 
 If you have followed all the previous steps, you are ready to start your
 olowiki node

@@ -68,10 +68,8 @@ const vueRule = {
 module.exports = {
         
     entry: {
-        'root': './src/root.js',
-        'container': './src/container.js',
-        'document': './src/document.js',
-        'test': './test/index.js'
+        'olowiki': './src/olowiki.js',
+        //'test': './test/index.js'
     },
     
     output: {
@@ -90,10 +88,6 @@ module.exports = {
         alias: {
             "olo-editor": path.resolve(__dirname, "lib/olo-editor/"),
             "olo-editor$": path.resolve(__dirname, "lib/olo-editor/index"),
-            "olo-viewer": path.resolve(__dirname, "lib/olo-viewer/"),
-            "olo-viewer$": path.resolve(__dirname, "lib/olo-viewer/index"),
-            "olojs": path.resolve(__dirname, "lib/olojs/"),
-            "olojs$": path.resolve(__dirname, "lib/olojs/index"),
         }
     }  
 }

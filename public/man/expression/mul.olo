@@ -1,50 +1,61 @@
 <%  title = "olowiki expression: L * R"  %>
 <%  __render__ = import("/bin/markdown")  %>
 
-<% test = import("/lib/test") %>
-<% check = test.check %>
+<% test = import("/bin/test") %>
+<% foo: () -> "this is a function" %>
+
 
 ##### When L is NOTHING
-* <% check(NOTHING * NOTHING == NOTHING)        %> It should return NOTHING if R is NOTHING
-* <% check(NOTHING * 10 == NOTHING)             %> It should return NOTHING if R is a number
-* <% check(NOTHING * "abc" == NOTHING)          %> It should return NOTHING if R is a string
-* <% check(NOTHING * [1,2,3] == NOTHING)        %> It should return NOTHING if R is a list
-* <% check(NOTHING * {a=1,b=2,c=3} == NOTHING)  %> It should return NOTHING if R is a namespace
+* It should return NOTHING if R is NOTHING                                      <% test(NOTHING * NOTHING == NOTHING) %>
+* It should return NOTHING if R is a number                                     <% test(NOTHING * 10 == NOTHING) %>
+* It should return NOTHING if R is a string                                     <% test(NOTHING * "abc" == NOTHING) %>
+* It should return NOTHING if R is a function                                   <% test(NOTHING * foo == NOTHING) %>
+* It should return NOTHING if R is a list                                       <% test(NOTHING * [1,2,3] == NOTHING) %>
+* It should return NOTHING if R is a namespace                                  <% test(NOTHING * {a=1,b=2,c=3} == NOTHING) %>
+* It should delegate to `R.__mul__(L)` if it exists                             <% R = {__mul__: (L) -> `R * NOTHING`} %> <% test(NOTHING * R == "R * NOTHING") %>
 
 ##### When L is a number
-<% R = {__mul__: (L) -> L * 2} %>
-* <% check(10 * NOTHING == NOTHING)             %> It should return NOTHING if R is NOTHING
-* <% check(10 * 2 == 20)                        %> It should return the product of L and R if R is a number
-* <% check(3 * "abc" == "abcabcabc")            %> It should return L times R if R is a string
-* <% check(3 * [1,2,3] == [1,2,3,1,2,3,1,2,3])  %> It should return L times R if R is a list
-* <% check(3 * {a=1,b=2,c=3} == NOTHING)        %> It should return NOTHING if R is a namespace
-* <% check(10 * R == 20)                        %> It should delegate to `R.__mul__(L)` if it exists
+* It should return NOTHING if R is NOTHING                                      <% test(10 * NOTHING == NOTHING) %>
+* It should return the L*R if R is a number                                     <% test(10 * 2 == 20) %>
+* It should repeat L times R if R is a string                                   <% test(3 * "Abc" == "AbcAbcAbc") %>
+* It should throw an error if R is a function                                   <% test.throws({__call__: () -> 10 * foo}) %>
+* It should repeat L times R if R is a list                                     <% test(3 * [1,2,3] == [1,2,3,1,2,3,1,2,3]) %>
+* It should return R if it is a namespace                                       <% test(3 * {a=1,b=2,c=3} == {a=1,b=2,c=3}) %>
+* It should delegate to `R.__mul__(L)` if it exists                             <% R = {__mul__: (L) -> 2 * L} %> <% test(10 * R == 20) %>
 
 ##### When L is a string
-<% R = {__mul__: (L) -> L + " * R"} %>
-* <% check("abc" * NOTHING == NOTHING)          %> It should return NOTHING if R is NOTHING
-* <% check("Abc" * 3 == "AbcAbcAbc")            %> It should repeat R times L if R is a number
-* <% check("abc" * "def" == NOTHING)            %> It should return NOTHING if R is a string
-* <% check("abc" * [1,2,3] == NOTHING)          %> It should return NOTHING if R is an array
-* <% check("abc" * {a=1,b=2,c=3} == NOTHING)    %> It should return NOTHING if R is a namespace
-* <% check("abc" * R == "abc * R")              %> It should delegate to `R.__mul__(L)` if it exists
+* It should return NOTHING if R is NOTHING                                      <% test("abc" * NOTHING == NOTHING) %>
+* It should repeat R times L if R is a number                                   <% test("Abc" * 3 == "AbcAbcAbc") %>
+* It should throw an error if R is a string                                     <% test.throws({__call__: () -> "abc" * "def"}) %>
+* It should throw an error if R is a function                                   <% test.throws({__call__: () -> "abc" * foo}) %>
+* It should throw an error if R is a list                                       <% test.throws({__call__: () -> "abc" * [] }) %>
+* It should throw an error if R is a namespace                                  <% test.throws({__call__: () -> "abc" * {} }) %>
+* It should delegate to `R.__mul__(L)` if it exists                             <% R = {__mul__: (L) -> "R * " + L} %> <% test("abc" * R == "R * abc") %>
+
+##### When L is a function
+* It should return NOTHING if R is NOTHING                                      <% test(foo * NOTHING == NOTHING) %>
+* It should throw an error if R is a number                                     <% test.throws({__call__: () -> foo * 10}) %>
+* It should throw an error if R is a string                                     <% test.throws({__call__: () -> foo * "abc"}) %>
+* It should throw an error if R is a function                                   <% test.throws({__call__: () -> foo * foo}) %>
+* It should throw an error if R is a list                                       <% test.throws({__call__: () -> foo * [] }) %>
+* It should throw an error if R is a namespace                                  <% test.throws({__call__: () -> foo * {} }) %>
+* It should delegate to `R.__mul__(L)` if it exists                             <% R = {__mul__: (L) -> "R * " + L[1] } %> <% test(["i1","i2","i3"] * R == "R * i1") %>
 
 ##### When L is a list
-<% R = {__mul__: (L) -> L[1]+L[2]+L[3] + " * R"} %>
-* <% check([1,2,3] * NOTHING == NOTHING)        %> It should return NOTHING if R is NOTHING
-* <% check([1,2,3] * 3 == [1,2,3,1,2,3,1,2,3])  %> It should repeat R times L if R is a number
-* <% check([1,2,3] * "def" == NOTHING)          %> It should return NOTHING if R is a string
-* <% check([1,2,3] * [4,5,6] == NOTHING)        %> It should return NOTHING if R is an array
-* <% check([1,2,3] * {a=1,b=2,c=3} == NOTHING)  %> It should return NOTHING if R is a namespace
-* <% check(['A','B','C'] * R == "ABC * R")      %> It should delegate to `R.__mul__(L)` if it exists
+* It should return NOTHING if R is NOTHING                                      <% test([1,2,3] * NOTHING == NOTHING) %>
+* It should repeat R times L if R is a number                                   <% test([1,2,3] * 3 == [1,2,3,1,2,3,1,2,3]) %>
+* It should throw an error if R is a string                                     <% test.throws({__call__: () -> [1,2,3] * "abc"}) %>
+* It should throw an error if R is a function                                   <% test.throws({__call__: () -> [1,2,3] * foo}) %>
+* It should throw an error if R is a list                                       <% test.throws({__call__: () -> [1,2,3] * [4,5,6]}) %>
+* It should throw an error if R is a namespace                                  <% test.throws({__call__: () -> [1,2,3] * {} }) %>
+* It should delegate to `R.__mul__(L)` if it exists                             <% R = {__mul__: (L) -> "R * [" + L[1] + L[2] + L[3] + "]" } %> <% test(['A','B','C'] * R == "R * [ABC]" ) %>
 
 ##### When L is a namespace
-<% L = {__mul__: (R) -> "L * " + R.a} %>
-<% R = {__mul__: (L) -> L.b + " * R"} %>
-* <% check({a=1,b=2,c=3} * NOTHING == NOTHING)      %> It should return NOTHING if R is NOTHING
-* <% check({a=1,b=2,c=3} * 3 == NOTHING)            %> It should return NOTHING if R is a number
-* <% check({a=1,b=2,c=3} * "def" == NOTHING)        %> It should return NOTHING if R is a string
-* <% check({a=1,b=2,c=3} * [4,5,6] == NOTHING)      %> It should return NOTHING if R is an array
-* <% check({a=1,b=2,c=3} * {d=4,e=5} == NOTHING)    %> It should return NOTHING if R is a namespace
-* <% check(L * {a="Ra",b="Rb",c="Rc"} == "L * Ra")  %> It should delegate to `L.__mul__(R)` if it exists
-* <% check({a="La",b="Lb",c="Lc"} * R == "Lb * R")  %> It should delegate to `R.__mul__(L)` if it exists
+* It should return NOTHING if R is NOTHING                                      <% test({a=1,b=2,c=3} * NOTHING == NOTHING) %>
+* It should return L if R is a number                                           <% test({a=1,b=2,c=3} * 2 == {a=1,b=2,c=3}) %>
+* It should throw an error if R is a string                                     <% test.throws({__call__: () -> {a=1,b=2,c=3} * "abc"}) %>
+* It should throw an error if R is a function                                   <% test.throws({__call__: () -> {a=1,b=2,c=3} * foo}) %>
+* It should throw an error if R is a list                                       <% test.throws({__call__: () -> {a=1,b=2,c=3} * [] }) %>
+* It should throw an error if R is a namespace                                  <% test.throws({__call__: () -> {a=1,b=2,c=3} * {} }) %>
+* It should delegate to `L.__mul__(R)` if it exists                             <% L = {__mul__: (R) -> 2*R} %> <% test(L * 10 == 20) %>
+* It should delegate to `R.__mul__(L)` if it exists                             <% R = {__mul__: (L) -> 3*L} %> <% test(10 * R == 30 ) %>

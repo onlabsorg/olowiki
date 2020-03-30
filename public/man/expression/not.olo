@@ -1,20 +1,15 @@
-<% title = "function: not(X)" %>
+<% title = "not(X)" %>
 <% __render__ = import("/bin/markdown") %>
-<% test = import("/lib/test") %>
 
-The `not` function returns `TRUE` when `bool(X)` returns `FALSE` and `FALSE` otherwise.
+<% test = import("/bin/test") %>
 
-<% tNS = {__size__: () -> 10} %>
-<% fNS = {__size__: () -> 0} %>
 
-* <% test.check(not(NOTHING) == TRUE) %>                    It should return `TRUE` if `X` is `NOTHING`
-* <% test.check(not(10) == FALSE) %>                        It should return `FALSE` if `X` is a non-null number
-* <% test.check(not(0) == TRUE) %>                          It should return `TRUE` if `X` is 0
-* <% test.check(not("abc") == FALSE) %>                     It should return `FALSE` if `X` is a non-empty string
-* <% test.check(not("") == TRUE) %>                         It should return `TRUE` if `X` is an empty string
-* <% test.check(not([1,2,3]) == FALSE) %>                   It should return `FALSE` if `X` is a non-empty list
-* <% test.check(not([]) == TRUE) %>                         It should return `TRUE` if `X` is an empty list
-* <% test.check(not({a=1}) == FALSE) %>                     It should return `FALSE` if `X` is a non-empty namespace
-* <% test.check(not({}) == TRUE) %>                         It should return `TRUE` if `X` is an empty namespace
-* <% test.check(not(tNS) == FALSE and not(fNS) == TRUE) %>  If should return `TRUE` if `X.__size__()` returns 0 or not a nmber, otherwise `FALSE`
+It should resolve `TRUE` if `X` is `FALSE` and `FALSE` if `X` is `TRUE`.
+is `TRUE`. 
+
+* Expect `not(TRUE)` to be `FALSE`                                              <% test.not(not(TRUE)) %>
+* Expect `not(FALSE)` to be `TRUE`                                              <% test(not(FALSE)) %>
+
+If the operand is not boolean, it will be automatically converted to boolean 
+using the [bool(x)](./bool) function internally.                                <% test(not(not("abc")) and not("") and not(not([1,2,3])) and not([])) %>
 

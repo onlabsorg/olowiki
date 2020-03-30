@@ -9,15 +9,13 @@
 </template>
 
 <script>
-    const olojs = require("olojs");
-
     module.exports = {
 
         components: {
             'ace-editor': require('vue2-ace-editor'),
         },
         
-        props: ['doc'],
+        props: ['source'],
 
         data: () => Object({
             
@@ -33,7 +31,7 @@
         }),
         
         watch: {
-            'doc': function () {
+            source: function () {
                 this.updateContent();
             }
         },
@@ -54,11 +52,11 @@
             },
             
             updateContent () {
-                this.content = this.doc.body;
+                this.content = this.source;
             },
             
             commit () {
-                this.doc.body = this.content;                        
+                this.$emit('update:source', this.content);
             },
             
             focus () {

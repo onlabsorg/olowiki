@@ -1,42 +1,58 @@
 <%  title = "olowiki expression: L - R"  %>
 <%  __render__ = import("/bin/markdown")  %>
 
-<% test = import("/lib/test") %>
-<% check = test.check %>
+<% test = import("/bin/test") %>
+<% foo: () -> "this is a function" %>
+
 
 ##### When L is NOTHING
-* <% check(NOTHING + NOTHING == NOTHING)                %> It should return NOTHING if R is NOTHING
-* <% check(NOTHING + 10 == 10)                          %> It should return R if R is a number
-* <% check(NOTHING + "abc" == "abc")                    %> It should return R if R is a string
-* <% check(NOTHING + [1,2,3] == [1,2,3])                %> It should return R if R is a list
-* <% check(NOTHING + {a=1,b=2,c=3} == {a=1,b=2,c=3})    %> It should return R if R is a namespace
+* It should return NOTHING if R is NOTHING                                      <% test(NOTHING - NOTHING == NOTHING) %>
+* It should return NOTHING if R is a number                                     <% test(NOTHING - 10 == NOTHING) %>
+* It should return NOTHING if R is a string                                     <% test(NOTHING - "abc" == NOTHING) %>
+* It should return NOTHING if R is a function                                   <% test(NOTHING - foo == NOTHING) %>
+* It should return NOTHING if R is a list                                       <% test(NOTHING - [1,2,3] == NOTHING) %>
+* It should return NOTHING if R is a namespace                                  <% test(NOTHING - {a=1,b=2,c=3} == NOTHING) %>
 
 ##### When L is a number
-* <% check(10 - NOTHING == 10)              %> It should return L if R is NOTHING
-* <% check(10 - 2 == 8)                     %> It should return the difference between L and R if R is a number
-* <% check(10 - "abc" == NOTHING)           %> It should return NOTHING if R is a string
-* <% check(10 - [1,2,3] == NOTHING)         %> It should return NOTHING if R is a list
-* <% check(10 - {a=1,b=2,c=3} == NOTHING)   %> It should return NOTHING if R is a namespace
+* It should return L if R is NOTHING                                            <% test(10 - NOTHING == 10) %>
+* It should return the difference between L and R if R is a number              <% test(20 - 5 == 15) %>
+* It should throw an error if R is a string                                     <% test.throws({__call__: () -> 10 - "abc"}) %>
+* It should throw an error if R is a function                                   <% test.throws({__call__: () -> 10 - foo}) %>
+* It should throw an error if R is a list                                       <% test.throws({__call__: () -> 10 - [] }) %>
+* It should throw an error if R is a namespace                                  <% test.throws({__call__: () -> 10 - {} }) %>
 
 ##### When L is a string
-* <% check("abc" - NOTHING == "abc")         %> It should return L if R is NOTHING
-* <% check("abc" - 10 == NOTHING)            %> It should return NOTHING if R is a string
-* <% check("abc" - "def" == NOTHING)         %> It should return NOTHING if R is a string
-* <% check("abc" - [1,2,3] == NOTHING)       %> It should return NOTHING if R is a list
-* <% check("abc" - {a=1,b=2,c=3} == NOTHING) %> It should return NOTHING if R is a namespace
+* It should return L if R is NOTHING                                            <% test("abc" - NOTHING == "abc") %>
+* It should throw an error if R is a number                                     <% test.throws({__call__: () -> "abc" - 10}) %>
+* It should throw an error if R is a string                                     <% test.throws({__call__: () -> "abc" - "def"}) %>
+* It should throw an error if R is a function                                   <% test.throws({__call__: () -> "abc" - foo}) %>
+* It should throw an error if R is a list                                       <% test.throws({__call__: () -> "abc" - [] }) %>
+* It should throw an error if R is a namespace                                  <% test.throws({__call__: () -> "abc" - {} }) %>
+
+##### When L is a function
+* It should return L if R is NOTHING                                            <% test(foo - NOTHING == foo) %>
+* It should throw an error if R is a number                                     <% test.throws({__call__: () -> foo - 10}) %>
+* It should throw an error if R is a string                                     <% test.throws({__call__: () -> foo - "abc"}) %>
+* It should throw an error if R is a function                                   <% test.throws({__call__: () -> foo - foo}) %>
+* It should throw an error if R is a list                                       <% test.throws({__call__: () -> foo - [] }) %>
+* It should throw an error if R is a namespace                                  <% test.throws({__call__: () -> foo - {} }) %>
 
 ##### When L is a list
-* <% check([1,2,3] - NOTHING == [1,2,3])       %> It should return L if R is NOTHING
-* <% check([1,2,3] - 10 == NOTHING)            %> It should return NOTHING if R is a string
-* <% check([1,2,3] - "def" == NOTHING)         %> It should return NOTHING if R is a string
-* <% check([1,2,3] - [1,2,3] == NOTHING)       %> It should return NOTHING if R is a list
-* <% check([1,2,3] - {a=1,b=2,c=3} == NOTHING) %> It should return NOTHING if R is a namespace
+<% L = [1,2,3] %>
+* It should return L if R is NOTHING                                            <% test(L - NOTHING == L) %>
+* It should throw an error if R is a number                                     <% test.throws({__call__: () -> L - 10}) %>
+* It should throw an error if R is a string                                     <% test.throws({__call__: () -> L - "abc"}) %>
+* It should throw an error if R is a function                                   <% test.throws({__call__: () -> L - foo}) %>
+* It should throw an error if R is a list                                       <% test.throws({__call__: () -> L - [] }) %>
+* It should throw an error if R is a namespace                                  <% test.throws({__call__: () -> L - {} }) %>
 
 ##### When L is a namespace
-<% L = {__sub__: (R) -> 10 - R} %>
-* <% check({a=1,b=2,c=3} - NOTHING == {a=1,b=2,c=3})    %> It should return L if R is NOTHING
-* <% check({a=1,b=2,c=3} - 10 == NOTHING)               %> It should return NOTHING if R is a string
-* <% check({a=1,b=2,c=3} - "def" == NOTHING)            %> It should return NOTHING if R is a string
-* <% check({a=1,b=2,c=3} - [1,2,3] == NOTHING)          %> It should return NOTHING if R is a list
-* <% check({a=1,b=2,c=3} - {d=4,e=5} == NOTHING)        %> It should return NOTHING if R is a namespace
-* <% check(L - 2 == 8)                                  %> It should delegate to `L.__sub__(R)` if it exists
+<% L = {a=1,b=2,c=3} %>
+<% L1 = {__sub__: (R) -> 10-R} %>
+* It should return L if R is NOTHING                                            <% test(L - NOTHING == L) %>
+* It should throw an error if R is a number                                     <% test.throws({__call__: () -> L - 10}) %>
+* It should throw an error if R is a string                                     <% test.throws({__call__: () -> L - "abc"}) %>
+* It should throw an error if R is a function                                   <% test.throws({__call__: () -> L - foo}) %>
+* It should throw an error if R is a list                                       <% test.throws({__call__: () -> L - [] }) %>
+* It should throw an error if R is a namespace                                  <% test.throws({__call__: () -> L - {} }) %>
+* It should delegate to `L.__sub__(R)` if it exists                             <% test(L1 - 2 == 8) %>

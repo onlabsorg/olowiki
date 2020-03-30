@@ -1,0 +1,89 @@
+<% title = "olowiki inline expressions" %>
+<% __render__ = import("/bin/markdown") %>
+
+<% test = import("/bin/test") %>
+
+
+An olowiki document is a template containing inline code enclosed between &lt;%
+and %&gt;. The inline code can be of two types:
+
+* `Expressions` which are replaced by their value when the document is rendered
+* `Declaration statements` assigning a value to a name, which do not render any value
+
+For example the folllwing template:
+
+```
+Let's define some variable ... <% "<"+"%" %> v = "DONE" <% "%"+">" %> 
+and then use it: <% "<"+"%" %> v+"!" <% "%"+">" %>
+```
+
+will render to the following HTML:
+
+```
+Let's define some variable ... and then use it: DONE!
+```
+
+
+### Data types
+The olowiki expression language has the following six data types:
+
+* [Nothing](./expression/Nothing) is a singleton with single value `NOTHING`,
+  which represents nothingness.                                                 [<% test.summary("./expression/Nothing") %>]
+* [Number](./expression/Number) is the numeric real type                        [<% test.summary("./expression/Number") %>]
+* [Text](./expression/Text) is a sequence of characters                         [<% test.summary("./expression/Text") %>]
+* [Function](./expression/Function) is a parametric expression                  [<% test.summary("./expression/Function") %>]
+* [List](./expression/List) is an ordered sequence of values of any type        [<% test.summary("./expression/List") %>]
+* [Namespace](./expression/Namespace) is a name-value map                       [<% test.summary("./expression/Namespace") %>]
+
+The data type of an object `X` can be obtained by calling the 
+[type(X)](./expression/type) function.                                          [<% test.summary("./expression/type") %>]
+
+
+### Boolean operations
+
+* [L == R](./expression/eq)     [<% test.summary(URI.resolve("./expression/eq")) %>]
+* [L != R](./expression/ne)     [<% test.summary("./expression/ne") %>]
+* [L < R](./expression/lt)      [<% test.summary("./expression/lt") %>]
+* [L <= R](./expression/le)     [<% test.summary("./expression/le") %>]
+* [L > R](./expression/gt)      [<% test.summary("./expression/gt") %>]
+* [L >= R](./expression/ge)     [<% test.summary("./expression/ge") %>]
+* [L and R](./expression/and)   [<% test.summary("./expression/and") %>]
+* [L or R](./expression/or)     [<% test.summary("./expression/or") %>]
+* [not(X)](./expression/not)    [<% test.summary("./expression/not") %>]
+* [bool(X)](./expression/bool)  [<% test.summary("./expression/bool") %>]
+
+
+### Arithmetic operations
+
+* [L + R](./expression/add)     [<% test.summary("./expression/add") %>]
+* [L - R](./expression/sub)     [<% test.summary("./expression/sub") %>]
+* [L * R](./expression/mul)     [<% test.summary("./expression/mul") %>]
+* [L / R](./expression/div)     [<% test.summary("./expression/div") %>]
+* [L ^ R](./expression/pow)     [<% test.summary("./expression/pow") %>]
+* [L mod R](./expression/mod)   [<% test.summary("./expression/mod") %>]
+* [size(X)](./expression/size)  [<% test.summary("./expression/size") %>]
+
+
+### Query
+
+The content of a `Namespace`, `List` or `Text` object `X` can be queried with
+the [ X[Q] notation ](./expression/query).                                      [<% test.summary("./expression/query") %>]
+
+
+### Conditional expressions
+
+The expression [A if B else C](./expression/if-else) resolves to `A` if `B` is
+`TRUE`, otherwise it resolves to `C`.                                           [<% test.summary("./expression/if-else") %>]
+
+
+### Imports
+
+Each document is uniquiely identified by an URI and exposes it via the 
+[URI](./expression/uri) namespace.                                              [<% test.summary("./expression/uri") %>]
+
+You can inport the root namespace of an external document using the 
+[import(uri)](./expression/import) function.                                    [<% test.summary("./expression/import") %>]
+
+Each olowiki distribution offers a [/bin document store](/bin/), containing 
+a standard library of documents to be imported.
+

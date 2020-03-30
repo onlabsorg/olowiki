@@ -1,35 +1,49 @@
 <% title = "olowiki documentation" %>
 <% __render__ = import("/bin/markdown") %>
 
-This is a [wiki](https://en.wikipedia.org/wiki/Wiki) application with the 
-following features:
+**olowiki** is a distributed [wiki](https://en.wikipedia.org/wiki/Wiki) where
+documents can import and reuse information from each other within the same node
+or across nodes.
 
-* Documents are literate programming scripts based on a functional expression 
-  language (still without a name), that render to HTML.
-* The content of a document (both data and text) can be imported and reused in
-  other documents, allowing for modular editing.
-* You can share some of your documents by making them public. This way, other 
-  users can read them and/or import them in their documents.
-* Each document is identified by an [URI](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier).
-  The URI query variables can be used inside the document expressions, allowing
-  to create parametric documents.
-  
-Documents are stored in a hierarchic structure (the familiar directory tree). At
-the top of the tree there is the [olowiki root](/) accessible via the top-left
-icon. The `root` contains a list of the available stores (`doc, lib, ecc.`). Each store
-has a different behavior: read-only, read-write, public, private, etc. 
+This node is identified by the URI `<% URI.root %>` and the documents it contains
+are organized in the following tree structure:
 
-One of the store is `local`: your private store which lives locally on your machine 
-and can optionally be synchronized between your devices (sync not yet implemented, though).
+* `<% URI.root %>/bin/`: standard olowiki libraries
+* `<% URI.root %>/doc/`: node documentation
+* `<% URI.root %>/lib/`: node public libraries
+* `<% URI.root %>/local/`: logged-in user's private store
+* `<% URI.root %>/man/`: standard olowiki documentation
+* `<% URI.root %>/users/`
+    * `<% URI.root %>/users/contributor1/`: public documents contributed by `contributor1`
+    * `<% URI.root %>/users/contributor2/`: public documents contributed by `contributor2`
+    * `<% URI.root %>/users/contributor3/`: public documents contributed by `contributor3`
+    * `...
 
-Each store can contain two types of item: a document or a a container 
-(i.e. a directory containing in turn other directories and documents).
+You can host your own node by following the instructions given in the
+[olowiki GitHub repository](https://github.com/onlabsorg/olowiki).
+
+The documents contained in a olowiki node are literate programming scripts based 
+on a functional expression language (still without a name), that render to HTML.
+The content of a document (both data and text) can be imported and reused in
+other documents, allowing for modular editing.
+
+The owner of the node edits the node public libraries in the <a href="/doc/">lib</a> 
+store. The contributors provide, in their own public containers, documents that 
+the owner can use as building blocks to create the public library. Contributions 
+can be spontaneous or coordinated by the owner who specifies in the <a href="/doc/">doc</a> 
+store the rules for contributing, among node documentation in general.
+
+The documents in the public library store can be used by anyone. They can be
+loaded in a web browser or imported in other documents within the same node or
+across nodes. Typically a node user will use them to create his own documents in the 
+<a href="/local/">local</a> store and eventually become a contributor by publishing 
+some of his private document to the <a href="/users/">users</a> store.
 
 To learn more about `olowiki`, the following resources are available:
 
-* [Getting started](/doc/tutorials/basic): a tutorial that will introduce
+* [Getting started](/man/tutorials/basic): a tutorial that will introduce
   you to the basics of using `olowiki`.
-* [Olowiki documents](/doc/document): a guide about how to write olowiki documents.
+* [Olowiki documents](/man/document): a guide about how to write olowiki documents.
 * Existing documents: learning by examples. When you know the basics, you will be 
   able to read and understand the source of existing documents. Take any document, 
   switch to edit mode and play with the source: you can always read and change 

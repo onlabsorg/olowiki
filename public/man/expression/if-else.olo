@@ -1,21 +1,24 @@
-<% title = "A if B else C" %>
+<% title = "X if C else Y" %>
 <% __render__ = import("/bin/markdown") %>
 
-<% test = import("/lib/test") %>
-<% check = test.check %>
+<% test = import("/bin/test") %>
 
-This is a conditional expression: it returns `A` if `bool(B)` is `TRUE`,
-otherwise it returns `C`.
+This is a conditional expression: it returns `X` if `C` is `TRUE`,
+otherwise it returns `Y`.
 
-* <% check((10 if TRUE else 20) == 10) %>   It should return `A` if `B` is `TRUE`
-* <% check((10 if "abc" else 20) == 10) %>  It should return `A` if `bool(B)` is `TRUE`
-* <% check((10 if FALSE else 20) == 20) %>  It should return `C` if `B` is `FALSE`
-* <% check((10 if "" else 20) == 20) %>     It should return `C` if `bool(B)` is `FALSE`
-  
+* It should return `X` if `C` is `TRUE`                                         <% test((10 if TRUE else 20) == 10) %>
+* It should return `Y` if `C` is `FALSE`                                        <% test((10 if FALSE else 20) == 20) %>
+
+If `C` is not a boolean value, it gest internally converted to boolean:
+
+* It should return `X` if `bool(C)` is `TRUE`                                   <% test((10 if "abc" else 20) == 10) %>
+* It should return `Y` if `bool(C)` is `FALSE`                                  <% test((10 if "" else 20) == 20) %>
+
 In reality `if` and `else` are two independent binary operators:
-* *`A if B`* returns `A` if `bool(B)` is `TRUE`, otherwise it returns `NOTHING`.
-    * <% check((10 if "abc") == 10) %>      It should return `A` if `bool(B)` is `TRUE`
-    * <% check((10 if "") == NOTHING) %>    It should return `NOTHING` if `bool(B)` is `FALSE`
-* *`A else B`* returns `A` if it is not `NOTHING`, otherwise it returns `B`.
-    * <% check((10 else 20) == 10) %>       It should return `A` if `A` is not `NOTHING`
-    * <% check((NOTHING else 20) == 20) %>  It should return `B` if `A` is `NOTHING`
+
+* *`X if C`* returns `X` if `bool(C)` is `TRUE`, otherwise it returns `NOTHING`.
+    * It should return `X` if `bool(C)` is `TRUE`                               <% test((10 if "abc") == 10) %>
+    * It should return `NOTHING` if `bool(C)` is `FALSE`                        <% test((10 if "") == NOTHING) %>
+* *`X else Y`* returns `X` if it is not `NOTHING`, otherwise it returns `Y`.
+    * It should return `X` if it is not `NOTHING`                               <% test((10 else 20) == 10) %>
+    * It should return `Y` if `X` is `NOTHING`                                  <% test((NOTHING else 20) == 20) %>

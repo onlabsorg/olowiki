@@ -6,13 +6,14 @@ but it's something more.
 
 * olowiki documents can be edited
 * olowiki documents can be shared and their content re-used in other documents
-* olowiki documents are stored on a distributed storage system, not in a centralized database
+* olowiki documents are stored on a across a distributed network of nodes, not 
+  in a centralized database
 
 
 ### Editing documents
 
-First of all, you can edit it by clicking on the top-right icon or by pressing 
-`ctrl-enter`. Once you are done editing, you click on the `done` icon or you
+First of all, you can edit this document by clicking on the top-right icon or by 
+pressing `ctrl-enter`. Once you are done editing, you click on the `done` icon or you
 press `ctrl-enter` to return to view mode where the modified document will be 
 rendered.
 
@@ -40,14 +41,14 @@ Let's create a new document then:
 <p> My name is <% "<"+"%" %> name + " " + surname <% "%"+">" %> and this is
     my first olowiki document.</p>
 <p> I am <% "<"+"%" %> age <% "%"+">" %> years old and next year I will be
-    <% "<"+"%" %> age+1 <% "%"+">" %> year old.</p>
+    <% "<"+"%" %> age+1 <% "%"+">" %> years old.</p>
 ```
 
 * Switch back to view mode and your document should render to:
 
 >   <p>Hello there!</p>
 >   <p> My name is Marcello Del Buono and this is my first olowiki document.</p>
->   <p> I am 42 years old and next year I will be 43 year old.</p>
+>   <p> I am 42 years old and next year I will be 43 years old.</p>
 
 * Save it! 
 
@@ -59,7 +60,7 @@ Let's now walk throw the document source line by line and try to understand it.
 
 
 The first line is a variable definition: we create a variable named `title` and
-we assign the value `My First Document` to it. A variable definition renders to
+we assign the text value `"My First Document"` to it. A variable definition renders to
 an empty string, therefore nothing will be shown in the rendered document as a
 consequence of this statement. But, the `name` variable is a special one: its
 value will be displayed in the title bar of the rendered document.
@@ -118,6 +119,9 @@ only this time the expressions deal with numbers.
     <% "<"+"%" %> age+1 <% "%"+">" %> year old.</p>
 ```
 
+Try to change the value of the variable `name`, `surname` and `age` and see how
+the rendered document changes.
+
 
 ### Sharing documents
 
@@ -129,7 +133,7 @@ The most simple way to reuse the content of another document in your document is
 to _fork_ it by copy-pasting its source code (or part of it) in your document.
 
 A better way is to _import_ the document content in your document. For example, 
-add the following code to your [first document](/rs/tutorials/my-first-document):
+add the following code to your [first document](/local/tutorials/my-first-document):
 
 ```
 <% "<"+"%" %> importedDoc = import("<% URI.path %>") <% "%"+">" %>
@@ -146,27 +150,33 @@ The impoted namespace stringifies to the rendered content of the imported docume
 this means that if you type `<% "<"+"%" %> importedDoc <% "%"+">" %>` in your document,
 the entire content of this document will be rendered.
 
-Unlike sharing by _forking_, sharing by _importing_ is dynamic, which meansh that
+Unlike sharing by _forking_, sharing by _importing_ is dynamic, which means that
 if the imported namespace will always contain the lastest version of the imported
 document.
 
 
 ### Documents distributed storage system
 
-Documents are contained in so called _stores_, which are hierarichical repositories
-of documents implementing their own access control policies.
+Documents are contained in so called _olowiki nodes_, which are separate installations
+of the `olowiki` app.
 
-Currently olowiki supports the following stores:
+Within each node, documents are contained in so called _stores_, which are hierarichical 
+repositories of documents implementing their own access control policies.
 
-* [doc](/doc/): a static store hosted on the olowiki server and containing the olowiki 
+Currently each olowiki node contains the following stores:
+
+* [doc](/doc/): a static store hosted on the olowiki server and containing the node 
   documentation. The documents contained in the doc store have an URI starting 
   with <% URI.root + "/doc/" %>.
-* [lib](/lib/): a static store hosted on the olowiki server and containing olowiki 
-  documentats meant to be re-used as standard libraries. The documents contained 
+* [lib](/lib/): a static store hosted on the olowiki node server and containing olowiki 
+  documentats meant to be re-used as libraries. The documents contained 
   in the `lib` store have an URI starting with <% URI.root + "/lib/" %>.
-* [bin](/bin/): a static store hosted on the olowiki server and containing document-like 
-  namespaces to be re-used as standard libraries. The documents contained 
+* [bin](/bin/): a static store hosted on the olowiki node server and containing 
+  document-like namespaces to be re-used as standard libraries. The documents contained 
   in the `bin` store have an URI starting with <% URI.root + "/bin/" %>.
+* [man](/man/): a static store hosted on the olowiki node server and containing 
+  documentation about olowiki. The documents contained in the `bin` store have 
+  an URI starting with <% URI.root + "/bin/" %>.
 * [local](/local/): your personal store. It is so personal that olowiki doesn't even
   host it: you do, on your machine! 
 * [users](/users/): store containing the public folder of each user. You can also
@@ -181,5 +191,5 @@ from any document via the top-left icon.
 
 This was a quick introduction to olowiki and olowiki documents.
 
-* Learn more about [documents](/doc/document)
-* Learn mode about [document expressions](/doc/expression/index)
+* Learn more about [documents](/man/document)
+* Learn mode about [document expressions](/man/expression/index)

@@ -1,39 +1,48 @@
 
-Release v0.4.4:
+Next Release (v0.5.0):
+    
+    ☐ ...    
+    
+    Deployment routine:
+        ☐ Update version
+        ☐ Cleanup unused files
+        ☐ npm run build
+        ☐ git push
+        ☐ Review documentation on github
+        ☐ npm publish --access=public
+        ☐ Install olojs globally and test it    
+
+
+BACKLOG:
+    
+    ☐ Harmonize and test olojs expression language    
+        ☐ Harmonize comparison operations behaviour, test them and update their man page
+        ☐ Harmonize arithmetic operations behaviour, test them and update their man page
+        ☐ Harmonize query behaviour, test it and update its man page
+        ☐ Harmonize built-in functions behaviour, test them and update their man page
+        ☐ Test bin modules document them with their own body
+        ☐ Test conditional expressions and update their man pages
+        ☐ Test URI and update its man page
+        ☐ Test data types and update their documentation
+        ☐ Move number-related functions to the Number namespace
+        ☐ Move string-related functions to the Text namespace
+        ☐ Move function-related functions to the Function namespace
+        ☐ Move list-related functions to the List namespace
+        ☐ Move namespace-related functions to the Namespace namespace
+        ☐ Update expression main man page
+
     ☐ WUI: Add spinner during loading
-    ✔ Replace local-forage based local store with pouchdb-based store (to be synchronized in a future version) @done(2019-09-13) @project(Release v0.4.4)
-    ✔ WUI: Move login to dialog @done(2019-09-12) @project(Release v0.4.3)
-    ☐ Harmonize olojs object model
-
-Release v0.5.0:
+    ☐ Create /bin/svg module usign an svg library such as SVG.js
+    ☐ Fix scrollbar in edit mode
+    ☐ Use the `doc.writeable` to deactivate the save button
+    ☐ When switching between view and editor, restore the last cursor position
+    ☐ editor: Improve syntax highlighting and folding for oloml mode
+    ☐ viewer: Improve document css
+    ☐ improve mobile styles
+    ☐ Fix: in order to load the /bin/markdown chunk, I need to require "marked" in client. Why?
+    ☐ Move to src as new entry point and decouple from web UI
     ☐ Move personal store to pouchdb with sync and publishing to server => users folders points to public pouchdb documents
-
-Release v1.0.0:
-    olowiki web UI:
-        ☐ Fix scrollbar in edit mode
-        ☐ Use the `doc.writeable` to deactivate the save button
-        ☐ When switching between view and editor, restore the last cursor position
-        ☐ editor: Improve syntax highlighting and folding for oloml mode
-        ☐ viewer: Improve document css
-        ☐ improve mobile styles
-    olowiki client:
-        ☐ Fix: in order to load the /bin/markdown chunk, I need to require "marked" in client. Why?
-        ☐ Move to src as new entry point and decouple from web UI
-    olowiki server:
-        ☐ Probably there is a memory leak in the server: find and fix it.
-        ☐ Implement init command
-        ☐ Implement init templates: default, full-auth, ecc.        
-    olojs:
-        ☐ Object hierarchy: Expression -> Document -> Store -> Hub
-        ☐ Document constructor to always translate the `source` parameter to an object with $writeable defaulting to false
-        ☐ Define comparison of functions
-        ☐ In general, define all the operations between functions
-        ☐ Prevent function recursion
-        ☐ Document rendering: render expression errors
-        ☐ Find a way to distinguish 0 and 1 from TRUE and FALSE to properly stringify booleans
-        ☐ Implement document fragments
-        ☐ Test ...
-        ☐ Documentation ...
-        ☐ @SomedayMaybe Implement expression language in WASM
-        
+    ☐ Probably there is a memory leak in the server: find and fix it.
+    ☐ Implement init command
+    ☐ Implement init templates: default, full-auth, ecc.
         

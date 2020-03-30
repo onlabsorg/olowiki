@@ -1,80 +1,149 @@
 <%  title = "olowiki expression: L != R"  %>
 <%  __render__ = import("/bin/markdown")  %>
 
-<% test = import("/lib/test") %>
-<% check = test.check %>
+<% test = import("/bin/test") %>
 
-<% LLT = {__vs__: (R) -> -100} %>
-<% LEQ = {__vs__: (R) -> 0} %>
-<% LGT = {__vs__: (R) -> 100} %>
+<% XLT = {__vs__: (R) -> -100} %>
+<% XEQ = {__vs__: (R) -> 0} %>
+<% XGT = {__vs__: (R) -> +35} %>
+<% XNN = {__vs__: (R) -> "abc"} %>
+<% foo1: () -> 1 %>
+<% foo2: () -> 2 %>
+<% foo3: () -> 1 %>
+
+### When L is NOTHING
+By default `NOTHING` is equal only to itself and not equal to any other data type.
+* Expect `NOTHING != NOTHING` to be `FALSE`    <% test.not(NOTHING!=NOTHING)            %>
+* Expect `NOTHING != number` to be `TRUE`    <% test(NOTHING!=10)            %>
+* Expect `NOTHING != text` to be `TRUE`      <% test(NOTHING!="abc")         %>
+* Expect `NOTHING != function` to be `TRUE`  <% test(NOTHING!=foo1)          %>
+* Expect `NOTHING != list` to be `TRUE`      <% test(NOTHING!=[10,20,30])    %>
+* Expect `NOTHING != namespace` to be `TRUE` <% test(NOTHING!={})            %>
+
+If `R` is a namespace containing the trigger function `__vs__`, the result of
+the `!=` operation is defined by its return value.
+* Expect `TRUE` if `R.__vs__(L)` returns a negative number  <% test(NOTHING != XLT) %>
+* Expect `FALSE` if `R.__vs__(L)` returns 0                 <% test.not(NOTHING != XEQ) %>
+* Expect `TRUE` if `R.__vs__(L)` returns a positive number  <% test(NOTHING != XGT) %>
+* Expect `TRUE` if `R.__vs__(L)` doesn't return a number    <% test(NOTHING != XNN) %>
 
 
-##### When L is NOTHING
-* <% check(not(NOTHING!=NOTHING))   %> Expect `FALSE` if R is nothing
-* <% check(NOTHING!=10)             %> Expect `TRUE` if R is a number
-* <% check(NOTHING!="abc")          %> Expect `TRUE` if R is a string
-* <% check(NOTHING!=[10,20,30])     %> Expect `TRUE` if R is a list
-* <% check(NOTHING!={})             %> Expect `TRUE` if R is a namespace
-* <% check(NOTHING != LLT)          %> Expect `TRUE` if `R.__vs__(L)` returns a negative number
-* <% check(NOTHING != LEQ)          %> Expect `TRUE` if `R.__vs__(L)` returns 0
-* <% check(NOTHING != LGT)          %> Expect `TRUE` if `R.__vs__(L)` returns a positive number
+### When L is a number
+By default a number is equal only to the same number and different from anything else.
+* Expect `TRUE` when R is `NOTHING`         <% test(10!=NOTHING) %> 
+* Expect `FALSE` if R is the same number    <% test.not(10!=10) %> 
+* Expect `TRUE` if R is a different number  <% test(10!=20) %> 
+* Expect `TRUE` when R is a string          <% test(10!="abc") %> 
+* Expect `TRUE` if R is a function          <% test(10!=foo1) %> 
+* Expect `TRUE` when R is a list            <% test(10!=[10,20,30]) %> 
+* Expect `TRUE` when R is a namespace       <% test(10!={}) %> 
+
+If `R` is a namespace containing the trigger function `__vs__`, the result of
+the `!=` operation is defined by its return value.
+* Expect `TRUE` if `R.__vs__(L)` returns a negative number <% test(10 != XLT) %>
+* Expect `FALSE` if `R.__vs__(L)` returns 0                <% test.not(10 != XEQ) %>
+* Expect `TRUE` if `R.__vs__(L)` returns a positive number <% test(10 != XGT) %>
+* Expect `TRUE` if `R.__vs__(L)` doesn't return a number   <% test(10 != XNN) %>
 
 
-##### When L is a number
-* <% check(10!=NOTHING)     %> Expect `TRUE` when R is `NOTHING`
-* <% check(not(10!=10))     %> Expect `FALSE` if R is the same number
-* <% check(10!=20)          %> Expect `TRUE` if R is a different number
-* <% check(10!="abc")       %> Expect `TRUE` when R is a string
-* <% check(10!=[10,20,30])  %> Expect `TRUE` when R is a list
-* <% check(10!={})          %> Expect `TRUE` when R is a namespace
-* <% check(10 != LLT)       %> Expect `TRUE` if `R.__vs__(L)` returns a negative number
-* <% check(10 != LEQ)       %> Expect `TRUE` if `R.__vs__(L)` returns 0
-* <% check(10 != LGT)       %> Expect `TRUE` if `R.__vs__(L)` returns a positive number
+### When L is a string
+By default a text is equal only to the same text and different from anything else.
+* Expect `TRUE` wher R is `NOTHING`            <% test("abc"!=NOTHING) %>
+* Expect `TRUE` when R is a number             <% test("abc"!=10) %> 
+* Expect `FALSE` when R is the same string     <% test.not("abc"!="abc") %> 
+* Expect `TRUE` when R is a different string   <% test("abc"!="def") %> 
+* Expect `TRUE` if R is a function             <% test("abc"!=foo1) %> 
+* Expect `TRUE` when R is a list               <% test("abc"!=[10,20,30]) %> 
+* Expect `TRUE` when R is a namespace          <% test("abc"!={}) %> 
 
-##### When L is a string
-* <% check("abc"!=NOTHING)      %> Expect `TRUE` wher R is `NOTHING`
-* <% check("abc"!=10)           %> Expect `TRUE` when R is a number
-* <% check(not("abc"!="abc"))   %> Expect `FALSE` when R is the same string
-* <% check("abc"!="def")        %> Expect `TRUE` when R is a different string
-* <% check("abc"!=[10,20,30])   %> Expect `TRUE` when R is a list
-* <% check("abc"!={})           %> Expect `TRUE` when R is a namespace
-* <% check("abc" != LLT)        %> Expect `TRUE` if `R.__vs__(L)` returns a negative number
-* <% check("abc" != LEQ)        %> Expect `TRUE` if `R.__vs__(L)` returns 0
-* <% check("abc" != LGT)        %> Expect `TRUE` if `R.__vs__(L)` returns a positive number
+If `R` is a namespace containing the trigger function `__vs__`, the result of
+the `!=` operation is defined by its return value.
+* Expect `TRUE` if `R.__vs__(L)` returns a negative number <% test("abc" != XLT) %>
+* Expect `FALSE` if `R.__vs__(L)` returns 0                <% test.not("abc" != XEQ) %>
+* Expect `TRUE` if `R.__vs__(L)` returns a positive number <% test("abc" != XGT) %>
+* Expect `TRUE` if `R.__vs__(L)` doesn't return a number   <% test("abc" != XNN) %>
 
-##### When L is a list
-* <% check([10,20,30]!=NOTHING)         %> Expect `TRUE` wher R is `NOTHING`
-* <% check([10,20,30]!=10)              %> Expect `TRUE` when R is a number
-* <% check([10,20,30]!="abc")           %> Expect `TRUE` when R is a string
-* <% check(not([10,20,30]!=[10,20,30])) %> Expect `FALSE` when R is the same list
-* <% check([10,20,30]!=[40,50,60])      %> Expect `TRUE` when R is a different list
-* <% check([10,20,30]!={})              %> Expect `TRUE` when R is a namespace
-* <% check([10,20,30] != LLT)           %> Expect `TRUE` if `R.__vs__(L)` returns a negative number
-* <% check([10,20,30] != LEQ)           %> Expect `TRUE` if `R.__vs__(L)` returns 0
-* <% check([10,20,30] != LGT)           %> Expect `TRUE` if `R.__vs__(L)` returns a positive number
 
-##### When L is a namespace
-* <% check({a=10,b=20,c=30}!=NOTHING)               %> Expect `TRUE` wher R is `NOTHING`
-* <% check(LLT != NOTHING)                          %> Expect `TRUE` wher R is `NOTHING` and `L.__vs__(R)` returns a negative number
-* <% check(LEQ != NOTHING)                          %> Expect `TRUE` wher R is `NOTHING` and `L.__vs__(R)` returns 0
-* <% check(LGT != NOTHING)                          %> Expect `TRUE` wher R is `NOTHING` and `L.__vs__(R)` returns a positive number
-* <% check({a=10,b=20,c=30}!=10)                    %> Expect `TRUE` when R is a number
-* <% check(LLT != 10)                               %> Expect `TRUE` wher R is a number and `L.__vs__(R)` returns a negative number
-* <% check(LEQ != 10)                               %> Expect `TRUE` wher R is a number and `L.__vs__(R)` returns 0
-* <% check(LGT != 10)                               %> Expect `TRUE` wher R is a number and `L.__vs__(R)` returns a positive number
-* <% check({a=10,b=20,c=30}!="abc")                 %> Expect `TRUE` when R is a string
-* <% check(LLT != "abc")                            %> Expect `TRUE` wher R is a string and `L.__vs__(R)` returns a negative number
-* <% check(LEQ != "abc")                            %> Expect `TRUE` wher R is a string and `L.__vs__(R)` returns 0
-* <% check(LGT != "abc")                            %> Expect `TRUE` wher R is a string and `L.__vs__(R)` returns a positive number
-* <% check({a=10,b=20,c=30}!=[10,20,30])            %> Expect `TRUE` when R is a list
-* <% check(LLT != [10,20,30])                       %> Expect `TRUE` wher R is a list and `L.__vs__(R)` returns a negative number
-* <% check(LEQ != [10,20,30])                       %> Expect `TRUE` wher R is a list and `L.__vs__(R)` returns 0
-* <% check(LGT != [10,20,30])                       %> Expect `TRUE` wher R is a list and `L.__vs__(R)` returns a positive number
-* <% check(not({a=10,b=20,c=30}!={a=10,b=20,c=30})) %> Expect `FALSE` when R is the same namespace
-* <% check({a=10,b=20,c=30}!={d=40,e=50,f=60})      %> Expect `TRUE` when R is a different namespace
-* <% check(LLT != {a=10,b=20,c=30})                 %> Expect `TRUE` wher R is a namespace and `L.__vs__(R)` returns a negative number
-* <% check(not(LEQ != {a=10,b=20,c=40}))            %> Expect `FALSE` wher R is a namespace and `L.__vs__(R)` returns 0
-* <% check(LGT != {a=10,b=20,c=30})                 %> Expect `TRUE` wher R is a namespace and `L.__vs__(R)` returns a positive number
-* <% check({a=10,b=20,c=30} != LLT)                 %> Expect `TRUE` wher R is a namespace and `R.__vs__(L)` returns a negative number
-* <% check(not({a=10,b=20,c=40} != LEQ))            %> Expect `FALSE` wher R is a namespace and `R.__vs__(L)` returns 0
-* <% check({a=10,b=20,c=30} != LGT)                 %> Expect `TRUE` wher R is a namespace and `R.__vs__(L)` returns a positive number
+### When L is a function
+By default only functions with the same body AST are equal. Native javascript
+functions body is serialized.
+* Expect `TRUE` wher R is `NOTHING`                                <% test(foo1!=NOTHING) %> 
+* Expect `TRUE` when R is a number                                 <% test(foo1!=10) %> 
+* Expect `TRUE` when R is a string                                 <% test(foo1!="abc") %> 
+* Expect `FALSE` when R is a function with the same body as L      <% test.not(foo1 != foo3) %> 
+* Expect `TRUE` when R is a function with different body than L    <% test(foo1 != foo2) %> 
+* Expect `TRUE` when R is a list                                   <% test(foo1!=[10,20,30]) %> 
+* Expect `TRUE` when R is a namespace                              <% test(foo1!={}) %> 
+
+If `R` is a namespace containing the trigger function `__vs__`, the result of
+the `!=` operation is defined by its return value.
+* Expect `TRUE` if `R.__vs__(L)` returns a negative number <% test(foo1 != XLT) %>
+* Expect `FALSE` if `R.__vs__(L)` returns 0                <% test.not(foo1 != XEQ) %>
+* Expect `TRUE` if `R.__vs__(L)` returns a positive number <% test(foo1 != XGT) %>
+* Expect `TRUE` if `R.__vs__(L)` doesn't return a number   <% test(foo1 != XNN) %>
+
+
+### When L is a list
+By default lists are equal only to other lists having the same items.
+* Expect `TRUE` wher R is `NOTHING`        <% test([10,20,30]!=NOTHING) %> 
+* Expect `TRUE` when R is a number         <% test([10,20,30]!=10) %> 
+* Expect `TRUE` when R is a string         <% test([10,20,30]!="abc") %> 
+* Expect `TRUE` when R is a function       <% test([10,20,30]!=foo1) %> 
+* Expect `FALSE` when R is the same list     <% test.not([10,20,30]!=[10,20,30]) %> 
+* Expect `TRUE` when R is a different list <% test([10,20,30]!=[40,50,60]) %> 
+* Expect `TRUE` when R is a namespace      <% test([10,20,30]!={}) %> 
+
+If `R` is a namespace containing the trigger function `__vs__`, the result of
+the `==` operation is defined by its return value.
+* Expect `TRUE` if `R.__vs__(L)` returns a negative number <% test([1,2,3] != XLT) %>
+* Expect `FALSE` if `R.__vs__(L)` returns 0                <% test.not([1,2,3] != XEQ) %>
+* Expect `TRUE` if `R.__vs__(L)` returns a positive number <% test([1,2,3] != XGT) %>
+* Expect `TRUE` if `R.__vs__(L)` doesn't return a number   <% test([1,2,3] != XNN) %>
+
+
+### When L is a namespace
+By default namespaces are equal to other namespaces if they contain the same names
+and corresponding names map to the same value.
+* Expect `TRUE` wher R is `NOTHING`                            <% test({a=10, b=20, c=30}!=NOTHING) %> 
+* Expect `TRUE` when R is a number                             <% test({a=1,b=2,c=3}!=10) %> 
+* Expect `TRUE` when R is a string                             <% test({a=1,b=2,c=3}!="abc") %> 
+* Expect `TRUE` when R is a function                           <% test({a=1,b=2,c=3}!=foo1) %> 
+* Expect `TRUE` when R is a list                               <% test({a=1,b=2,c=3}!=[1,2,3]) %> 
+* Expect `FALSE` when R is a namespace with the same content   <% test.not({a=1,b=2,c=3}!={a=1,b=2,c=3}) %> 
+* Expect `TRUE` when R is a namespace with different content   <% test({a=1, b=20, c=30}!={d=40,e=50,f=60}) %> 
+
+If `L` containis the trigger function `__vs__`, the result of the `==` operation 
+is defined by its return value.
+* Expect `TRUE` when R is `NOTHING` and `L.__vs__(R)` returns a negative number    <% test(XLT != NOTHING) %> 
+* Expect `TRUE` when R is a number and `L.__vs__(R)` returns a negative number     <% test(XLT != 10) %> 
+* Expect `TRUE` when R is a string and `L.__vs__(R)` returns a negative number     <% test(XLT != "abc") %> 
+* Expect `TRUE` when R is a function and `L.__vs__(R)` returns a negative number   <% test(XLT != foo1) %> 
+* Expect `TRUE` when R is a list and `L.__vs__(R)` returns a negative number       <% test(XLT != [1,2,3]) %> 
+* Expect `TRUE` when R is a namespace and `L.__vs__(R)` returns a negative number  <% test(XLT != {a=1,b=2,c=3}) %> 
+* Expect `FALSE` when R is `NOTHING` and `L.__vs__(R)` returns a 0   <% test.not(XEQ != NOTHING) %> 
+* Expect `FALSE` when R is a number and `L.__vs__(R)` returns a 0    <% test.not(XEQ != 10) %> 
+* Expect `FALSE` when R is a string and `L.__vs__(R)` returns a 0    <% test.not(XEQ != "abc") %> 
+* Expect `FALSE` when R is a function and `L.__vs__(R)` returns 0    <% test.not(XEQ != foo1) %> 
+* Expect `FALSE` when R is a list and `L.__vs__(R)` returns 0        <% test.not(XEQ != [1,2,3]) %> 
+* Expect `FALSE` when R is a namespace and `L.__vs__(R)` returns 0   <% test.not(XEQ != {a=1,b=2,c=3}) %> 
+* Expect `TRUE` when R is `NOTHING` and `L.__vs__(R)` returns a positive number    <% test(XGT != NOTHING) %> 
+* Expect `TRUE` when R is a number and `L.__vs__(R)` returns a positive number     <% test(XGT != 10) %> 
+* Expect `TRUE` when R is a string and `L.__vs__(R)` returns a positive number     <% test(XGT != "abc") %> 
+* Expect `TRUE` when R is a function and `L.__vs__(R)` returns a positive number   <% test(XGT != foo1) %> 
+* Expect `TRUE` when R is a list and `L.__vs__(R)` returns a positive number       <% test(XGT != [1,2,3]) %> 
+* Expect `TRUE` when R is a namespace and `L.__vs__(R)` returns a positive number  <% test(XGT != {a=1,b=2,c=3}) %> 
+* Expect `TRUE` when R is `NOTHING` and `L.__vs__(R)` doesn't return a number    <% test(XNN != NOTHING) %> 
+* Expect `TRUE` when R is a number and `L.__vs__(R)` doesn't return a number     <% test(XNN != 10) %> 
+* Expect `TRUE` when R is a string and `L.__vs__(R)` doesn't return a number     <% test(XNN != "abc") %> 
+* Expect `TRUE` when R is a function and `L.__vs__(R)` doesn't return a number   <% test(XNN != foo1) %> 
+* Expect `TRUE` when R is a list and `L.__vs__(R)` doesn't return a number       <% test(XNN != [1,2,3]) %> 
+
+
+If `L` doesn't contain the `__vs__` function but `R` does, the result of the `==` 
+operation is defined by its return value.
+* Expect `TRUE` if `R.__vs__(L)` returns a negative number <% test({a=1,b=2,c=3} != XLT) %>
+* Expect `FALSE` if `R.__vs__(L)` returns 0                <% test.not({a=1,b=2,c=3} != XEQ) %>
+* Expect `TRUE` if `R.__vs__(L)` returns a positive number <% test({a=1,b=2,c=3} != XGT) %>
+* Expect `TRUE` if `R.__vs__(L)` doesn't return a number   <% test({a=1,b=2,c=3} != XNN) %>
+
+

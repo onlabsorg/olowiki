@@ -5,7 +5,7 @@
             
             <md-app-toolbar class="md-transparent">
                 
-                <md-button class="md-icon-button olo-logo" href="/">
+                <md-button class="md-icon-button olo-logo" @click="handleLogoClick">
                     <slot name="logo"></slot>
                 </md-button>
                     
@@ -30,8 +30,6 @@
 
 <script>
 
-    const client = require("../lib/client");
-    
     const Vue = require("vue/dist/vue");
     
     Vue.use( require('vue-async-computed').default )    
@@ -75,7 +73,11 @@
             showMessage (content) {
                 this.message.content = content;
                 this.message.show = true;
-            }            
+            },
+            
+            handleLogoClick () {
+                this.$emit("logo-click");
+            }    
         },
         
         mounted () {

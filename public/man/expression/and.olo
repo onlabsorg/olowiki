@@ -1,14 +1,17 @@
-<% title = "A and B" %>
+<% title = "L and R" %>
 <% __render__ = import("/bin/markdown") %>
 
-<% test = import("/lib/test") %>
-<% check = test.check %>
+<% test = import("/bin/test") %>
 
 
-The `A and B` binary operation returns `TRUE` if both `bool(A)` and `bool(B)`
-are `TRUE`. If one of them, or both of them are `FALSE`, it returns `FALSE`.
+The `L and R` binary operation resolves to `TRUE` if both `L` and `R`
+are `TRUE`. 
 
-* <% check(("abc" and "def") == TRUE) %>    It should return `TRUE` if both `bool(A)` and `bool(B)` are true.
-* <% check(("" and "def") == FALSE) %>      It should return `FALSE` if `bool(A)` is `FALSE` and `bool(B)` is `TRUE`
-* <% check(("abc" and "") == FALSE) %>      It should return `FALSE` if `bool(A)` is `TRUE` and `bool(B)` is `FALSE`
-* <% check(("" and []) == FALSE) %>         It should return `FALSE` if `bool(A)` is `FALSE` and `bool(B)` is `FALSE`
+* Expect `TRUE and TRUE` to be `TRUE`                                           <% test(TRUE and TRUE) %>
+* Expect `TRUE and FALSE` to be `FALSE`                                         <% test.not(TRUE and FALSE) %>
+* Expect `FALSE and TRUE` to be `FALSE`                                         <% test.not(FALSE and TRUE) %>
+* Expect `FALSE and FALSE` to be `FALSE`                                        <% test.not(FALSE and FALSE) %>
+
+If the operands are not boolean, they will be converted to booleans by the
+[bool(x)](./bool) function before applying the `and` operator.                  <% test(("abc" and "def") and not("" and "def") and not("abc" and "") and not([] and "")) %>
+

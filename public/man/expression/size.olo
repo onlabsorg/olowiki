@@ -1,19 +1,19 @@
 <% title = "function: size(X)" %>
 <% __render__ = import("/bin/markdown") %>
-<% test = import("/lib/test") %>
+<% test = import("/bin/test") %>
 
 This function returns the size of the parameter `X`, which is always a positive
 integer number.
 
-<% ns1 = {__size__: () -> -111} %>
-<% ns2 = {__size__: () -> "abc"} %>
-
-* <% test.check(size(NOTHING) == 0) %>          It should return 0 when `X` is `NOTHING`
-* <% test.check(size(-10.1) == 10.1) %>         It should return the absolute value of `X` when `X` is a number
-* <% test.check(size("abcd") == 4) %>           It should return the number of character in `X` when `X` is a string
-* <% test.check(size([10,20,30]) == 3) %>       It should return the number of items in `X` when `X` is a list
-* <% test.check(size({a=1, b=2, _c=3}) == 2) %> It should return the number of items in `X` when `X` is a namespace
-* <% test.check(size(ns1) == 111) %>            It should return the absolute value of `X.__size__()` if it exists and it returns a number
-* <% test.check(size(ns2) == 0) %>              It should return 0 if `X.__size__()` exists but doens't return a number
+* It should throe an error when `X` is `NOTHING`                                <% test.throws({__call__: () -> size(NOTHING)}) %>
+* It should throe an error when `X` is a number                                 <% test.throws({__call__: () -> size(10)}) %>
+* It should return the number of character in `X` when `X` is a string          <% test(size("abcd") == 4) %>
+* It should throe an error when `X` is a function                               <% foo: () -> "..." %> <% test.throws({__call__: () -> size(foo)}) %>
+* It should return the number of items in `X` when `X` is a list                <% test(size([10,20,30]) == 3) %>
+* It should return the number of items in `X` when `X` is a namespace           <% test(size({a=1, b=2, _c=3}) == 2) %>
+* It should return the absolute value of `X.__size__()` if it exists and it 
+  returns a number                                                              <% X = {__size__: () -> -111.2} %> <% test(size(X) == 111) %>
+* It should return the namespace default size if `X.__size__()` exists but
+  doesn't return a number                                                       <% X = {a=1, b=2, __size__: () -> "abc"} %> <% test(size(X) == 2) %>
 
 

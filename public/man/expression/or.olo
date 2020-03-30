@@ -1,14 +1,17 @@
-<% title = "A or B" %>
+<% title = "L OR R" %>
 <% __render__ = import("/bin/markdown") %>
 
-<% test = import("/lib/test") %>
-<% check = test.check %>
+<% test = import("/bin/test") %>
 
 
-The `A or B` binary operation returns `TRUE` if any of `bool(A)` or `bool(B)`
-is `TRUE`. If both of them are `FALSE`, it returns `FALSE`.
+The `L and R` binary operation resolves to `TRUE` if either `L` or `R`
+is `TRUE`. 
 
-* <% check(("abc" or "def") == TRUE) %> It should return `TRUE` if both `bool(A)` and `bool(B)` are true.
-* <% check(("" or "def") == TRUE) %>    It should return `TRUE` if `bool(A)` is `FALSE` and `bool(B)` is `TRUE`.
-* <% check(("abc" or "") == TRUE) %>    It should return `TRUE` if `bool(A)` is `TRUE` and `bool(B)` is `FALSE`.
-* <% check(("" or []) == FALSE) %>      It should return `FALSE` if `bool(A)` is `FALSE` and `bool(B)` is `FALSE`.
+* Expect `TRUE or TRUE` to be `TRUE`                                            <% test(TRUE or TRUE) %>
+* Expect `TRUE or FALSE` to be `TRUE`                                           <% test(TRUE or FALSE) %>
+* Expect `FALSE or TRUE` to be `TRUE`                                           <% test(FALSE or TRUE) %>
+* Expect `FALSE or FALSE` to be `FALSE`                                         <% test.not(FALSE or FALSE) %>
+
+If the operands are not boolean, they will be converted to booleans by the
+[bool(x)](./bool) function before applying the `or` operator.                   <% test(("abc" or "def") and ("" or "def") and ("abc" or "") and not([] or "")) %>
+

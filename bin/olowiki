@@ -1,26 +1,38 @@
 #!/usr/bin/env node
 
-const fs = require("fs");
-const path = require("path");
-const cmd = require("commander");
-
 const OloWiki = require("../index");
 const olowiki = new OloWiki( process.cwd() );
 
+const cmd = require("commander");
 const cli = cmd.version(OloWiki.getVersion(), "-v --version");
 
 cli.command("start [port]")
    .description("Start the olowiki server.")
-   .action(port => olowiki.start(port));
+   .action(async (port=8010) => {
+       await olowiki.serve(port);
+       console.log(`olowiki server listening on port ${port}`);
+   });
    
-cli.command("init <ownerId> [smtpURL]")
+cli.command("init <ownerId>")
    .description("Initialize a new olowiki instance in the working directory.")
-   .action((ownerId, smtpURL) => olowiki.init(ownerId, smtpURL));
+   .action(async (ownerId) => {
+       try {
+           await olowiki.init(ownerId);
+           console.log("olowiki instance successfully created.");
+           console.log("edit the olowiki-config.js to configure your e-mail server");                  
+       } catch (error) {
+           console.log(error.message);
+       }
+   });
 
-cli.command("set-smtp <host> <port> <user> <password>")
-  .description("Configure the access parameters for the SMTP server used to send identity tokens to users.")
-  .action((host, port, user, password) => olowiki.setSMTP(host, port, user, password));
-   
+cli.command("render <path> [args...]")
+    .description("Fetch and render an olodocument")
+    .action(async (path, args) => {
+        const parseParams = require("@onlabsorg/olojs/lib/tools/parameters-parser");
+        const argns = parseParams(...args);
+        const renderedDoc = await olowiki.render(path, argns);
+        console.log(renderedDoc);
+    });
 
 cli.command("gen-token <user> [attributes...]")
    .description("Generate and identity token for the passed user name.")
@@ -38,6 +50,5 @@ cli.command("parse-token <toekn>")
           attributes: user.attributes
       });
   });
-
 
 cli.parse( process.argv );
