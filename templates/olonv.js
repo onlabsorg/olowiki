@@ -1,17 +1,18 @@
 const Environment = olowiki.require(`backend-environment`);
-const FSStore = olojs.require(`environment/fs-store`);
+const FSStore = olojs.require(`stores/fs-store`);
+const Router = olojs.require('stores/router');
 const EMailDispatcher = olowiki.require(`dispatchers/email`);
 // const GmailDispatcher = olowiki.require(`dispatchers/gmail`);
 
 
 module.exports = new Environment({
     
-    paths: {
+    store: new Router({
         "/"              : new FSStore(`${__dirname}/public`),
         "/documentation" : new FSStore(`${__dirname}/public/documentation`),
         "/projects"      : new FSStore(`${__dirname}/public/projects`),
         "/contributors"  : new FSStore(`${__dirname}/public/contributors`),        
-    },
+    }),
 
     // // Customize the access control.
     // // This function accepts an (express) HTTP request object and should return
