@@ -1,7 +1,15 @@
 
 Next Release (v0.5.0):
     
-    ☐ ...    
+    ✔ rename folders @done(2020-04-11) @project(Next Release \(v0.5.0\))
+        ✔ `users` -> `contributors` @done(2020-04-11) @project(Next Release \(v0.5.0\))
+        ✔ `doc` -> `documentation` @done(2020-04-11) @project(Next Release \(v0.5.0\))
+        ✔ `lib` -> `projects` @done(2020-04-11) @project(Next Release \(v0.5.0\))
+    ☐ redirect path `~/` to the logged-in user home folder
+    ☐ permissions based on per-project ACL within the `projects` folder
+    ☐ prevent deleting the root directories structure by permissions and button grayout
+    
+    
     
     Deployment routine:
         ☐ Update version
@@ -14,35 +22,13 @@ Next Release (v0.5.0):
 
 
 BACKLOG:
-    
-    ☐ Harmonize and test olojs expression language    
-        ☐ Harmonize comparison operations behaviour, test them and update their man page
-        ☐ Harmonize arithmetic operations behaviour, test them and update their man page
-        ☐ Harmonize query behaviour, test it and update its man page
-        ☐ Harmonize built-in functions behaviour, test them and update their man page
-        ☐ Test bin modules document them with their own body
-        ☐ Test conditional expressions and update their man pages
-        ☐ Test URI and update its man page
-        ☐ Test data types and update their documentation
-        ☐ Move number-related functions to the Number namespace
-        ☐ Move string-related functions to the Text namespace
-        ☐ Move function-related functions to the Function namespace
-        ☐ Move list-related functions to the List namespace
-        ☐ Move namespace-related functions to the Namespace namespace
-        ☐ Update expression main man page
-
+    ✘ add rename command (button and keyboard shortcut) @cancelled(2020-04-11) @project(Next Release \(v0.5.0\))
     ☐ WUI: Add spinner during loading
-    ☐ Create /bin/svg module usign an svg library such as SVG.js
     ☐ Fix scrollbar in edit mode
-    ☐ Use the `doc.writeable` to deactivate the save button
     ☐ When switching between view and editor, restore the last cursor position
     ☐ editor: Improve syntax highlighting and folding for oloml mode
     ☐ viewer: Improve document css
     ☐ improve mobile styles
-    ☐ Fix: in order to load the /bin/markdown chunk, I need to require "marked" in client. Why?
-    ☐ Move to src as new entry point and decouple from web UI
-    ☐ Move personal store to pouchdb with sync and publishing to server => users folders points to public pouchdb documents
-    ☐ Probably there is a memory leak in the server: find and fix it.
     ☐ Implement init command
     ☐ Implement init templates: default, full-auth, ecc.
         

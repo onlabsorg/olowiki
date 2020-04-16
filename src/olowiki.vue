@@ -1,10 +1,30 @@
 <template>
     <div class="olowiki-document">
     
-        <olowiki-app :title="title" @key="handleKeyboardCommand"  @logo-click="appDialog.show = true">
+        <olowiki-app appname="olowiki" :title="title" @key="handleKeyboardCommand"  @logo-click="appDialog.show = true">
             
             <md-icon slot="logo" md-src="/olowiki.svg"></md-icon>
-
+            
+            <md-list slot="drawer-item">
+                
+                <md-list-item :href="'#'+grandParentPath" :disabled="parentPath === '/'">
+                    <md-icon>arrow_upward</md-icon>
+                    <span class="md-list-item-text">Up</span>
+                </md-list-item>
+                
+                <md-list-item v-for="item in siblings" :href="item.href">
+                    <md-icon v-if="item.isContainer">folder</md-icon>
+                    <md-icon v-else>description</md-icon>
+                    <span class="md-list-item-text" :class="{active:item.href === `#${docPath}`}">
+                        {{item.name}}
+                    </span>
+                    <md-button class="md-icon-button md-list-action" :disabled="parentPath === '/'" 
+                            @click.prevent="showDeleteDialog(item)">
+                        <md-icon>delete</md-icon>
+                    </md-button>
+                </md-list-item>
+                
+            </md-list>
 
             <!-- view state -->
                 
@@ -35,27 +55,7 @@
             <!-- empty states -->
             
             <md-empty-state slot="content" v-if="stateIs('error')" md-icon="error" md-label="Error!" :md-description="errorMessage"></md-empty-state>
-            
-            
-            <!-- browser state -->
-            
-            <md-button slot="button" v-if="stateIs('browse')" class="md-icon-button" :href="parentPath">
-                <md-icon>arrow_upward</md-icon>
-            </md-button>            
-            
-            <div slot="content" v-if="stateIs('browse')" class="container-items">
-                <md-list>
-                    <md-list-item v-for="item in containerItems" :href="item.href">
-                        <md-icon v-if="item.isContainer">folder</md-icon>
-                        <md-icon v-else>description</md-icon>
-                        <span class="md-list-item-text">{{item.name}}</span>
-                        <md-button class="md-icon-button md-list-action" @click.prevent="showDeleteDialog(item)">
-                            <md-icon>delete</md-icon>
-                        </md-button>
-                    </md-list-item>
-                </md-list>
-            </div>
-            
+                        
         </olowiki-app>
         
         <md-dialog :md-active.sync="appDialog.show">
@@ -117,8 +117,10 @@
 </template>
 
 <script>
-    const olonv = require("./olowiki-environment");
     const errors = require("./errors");
+
+    const olonv = require("./olowiki-environment");
+    olonv.document = {};
 
     const Vue = require("vue/dist/vue");
     Vue.use( require("vue-material/dist/components/MdSubheader").default );
@@ -129,7 +131,6 @@
     Vue.use( require("vue-material/dist/components/MdDialog").default );
     Vue.use( require("vue-material/dist/components/MdTabs").default );   
     Vue.use( require("vue-material/dist/components/MdList").default );     
-
     Vue.use( require("vue-async-computed") );
     
     module.exports = {
@@ -146,6 +147,7 @@
             errorMessage: "",
             docPath: "",
             docSource: "",
+            siblings: [],
             argns: {},
             token: olonv.getToken(),
             user: "Guest",
@@ -166,33 +168,20 @@
             },
             
             parentPath () {
-                return "#" + this.docPath.split("/").slice(0,-2).join("/") + "/";
+                return this.docPath.split("/").slice(0,-1).join("/") + "/";
+            },
+            
+            grandParentPath () {
+                return this.docPath.split("/").slice(0,-2).join("/") + "/";
             },
             
             title () {
                 if (this.docNS) {
                     let title = this.docNS.title;
                     if (typeof title === "string") return title;
-                    if (this.docPath.slice(-1) === "/") return this.docPath;                    
                 }
                 return "Document without title";                 
             },   
-            
-            containerItems: function () {
-                const itemPaths = this.docNS.items || [];
-                const containers = [];
-                const documents = [];
-                const itemNames = new Set();
-                for (let itemPath of itemPaths) {
-                    let item = this.parseContainerItem(itemPath);
-                    if (!itemNames.has(item.name)) {
-                        itemNames.add(item.name);
-                        if (item.isContainer) containers.push(item);
-                        else documents.push(item);
-                    }
-                }
-                return containers.concat(documents);
-            }         
         },
         
         asyncComputed: {
@@ -200,17 +189,19 @@
             docNS: async function () {
                 const context = olonv.createContext(this.docPath, {argns:this.argns});
                 const evaluate = olonv.parseDocument(this.docSource);
-                return await evaluate(context);
+                olonv.document.namespace = await evaluate(context);
+                return olonv.document.namespace;
             },
             
             html: async function () {
                 return await olonv.stringifyDocumentExpression(this.docNS);
-            },
+            },            
         },
         
         watch: {
-            src: function (oldSrc, newSrc) {
-                this.refresh();
+            src: async function (newSrc, oldSrc) {
+                await this.refresh();
+                await this.updateSiblings();
             },
         },
         
@@ -219,16 +210,13 @@
             async refresh (forceReload=false) {
                 try {
                     let [docPath, argns] = olonv.parseURI(this.src);
-                    this.argns = argns;
+                    if (docPath.slice(-1) === "/") {
+                        this.docPath = docPath + "index";                        
+                    }
                     if (docPath !== this.docPath || forceReload) {
                         this.docPath = docPath;
                         this.docSource = await olonv.readDocument(this.docPath);
                     }
-                    if (docPath.slice(-1) === "/") {
-                        this.setState('browse');
-                    } else {
-                        this.setState('view');
-                    }                    
                 } catch (error) {
                     console.error(error);
                     this.setState("error");
@@ -240,6 +228,7 @@
             async save () {
                 try {
                     await olonv.writeDocument(this.docPath, this.docSource);
+                    await this.updateSiblings();
                     this.showMessage("Saved");
                 } catch (error) {
                     if (error instanceof errors.WriteAccessDenied) {
@@ -300,15 +289,28 @@
                 console.log(this.user);
             },     
             
-            goToUpperContainer () {
-                this.showMessage("Command not implemented yet!");
-            },
-                        
+            async updateSiblings () {
+                const parentContainer = await olonv.loadDocument(this.parentPath);
+                const itemPaths = parentContainer.items || [];
+                const containers = [];
+                const documents = [];
+                const itemNames = new Set();
+                for (let itemPath of itemPaths) {
+                    let item = this.parseContainerItem(itemPath);
+                    if (!itemNames.has(item.name)) {
+                        itemNames.add(item.name);
+                        if (item.isContainer) containers.push(item);
+                        else documents.push(item);
+                    }
+                }
+                this.siblings = containers.concat(documents);
+            },               
+
             parseContainerItem (itemPath) {
                 const item = {};
                 item.isContainer = itemPath.indexOf("/") !== -1;
                 item.name = itemPath.split('/')[0];
-                item.href = `#${this.docPath}${item.name}` + (item.isContainer ? "/" : "");
+                item.href = `#${this.parentPath}${item.name}` + (item.isContainer ? "/" : "");
                 return item;
             },
             
@@ -322,6 +324,7 @@
                 try {
                     await olonv.deleteDocument(itemPath);
                     await this.refresh(true);
+                    await this.updateSiblings();
                     this.showMessage(`Deleted ${itemPath}`);
                 } catch (error) {
                     console.error(error);
@@ -374,9 +377,9 @@
         },
         
         async mounted () {
-            olonv.document = this.doc;
             await this.updateUser();
             await this.refresh();
+            await this.updateSiblings();
         }
     };
 </script>
@@ -384,11 +387,16 @@
 <style>
     @import "typography.css";
 
-    .olo-viewer {
-        display: block;
-        padding: 2em 20% 2em 20%;
+    .md-list-item .active {
+        font-weight: bold;
+        color: #1976D2;
     }
 
+    .olo-viewer {
+        display: block;
+        padding: 2em 2em 2em 2em;
+    }
+    
     @media (max-width: 480px) { 
         .olo-viewer {
             padding-left: 3%;
@@ -403,9 +411,5 @@
         padding-left: 1em;
         padding-right: 1em;
     }
-    
-    .container-items {
-        margin: 2em 10% 2em 10%;
-    }
-        
+            
 </style>

@@ -16,16 +16,29 @@ document.addEventListener("DOMContentLoaded", function () {
         data: {    
             docURI: location.hash.slice(1),
         },
+        
+        methods: {
+            
+            normalizeHash: function () {
+
+                if (!location.hash || location.hash === "#") {
+                    location.hash = "/index"
+                }
                 
-        // methods: {},
+                let [docPath, docArgs] = location.hash.slice(1).split("?"); 
+                if (docPath.slice(-1) === "/") {
+                    location.hash = docPath + "index" + (docArgs ? `?${docArgs}` : "");
+                }
+                
+                return location.hash.slice(1);
+            }
+        },
         
         async mounted () {
             window.addEventListener("hashchange", (event) => {
-                this.docURI = location.hash.slice(1);
+                this.docURI = this.normalizeHash();
             });
-            if (location.hash === "" || location.hash === "#") {
-                location.hash = "/index"
-            }
+            this.docURI = this.normalizeHash();
             console.log(`olowiki ready!`);
         }
     });

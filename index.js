@@ -8,9 +8,11 @@ const OloJS = require("@onlabsorg/olojs");
 class OloWiki extends OloJS {
 
     getEnvironment () {
-        global.__olowikipath = __dirname;
+        global.olowiki = {
+            'require': modulePath => require(`./lib/${modulePath}`)
+        };
         const env = super.getEnvironment();
-        delete global.__olowikipath;
+        delete global.olowiki;
         return env;
     }
     
@@ -21,10 +23,10 @@ class OloWiki extends OloJS {
         };
         const dirs = [
             "public", 
-            "public/doc", 
-            "public/lib", 
-            "public/users", 
-            `public/users/${ownerId}`
+            "public/documentation", 
+            "public/projects", 
+            "public/contributors", 
+            `public/contributors/${ownerId}`
         ];
         await super.init(olonvTemplateArguments, dirs);
     }

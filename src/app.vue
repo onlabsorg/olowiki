@@ -3,18 +3,32 @@
 
         <md-app md-waterfall md-mode="fixed" >
             
-            <md-app-toolbar class="md-transparent">
+            <md-app-toolbar  class="md-transparent">
                 
-                <md-button class="md-icon-button olo-logo" @click="handleLogoClick">
-                    <slot name="logo"></slot>
-                </md-button>
-                    
                 <span class="md-title olo-title">{{title}}</span>
                 
                 <div class="olo-controls">
                     <slot name="button"></slot>
                 </div>
+                
             </md-app-toolbar>
+            
+            
+            <md-app-drawer md-permanent="full" md-waterfall="true">
+                
+                <md-toolbar md-elevation="0">
+                    
+                    <md-button class="md-icon-button olo-logo" @click="handleLogoClick">
+                        <slot name="logo"></slot>
+                    </md-button>
+
+                    <a class="md-title olo-title" href="#/">{{appname}}</a>
+                </md-toolbar>
+                
+                <slot name="drawer-item"></slot>
+
+            </md-app-drawer>            
+            
             
             <md-app-content>                
                 <slot name="content"></slot>
@@ -42,6 +56,7 @@
     Vue.use( require("vue-material/dist/components/MdIcon").default );
     Vue.use( require("vue-material/dist/components/MdField").default );
     Vue.use( require("vue-material/dist/components/MdSnackbar").default );
+    Vue.use( require("vue-material/dist/components/MdDrawer").default );
 
     require('vue-material/dist/vue-material.css');
     require('vue-material/dist/theme/default.css');    
@@ -52,7 +67,7 @@
         
         // components: {},
         
-        props: ['title'],
+        props: ['appname', 'title'],
         
         data: () => Object({
             message: {
@@ -128,16 +143,27 @@
         right: 0;
     }
 
-    .olowiki-app .md-app-toolbar {
+    .olowiki-app .md-app-toolbar, 
+    .olowiki-app .md-toolbar {
         display: flex;
         flex-wrap: nowrap;
-        border-bottom: 1px solid var(--md-theme-default-divider, rgba(0,0,0,0.12));      
     }
+
+    .olowiki-app .md-app-toolbar {
+        border-bottom: 1px solid var(--md-theme-default-divider, rgba(0,0,0,0.12));              
+    }
+
 
     .olowiki-app .md-app-toolbar .olo-logo {}
 
-    .olowiki-app .md-app-toolbar .olo-title {
+    .olowiki-app .md-app-toolbar .olo-title,
+    .olowiki-app .md-drawer .md-toolbar .olo-title {
         flex: 1 1 auto;
+    }
+
+    .olowiki-app .md-drawer .md-toolbar .olo-title {
+        font-size: 1.5em;
+        font-weight: bold;
     }
 
     .olowiki-app .md-app-toolbar .olo-controls {

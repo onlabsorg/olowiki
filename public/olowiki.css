@@ -41,14 +41,22 @@ body {
     left: 0;
     right: 0;
 }
-.olowiki-app .md-app-toolbar {
+.olowiki-app .md-app-toolbar, 
+.olowiki-app .md-toolbar {
     display: flex;
     flex-wrap: nowrap;
+}
+.olowiki-app .md-app-toolbar {
     border-bottom: 1px solid var(--md-theme-default-divider, rgba(0,0,0,0.12));
 }
 .olowiki-app .md-app-toolbar .olo-logo {}
-.olowiki-app .md-app-toolbar .olo-title {
+.olowiki-app .md-app-toolbar .olo-title,
+.olowiki-app .md-drawer .md-toolbar .olo-title {
     flex: 1 1 auto;
+}
+.olowiki-app .md-drawer .md-toolbar .olo-title {
+    font-size: 1.5em;
+    font-weight: bold;
 }
 .olowiki-app .md-app-toolbar .olo-controls {
     flex: 0 0 auto;
@@ -1084,9 +1092,13 @@ body {
 }
 
 
+.md-list-item .active {
+    font-weight: bold;
+    color: #1976D2;
+}
 .olo-viewer {
     display: block;
-    padding: 2em 20% 2em 20%;
+    padding: 2em 2em 2em 2em;
 }
 @media (max-width: 480px) {
 .olo-viewer {
@@ -1101,8 +1113,5 @@ body {
     padding-left: 1em;
     padding-right: 1em;
 }
-.container-items {
-    margin: 2em 10% 2em 10%;
-}
-    
+        
 

@@ -1,16 +1,22 @@
-const Environment = require(`${__olowikipath}/lib/backend-environment`);
-const FSStore = require(`${__olojspath}/lib/environment/fs-store`);
-const EMailDispatcher = require(`${__olowikipath}/lib/dispatchers/email`);
+const Environment = olowiki.require(`backend-environment`);
+const FSStore = olojs.require(`environment/fs-store`);
+const EMailDispatcher = olowiki.require(`dispatchers/email`);
+// const GmailDispatcher = olowiki.require(`dispatchers/gmail`);
 
 
 module.exports = new Environment({
     
     paths: {
-        "/"        : FSStore.createReader(`${__dirname}/public`),
-        "/doc"     : new FSStore(`${__dirname}/public/doc`),
-        "/lib"     : new FSStore(`${__dirname}/public/lib`),
-        "/users"   : new FSStore(`${__dirname}/public/users`)
+        "/"              : new FSStore(`${__dirname}/public`),
+        "/documentation" : new FSStore(`${__dirname}/public/documentation`),
+        "/projects"      : new FSStore(`${__dirname}/public/projects`),
+        "/contributors"  : new FSStore(`${__dirname}/public/contributors`),        
     },
+
+    // // Customize the access control.
+    // // This function accepts an (express) HTTP request object and should return
+    // // `true` to allow it adn `false` to deny it.
+    // allow: function (req) {},
     
     nocache: true,
     
@@ -26,6 +32,7 @@ module.exports = new Environment({
             pass: "..."    // your e-mail password
         },
     }),
+    
 
     // // in case you want to use gmail to send tokens, set
     // // EMailDispatcher = retuire("../lib/dispatchers/gmail") 
