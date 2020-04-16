@@ -1,4 +1,4 @@
-const BrowserEnvironment = require("@onlabsorg/olojs/lib/environment/browser-environment");
+const BrowserEnvironment = require("@onlabsorg/olojs/src/browser-environment");
 
 
 class OlowikiEnvironment extends BrowserEnvironment {
