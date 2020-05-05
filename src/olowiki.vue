@@ -35,7 +35,7 @@
                 <md-icon>edit</md-icon>
             </md-button>    
             
-            <div slot="content" class="olo-viewer" ref="viewer" v-if="stateIs('view')" v-html="html"></div>
+            <olo-viewer slot="content" ref="viewer" v-if="stateIs('view')" :content="html"></olo-viewer>
             
             
             <!-- edit state -->
@@ -136,7 +136,8 @@
     module.exports = {
         
         components: {
-            'olowiki-app': require("./app.vue").default,            
+            'olowiki-app': require("./app.vue").default,  
+            'olo-viewer': require("olo-viewer"),          
             'olo-editor': require("olo-editor")
         },
         
@@ -385,7 +386,6 @@
 </script>
 
 <style>
-    @import "typography.css";
 
     .md-list-item .active {
         font-weight: bold;
@@ -404,12 +404,4 @@
         }
     }    
 
-    .olo-viewer .error {
-        font-family: monospace;
-        color: yellow;
-        background-color: red;
-        padding-left: 1em;
-        padding-right: 1em;
-    }
-            
 </style>
