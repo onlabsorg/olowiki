@@ -45,8 +45,6 @@ body {
 .olowiki-app .md-toolbar {
     display: flex;
     flex-wrap: nowrap;
-}
-.olowiki-app .md-app-toolbar {
     border-bottom: 1px solid var(--md-theme-default-divider, rgba(0,0,0,0.12));
 }
 .olowiki-app .md-app-toolbar .olo-logo {}

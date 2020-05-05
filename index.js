@@ -22,11 +22,7 @@ class OloWiki extends OloJS {
             secret: uuid4()
         };
         const dirs = [
-            "public", 
-            "public/documentation", 
-            "public/projects", 
-            "public/contributors", 
-            `public/contributors/${ownerId}`
+            "docs", 
         ];
         await super.init(olonvTemplateArguments, dirs);
     }

@@ -23,7 +23,6 @@
                         <md-icon>delete</md-icon>
                     </md-button>
                 </md-list-item>
-                
             </md-list>
 
             <!-- view state -->
@@ -40,7 +39,10 @@
             
             
             <!-- edit state -->
-            
+                        
+            <olo-editor :source.sync="docSource" theme="chrome"
+                    slot="content" ref="editor" v-if="stateIs('edit')"></olo-editor>
+
             <md-button slot="button" v-if="stateIs('edit')" class="md-icon-button control" @click="commit">
                 <md-icon>done</md-icon>
             </md-button>
@@ -48,8 +50,6 @@
             <md-button slot="button" v-if="stateIs('edit')" class="md-icon-button control" @click="setState('view')">
                 <md-icon>close</md-icon>
             </md-button>
-                    
-            <olo-editor slot="content" ref="editor" v-if="stateIs('edit')" :source.sync="docSource"></olo-editor>
             
             
             <!-- empty states -->
@@ -180,7 +180,7 @@
                     let title = this.docNS.title;
                     if (typeof title === "string") return title;
                 }
-                return "Document without title";                 
+                return this.docPath;                 
             },   
         },
         
@@ -303,7 +303,7 @@
                         else documents.push(item);
                     }
                 }
-                this.siblings = containers.concat(documents);
+                this.siblings = containers.concat(documents).filter(sib => sib.name[0] !== ".");
             },               
 
             parseContainerItem (itemPath) {

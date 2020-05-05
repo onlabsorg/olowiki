@@ -3,7 +3,7 @@
                 v-model="content"
                 @init="initEditor"
                 lang="oloml"
-                :theme="theme"
+                :theme="getTheme()"
                 :options="editorOptions">
                 </ace-editor>
 </template>
@@ -15,13 +15,11 @@
             'ace-editor': require('vue2-ace-editor'),
         },
         
-        props: ['source'],
+        props: ['source', 'theme'],
 
         data: () => Object({
             
             content: "",
-            
-            theme: "chrome",
             
             editorOptions: {
                 fontSize: "12pt",
@@ -47,7 +45,7 @@
             initEditor () {
                 require('brace/ext/language_tools'); //language extension prerequsite...
                 require('./oloml-mode');
-                require('brace/theme/chrome');
+                require(`brace/theme/${this.getTheme()}`);
                 require('brace/ext/searchbox');
             },
             
@@ -61,6 +59,10 @@
             
             focus () {
                 this.editor.focus();
+            },
+            
+            getTheme () {
+                return this.theme || "chrome";
             },
             
             insertExpression () {

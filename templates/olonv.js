@@ -1,6 +1,5 @@
 const Environment = olojs.require(`environment`);
 const FSStore = olojs.require(`stores/fs-store`);
-const Router = olojs.require('stores/router');
 const HTTPServer = olowiki.require("http-server");
 
 const EMailDispatcher = olowiki.require(`dispatchers/email`);
@@ -9,12 +8,7 @@ const EMailDispatcher = olowiki.require(`dispatchers/email`);
 
 module.exports = new Environment({
     
-    store: new Router({
-        "/"              : new FSStore(`${__dirname}/public`),
-        "/documentation" : new FSStore(`${__dirname}/public/documentation`),
-        "/projects"      : new FSStore(`${__dirname}/public/projects`),
-        "/contributors"  : new FSStore(`${__dirname}/public/contributors`),        
-    }),
+    store: new FSStore(`${__dirname}/docs`),
 
     nocache: true,
         

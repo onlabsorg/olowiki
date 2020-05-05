@@ -3,7 +3,7 @@
 
         <md-app md-waterfall md-mode="fixed" >
             
-            <md-app-toolbar  class="md-transparent">
+            <md-app-toolbar>
                 
                 <span class="md-title olo-title">{{title}}</span>
                 
@@ -147,12 +147,8 @@
     .olowiki-app .md-toolbar {
         display: flex;
         flex-wrap: nowrap;
-    }
-
-    .olowiki-app .md-app-toolbar {
         border-bottom: 1px solid var(--md-theme-default-divider, rgba(0,0,0,0.12));              
     }
-
 
     .olowiki-app .md-app-toolbar .olo-logo {}
 
