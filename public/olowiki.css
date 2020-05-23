@@ -55,6 +55,11 @@ body {
 .olowiki-app .md-drawer .md-toolbar .olo-title {
     font-size: 1.5em;
     font-weight: bold;
+    color: #424242;
+}
+.olowiki-app .md-drawer .md-toolbar .olo-title:hover {
+    cursor: pointer;
+    color: #000000;
 }
 .olowiki-app .md-app-toolbar .olo-controls {
     flex: 0 0 auto;
@@ -1100,6 +1105,19 @@ body {
 }
 
 
+.md-card[data-v-108b6208] {
+    margin: 0 1em 1em 1em;
+    display: block;
+    font-size: 0.8em;
+}
+.md-card-header[data-v-108b6208] {
+    color: #808080;
+}
+div.md-field.md-theme-default.md-has-textarea[data-v-108b6208] {
+    margin-bottom: 4px;
+}
+
+
 .md-list-item .active {
     font-weight: bold;
     color: #1976D2;
@@ -1108,11 +1126,22 @@ body {
     display: block;
     padding: 2em 2em 2em 2em;
 }
+.comment-dialog {
+    min-width: 50em;
+}
+.comments-stack {
+    display: block;
+    padding: 1em 0;
+    background-color: #f8f8f8;
+}
+.footer {
+    color: #808080;
+    font-size: 0.8em;
+}
 @media (max-width: 480px) {
 .olo-viewer {
         padding-left: 3%;
         padding-right: 3%;
 }
-}    
-
+}
 

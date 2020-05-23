@@ -7,22 +7,13 @@ const OloJS = require("@onlabsorg/olojs");
 
 class OloWiki extends OloJS {
 
-    getEnvironment () {
-        global.olowiki = {
-            'require': modulePath => require(`./lib/${modulePath}`)
-        };
-        const env = super.getEnvironment();
-        delete global.olowiki;
-        return env;
-    }
-    
     async init (ownerId) {
         const olonvTemplateArguments = {
             owner: ownerId,
             secret: uuid4()
         };
         const dirs = [
-            "docs", 
+            "documents", 
         ];
         await super.init(olonvTemplateArguments, dirs);
     }

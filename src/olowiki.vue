@@ -1,9 +1,10 @@
 <template>
     <div class="olowiki-document">
     
+        <!-- MAIN UI -->
         <olowiki-app appname="olowiki" :title="title" @key="handleKeyboardCommand"  @logo-click="appDialog.show = true">
             
-            <md-icon slot="logo" md-src="/olowiki.svg"></md-icon>
+            <!-- Drawer -->
             
             <md-list slot="drawer-item">
                 
@@ -25,20 +26,39 @@
                 </md-list-item>
             </md-list>
 
-            <!-- view state -->
+
+            <!-- Viewer -->
+            
+            <div slot="content" v-if="stateIs('view')">
+                <olo-viewer ref="viewer" :content="html"></olo-viewer>
+                <div v-if="allowComments && comments.length > 0">
+                    <md-divider></md-divider>
+                    <comments-stack :comments="comments"></comments-stack>
+                </div>
+                <div class="footer">olowiki v.0.5.0</div>
+            </div>
+
+            <md-button slot="button" class="md-icon-button" 
+                    v-if="stateIs('view')"
+                    @click="save">
+                    <md-icon>save</md-icon>
+                </md-button>
                 
-            <md-button slot="button" v-if="stateIs('view')" class="md-icon-button" @click="save">
-                <md-icon>save</md-icon>
-            </md-button>
-                
-            <md-button slot="button" v-if="stateIs('view')" class="md-icon-button" @click="setState('edit')">
-                <md-icon>edit</md-icon>
-            </md-button>    
+            <md-button slot="button" class="md-icon-button" 
+                    v-if="stateIs('view')" 
+                    @click="setState('edit')">
+                    <md-icon>edit</md-icon>
+                </md-button>    
+
+            <md-button slot="button" class="md-icon-button" 
+                    v-if="stateIs('view')" 
+                    :disabled="!allowComments"
+                    @click="showPostDialog">
+                    <md-icon>comment</md-icon>
+                </md-button>    
+                            
             
-            <olo-viewer slot="content" ref="viewer" v-if="stateIs('view')" :content="html"></olo-viewer>
-            
-            
-            <!-- edit state -->
+            <!-- Editor -->
                         
             <olo-editor :source.sync="docSource" theme="chrome"
                     slot="content" ref="editor" v-if="stateIs('edit')"></olo-editor>
@@ -52,14 +72,15 @@
             </md-button>
             
             
-            <!-- empty states -->
+            <!-- Empty states -->
             
             <md-empty-state slot="content" v-if="stateIs('error')" md-icon="error" md-label="Error!" :md-description="errorMessage"></md-empty-state>
-                        
         </olowiki-app>
         
+        
+        
+        <!-- APP DIALOG -->
         <md-dialog :md-active.sync="appDialog.show">
-            <md-dialog-title>olowiki</md-dialog-title>
             <md-tabs>
                 <md-tab md-label="Info" md-icon="info">
                     <p>This is olowiki v{{version}}, a minimalistic wiki based on 
@@ -89,7 +110,9 @@
                     </md-dialog-actions>
                 </md-tab>
                 <md-tab md-label="Request Token" md-icon="email">
-                    <p>Fill in your e-mail address and send a token to yourself.</p>
+                    <p>
+                        Fill in your e-mail address and send a token to yourself.
+                    </p>
                     <md-field>
                         <label>e-mail</label>
                         <md-input v-model="appDialog.email" type="email"></md-input>
@@ -102,6 +125,9 @@
             </md-tabs>
         </md-dialog>  
         
+        
+        
+        <!-- DELETE DIALOG -->
         <md-dialog :md-active.sync="deleteDialog.show">
             <md-dialog-title>Delete {{deleteDialog.path}}</md-dialog-title>
             <md-dialog-content>
@@ -112,8 +138,24 @@
                 <md-button class="md-primary" @click="deleteDialog.show = false">No</md-button>
             </md-dialog-actions>
         </md-dialog>              
+        
+        
+        
+        <!-- COMMENT DIALOG -->
+        <md-dialog class="comment-dialog" :md-active.sync="commentDialog.show">
+            <md-dialog-title>Leave your comment</md-dialog-title>
+            <md-dialog-content>
+                <md-field>
+                    <label>Comment</label>
+                    <md-textarea v-model="commentDialog.comment"></md-textarea>
+                </md-field>
+            </md-dialog-content>
+            <md-dialog-actions>
+                <md-button class="md-primary" @click="hidePostDialog">CANCEL</md-button>
+                <md-button class="md-primary" @click="postComment">POST</md-button>
+            </md-dialog-actions>
+        </md-dialog>              
     </div>
-    
 </template>
 
 <script>
@@ -131,6 +173,7 @@
     Vue.use( require("vue-material/dist/components/MdDialog").default );
     Vue.use( require("vue-material/dist/components/MdTabs").default );   
     Vue.use( require("vue-material/dist/components/MdList").default );     
+    Vue.use( require("vue-material/dist/components/MdDivider").default );     
     Vue.use( require("vue-async-computed") );
     
     module.exports = {
@@ -138,12 +181,13 @@
         components: {
             'olowiki-app': require("./app.vue").default,  
             'olo-viewer': require("olo-viewer"),          
-            'olo-editor': require("olo-editor")
+            'olo-editor': require("olo-editor"),
+            'comments-stack': require("./comments-stack.vue").default
         },
         
         props: ['src'],
         
-        data: () => Object({
+        data: () => ({
             state: "view",
             errorMessage: "",
             docPath: "",
@@ -159,7 +203,12 @@
             deleteDialog: {
                 show: false,
                 path: ""
-            }            
+            },
+            commentDialog: {
+                show: false,
+                comment: "",
+            },
+            comments: [],
         }),  
         
         computed: {
@@ -182,7 +231,11 @@
                     if (typeof title === "string") return title;
                 }
                 return this.docPath;                 
-            },   
+            },              
+
+            allowComments () {
+                return this.docNS && !this.docNS.__nocomments__;
+            },
         },
         
         asyncComputed: {
@@ -208,6 +261,7 @@
         
         methods: {
             
+            // Document 
             async refresh (forceReload=false) {
                 try {
                     let [docPath, argns] = olonv.parseURI(this.src);
@@ -218,6 +272,7 @@
                         this.docPath = docPath;
                         this.docSource = await olonv.readDocument(this.docPath);
                     }
+                    await this.updateComments();
                 } catch (error) {
                     console.error(error);
                     this.setState("error");
@@ -244,10 +299,9 @@
                 this.$refs.editor.commit();
                 this.setState("view");
             },
-            
-            showMessage (content) {
-                this.$emit('message', content);
-            },
+
+
+            // State management methods
 
             setState (state) {
                 this.state = state;
@@ -260,6 +314,9 @@
             stateIn (...states) {
                 return states.indexOf(this.state) !== -1;
             },
+            
+            
+            // User and tokens management methods
             
             async requestToken () {
                 const userId = this.appDialog.email;
@@ -290,6 +347,9 @@
                 console.log(this.user);
             },     
             
+            
+            // Container
+            
             async updateSiblings () {
                 const parentContainer = await olonv.loadDocument(this.parentPath);
                 const itemPaths = parentContainer.items || [];
@@ -315,6 +375,9 @@
                 return item;
             },
             
+            
+            // Delete dialog
+            
             showDeleteDialog (item) {
                 this.deleteDialog.path = item.href.slice(1);
                 this.deleteDialog.show = true;
@@ -333,6 +396,40 @@
                 }
             },            
 
+                        
+            // Comments
+            
+            async updateComments () {
+                this.comments = (await olonv.loadComments(this.docPath)).reverse();
+            },
+            
+            showPostDialog () {
+                this.commentDialog.show = true;
+            },
+            
+            hidePostDialog () {
+                this.commentDialog.show = false;
+            },
+            
+            async postComment () {
+                this.hidePostDialog();
+                
+                const comment = this.commentDialog.comment + `\n<% author = "${this.user}" %>`;
+                olonv.appendComment(this.docPath, comment);
+                
+                await this.updateComments();
+            },
+
+
+            // Messages management methods
+            
+            showMessage (content) {
+                this.$emit('message', content);
+            },
+            
+            
+            // Keyboard event handler
+            
             handleKeyboardCommand (event) {
                 if (this.stateIs('view')) switch (event.keyString) {
                     
@@ -396,12 +493,24 @@
         display: block;
         padding: 2em 2em 2em 2em;
     }
-    
+    .comment-dialog {
+        min-width: 50em;
+    }
+    .comments-stack {
+        display: block;
+        padding: 1em 0;
+        background-color: #f8f8f8;
+    }
+
+    .footer {
+        color: #808080;
+        font-size: 0.8em;
+    }
+
     @media (max-width: 480px) { 
         .olo-viewer {
             padding-left: 3%;
             padding-right: 3%;
         }
-    }    
-
+    }
 </style>

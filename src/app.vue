@@ -5,6 +5,10 @@
             
             <md-app-toolbar>
                 
+                <md-button class="md-icon-button olo-logo" @click="showMenu=true" v-if="!showMenu">
+                    <md-icon>menu</md-icon>
+                </md-button>
+
                 <span class="md-title olo-title">{{title}}</span>
                 
                 <div class="olo-controls">
@@ -14,15 +18,15 @@
             </md-app-toolbar>
             
             
-            <md-app-drawer md-permanent="full" md-waterfall="true">
+            <md-app-drawer md-permanent="full" md-waterfall="true" v-if="showMenu">
                 
                 <md-toolbar md-elevation="0">
                     
-                    <md-button class="md-icon-button olo-logo" @click="handleLogoClick">
-                        <slot name="logo"></slot>
+                    <md-button class="md-icon-button olo-logo" @click="showMenu=false">
+                        <md-icon>menu</md-icon>
                     </md-button>
 
-                    <a class="md-title olo-title" href="#/">{{appname}}</a>
+                    <span class="md-title olo-title" @click="handleLogoClick">{{appname}}</span>
                 </md-toolbar>
                 
                 <slot name="drawer-item"></slot>
@@ -74,7 +78,8 @@
                 show: false,
                 content: "",
                 duration: 3000
-            },            
+            },     
+            showMenu: true,       
         }),  
         
         // asyncComputed: {},
@@ -160,8 +165,14 @@
     .olowiki-app .md-drawer .md-toolbar .olo-title {
         font-size: 1.5em;
         font-weight: bold;
+        color: #424242;
     }
 
+    .olowiki-app .md-drawer .md-toolbar .olo-title:hover {
+        cursor: pointer;
+        color: #000000;
+    }
+    
     .olowiki-app .md-app-toolbar .olo-controls {
         flex: 0 0 auto;
     }

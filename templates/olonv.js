@@ -1,19 +1,18 @@
-const Environment = olojs.require(`environment`);
-const FSStore = olojs.require(`stores/fs-store`);
-const HTTPServer = olowiki.require("http-server");
+const Environment = require(`@onlabsorg/olojs/lib/environment`);
+const FSStore = require(`@onlabsorg/olojs/lib/stores/fs-store`);
+const HTTPServer = require("@onlabsorg/olowiki/lib/http-server");
 
-const EMailDispatcher = olowiki.require(`dispatchers/email`);
-// const GmailDispatcher = olowiki.require(`dispatchers/gmail`);
+const EMailDispatcher = require(`@onlabsorg/olowiki/lib/dispatchers/email`);
 
 
 module.exports = new Environment({
     
-    store: new FSStore(`${__dirname}/docs`),
+    store: new FSStore(`${__dirname}/documents`),
 
     nocache: true,
         
     globals: {
-        require: modulePath => olojs.require(`stdlib/${modulePath}`)
+        require: modulePath => require(`@onlabsorg/olowjs/lib/stdlib/${modulePath}`)
     },
 
     serve: HTTPServer({
@@ -33,8 +32,8 @@ module.exports = new Environment({
         
         /** 
          *  In case you want to use gmail to send tokens,
-         *  use GMailDispatcher = require("../lib/dispatchers/gmail") instead
-         *  and fill in the following fields; otherwise delete them.
+         *  use GmailDispatcher = require("@onlabsorg/olowiki/lib/dispatchers/gmail") instead
+         *  and fill in the following fields.
          */
         // dispatch: GmailDispatcher({
         //     from: "...",     // the sender email address
@@ -42,6 +41,4 @@ module.exports = new Environment({
         //     token: "..."     // the token obtained after authorizing the app
         // })
     }),
-    
-
 });
