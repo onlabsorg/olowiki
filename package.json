@@ -1,6 +1,6 @@
 {
   "name": "@onlabsorg/olowiki",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "A distributed wiki where documents can import information from each other across nodes.",
   "keywords": [
     "wiki",
@@ -12,9 +12,6 @@
     "test": "bin/test",
     "develop": "webpack --mode development --watch",
     "build": "webpack --mode production"
-  },
-  "bin": {
-    "olowiki": "./bin/olowiki"
   },
   "author": "Marcello Del Buono (m.delbuono@gmail.com)",
   "license": "MIT",
