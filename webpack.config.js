@@ -86,10 +86,8 @@ module.exports = {
     
     resolve: {
         alias: {
-            "olo-editor": path.resolve(__dirname, "lib/olo-editor/"),
-            "olo-editor$": path.resolve(__dirname, "lib/olo-editor/index"),
-            "olo-viewer": path.resolve(__dirname, "lib/olo-viewer/"),
-            "olo-viewer$": path.resolve(__dirname, "lib/olo-viewer/index"),
+            "olo-editor": path.resolve(__dirname, "src/olo-editor/"),
+            "olo-editor$": path.resolve(__dirname, "src/olo-editor/index"),
         }
     }  
 }

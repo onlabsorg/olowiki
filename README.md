@@ -1,25 +1,38 @@
-**olowiki** is a minimalistic wiki based on [olojs](https://github.com/onlabsorg/olojs/blob/master/README.md),
-a distributed content management framework.
+# olowiki
 
-My node is https://wiki.olnlabs.org/.
-
-You can [install and run your own node](/doc/installation.md) or contribute to mine. 
-
-
-# Documentation
-
-* [Getting started with olowiki](https://wiki.onlabs.org#/doc/olowiki/getting-started)
-* [Olowiki documents](https://wiki.onlabs.org#/doc/olowiki/document)
-* [Olowiki expression language](https://wiki.onlabs.org#/doc/olowiki/swan)
+**olowiki** is an [olojs](https://github.com/onlabsorg/olojs/blob/master/README.md)
+plugin that brings an environment server allowing you to render and edit your
+olo-documents in the browser.
 
 
-# Contribute to olowiki
+### Getting started
+First you need to install the [olojs-cli](https://github.com/onlabsorg/olojs-cli/blob/main/README.md)
+and create a libray:
 
-olowiki is in an early development stage and needs still a lot of work. If you 
-wish to contribute to its development, you are welcome to do so.
+```
+npm install -g @onlabsorg/olojs-cli
+cd /path/to/my-library
+olojs init
+```
 
-I will publish some issues soon.
-  
+Then you can install this plugin:
+
+```
+olojs install @onlabsorg/olowiki
+```
+
+Once olowiki is installed, you can serve the library as follows:
+
+```
+olojs serve -t @onlabsorg/olowiki/server
+```
+
+This will start a server listening on port 8010 (customize the port with -t).
+At this point you can manage your library in your browser by visiting the url:
+
+```
+http://localhost:8010/#/home/path/to/doc
+```  
   
 # MIT License
 
