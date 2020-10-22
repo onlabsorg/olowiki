@@ -62,11 +62,11 @@
 
         <!-- ADD DIALOG -->
         <md-dialog :md-active.sync="addDialog.show">
-            <md-dialog-title>Add a document to {{addDialog.path}}</md-dialog-title>
+            <md-dialog-title>Create a new document</md-dialog-title>
             <md-dialog-content>
                 <md-field md-inline>
                     <label>Document name</label>
-                    <md-input v-model="addDialog.name"></md-input>
+                    <md-input v-model="addDialog.path"></md-input>
                 </md-field>
             </md-dialog-content>
             <md-dialog-actions>
@@ -123,6 +123,8 @@
     Vue.use( require("vue-material/dist/components/MdDivider").default );     
     Vue.use( require("vue-async-computed") );
     
+    require("./content.css");
+    
     module.exports = {
         
         components: {
@@ -147,7 +149,6 @@
             addDialog: {
                 show: false,
                 path: "",
-                name: ""
             },
             deleteDialog: {
                 show: false,
@@ -253,8 +254,7 @@
             // Delete dialog
             
             showAddDialog (path) {
-                this.addDialog.path = path;
-                this.addDialog.name = "new_document";
+                this.addDialog.path = pathlib.join(path, "new_document");
                 this.addDialog.show = true;
             },
             
@@ -367,7 +367,7 @@
         font-weight: bold;
         color: #1976D2;
     }
-
+    
     .olo-viewer {
         display: block;
         padding: 2em 2em 2em 2em;

@@ -125,9 +125,8 @@
 </script>
 
 <style>
-    .
     .md-list-item-content {
-        min-height: 40px;
+        min-height: 32px;
     }
     .md-list-item-content>.md-icon:first-child {
         margin-right: 8px;
@@ -138,7 +137,6 @@
     .md-list-item-expand {
         border: none;
     }
-    
     i.md-list-expand-icon {
         display: none;
     }
