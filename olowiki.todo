@@ -1,17 +1,11 @@
 
 Next Release (v0.5.0):
     
-    ✔ rename folders @done(2020-04-11) @project(Next Release \(v0.5.0\))
-        ✔ `users` -> `contributors` @done(2020-04-11) @project(Next Release \(v0.5.0\))
-        ✔ `doc` -> `documentation` @done(2020-04-11) @project(Next Release \(v0.5.0\))
-        ✔ `lib` -> `projects` @done(2020-04-11) @project(Next Release \(v0.5.0\))
-    ☐ redirect path `~/` to the logged-in user home folder
-    ✘ permissions based on per-project ACL within the `projects` folder @cancelled(2020-05-17) @project(Next Release \(v0.5.0\))
-    ☐ acl: prevent deleting the root directories structure
-    ☐ __render__ set to markdown by default
-    ✔ bug: empty document rendering show show the document path as title @done(2020-05-17) @project(Next Release \(v0.5.0\))
-    ✔ remove gray bar in case of empty document list @done(2020-05-17) @project(Next Release \(v0.5.0\))
-    ☐ view: add olowiki app info line after document and comments
+    olowiki:
+        
+    olo-wiki:
+        
+    server:
     
     Deployment routine:
         ☐ Update version
@@ -24,13 +18,21 @@ Next Release (v0.5.0):
 
 
 BACKLOG:
-    ✘ add rename command (button and keyboard shortcut) @cancelled(2020-04-11) @project(Next Release \(v0.5.0\))
-    ☐ WUI: Add spinner during loading
-    ☐ Fix scrollbar in edit mode
-    ☐ When switching between view and editor, restore the last cursor position
-    ☐ editor: Improve syntax highlighting and folding for oloml mode
-    ☐ viewer: Improve document css
-    ☐ improve mobile styles
-    ✔ Implement init command @done(2020-05-03) @project(BACKLOG)
-    ✔ Implement init templates: default, full-auth, ecc. @done(2020-05-03) @project(BACKLOG)
+    olowiki:
+        ☐ __render__ set to markdown by default
+        
+    olo-wiki:
+        ☐ style: change the document style (take the css from olojs)
+        ☐ style: improve mobile styles
+        ☐ new-dialog: show the full path in the input field
+        ☐ directory tree: show the home root
+        ☐ directory tree: show the non-home mounted stores (with no subtree)    
+        ☐ directory tree: make it more dense        
+        ☐ directory tree: drag and drop
+        ☐ Editor: Fix scrollbar in edit mode
+        ☐ editor: Improve syntax highlighting and folding for oloml mode
+        ☐ When switching between view and editor, restore the last cursor position
+        ☐ change favicon
+        
+    server:
         

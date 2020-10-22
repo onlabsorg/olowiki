@@ -1,39 +1,39 @@
 <template>
-    <md-list>        
-        <md-list-item md-expand v-for="dir in dirItems"
-                @contextmenu.prevent.stop="contextMenuPath=dir.path">
-            <md-icon>folder</md-icon>
-            <span class="md-list-item-text" :class="{active:dir.path===selected}">{{dir.name}}</span>
-            <md-button class="md-icon-button md-list-action" v-if="contextMenuPath === dir.path" 
-                    @click.prevent.stop="emitAdd(dir.path)">
-                <md-icon class="md-primary">note_add</md-icon>
-            </md-button>                    
-            <md-button class="md-icon-button md-list-action" v-if="contextMenuPath === dir.path" 
-                    @click.prevent.stop="emitDelete(dir.path)">
-                <md-icon class="md-primary">delete</md-icon>
-            </md-button>                    
-            <dir-tree slot="md-expand" class="indented-dir-tree" 
+    <md-list-item md-expand :md-expanded="Boolean(state.expanded[root])"
+            @contextmenu.prevent.stop="state.contextMenuPath=root">
+        <md-icon>{{icon}}</md-icon>
+        <span class="md-list-item-text" :class="{active:root===selected}">{{pathName(root)}}</span>
+        <md-button class="md-icon-button md-list-action" v-if="state.contextMenuPath === root" 
+                @click.prevent.stop="emitAdd(root)">
+            <md-icon class="md-primary">add</md-icon>
+        </md-button>                    
+        <md-button class="md-icon-button md-list-action" v-if="state.contextMenuPath === root && deleteable" 
+                @click.prevent.stop="emitDelete(root)">
+            <md-icon class="md-primary">delete</md-icon>
+        </md-button>                    
+        <md-list slot="md-expand" class="indented-dir-tree">
+            <tree-node v-for="dir in dirItems"
                     :root="dir.path" 
                     :selected="selected"
                     :change="change"
+                    :state="state"
+                    icon="folder"
+                    :deleteable="true"
                     @add-tree-item="emitAdd"
                     @delete-tree-item="emitDelete">
-            </dir-tree>
-        </md-list-item>
-    
-        <md-list-item :href="'#'+doc.path" v-for="doc in docItems"
-                @contextmenu.prevent.stop="contextMenuPath=doc.path">
-            <md-icon>description</md-icon>
-            <span class="md-list-item-text" :class="{active:doc.path===selected}">{{doc.name}}</span>
-            <md-button class="md-icon-button md-list-action" v-if="contextMenuPath === doc.path" 
-                    @click.prevent.stop="emitDelete(doc.path)">
-                <md-icon class="md-primary">delete</md-icon>
-            </md-button>                    
-        </md-list-item>
-    </md-list>
+            </tree-node>
+            <md-list-item :href="'#'+doc.path" v-for="doc in docItems"
+                    @contextmenu.prevent.stop="state.contextMenuPath=doc.path">
+                <md-icon>description</md-icon>
+                <span class="md-list-item-text" :class="{active:doc.path===selected}">{{doc.name}}</span>
+                <md-button class="md-icon-button md-list-action" v-if="state.contextMenuPath === doc.path" 
+                        @click.prevent.stop="emitDelete(doc.path)">
+                    <md-icon class="md-primary">delete</md-icon>
+                </md-button>                    
+            </md-list-item>
+        </md-list>
+    </md-list-item>    
 </template>
-
-        
 
 <script>
     const pathlib = require('path');
@@ -42,7 +42,6 @@
     Vue.use( require("vue-material/dist/components/MdButton").default );
     Vue.use( require("vue-material/dist/components/MdIcon").default );
     Vue.use( require("vue-material/dist/components/MdList").default );     
-    Vue.use( require("vue-material/dist/components/MdCard").default );     
     
     const isDir = name => name.slice(-1) === '/';
     const isDoc = name => !isDir(name);
@@ -50,13 +49,12 @@
     const isVisible = name => name[0] !== '.';     
     
     module.exports = {   
-        name: "dir-tree",
+        name: "tree-node",
          
-        props: ['root', 'selected', 'change'],
+        props: ['root', 'selected', 'change', 'state', 'icon', 'deleteable'],
         
         data: () => ({
             childNames: [],
-            contextMenuPath: ''
         }),
         
         watch: {
@@ -91,23 +89,32 @@
             
             async refresh () {
                 const dirPath = pathlib.join('/', this.root, '/');
+                console.log("@dir-tree.refresh:", dirPath)
                 const doc = await olonv.readDocument(dirPath);
                 const docns = await doc.evaluate(doc.createContext());
-                this.childNames = Array.from(docns.children).filter(isVisible).sort();
+                console.log("@dir-tree.refresh:", docns.children)
+                this.childNames = docns.children ?
+                        Array.from(docns.children).filter(isVisible).sort() : [];
             },
             
             docPath (name) {
                 return this.root + name;
             },
             
+            pathName (path) {
+                const normPath = isDir(path) ? path.slice(0,-1) : path;
+                const lastSlashPos = normPath.lastIndexOf('/');
+                return normPath.slice(lastSlashPos+1);
+            },
+            
             emitAdd (path) {
                 this.$emit('add-tree-item', path);
-                this.contextMenuPath = "";
+                this.state.contextMenuPath = "";
             },
             
             emitDelete (path) {
                 this.$emit('delete-tree-item', path);
-                this.contextMenuPath = "";
+                this.state.contextMenuPath = "";
             },                        
         },
         

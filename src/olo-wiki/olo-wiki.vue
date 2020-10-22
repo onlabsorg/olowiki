@@ -6,14 +6,19 @@
                 @key="handleKeyboardCommand" 
                 @logo-click="infoDialog.show = true">
             
+            
             <!-- Drawer -->
-            <dir-tree slot="drawer-item" 
-                    :root="treeRoot" 
-                    :selected="docPath" 
-                    :change="treeChange"
-                    @add-tree-item="showAddDialog"
-                    @delete-tree-item="showDeleteDialog">
-                </dir-tree>
+            <md-list slot="drawer-item">
+                <tree-node icon="home"
+                        root="/home/" 
+                        :selected="docPath" 
+                        :change="tree_change"
+                        :state="tree_state"
+                        :deleteable="false"
+                        @add-tree-item="showAddDialog"
+                        @delete-tree-item="showDeleteDialog">
+                </tree-node>
+            </md-list>
             
 
             <!-- Viewer -->
@@ -123,7 +128,7 @@
         components: {
             'olowiki-app': require("./app.vue").default,  
             'olo-editor': require("olo-editor"),
-            'dir-tree': require('./dir-tree.vue').default
+            'tree-node': require('./tree-node.vue').default
         },
         
         props: ['src'],
@@ -132,8 +137,13 @@
             state: "view",
             errorMessage: "",
             docSource: "",
-            treeRoot: "/home/",
-            treeChange: {},
+            tree_change: {},
+            tree_state: {
+                expanded: {
+                    "/home/": true
+                },
+                contextMenuPath: ""
+            },
             addDialog: {
                 show: false,
                 path: "",
@@ -205,7 +215,7 @@
             async save () {
                 try {
                     await olonv.writeDocument(this.docPath, this.docSource);
-                    this.treeChange = {
+                    this.tree_change = {
                         op: 'SET',
                         path: this.docPath
                     }
@@ -257,7 +267,7 @@
                 const docPath = `${path}/${name}`;
                 try {
                     await olonv.writeDocument(docPath, "");
-                    this.treeChange = {
+                    this.tree_change = {
                         op: 'SET',
                         path: this.docPath
                     }
@@ -273,7 +283,7 @@
                 this.deleteDialog.show = false;
                 try {
                     await olonv.deleteDocument(itemPath);
-                    this.treeChange = {
+                    this.tree_change = {
                         op: 'DELETE',
                         path: itemPath
                     }
