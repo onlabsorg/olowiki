@@ -1,6 +1,6 @@
 {
   "name": "@onlabsorg/olowiki",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "A distributed wiki where documents can import information from each other across nodes.",
   "keywords": [
     "wiki",

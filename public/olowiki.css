@@ -521,13 +521,8 @@ i.md-list-expand-icon {
     display: block;
     padding: 2em 2em 2em 2em;
 }
-.comment-dialog {
-    min-width: 50em;
-}
-.comments-stack {
-    display: block;
-    padding: 1em 0;
-    background-color: #f8f8f8;
+.md-dialog .md-dialog-container {
+    min-width: 40%;
 }
 .footer {
     color: #808080;

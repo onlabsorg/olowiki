@@ -70,7 +70,7 @@
                 </md-field>
             </md-dialog-content>
             <md-dialog-actions>
-                <md-button class="md-primary" @click="createDocument(addDialog.path, addDialog.name)">
+                <md-button class="md-primary" @click="createDocument(addDialog.path)">
                     Create
                 </md-button>
                 <md-button class="md-primary" @click="addDialog.show = false">
@@ -263,13 +263,13 @@
                 this.deleteDialog.show = true;
             },
             
-            async createDocument (path, name) {
-                const docPath = `${path}/${name}`;
+            async createDocument (path) {
+                const docPath = pathlib.normalize(path);
                 try {
                     await olonv.writeDocument(docPath, "");
                     this.tree_change = {
                         op: 'SET',
-                        path: this.docPath
+                        path: docPath
                     }
                     this.showMessage(`Created ${docPath}`);
                 } catch (error) {
@@ -372,13 +372,9 @@
         display: block;
         padding: 2em 2em 2em 2em;
     }
-    .comment-dialog {
-        min-width: 50em;
-    }
-    .comments-stack {
-        display: block;
-        padding: 1em 0;
-        background-color: #f8f8f8;
+    
+    .md-dialog .md-dialog-container {
+        min-width: 40%;
     }
 
     .footer {
