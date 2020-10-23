@@ -11,7 +11,7 @@
                 @click.prevent.stop="emitDelete(root)">
             <md-icon class="md-primary">delete</md-icon>
         </md-button>                    
-        <md-list slot="md-expand" class="indented-dir-tree">
+        <md-list slot="md-expand" class="indented-tree-node">
             <tree-node v-for="dir in dirItems"
                     :root="dir.path" 
                     :selected="selected"
@@ -89,10 +89,8 @@
             
             async refresh () {
                 const dirPath = pathlib.join('/', this.root, '/');
-                console.log("@dir-tree.refresh:", dirPath)
                 const doc = await olonv.readDocument(dirPath);
                 const docns = await doc.evaluate(doc.createContext());
-                console.log("@dir-tree.refresh:", docns.children)
                 this.childNames = docns.children ?
                         Array.from(docns.children).filter(isVisible).sort() : [];
             },
@@ -131,7 +129,7 @@
     .md-list-item-content>.md-icon:first-child {
         margin-right: 8px;
     }
-    .indented-dir-tree {
+    .indented-tree-node {
         margin-left: 16px;
     }
     .md-list-item-expand {
