@@ -27,7 +27,8 @@ Once olowiki is installed, you can serve the library as follows:
 olojs serve -t @onlabsorg/olowiki/server
 ```
 
-This will start a server listening on port 8010 (customize the port with -t).
+This will start a server listening on port 8010 (customize the port with 
+-p <port-number>).
 At this point you can manage your library in your browser by visiting the url:
 
 ```

@@ -1,6 +1,6 @@
 {
   "name": "@onlabsorg/olowiki",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "An olojs plugin that provides a wiki web interface for managing your olojs library",
   "keywords": [
     "wiki",
@@ -20,7 +20,7 @@
     "url": "https://github.com/onlabsorg/olowiki.git"
   },
   "dependencies": {
-    "@onlabsorg/olojs": "^0.13.3",
+    "@onlabsorg/olojs": "0.14.x",
     "brace": "^0.11.1",
     "dompurify": "^2.1.1",
     "key-string": "^0.4.0",
