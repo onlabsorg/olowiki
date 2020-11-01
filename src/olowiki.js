@@ -3,6 +3,16 @@ const olojs = require('@onlabsorg/olojs/browser');
 
 const olonv = window.olonv = new olojs.Environment({
     store: new olojs.stores.HTTP(`${location.origin}/env`),
+    
+    globals: {
+        $renderError (error) {
+            return `<pre class="runtime-error">` +
+                        `<div class="message">${escape(error.message)}</div>` +
+                        `<br>` +
+                        `<div class="source">${escape(error.source)}</div>` +
+                   `</pre>`;
+        }                    
+    }
 });
 
 olonv.olowikiVersion = require('../package.json').version;
@@ -54,3 +64,16 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+
+
+// -----------------------------------------------------------------------------
+//  SERVICE FUNCTIONS
+// -----------------------------------------------------------------------------
+
+const escape = html => html
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
