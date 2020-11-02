@@ -10,6 +10,7 @@ const olonv = window.olonv = new olojs.Environment({
                         `<div class="message">${escape(error.message)}</div>` +
                         `<br>` +
                         `<div class="source">${escape(error.source)}</div>` +
+                        `<div class="source">${escape(error.swanStackStr)}</div>` +
                    `</pre>`;
         }                    
     }
