@@ -1,9 +1,29 @@
 <% title = "olowiki home page" %>
 <% __render__ = require 'markdown' %>
 
+<% n = -2.34 # this is a comment
+%>
+
+<% s = `accent ${n}
+string` # this is another comment%>
+
+<% 
+    {
+        x: 10,
+        y: [
+            1,
+            2,
+            3],
+        z: {
+            a:1,
+            b:2
+        }
+    }
+%>
+
 <h1>Hello olowiki user!</h1>
-<b>This is the index document</b>
-xxxx
+    <b>This is the index document</b>
+    xxxx
 
 
 | A | B | C |

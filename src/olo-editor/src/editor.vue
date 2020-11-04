@@ -50,6 +50,7 @@
             initEditor () {
                 require('brace/ext/language_tools'); //language extension prerequsite...
                 require('./oloml-mode');
+                require(`brace/theme/chrome`);
                 require(`brace/theme/${this.themeId}`);
                 require('brace/ext/searchbox');
                 this.updateTheme();
