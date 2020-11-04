@@ -22,7 +22,7 @@ ace.define("ace/mode/olo_highlight_rules", ["require","exports","module","ace/mo
                 {token:"string", regex:"'(?=.)", next:"string1"},   // single quote string
                 {token:"string", regex:'"(?=.)', next:"string2"},   // double quote string
                 {token:"constant.numeric", regex:/(?:\d\d*(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+\b)?/},   // decimal integers and floats
-                {token:"identifier", regex:/[a-z_A-Z]+[a-z_A-Z0-9]*/},
+                {token:"variable", regex:/[a-z_A-Z]+[a-z_A-Z0-9]*/},
                 expressionClosingToken,
                 {token:"keyword.operator", regex:/\,|<<|>>|:|\=|->|\;|\?|\||\&|\=\=|\!\=|<|<\=|>|>\=|\+|-|\*|\/|%|\^|\./},
                 {token:"paren.lparen", regex:/[\[({]/},
