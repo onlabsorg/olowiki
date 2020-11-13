@@ -18,7 +18,6 @@ ace.define("ace/mode/olo_highlight_rules", ["require","exports","module","ace/mo
             ],
             
             "expression" : [
-                {token:"string", regex:"`(?=.)", next:"string0"},   // accent quote string
                 {token:"string", regex:"'(?=.)", next:"string1"},   // single quote string
                 {token:"string", regex:'"(?=.)', next:"string2"},   // double quote string
                 {token:"constant.numeric", regex:/(?:\d\d*(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+\b)?/},   // decimal integers and floats
@@ -30,12 +29,6 @@ ace.define("ace/mode/olo_highlight_rules", ["require","exports","module","ace/mo
                 {token:"comment", regex:"#", next:"comment"}             
             ],
             
-            // accent quote string
-            "string0" : [
-                {token:"string", regex:"`", next:"expression"}, 
-                {defaultToken:"string"}                
-            ],
-
             // single quote string
             "string1" : [
                 {token:"string", regex:"'", next:"expression"}, 

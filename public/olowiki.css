@@ -503,7 +503,7 @@ body {
 .md-list-item-content>.md-icon:first-child {
     margin-right: 8px;
 }
-.indented-tree-node {
+.indented-dir-tree {
     margin-left: 16px;
 }
 .md-list-item-expand {

@@ -1,38 +1,40 @@
 <template>
-    <md-list-item md-expand :md-expanded="Boolean(state.expanded[root])"
-            @contextmenu.prevent.stop="state.contextMenuPath=root">
-        <md-icon>{{icon}}</md-icon>
-        <span class="md-list-item-text" :class="{active:root===selected}">{{pathName(root)}}</span>
-        <md-button class="md-icon-button md-list-action" v-if="state.contextMenuPath === root" 
-                @click.prevent.stop="emitAdd(root)">
-            <md-icon class="md-primary">add</md-icon>
-        </md-button>                    
-        <md-button class="md-icon-button md-list-action" v-if="state.contextMenuPath === root && deleteable" 
-                @click.prevent.stop="emitDelete(root)">
-            <md-icon class="md-primary">delete</md-icon>
-        </md-button>                    
-        <md-list slot="md-expand" class="indented-tree-node">
-            <tree-node v-for="dir in dirItems"
+    <md-list>
+        
+        <md-list-item v-for="dir in dirItems"
+                md-expand :md-expanded="Boolean(state.expanded[dir.path])"
+                @contextmenu.prevent.stop="state.contextMenuPath=dir.path">
+            <md-icon>folder</md-icon>
+            <span class="md-list-item-text" :class="{active:dir.path===selected}">{{pathName(dir.path)}}</span>
+            <md-button class="md-icon-button md-list-action" v-if="state.contextMenuPath === dir.path" 
+                    @click.prevent.stop="emitAdd(dir.path)">
+                <md-icon class="md-primary">add</md-icon>
+            </md-button>                    
+            <md-button class="md-icon-button md-list-action" v-if="state.contextMenuPath === dir.path" 
+                    @click.prevent.stop="emitDelete(dir.path)">
+                <md-icon class="md-primary">delete</md-icon>
+            </md-button>     
+            <dir-tree slot="md-expand" class="indented-dir-tree"
                     :root="dir.path" 
-                    :selected="selected"
+                    :selected="selected" 
                     :change="change"
                     :state="state"
-                    icon="folder"
-                    :deleteable="true"
                     @add-tree-item="emitAdd"
-                    @delete-tree-item="emitDelete">
-            </tree-node>
-            <md-list-item :href="'#'+doc.path" v-for="doc in docItems"
-                    @contextmenu.prevent.stop="state.contextMenuPath=doc.path">
-                <md-icon>description</md-icon>
-                <span class="md-list-item-text" :class="{active:doc.path===selected}">{{doc.name}}</span>
-                <md-button class="md-icon-button md-list-action" v-if="state.contextMenuPath === doc.path" 
-                        @click.prevent.stop="emitDelete(doc.path)">
-                    <md-icon class="md-primary">delete</md-icon>
-                </md-button>                    
-            </md-list-item>
-        </md-list>
-    </md-list-item>    
+                    @delete-tree-item="emitDelete"
+                    >
+            </dir-tree>
+        </md-list-item>
+        
+        <md-list-item :href="'#'+doc.path" v-for="doc in docItems"
+                @contextmenu.prevent.stop="state.contextMenuPath=doc.path">
+            <md-icon>description</md-icon>
+            <span class="md-list-item-text" :class="{active:doc.path===selected}">{{doc.name}}</span>
+            <md-button class="md-icon-button md-list-action" v-if="state.contextMenuPath === doc.path" 
+                    @click.prevent.stop="emitDelete(doc.path)">
+                <md-icon class="md-primary">delete</md-icon>
+            </md-button>                    
+        </md-list-item>
+    </md-list>
 </template>
 
 <script>
@@ -49,9 +51,9 @@
     const isVisible = name => name[0] !== '.';     
     
     module.exports = {   
-        name: "tree-node",
+        name: "dir-tree",
          
-        props: ['root', 'selected', 'change', 'state', 'icon', 'deleteable'],
+        props: ['root', 'selected', 'change', 'state'],
         
         data: () => ({
             childNames: [],
@@ -72,13 +74,13 @@
         
         computed: {
             dirItems: function () {
-                return this.childNames.filter(isDir).map(name => ({
+                return this.childNames.filter(isDir).filter(isVisible).map(name => ({
                     name: name.slice(0,-1),
                     path: this.root + name,
                 }))
             },
             docItems: function () {
-                return this.childNames.filter(isDoc).map(name => ({
+                return this.childNames.filter(isDoc).filter(isVisible).map(name => ({
                     name: name,
                     path: this.root + name,
                 }));                
@@ -88,11 +90,8 @@
         methods: {
             
             async refresh () {
-                const dirPath = pathlib.join('/', this.root, '/');
-                const doc = await olonv.readDocument(dirPath);
-                const docns = await doc.evaluate(doc.createContext());
-                this.childNames = docns.children ?
-                        Array.from(docns.children).filter(isVisible).sort() : [];
+                const dirPath = pathlib.normalize(`/${this.root}/`);
+                this.childNames = await olonv.listEntries(dirPath);
             },
             
             docPath (name) {
@@ -129,7 +128,7 @@
     .md-list-item-content>.md-icon:first-child {
         margin-right: 8px;
     }
-    .indented-tree-node {
+    .indented-dir-tree {
         margin-left: 16px;
     }
     .md-list-item-expand {

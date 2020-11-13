@@ -8,17 +8,14 @@
             
             
             <!-- Drawer -->
-            <md-list slot="drawer-item">
-                <tree-node icon="home"
-                        root="/home/" 
-                        :selected="docPath" 
-                        :change="tree_change"
-                        :state="tree_state"
-                        :deleteable="false"
-                        @add-tree-item="showAddDialog"
-                        @delete-tree-item="showDeleteDialog">
-                </tree-node>
-            </md-list>
+            <dir-tree slot="drawer-item"
+                    root="/" 
+                    :selected="docPath" 
+                    :change="tree_change"
+                    :state="tree_state"
+                    @add-tree-item="showAddDialog"
+                    @delete-tree-item="showDeleteDialog">
+            </dir-tree>
             
 
             <!-- Viewer -->
@@ -130,7 +127,7 @@
         components: {
             'olowiki-app': require("./app.vue").default,  
             'olo-editor': require("olo-editor"),
-            'tree-node': require('./tree-node.vue').default
+            'dir-tree': require('./dir-tree.vue').default
         },
         
         props: ['src'],

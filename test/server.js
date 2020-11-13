@@ -1,12 +1,9 @@
 var olojs = require("@onlabsorg/olojs");
 
 var environment = new olojs.Environment({
-    
     store: new olojs.stores.Router({
-        home: new olojs.stores.FS(`${__dirname}/repo`),
-        temp: new olojs.stores.Memory(),
-        http: new olojs.stores.HTTP('http://'),
-        https: new olojs.stores.HTTP('https://')
+        '/': new olojs.stores.File(`${__dirname}/root`),
+        '/path/to/': new olojs.stores.File(`${__dirname}/path-to`)
     })
 });
 
