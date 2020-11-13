@@ -1,6 +1,6 @@
 {
   "name": "@onlabsorg/olowiki",
-  "version": "0.5.10",
+  "version": "0.6.0",
   "description": "An olojs plugin that provides a wiki web interface for managing your olojs library",
   "keywords": [
     "wiki",
