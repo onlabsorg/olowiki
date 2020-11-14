@@ -9,7 +9,7 @@
   ],
   "main": "server.js",
   "scripts": {
-    "test": "bin/test",
+    "test": "node test/server",
     "develop": "webpack --mode development --watch",
     "build": "webpack --mode production"
   },

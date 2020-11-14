@@ -13,8 +13,7 @@
                     :selected="docPath" 
                     :change="tree_change"
                     :state="tree_state"
-                    @add-tree-item="showAddDialog"
-                    @delete-tree-item="showDeleteDialog">
+                    @tree-context-menu="showTreeContextMenu">
             </dir-tree>
             
 
@@ -100,6 +99,21 @@
                 <md-button class="md-primary" @click="infoDialog.show = false">OK</md-button>
             </md-dialog-actions>
         </md-dialog>   
+        
+        
+        <!-- NAVIGATION CONTEXT MENU -->
+        <context-menu ref="treeContextMenu" v-if="treeContextMenu.show"
+                :x="treeContextMenu.x" :y="treeContextMenu.y" 
+                @context-menu-quit="treeContextMenu.show=false">
+            <md-list-item slot="context-menu-item" v-if="treeContextMenu.isDir" 
+                    @click="showAddDialog(treeContextMenu.path)">
+                <span class="md-list-item-text">New</span>
+            </md-list-item>
+            <md-list-item slot="context-menu-item" 
+                    @click="showDeleteDialog(treeContextMenu.path)">
+                <span class="md-list-item-text">Delete</span>
+            </md-list-item>
+        </context-menu>
     </div>
 </template>
 
@@ -127,7 +141,8 @@
         components: {
             'olowiki-app': require("./app.vue").default,  
             'olo-editor': require("olo-editor"),
-            'dir-tree': require('./dir-tree.vue').default
+            'dir-tree': require('./dir-tree.vue').default,
+            'context-menu': require('./context-menu.vue').default,
         },
         
         props: ['src'],
@@ -138,10 +153,14 @@
             docSource: "",
             tree_change: {},
             tree_state: {
-                expanded: {
-                    "/home/": true
-                },
-                contextMenuPath: ""
+                expanded: {},
+            },
+            treeContextMenu: {
+                show: false,
+                isDir: false,
+                path: "",
+                x: 0,
+                y: 0
             },
             addDialog: {
                 show: false,
@@ -251,6 +270,7 @@
             // Delete dialog
             
             showAddDialog (path) {
+                console.log("@olo-wiki.vue: showing add dialog");
                 this.addDialog.path = pathlib.join(path, "new_document");
                 this.addDialog.show = true;
             },
@@ -258,6 +278,14 @@
             showDeleteDialog (path) {
                 this.deleteDialog.path = path;
                 this.deleteDialog.show = true;
+            },
+            
+            showTreeContextMenu (event) {
+                this.treeContextMenu.isDir = event.item.isDir;
+                this.treeContextMenu.path = event.item.path;
+                this.treeContextMenu.x = event.x;
+                this.treeContextMenu.y = event.y;
+                this.treeContextMenu.show = true;
             },
             
             async createDocument (path) {
@@ -373,7 +401,7 @@
     .md-dialog .md-dialog-container {
         min-width: 40%;
     }
-
+    
     .footer {
         color: #808080;
         font-size: 0.8em;

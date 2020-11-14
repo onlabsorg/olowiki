@@ -3,36 +3,23 @@
         
         <md-list-item v-for="dir in dirItems"
                 md-expand :md-expanded="Boolean(state.expanded[dir.path])"
-                @contextmenu.prevent.stop="state.contextMenuPath=dir.path">
+                @contextmenu.prevent.stop="showContextMenu(dir, $event)">
             <md-icon>folder</md-icon>
             <span class="md-list-item-text" :class="{active:dir.path===selected}">{{pathName(dir.path)}}</span>
-            <md-button class="md-icon-button md-list-action" v-if="state.contextMenuPath === dir.path" 
-                    @click.prevent.stop="emitAdd(dir.path)">
-                <md-icon class="md-primary">add</md-icon>
-            </md-button>                    
-            <md-button class="md-icon-button md-list-action" v-if="state.contextMenuPath === dir.path" 
-                    @click.prevent.stop="emitDelete(dir.path)">
-                <md-icon class="md-primary">delete</md-icon>
-            </md-button>     
             <dir-tree slot="md-expand" class="indented-dir-tree"
                     :root="dir.path" 
                     :selected="selected" 
                     :change="change"
                     :state="state"
-                    @add-tree-item="emitAdd"
-                    @delete-tree-item="emitDelete"
+                    @tree-context-menu="emitTreeContextMenu"
                     >
             </dir-tree>
         </md-list-item>
         
         <md-list-item :href="'#'+doc.path" v-for="doc in docItems"
-                @contextmenu.prevent.stop="state.contextMenuPath=doc.path">
+                @contextmenu.prevent.stop="showContextMenu(doc, $event)">
             <md-icon>description</md-icon>
             <span class="md-list-item-text" :class="{active:doc.path===selected}">{{doc.name}}</span>
-            <md-button class="md-icon-button md-list-action" v-if="state.contextMenuPath === doc.path" 
-                    @click.prevent.stop="emitDelete(doc.path)">
-                <md-icon class="md-primary">delete</md-icon>
-            </md-button>                    
         </md-list-item>
     </md-list>
 </template>
@@ -75,12 +62,14 @@
         computed: {
             dirItems: function () {
                 return this.childNames.filter(isDir).filter(isVisible).map(name => ({
+                    isDir: true,
                     name: name.slice(0,-1),
                     path: this.root + name,
                 }))
             },
             docItems: function () {
                 return this.childNames.filter(isDoc).filter(isVisible).map(name => ({
+                    isDir: false,
                     name: name,
                     path: this.root + name,
                 }));                
@@ -104,15 +93,17 @@
                 return normPath.slice(lastSlashPos+1);
             },
             
-            emitAdd (path) {
-                this.$emit('add-tree-item', path);
-                this.state.contextMenuPath = "";
-            },
+            showContextMenu (item, event) {
+                this.emitTreeContextMenu({
+                    item: item,
+                    x: event.clientX,
+                    y: event.clientY
+                });
+            },     
             
-            emitDelete (path) {
-                this.$emit('delete-tree-item', path);
-                this.state.contextMenuPath = "";
-            },                        
+            emitTreeContextMenu (params) {
+                this.$emit('tree-context-menu', params);
+            }       
         },
         
         mounted () {
