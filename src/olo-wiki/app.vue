@@ -17,11 +17,9 @@
                 
             </md-app-toolbar>
             
-            
-            <md-app-drawer md-permanent="clipped" v-if="showMenu">                
+            <md-app-drawer md-permanent="clipped" v-if="showMenu">
                 <slot name="drawer-item"></slot>
-            </md-app-drawer>            
-            
+            </md-app-drawer>                        
             
             <md-app-content>                
                 <slot name="content"></slot>

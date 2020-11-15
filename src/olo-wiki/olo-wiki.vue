@@ -2,9 +2,10 @@
     <div class="olowiki-document">
     
         <!-- MAIN UI -->
-        <olowiki-app appname="olowiki" :title="title" 
+        <olowiki-app appname="olowiki" :title="title"
                 @key="handleKeyboardCommand" 
-                @logo-click="infoDialog.show = true">
+                @logo-click="infoDialog.show = true"
+                @drawer-context-menu="console.log('@olo-wiki.vue: detected drawer-context-menu event')">
             
             
             <!-- Drawer -->
@@ -53,6 +54,19 @@
             <!-- Empty states -->
             
             <md-empty-state slot="content" v-if="stateIs('error')" md-icon="error" md-label="Error!" :md-description="errorMessage"></md-empty-state>
+            
+            
+            <!-- Context Menu -->
+            
+            <md-list-item slot="context-menu-item" >
+                <span class="md-list-item-text">New</span>
+            </md-list-item>
+            <md-list-item slot="context-menu-item" >
+                <span class="md-list-item-text">Command 2</span>
+            </md-list-item>
+            <md-list-item slot="context-menu-item" >
+                <span class="md-list-item-text">Command 3</span>
+            </md-list-item>
         </olowiki-app>
 
 
@@ -102,9 +116,9 @@
         
         
         <!-- NAVIGATION CONTEXT MENU -->
-        <context-menu ref="treeContextMenu" v-if="treeContextMenu.show"
+        <context-menu v-if="treeContextMenu.show"
                 :x="treeContextMenu.x" :y="treeContextMenu.y" 
-                @context-menu-quit="treeContextMenu.show=false">
+                @context-menu-blur="hideTreeContextMenu">
             <md-list-item slot="context-menu-item" v-if="treeContextMenu.isDir" 
                     @click="showAddDialog(treeContextMenu.path)">
                 <span class="md-list-item-text">New</span>
@@ -114,6 +128,7 @@
                 <span class="md-list-item-text">Delete</span>
             </md-list-item>
         </context-menu>
+        
     </div>
 </template>
 
@@ -154,10 +169,17 @@
             tree_change: {},
             tree_state: {
                 expanded: {},
+                highlighted: "",
             },
             treeContextMenu: {
                 show: false,
                 isDir: false,
+                path: "",
+                x: 0,
+                y: 0
+            },
+            drawerContextMenu: {
+                show: false,
                 path: "",
                 x: 0,
                 y: 0
@@ -281,11 +303,17 @@
             },
             
             showTreeContextMenu (event) {
-                this.treeContextMenu.isDir = event.item.isDir;
-                this.treeContextMenu.path = event.item.path;
+                this.tree_state.highlighted = event.path;
+                this.treeContextMenu.path = event.path;
+                this.treeContextMenu.isDir = event.path.slice(-1) === '/';
                 this.treeContextMenu.x = event.x;
                 this.treeContextMenu.y = event.y;
                 this.treeContextMenu.show = true;
+            },
+            
+            hideTreeContextMenu () {
+                this.tree_state.highlighted = "";
+                this.treeContextMenu.show = false;
             },
             
             async createDocument (path) {
@@ -336,7 +364,17 @@
             // Keyboard event handler
             
             handleKeyboardCommand (event) {
-                if (this.stateIs('view')) switch (event.keyString) {
+                
+                if (this.treeContextMenu.show) switch (event.keyString) {
+                    case "Esc":
+                        this.hideTreeContextMenu();
+                        break;
+                    
+                    default:
+                        break;                    
+                }
+                
+                else if (this.stateIs('view')) switch (event.keyString) {
                     
                     case "Ctrl+S":
                         event.preventDefault();

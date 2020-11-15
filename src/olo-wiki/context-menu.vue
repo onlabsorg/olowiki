@@ -1,5 +1,6 @@
 <template>
-    <md-card ref="self" class="context-menu" v-bind:style="{left:x+'px', top:y+'px'}" tabindex="0">
+    <md-card ref="self" class="context-menu md-elevation-5"
+            v-bind:style="{left:x+'px', top:y+'px'}" tabindex="0">
         <md-list>
             <slot name="context-menu-item"></slot>
         </md-list>
@@ -19,7 +20,7 @@
         mounted () {
             this.$refs.self.$el.focus();
             this.$refs.self.$el.addEventListener('focusout', () => {
-                setTimeout(() => this.$emit('context-menu-quit'), 250);
+                setTimeout(() => this.$emit('context-menu-blur'), 250);
             });
         }
     }
@@ -28,6 +29,7 @@
 <style>
     .context-menu {
         position: absolute;
+        border: 1px solid #D0D0D0;
     }
     .context-menu:focus {
         outline: none;

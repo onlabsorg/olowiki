@@ -512,10 +512,14 @@ body {
 i.md-list-expand-icon {
     display: none;
 }
+.md-list-item.highlighted {
+    border: 1px dashed #1976D2;
+}
 
 
 .context-menu {
     position: absolute;
+    border: 1px solid #D0D0D0;
 }
 .context-menu:focus {
     outline: none;

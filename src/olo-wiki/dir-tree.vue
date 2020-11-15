@@ -1,9 +1,9 @@
 <template>
     <md-list>
         
-        <md-list-item v-for="dir in dirItems"
+        <md-list-item v-for="dir in dirItems" v-bind:class="{highlighted:state.highlighted==dir.path}"
                 md-expand :md-expanded="Boolean(state.expanded[dir.path])"
-                @contextmenu.prevent.stop="showContextMenu(dir, $event)">
+                @contextmenu.prevent.stop="emitTreeContextMenu({path:dir.path, x:$event.clientX, y:$event.clientY})">
             <md-icon>folder</md-icon>
             <span class="md-list-item-text" :class="{active:dir.path===selected}">{{pathName(dir.path)}}</span>
             <dir-tree slot="md-expand" class="indented-dir-tree"
@@ -16,8 +16,8 @@
             </dir-tree>
         </md-list-item>
         
-        <md-list-item :href="'#'+doc.path" v-for="doc in docItems"
-                @contextmenu.prevent.stop="showContextMenu(doc, $event)">
+        <md-list-item :href="'#'+doc.path" v-for="doc in docItems" v-bind:class="{highlighted:state.highlighted==doc.path}"
+                @contextmenu.prevent.stop="emitTreeContextMenu({path:doc.path, x:$event.clientX, y:$event.clientY})">
             <md-icon>description</md-icon>
             <span class="md-list-item-text" :class="{active:doc.path===selected}">{{doc.name}}</span>
         </md-list-item>
@@ -93,16 +93,8 @@
                 return normPath.slice(lastSlashPos+1);
             },
             
-            showContextMenu (item, event) {
-                this.emitTreeContextMenu({
-                    item: item,
-                    x: event.clientX,
-                    y: event.clientY
-                });
-            },     
-            
-            emitTreeContextMenu (params) {
-                this.$emit('tree-context-menu', params);
+            emitTreeContextMenu (data) {
+                this.$emit('tree-context-menu', data);
             }       
         },
         
@@ -127,5 +119,8 @@
     }
     i.md-list-expand-icon {
         display: none;
+    }
+    .md-list-item.highlighted {
+        border: 1px dashed #1976D2;
     }
 </style>
