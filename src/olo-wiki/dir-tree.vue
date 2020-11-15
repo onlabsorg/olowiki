@@ -35,7 +35,8 @@
     const isDir = name => name.slice(-1) === '/';
     const isDoc = name => !isDir(name);
     const isHidden = name => name[0] === '.';
-    const isVisible = name => name[0] !== '.';     
+    const isVisible = name => name[0] !== '.';   
+    const compareItemsByName = (item1, item2) => item1.name.localeCompare(item2.name);
     
     module.exports = {   
         name: "dir-tree",
@@ -65,14 +66,14 @@
                     isDir: true,
                     name: name.slice(0,-1),
                     path: this.root + name,
-                }))
+                })).sort(compareItemsByName);
             },
             docItems: function () {
                 return this.childNames.filter(isDoc).filter(isVisible).map(name => ({
                     isDir: false,
                     name: name,
                     path: this.root + name,
-                }));                
+                })).sort(compareItemsByName);
             },
         },
         
