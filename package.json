@@ -1,6 +1,6 @@
 {
   "name": "@onlabsorg/olowiki",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "An olojs plugin that provides a wiki web interface for managing your olojs library",
   "keywords": [
     "wiki",
@@ -20,30 +20,30 @@
     "url": "https://github.com/onlabsorg/olowiki.git"
   },
   "dependencies": {
-    "@onlabsorg/olojs": "^0.15.0",
+    "@onlabsorg/olojs": "^0.15.2",
     "brace": "^0.11.1",
-    "dompurify": "^2.1.1",
+    "dompurify": "^2.2.2",
     "key-string": "^0.4.0",
-    "vue": "^2.6.11",
-    "vue-async-computed": "^3.8.2",
+    "vue": "^2.6.12",
+    "vue-async-computed": "^3.9.0",
     "vue-material": "^1.0.0-beta-15",
     "vue2-ace-editor": "0.0.14"
   },
   "devDependencies": {
-    "@babel/core": "^7.8.7",
-    "@babel/polyfill": "^7.8.7",
-    "@babel/preset-env": "^7.8.7",
-    "babel-loader": "^8.0.6",
+    "@babel/core": "^7.12.9",
+    "@babel/polyfill": "^7.12.1",
+    "@babel/preset-env": "^7.12.7",
+    "babel-loader": "^8.2.2",
     "chai": "^4.1.2",
     "css-loader": "^2.1.1",
     "file-loader": "^2.0.0",
     "html-loader": "^0.5.5",
     "mini-css-extract-plugin": "^0.4.3",
-    "vue-loader": "^15.9.0",
+    "vue-loader": "^15.9.5",
     "vue-style-loader": "^4.1.2",
-    "vue-template-compiler": "^2.6.11",
-    "vue-template-loader": "^1.0.0",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11"
+    "vue-template-compiler": "^2.6.12",
+    "vue-template-loader": "^1.1.0",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
   }
 }

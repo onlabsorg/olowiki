@@ -8,9 +8,7 @@ const olonv = window.olonv = new olojs.Environment({
         $renderError (error) {
             return `<pre class="runtime-error">` +
                         `<div class="message">${escape(error.message)}</div>` +
-                        `<br>` +
-                        (error.source ? `<div class="source">${escape(error.source)}</div>` : "") +
-                        (error.swanStackStr ? `<div class="source">${escape(error.swanStackStr)}</div>` : "") +
+                        (error.swanStack ? `<br><div class="source">${escape(error.swanStack)}</div>` : "") +
                    `</pre>`;
         }                    
     }

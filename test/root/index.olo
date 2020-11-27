@@ -20,6 +20,11 @@
     xxxx
 
 
+## String template
+<% x = 10 %>
+<% "if " + `x is ${x}, then 2*x is ${2*x}` %>
+
+
 | A | B | C |
 |---|---|---|
 | 1 | 2 | 3 |
