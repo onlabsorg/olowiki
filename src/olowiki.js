@@ -41,7 +41,7 @@ window.olowiki = {
     },
     
     get doc () {
-        return this.vue.$ref.wiki.$data.doc;
+        return this.vue.$refs.wiki.doc;
     }
 };
 
