@@ -1,40 +1,30 @@
 {
   "name": "@onlabsorg/olowiki",
-  "version": "0.6.4",
-  "description": "An olojs plugin that provides a wiki web interface for managing your olojs library",
-  "keywords": [
-    "wiki",
-    "distributed",
-    "web3.0"
-  ],
-  "main": "server.js",
+  "version": "0.7.0",
+  "description": "Wiki server for olojs",
+  "main": "index.js",
   "scripts": {
-    "test": "node test/server",
-    "develop": "webpack --mode development --watch",
-    "build": "webpack --mode production"
+    "develop": "./node_modules/.bin/webpack --mode development --watch",
+    "build": "./node_modules/.bin/webpack --mode production",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Marcello Del Buono (m.delbuono@gmail.com)",
+  "author": "Marcello Del Buono",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/onlabsorg/olowiki.git"
-  },
   "dependencies": {
-    "@onlabsorg/olojs": "^0.15.2",
-    "brace": "^0.11.1",
-    "dompurify": "^2.2.2",
+    "@onlabsorg/olojs": "^0.17.0",
+    "commander": "^6.2.0",
+    "dompurify": "^2.2.3",
+    "install": "^0.13.0",
+    "js-logger": "^1.6.1",
     "key-string": "^0.4.0",
+    "npm": "^6.14.9",
     "vue": "^2.6.12",
     "vue-async-computed": "^3.9.0",
     "vue-material": "^1.0.0-beta-15",
-    "vue2-ace-editor": "0.0.14"
+    "vue2-ace-editor": "0.0.15"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.9",
-    "@babel/polyfill": "^7.12.1",
-    "@babel/preset-env": "^7.12.7",
-    "babel-loader": "^8.2.2",
-    "chai": "^4.1.2",
+    "chai": "^4.2.0",
     "css-loader": "^2.1.1",
     "file-loader": "^2.0.0",
     "html-loader": "^0.5.5",

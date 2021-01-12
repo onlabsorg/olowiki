@@ -62,4 +62,4 @@ typings/
 
 # development folders
 .trash/
-olowiki.todo
+*.todo

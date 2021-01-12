@@ -11,9 +11,10 @@
             <!-- Drawer -->
             <dir-tree slot="drawer-item"
                     root="/" 
-                    :selected="docPath" 
+                    :selected="doc.path" 
                     :change="tree_change"
                     :state="tree_state"
+                    :store="store"
                     @tree-context-menu="showTreeContextMenu">
             </dir-tree>
             
@@ -39,7 +40,7 @@
             
             <!-- Editor -->
                         
-            <olo-editor :source.sync="docSource" theme="iplastic"
+            <olo-editor :source.sync="doc.source" theme="iplastic"
                     slot="content" ref="editor" v-if="stateIs('edit')"></olo-editor>
 
             <md-button slot="button" v-if="stateIs('edit')" class="md-icon-button control" @click="commit">
@@ -133,8 +134,11 @@
 </template>
 
 <script>
+
+    const olojs = require("@onlabsorg/olojs/browser");
+    require("@onlabsorg/olojs/src/olo-viewer.css");
+
     const DOMPurify = require("dompurify");
-    const errors = require("./errors");
     const pathlib = require('path');
 
     const Vue = require("vue/dist/vue");
@@ -148,24 +152,29 @@
     Vue.use( require("vue-material/dist/components/MdList").default );     
     Vue.use( require("vue-material/dist/components/MdDivider").default );     
     Vue.use( require("vue-async-computed") );
-    
-    require("./content.css");
-    
+        
     module.exports = {
         
         components: {
             'olowiki-app': require("./app.vue").default,  
-            'olo-editor': require("olo-editor"),
+            'olo-editor': require("./olo-editor/index"),
             'dir-tree': require('./dir-tree.vue').default,
             'context-menu': require('./context-menu.vue').default,
         },
         
-        props: ['src'],
+        props: ['store', 'src'],
         
         data: () => ({
+            version: require('../package.json').version,
+            doc: {
+                path: "",
+                source: "",
+                context: olojs.document.createContext(),
+                namespace: {},
+                text: ""
+            },
             state: "view",
             errorMessage: "",
-            docSource: "",
             tree_change: {},
             tree_state: {
                 expanded: {},
@@ -194,73 +203,58 @@
             },
             infoDialog: {
                 show: false,
-            },
-            version: "0.0.0"
+            },            
         }),  
         
         computed: {
 
-            docPath () {
-                return this.src.split("?")[0] || "";               
-            },
-
             parentPath () {
-                return this.docPath.split("/").slice(0,-1).join("/") + "/";
+                return this.doc.path.split("/").slice(0,-1).join("/") + "/";
             },
             
             grandParentPath () {
-                return this.docPath.split("/").slice(0,-2).join("/") + "/";
-            },
-            
-            doc () {
-                return olonv.doc = olonv.createDocument(this.src, this.docSource);
+                return this.doc.path.split("/").slice(0,-2).join("/") + "/";
             },
             
             title () {
-                if (this.docns) {
-                    let title = this.docns.title;
-                    if (typeof title === "string") return title;
-                }
-                return this.docPath;                 
+                const title = this.doc.namespace.title;
+                return typeof title === "string" ? title : this.doc.path;
             },              
-        },
-        
-        asyncComputed: {
-            
-            docns: async function () {
-                olonv.context = this.doc.createContext({argns: this.argns});
-                return olonv.docns = await this.doc.evaluate(olonv.context);                
-            },
-            
-            html: async function () {
-                const rawHTML = await olonv.render(this.docns);
-                return DOMPurify.sanitize(rawHTML);                
+
+            html () {
+                return DOMPurify.sanitize(this.doc.text);                
             }
         },
         
         watch: {
-            src: function () {
+            "src": function () {
                 this.refresh();
-            }
+            },
         },
         
         methods: {
             
             async refresh () {
-                const doc = await olonv.readDocument(this.src);
-                this.docSource = doc.source;
+                this.doc.context = this.store.createContext(this.src);
+                if (this.doc.path !== this.doc.context.__path__) {
+                    this.doc.path = this.doc.context.__path__;
+                    this.doc.source = await this.store.read(this.doc.path);
+                }
+                const evaluate = olojs.document.parse(this.doc.source);
+                this.doc.namespace = await evaluate(this.doc.context);
+                this.doc.text = await this.doc.context.str(this.doc.namespace);                
             },
             
             async save () {
                 try {
-                    await olonv.writeDocument(this.docPath, this.docSource);
+                    await this.store.write(this.doc.path, this.doc.source);
                     this.tree_change = {
                         op: 'SET',
-                        path: this.docPath
+                        path: this.doc.path
                     }
                     this.showMessage("Saved");
                 } catch (error) {
-                    if (error instanceof errors.WriteAccessDenied) {
+                    if (error instanceof store.constructor.WriteAccessDeniedError) {
                         this.showMessage("Not saved: write access denied");
                     } else {
                         this.showMessage("Not saved: an error occurred while saving");
@@ -271,6 +265,7 @@
             commit () {
                 this.$refs.editor.commit();
                 this.setState("view");
+                this.refresh();
             },
 
 
@@ -317,9 +312,9 @@
             },
             
             async createDocument (path) {
-                const docPath = pathlib.normalize(path);
+                const docPath = pathlib.normalize(`/${path}`);
                 try {
-                    await olonv.writeDocument(docPath, "");
+                    await this.store.write(docPath, "");
                     this.tree_change = {
                         op: 'SET',
                         path: docPath
@@ -335,7 +330,7 @@
             async deleteItem (itemPath) {
                 this.deleteDialog.show = false;
                 try {
-                    await olonv.deleteDocument(itemPath);
+                    await this.store.delete(itemPath);
                     this.tree_change = {
                         op: 'DELETE',
                         path: itemPath
@@ -419,7 +414,6 @@
         
         mounted () {
             this.refresh();
-            this.version = olonv.olowikiVersion;
         }
     };
 </script>

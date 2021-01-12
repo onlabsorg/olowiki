@@ -1,17 +1,11 @@
-var olojs = require("@onlabsorg/olojs");
 
-var environment = new olojs.Environment({
-    store: new olojs.stores.Router({
-        '/': new olojs.stores.File(`${__dirname}/root`),
-        '/path/to/': new olojs.stores.File(`${__dirname}/path-to`)
-    })
-});
+const olojs = require('@onlabsorg/olojs');
+const Server = require('../index').servers.olowiki;
 
+const server = Server(new olojs.FileStore(`${__dirname}/repo`));
 
-var Server = require('../server');
-var server = Server(environment);
-
-server.listen(8010, error => {
+const port = 8010;
+server.listen(port, error => {
     if (error) throw error;
-    else console.log("HTTP olowiki server listening on port 8010");
+    console.log(`olowiki test server listening on port ${port}`);
 });

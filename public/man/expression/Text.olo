@@ -1,8 +1,0 @@
-<%  title = "olowiki expression: Text constructor"  %>
-<%  __render__ = markdown  %>
-
-### `Text(s).__text__()`
-<% check( str(Text("abc")) == "abc") %> Expect a Text namespace to stringify to its wrapped string
-
-### `Text(s).__vs__`
-<% check( Text("abc") == "abc" ) %> Expect a Text namespace to equal its wrapped string

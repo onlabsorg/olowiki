@@ -100,14 +100,14 @@
       font-weight: 400;
       src: local('Material Icons'),
         local('MaterialIcons-Regular'),
-        url("../../vendor/material-icons-font/MaterialIcons-Regular.woff2") format('woff2');
+        url("../vendor/material-icons-font/MaterialIcons-Regular.woff2") format('woff2');
     }
 
     @font-face {
       font-family: 'Roboto';
       font-style: normal;
       font-weight: 400;
-      src: url("../../vendor/roboto-font/Roboto-Regular.ttf") format('truetype');
+      src: url("../vendor/roboto-font/Roboto-Regular.ttf") format('truetype');
     }
 
 

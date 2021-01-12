@@ -11,6 +11,7 @@
                     :selected="selected" 
                     :change="change"
                     :state="state"
+                    :store="store"
                     @tree-context-menu="emitTreeContextMenu"
                     >
             </dir-tree>
@@ -41,7 +42,7 @@
     module.exports = {   
         name: "dir-tree",
          
-        props: ['root', 'selected', 'change', 'state'],
+        props: ['root', 'selected', 'change', 'state', 'store'],
         
         data: () => ({
             childNames: [],
@@ -81,7 +82,7 @@
             
             async refresh () {
                 const dirPath = pathlib.normalize(`/${this.root}/`);
-                this.childNames = await olonv.listEntries(dirPath);
+                this.childNames = this.store ? await this.store.list(dirPath) : [];
             },
             
             docPath (name) {

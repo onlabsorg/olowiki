@@ -1,69 +1,49 @@
-
-const olojs = require('@onlabsorg/olojs/browser');
-
-const olonv = window.olonv = new olojs.Environment({
-    store: new olojs.stores.HTTP(`${location.origin}/env`),
-    
-    globals: {
-        $renderError (error) {
-            return `<pre class="runtime-error">` +
-                        `<div class="message">${escape(error.message)}</div>` +
-                        (error.swanStack ? `<br><div class="source">${escape(error.swanStack)}</div>` : "") +
-                   `</pre>`;
-        }                    
-    }
-});
-
-olonv.olowikiVersion = require('../package.json').version;
-
-olonv.document = {};
-
-
+const olojs = window.olojs = require('@onlabsorg/olojs/browser');
 
 const Vue = require("vue/dist/vue.js");
-Vue.use( require("vue-async-computed") );
 
-document.addEventListener("DOMContentLoaded", function () {
+window.olowiki = {
+    
+    init (domElement, store) {
+        
+        this.store = store;
+        this.store.globals.$renderError = error => 
+                `<pre class="runtime-error">` +
+                    `<div class="message">${escape(error.message)}</div>` +
+                    (error.swanStack ? `<br><div class="source">${escape(error.swanStack)}</div>` : "") +
+                `</pre>`;
 
-    const view = new Vue({
-        
-        el: "olo-wiki",
-        
-        components: { 
-            'olo-wiki': require("./olo-wiki/olo-wiki.vue").default,
-        },
-        
-        data: {    
-            docURI: location.hash.slice(1),
-        },
-        
-        methods: {
+        this.vue = new Vue({
+
+            el: domElement,
             
-            normalizeHash: function () {
+            template: `<olo-wiki ref="wiki" :src="hash" :store="store"></olo-wiki>`,
 
-                if (!location.hash || location.hash === "#") {
-                    location.hash = "/index"
-                }
-                
-                let [docPath, docArgs] = location.hash.slice(1).split("?"); 
-                if (docPath.slice(-1) === "/") {
-                    location.hash = docPath + "index" + (docArgs ? `?${docArgs}` : "");
-                }
-                
-                return location.hash.slice(1);
+            components: { 
+                'olo-wiki': require('./olo-wiki.vue').default,
+            },
+
+            data: {    
+                'store': store,
+                'hash': location.hash.slice(1),
+            },
+
+            async mounted () {
+                window.addEventListener("hashchange", (event) => {
+                    this.hash = location.hash.slice(1);
+                });
             }
-        },
-        
-        async mounted () {
-            window.addEventListener("hashchange", (event) => {
-                this.docURI = this.normalizeHash();
-            });
-            this.docURI = this.normalizeHash();
-            console.log(`olowiki ready!`);
-        }
-    });
-});
-
+        });
+    },
+    
+    get version () {
+        return require('../package.json').version;
+    },
+    
+    get doc () {
+        return this.vue.$ref.wiki.$data.doc;
+    }
+};
 
 
 // -----------------------------------------------------------------------------
