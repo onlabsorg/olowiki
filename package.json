@@ -1,6 +1,6 @@
 {
   "name": "@onlabsorg/olowiki",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Wiki server for olojs",
   "main": "index.js",
   "scripts": {
@@ -12,12 +12,8 @@
   "license": "MIT",
   "dependencies": {
     "@onlabsorg/olojs": "^0.17.0",
-    "commander": "^6.2.0",
     "dompurify": "^2.2.3",
-    "install": "^0.13.0",
-    "js-logger": "^1.6.1",
     "key-string": "^0.4.0",
-    "npm": "^6.14.9",
     "vue": "^2.6.12",
     "vue-async-computed": "^3.9.0",
     "vue-material": "^1.0.0-beta-15",
