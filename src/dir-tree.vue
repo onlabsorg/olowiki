@@ -5,7 +5,7 @@
                 md-expand :md-expanded="Boolean(state.expanded[dir.path])"
                 @contextmenu.prevent.stop="emitTreeContextMenu({path:dir.path, x:$event.clientX, y:$event.clientY})">
             <md-icon>folder</md-icon>
-            <span class="md-list-item-text" :class="{active:dir.path===selected}">{{pathName(dir.path)}}</span>
+            <span :href="'#'+dir.path" class="md-list-item-text" :class="{active:dir.path===selected}">{{pathName(dir.path)}}</span>
             <dir-tree slot="md-expand" class="indented-dir-tree"
                     :root="dir.path" 
                     :selected="selected" 
@@ -34,7 +34,7 @@
     Vue.use( require("vue-material/dist/components/MdList").default );     
     
     const isDir = name => name.slice(-1) === '/';
-    const isDoc = name => !isDir(name);
+    const isDoc = name => !isDir(name) && name !== "";
     const isHidden = name => name[0] === '.';
     const isVisible = name => name[0] !== '.';   
     const compareItemsByName = (item1, item2) => item1.name.localeCompare(item2.name);

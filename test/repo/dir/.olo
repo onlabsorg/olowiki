@@ -1,0 +1,8 @@
+<% __render__ = require "markdown" %>
+
+
+This is the doc at <% __path__ %>.
+
+Imported: <% import './doc' %>
+
+

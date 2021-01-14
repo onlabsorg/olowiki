@@ -1,6 +1,6 @@
 {
   "name": "@onlabsorg/olowiki",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "description": "Wiki server for olojs",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,7 @@
   "author": "Marcello Del Buono",
   "license": "MIT",
   "dependencies": {
-    "@onlabsorg/olojs": "^0.17.2",
+    "@onlabsorg/olojs": "^0.17.3",
     "dompurify": "^2.2.3",
     "key-string": "^0.4.0",
     "vue": "^2.6.12",

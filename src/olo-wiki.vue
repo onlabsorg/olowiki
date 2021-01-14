@@ -55,19 +55,7 @@
             <!-- Empty states -->
             
             <md-empty-state slot="content" v-if="stateIs('error')" md-icon="error" md-label="Error!" :md-description="errorMessage"></md-empty-state>
-            
-            
-            <!-- Context Menu -->
-            
-            <md-list-item slot="context-menu-item" >
-                <span class="md-list-item-text">New</span>
-            </md-list-item>
-            <md-list-item slot="context-menu-item" >
-                <span class="md-list-item-text">Command 2</span>
-            </md-list-item>
-            <md-list-item slot="context-menu-item" >
-                <span class="md-list-item-text">Command 3</span>
-            </md-list-item>
+                        
         </olowiki-app>
 
 
@@ -120,12 +108,13 @@
         <context-menu v-if="treeContextMenu.show"
                 :x="treeContextMenu.x" :y="treeContextMenu.y" 
                 @context-menu-blur="hideTreeContextMenu">
-            <md-list-item slot="context-menu-item" v-if="treeContextMenu.isDir" 
-                    @click="showAddDialog(treeContextMenu.path)">
+            <md-list-item slot="context-menu-item" :href="'#'+treeContextMenu.path">
+                <span class="md-list-item-text">Open</span>
+            </md-list-item>
+            <md-list-item slot="context-menu-item" v-if="treeContextMenu.isDir" @click="showAddDialog(treeContextMenu.path)">
                 <span class="md-list-item-text">New</span>
             </md-list-item>
-            <md-list-item slot="context-menu-item" 
-                    @click="showDeleteDialog(treeContextMenu.path)">
+            <md-list-item slot="context-menu-item" @click="showDeleteDialog(treeContextMenu.path)">
                 <span class="md-list-item-text">Delete</span>
             </md-list-item>
         </context-menu>
