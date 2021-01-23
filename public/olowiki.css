@@ -391,6 +391,57 @@
     font-size: 0.8rem;
 }
 
+
+.md-list-item .active {
+    font-weight: bold;
+    color: #1976D2;
+}
+
+.olo-viewer {
+    display: block;
+    padding: 2em 2em 2em 2em;
+}
+
+.md-dialog .md-dialog-container {
+    min-width: 40%;
+}
+
+.footer {
+    color: #808080;
+    font-size: 0.8em;
+}
+
+@media (max-width: 480px) {
+    .olo-viewer {
+        padding-left: 3%;
+        padding-right: 3%;
+    }
+}
+
+.olo-tree-node .md-list-item-content {
+    min-height: 32px;
+}
+
+.olo-tree-node .md-list-item-content>.md-icon:first-child {
+    margin-right: 8px;
+}
+
+.olo-tree-node .child-list {
+    margin-left: 16px;
+}
+
+.olo-tree-node .md-list-item-expand {
+    border: none;
+}
+
+.olo-tree-node i.md-list-expand-icon {
+    display: none;
+}
+
+.olo-tree-node.md-list-item.highlighted {
+    border: 1px dashed #1976D2;
+}
+
 /*!
  * vue-material v1.0.0-beta-15
  * Made with <3 by marcosmoura 2020
@@ -434,7 +485,7 @@ body {
     left: 0;
     right: 0;
 }
-.olowiki-app .md-app-toolbar, 
+.olowiki-app .md-app-toolbar,
 .olowiki-app .md-toolbar {
     display: flex;
     flex-wrap: nowrap;
@@ -476,33 +527,8 @@ body {
 }
 .olowiki-app #settings .right {
     text-align: right;
-}    
-
-
-
-.ace_scrollbar-v, .ace_scrollbar-h {
-    display: none;
 }
 
-
-.md-list-item-content {
-    min-height: 32px;
-}
-.md-list-item-content>.md-icon:first-child {
-    margin-right: 8px;
-}
-.indented-dir-tree {
-    margin-left: 16px;
-}
-.md-list-item-expand {
-    border: none;
-}
-i.md-list-expand-icon {
-    display: none;
-}
-.md-list-item.highlighted {
-    border: 1px dashed #1976D2;
-}
 
 
 .context-menu {
@@ -514,25 +540,7 @@ i.md-list-expand-icon {
 }
 
 
-.md-list-item .active {
-    font-weight: bold;
-    color: #1976D2;
-}
-.olo-viewer {
-    display: block;
-    padding: 2em 2em 2em 2em;
-}
-.md-dialog .md-dialog-container {
-    min-width: 40%;
-}
-.footer {
-    color: #808080;
-    font-size: 0.8em;
-}
-@media (max-width: 480px) {
-.olo-viewer {
-        padding-left: 3%;
-        padding-right: 3%;
-}
+.ace_scrollbar-v, .ace_scrollbar-h {
+    display: none;
 }
 

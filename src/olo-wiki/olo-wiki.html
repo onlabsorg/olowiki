@@ -1,0 +1,136 @@
+<div class="olowiki-document">
+
+    <!-- MAIN UI -->
+    <olo-app appname="olowiki" :title="title"
+            @key="handleKeyboardCommand"
+            @logo-click="infoDialog.show = true"
+            @drawer-context-menu="console.log('@olo-wiki.vue: detected drawer-context-menu event')">
+
+
+        <!-- Drawer -->
+        <md-list slot="drawer-item">
+            <olo-tree-node v-for="item in bookmarks.items" :path="item"
+                    :selected="doc.path"
+                    :change="tree_change"
+                    :state="bookmarks.state"
+                    @tree-context-menu="showBookmarksContextMenu">
+            </olo-tree-node>
+        </md-list>
+        <md-divider slot="drawer-item"></md-divider>
+        <md-list slot="drawer-item">
+            <olo-tree-node path="/" name="Home" icon="home"
+                    :selected="doc.path"
+                    :change="tree_change"
+                    :state="tree_state"
+                    @tree-context-menu="showTreeContextMenu">
+            </olo-tree-node>
+        </md-list>
+
+
+        <!-- Viewer -->
+
+        <div slot="content" v-if="stateIs('view')">
+            <div class="olo-viewer" v-html="html"></div>
+        </div>
+
+        <md-button slot="button" class="md-icon-button"
+                v-if="stateIs('view')"
+                @click="save">
+                <md-icon>save</md-icon>
+            </md-button>
+
+        <md-button slot="button" class="md-icon-button"
+                v-if="stateIs('view')"
+                @click="setState('edit')">
+                <md-icon>edit</md-icon>
+            </md-button>
+
+
+        <!-- Editor -->
+
+        <olo-editor :source.sync="doc.source" theme="iplastic"
+                slot="content" ref="editor" v-if="stateIs('edit')"></olo-editor>
+
+        <md-button slot="button" v-if="stateIs('edit')" class="md-icon-button control" @click="commit">
+            <md-icon>done</md-icon>
+        </md-button>
+
+        <md-button slot="button" v-if="stateIs('edit')" class="md-icon-button control" @click="setState('view')">
+            <md-icon>close</md-icon>
+        </md-button>
+
+
+        <!-- Empty states -->
+
+        <md-empty-state slot="content" v-if="stateIs('error')" md-icon="error" md-label="Error!" :md-description="errorMessage"></md-empty-state>
+
+    </olo-app>
+
+
+    <!-- ADD DIALOG -->
+    <md-dialog :md-active.sync="addDialog.show">
+        <md-dialog-title>Create a new document</md-dialog-title>
+        <md-dialog-content>
+            <md-field md-inline>
+                <label>Document name</label>
+                <md-input v-model="addDialog.path"></md-input>
+            </md-field>
+        </md-dialog-content>
+        <md-dialog-actions>
+            <md-button class="md-primary" @click="createDocument(addDialog.path)">
+                Create
+            </md-button>
+            <md-button class="md-primary" @click="addDialog.show = false">
+                Cancel
+            </md-button>
+        </md-dialog-actions>
+    </md-dialog>
+
+
+    <!-- DELETE DIALOG -->
+    <md-dialog :md-active.sync="deleteDialog.show">
+        <md-dialog-title>Delete {{deleteDialog.path}}</md-dialog-title>
+        <md-dialog-content>
+            <p>Do you want to <strong>permanently</strong> delete this resource?</p>
+        </md-dialog-content>
+        <md-dialog-actions>
+            <md-button class="md-primary" @click="deleteItem(deleteDialog.path)">Yes</md-button>
+            <md-button class="md-primary" @click="deleteDialog.show = false">No</md-button>
+        </md-dialog-actions>
+    </md-dialog>
+
+
+    <!-- INFO DIALOG -->
+    <md-dialog :md-active.sync="infoDialog.show">
+        <md-dialog-title>Info</md-dialog-title>
+        <md-dialog-content>
+            olowiki version {{this.version}}
+        </md-dialog-content>
+        <md-dialog-actions>
+            <md-button class="md-primary" @click="infoDialog.show = false">OK</md-button>
+        </md-dialog-actions>
+    </md-dialog>
+
+
+    <!-- NAVIGATION CONTEXT MENU -->
+    <context-menu v-if="navigationContextMenu.show"
+            :x="navigationContextMenu.x" :y="navigationContextMenu.y"
+            @context-menu-blur="hideNavigationContextMenu">
+        <md-list-item slot="context-menu-item" :href="'#'+navigationContextMenu.path">
+            <span class="md-list-item-text">Open</span>
+        </md-list-item>
+        <md-list-item slot="context-menu-item" v-if="navigationContextMenu.isDir" @click="showAddDialog(navigationContextMenu.path)">
+            <span class="md-list-item-text">New</span>
+        </md-list-item>
+        <md-list-item slot="context-menu-item" @click="showDeleteDialog(navigationContextMenu.path)">
+            <span class="md-list-item-text">Delete</span>
+        </md-list-item>
+        <md-list-item slot="context-menu-item" v-if="navigationContextMenu.path !== '/' && isPinned(navigationContextMenu.path)" @click="unpin(navigationContextMenu.path)">
+            <span class="md-list-item-text">Unpin</span>
+        </md-list-item>
+        <md-list-item slot="context-menu-item" v-if="navigationContextMenu.path !== '/' && !isPinned(navigationContextMenu.path)" @click="pin(navigationContextMenu.path)">
+            <span class="md-list-item-text">Pin</span>
+        </md-list-item>
+    </context-menu>
+
+</div>

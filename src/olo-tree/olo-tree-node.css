@@ -1,0 +1,23 @@
+.olo-tree-node .md-list-item-content {
+    min-height: 32px;
+}
+
+.olo-tree-node .md-list-item-content>.md-icon:first-child {
+    margin-right: 8px;
+}
+
+.olo-tree-node .child-list {
+    margin-left: 16px;
+}
+
+.olo-tree-node .md-list-item-expand {
+    border: none;
+}
+
+.olo-tree-node i.md-list-expand-icon {
+    display: none;
+}
+
+.olo-tree-node.md-list-item.highlighted {
+    border: 1px dashed #1976D2;
+}

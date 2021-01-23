@@ -1,13 +1,13 @@
 const olojs = window.olojs = require('@onlabsorg/olojs/browser');
 
 const Vue = require("vue/dist/vue.js");
+const OloWiki = require("./olo-wiki/olo-wiki");
 
 window.olowiki = {
-    
+
     init (domElement, store) {
-        
-        this.store = store;
-        this.store.globals.$renderError = error => 
+
+        store.globals.$renderError = error =>
                 `<pre class="runtime-error">` +
                     `<div class="message">${escape(error.message)}</div>` +
                     (error.swanStack ? `<br><div class="source">${escape(error.swanStack)}</div>` : "") +
@@ -16,14 +16,14 @@ window.olowiki = {
         this.vue = new Vue({
 
             el: domElement,
-            
-            template: `<olo-wiki ref="wiki" :src="hash" :store="store"></olo-wiki>`,
 
-            components: { 
-                'olo-wiki': require('./olo-wiki.vue').default,
+            template: `<olo-wiki ref="wiki" :src="hash"></olo-wiki>`,
+
+            components: {
+                'olo-wiki': OloWiki(store),
             },
 
-            data: {    
+            data: {
                 'store': store,
                 'hash': location.hash.slice(1),
             },
@@ -35,11 +35,11 @@ window.olowiki = {
             }
         });
     },
-    
+
     get version () {
         return require('../package.json').version;
     },
-    
+
     get doc () {
         return this.vue.$refs.wiki.doc;
     }

@@ -1,0 +1,26 @@
+
+.md-list-item .active {
+    font-weight: bold;
+    color: #1976D2;
+}
+
+.olo-viewer {
+    display: block;
+    padding: 2em 2em 2em 2em;
+}
+
+.md-dialog .md-dialog-container {
+    min-width: 40%;
+}
+
+.footer {
+    color: #808080;
+    font-size: 0.8em;
+}
+
+@media (max-width: 480px) {
+    .olo-viewer {
+        padding-left: 3%;
+        padding-right: 3%;
+    }
+}
