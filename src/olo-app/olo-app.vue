@@ -3,7 +3,7 @@
 
         <md-app>
 
-            <md-app-toolbar class="md-transparent" md-elevation="3">
+            <md-app-toolbar md-elevation="2">
 
                 <md-button class="md-icon-button olo-logo" @click="$emit('logo-click')">
                     <md-icon md-src="olowiki.svg" />

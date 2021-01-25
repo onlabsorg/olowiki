@@ -538,7 +538,8 @@ body {
 
 .context-menu {
     position: absolute;
-    border: 1px solid #D0D0D0;
+    border: 1px solid #1976D2;
+    min-width: 12em;
 }
 .context-menu:focus {
     outline: none;

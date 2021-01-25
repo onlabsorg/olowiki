@@ -9,14 +9,14 @@
 
 <script>
     const Vue = require("vue/dist/vue");
-    Vue.use( require("vue-material/dist/components/MdCard").default );     
-    Vue.use( require("vue-material/dist/components/MdList").default );     
+    Vue.use( require("vue-material/dist/components/MdCard").default );
+    Vue.use( require("vue-material/dist/components/MdList").default );
 
-    module.exports = {   
+    module.exports = {
         name: "context-menu",
-         
+
         props: ['x', 'y'],
-        
+
         mounted () {
             this.$refs.self.$el.focus();
             this.$refs.self.$el.addEventListener('focusout', () => {
@@ -29,7 +29,8 @@
 <style>
     .context-menu {
         position: absolute;
-        border: 1px solid #D0D0D0;
+        border: 1px solid #1976D2;
+        min-width: 12em;
     }
     .context-menu:focus {
         outline: none;
