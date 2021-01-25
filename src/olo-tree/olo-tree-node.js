@@ -17,7 +17,7 @@ module.exports = store => ({
 
     template: require('./olo-tree-node.html'),
 
-    props: ['path', 'icon', 'name', 'selected', 'change', 'state'],
+    props: ['path', 'icon', 'name', 'selected', 'state'],
 
     data: () => ({
         childNames: null,
@@ -67,19 +67,13 @@ module.exports = store => ({
 
         isExpanded () {
             return Boolean(this.state.expanded[this.path]);
-        }
+        },
     },
 
     watch: {
 
         path: function () {
             this.updateChildNames();
-        },
-
-        change: function () {
-            if (this.change.path.indexOf(this.path) === 0) {
-                this.updateChildNames();
-            }
         },
 
         isExpanded: function () {
@@ -103,6 +97,11 @@ module.exports = store => ({
     },
 
     mounted () {
+        store.onChange(change => {
+            if (change.path.indexOf(this.path) === 0) {
+                this.updateChildNames();
+            }
+        });
         this.updateChildNames();
     }
 });

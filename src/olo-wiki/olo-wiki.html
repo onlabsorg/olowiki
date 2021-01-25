@@ -9,10 +9,9 @@
 
         <!-- Drawer -->
         <md-list slot="drawer-item">
-            <olo-tree-node v-for="item in bookmarks.items" :path="item"
+            <olo-tree-node v-for="item in nav.bookmarks" :path="item"
                     :selected="doc.path"
-                    :change="tree_change"
-                    :state="bookmarks.state"
+                    :state="nav.bookmarksState"
                     @tree-context-menu="showBookmarksContextMenu">
             </olo-tree-node>
         </md-list>
@@ -20,8 +19,7 @@
         <md-list slot="drawer-item">
             <olo-tree-node path="/" name="Home" icon="home"
                     :selected="doc.path"
-                    :change="tree_change"
-                    :state="tree_state"
+                    :state="nav.treeState"
                     @tree-context-menu="showTreeContextMenu">
             </olo-tree-node>
         </md-list>
@@ -113,22 +111,27 @@
 
 
     <!-- NAVIGATION CONTEXT MENU -->
-    <context-menu v-if="navigationContextMenu.show"
-            :x="navigationContextMenu.x" :y="navigationContextMenu.y"
+    <context-menu v-if="navContextMenu.show"
+            :x="navContextMenu.x" :y="navContextMenu.y"
             @context-menu-blur="hideNavigationContextMenu">
-        <md-list-item slot="context-menu-item" :href="'#'+navigationContextMenu.path">
+        <md-list-item slot="context-menu-item" :href="'#'+navContextMenu.path">
+            <md-icon>play_arrow</md-icon>
             <span class="md-list-item-text">Open</span>
         </md-list-item>
-        <md-list-item slot="context-menu-item" v-if="navigationContextMenu.isDir" @click="showAddDialog(navigationContextMenu.path)">
+        <md-list-item slot="context-menu-item" v-if="navContextMenu.isDir" @click="showAddDialog(navContextMenu.path)">
+            <md-icon>add</md-icon>
             <span class="md-list-item-text">New</span>
         </md-list-item>
-        <md-list-item slot="context-menu-item" @click="showDeleteDialog(navigationContextMenu.path)">
+        <md-list-item slot="context-menu-item" @click="showDeleteDialog(navContextMenu.path)" v-if="navContextMenu.path !== '/'">
+            <md-icon>delete</md-icon>
             <span class="md-list-item-text">Delete</span>
         </md-list-item>
-        <md-list-item slot="context-menu-item" v-if="navigationContextMenu.path !== '/' && isPinned(navigationContextMenu.path)" @click="unpin(navigationContextMenu.path)">
+        <md-list-item slot="context-menu-item" v-if="navContextMenu.path !== '/' && isPinned(navContextMenu.path)" @click="unpin(navContextMenu.path)">
+            <md-icon>clear</md-icon>
             <span class="md-list-item-text">Unpin</span>
         </md-list-item>
-        <md-list-item slot="context-menu-item" v-if="navigationContextMenu.path !== '/' && !isPinned(navigationContextMenu.path)" @click="pin(navigationContextMenu.path)">
+        <md-list-item slot="context-menu-item" v-if="navContextMenu.path !== '/' && !isPinned(navContextMenu.path)" @click="pin(navContextMenu.path)">
+            <md-icon md-src="./img/push_pin-24px.svg"></md-icon>
             <span class="md-list-item-text">Pin</span>
         </md-list-item>
     </context-menu>

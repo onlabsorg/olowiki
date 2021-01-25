@@ -4,12 +4,11 @@
         @contextmenu.prevent.stop="emitTreeContextMenu({path:path, x:$event.clientX, y:$event.clientY})">
 
     <md-icon>{{nodeIcon}}</md-icon>
-    <span class="md-list-item-text" :class="{active:path===selected}">{{nodeName}}</span>
+    <span class="md-list-item-text" :class="{active:path===selected}" ref="text">{{nodeName}}</span>
     <md-list slot="md-expand" class="child-list" v-if="isDir">
         <olo-tree-node v-for="item in childItems"
                 :path="item.path"
                 :selected="selected"
-                :change="change"
                 :state="state"
                 @tree-context-menu="emitTreeContextMenu"
                 >

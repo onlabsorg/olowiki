@@ -18,6 +18,6 @@
     display: none;
 }
 
-.olo-tree-node.md-list-item.highlighted {
+.olo-tree-node.md-list-item.highlighted > .md-list-item-container > .md-list-item-content {
     border: 1px dashed #1976D2;
 }
