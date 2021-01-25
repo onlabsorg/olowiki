@@ -9,7 +9,7 @@
 
         <!-- Drawer -->
         <md-list slot="drawer-item">
-            <olo-tree-node v-for="item in nav.bookmarks" :path="item"
+            <olo-tree-node v-for="item in nav.bookmarks" :path="item" :name="item"
                     :selected="doc.path"
                     :state="nav.bookmarksState"
                     @tree-context-menu="showBookmarksContextMenu">
