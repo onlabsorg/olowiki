@@ -168,7 +168,6 @@ module.exports = olojsStore => {
             // Delete dialog
 
             showAddDialog (path) {
-                console.log("@olo-wiki.vue: showing add dialog");
                 this.addDialog.path = pathlib.join(path, "new_document");
                 this.addDialog.show = true;
             },
@@ -245,7 +244,17 @@ module.exports = olojsStore => {
             async deleteItem (itemPath) {
                 this.deleteDialog.show = false;
                 try {
-                    await store.delete(itemPath);
+                    if (itemPath.slice(-1) === '/') {
+                        await store.deleteAll(itemPath);
+                        const matchingBookmarks = this.nav.bookmarks.filter(
+                                docPath => docPath.indexOf(itemPath) === 0);
+                        for (let docPath of matchingBookmarks) {
+                            this.unpin(docPath);
+                        }
+                    } else {
+                        await store.delete(itemPath);
+                        this.unpin(itemPath);
+                    }
                     store.emit({op:'DELETE', path:itemPath});
                     this.showMessage(`Deleted ${itemPath}`);
                 } catch (error) {
