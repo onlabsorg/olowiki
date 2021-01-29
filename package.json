@@ -1,6 +1,6 @@
 {
   "name": "@onlabsorg/olowiki",
-  "version": "0.7.7",
+  "version": "0.7.8",
   "description": "Wiki server for olojs",
   "main": "index.js",
   "scripts": {
