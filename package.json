@@ -1,6 +1,6 @@
 {
   "name": "@onlabsorg/olowiki",
-  "version": "0.7.9",
+  "version": "0.8.0",
   "description": "Wiki server for olojs",
   "keywords": [
       "wiki", "swan", "olojs", "olojs-cli", "browser", "cms"

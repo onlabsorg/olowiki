@@ -22,7 +22,7 @@ olojs install @onlabsorg/olowiki
 Once olowiki is installed, you can serve the library as follows:
 
 ```
-olojs start olowiki
+olojs run olowiki
 ```
 
 This will start a server listening on port 8010 (customize the port with
