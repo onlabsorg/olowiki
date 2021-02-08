@@ -3,6 +3,8 @@
 **olowiki** is an [olojs-cli] plugin that contains a store server allowing you
 to render and edit your olojs documents in the browser.
 
+![olowiki screenshot](./docs/screenshot.png)
+
 
 ### Getting started
 First you need to install the [olojs-cli] and create a document package:
