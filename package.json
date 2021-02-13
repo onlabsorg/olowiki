@@ -1,9 +1,14 @@
 {
   "name": "@onlabsorg/olowiki",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "Wiki server for olojs",
   "keywords": [
-      "wiki", "swan", "olojs", "olojs-cli", "browser", "cms"
+    "wiki",
+    "swan",
+    "olojs",
+    "olojs-cli",
+    "browser",
+    "cms"
   ],
   "main": "index.js",
   "scripts": {
@@ -14,7 +19,7 @@
   "author": "Marcello Del Buono",
   "license": "MIT",
   "dependencies": {
-    "@onlabsorg/olojs": "^0.17.7",
+    "@onlabsorg/olojs": "^0.17.8",
     "dompurify": "^2.2.3",
     "key-string": "^0.4.0",
     "vue": "^2.6.12",
