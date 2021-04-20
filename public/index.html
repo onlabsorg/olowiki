@@ -1,8 +1,8 @@
 <html>
     <head>
         <meta name="version" content="0.5.0">
-        <script src="/olowiki.js"></script>
-        <link rel="stylesheet" href="/olowiki.css"></link>
+        <script src="olowiki.js"></script>
+        <link rel="stylesheet" href="olowiki.css"></link>
         <style>
             html, body, #wiki-container {
                 position: absolute;
@@ -22,7 +22,15 @@
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 const containerElt = document.querySelector('#wiki-container');
-                const store = new olojs.HTTPStore(`${location.origin}/docs`);
+                
+                const storeURL = new URL('docs', location.href);
+                const store = new olojs.Router({
+                    '/': new olojs.HTTPStore(String(storeURL))
+                },{
+                    'http' : new olojs.HTTPStore('http:/'),
+                    'https': new olojs.HTTPStore('https:/'),
+                });
+                
                 olowiki.init(containerElt, store);
             });            
         </script>

@@ -1,22 +1,30 @@
+const olowiki = module.exports = {};
 
 const olojs = require('@onlabsorg/olojs');
 const pathlib = require("path");
 
-exports.commands = {
+const express = require('express');
+const http = require('http');
+
+
+olowiki.WikiMiddleware = function (store) {
+    const router = express.Router();
+    const publicPath = pathlib.join(__dirname, "./public");
     
-    olowiki (store, options) {
-        const portNumber = options.port || 8010;
-        const server = olojs.HTTPServer.createServer(store, {
-            publicPath: pathlib.join(__dirname, "./public")
-        });
-        return new Promise((resolve, reject) => {
-            server.listen(portNumber, err => {
-                if (err) reject(err);
-                else {
-                    console.log(`olowiki HTTP server listening on port ${portNumber}`);
-                    resolve(server);
-                }
-            });
-        });
-    }
+    router.use('/docs', olojs.HTTPServer.StoreMiddleware(store));
+        
+    router.use( express.static(publicPath) );
+
+    return router;    
+}
+
+olowiki.createServer = function (store) {
+    const app = express();    
+    app.use('/', olowiki.WikiMiddleware(store));
+    return http.createServer(app);
+}
+
+
+olowiki.middlewares = {
+    '/wiki': olowiki.WikiMiddleware
 }

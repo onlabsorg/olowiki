@@ -16,7 +16,7 @@ Vue.use( require("vue-async-computed") );
 
 const TreeNodeComponent = require('../olo-tree/olo-tree-node');
 
-require("@onlabsorg/olojs/src/olo-viewer.css");
+require("./olo-viewer.css");
 require('./olo-wiki.css');
 
 module.exports = olojsStore => {

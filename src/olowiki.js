@@ -7,11 +7,11 @@ window.olowiki = {
 
     init (domElement, store) {
 
-        store.globals.$renderError = error =>
-                `<pre class="runtime-error">` +
-                    `<div class="message">${escape(error.message)}</div>` +
-                    (error.swanStack ? `<br><div class="source">${escape(error.swanStack)}</div>` : "") +
-                `</pre>`;
+        // store.globals.$renderError = error =>
+        //         `<pre class="runtime-error">` +
+        //             `<div class="message">${escape(error.message)}</div>` +
+        //             (error.swanStack ? `<br><div class="source">${escape(error.swanStack)}</div>` : "") +
+        //         `</pre>`;
 
         this.vue = new Vue({
 
