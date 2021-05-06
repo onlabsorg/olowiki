@@ -9,12 +9,8 @@ const http = require('http');
 
 olowiki.WikiMiddleware = function (store) {
     const router = express.Router();
-    const publicPath = pathlib.join(__dirname, "./public");
-    
     router.use('/docs', olojs.HTTPServer.StoreMiddleware(store));
-        
-    router.use( express.static(publicPath) );
-
+    router.use('/', express.static( pathlib.join(__dirname, "./public") ));
     return router;    
 }
 
