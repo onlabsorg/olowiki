@@ -44,7 +44,7 @@ const babelRule = {
     }
 };
 
-const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const {VueLoaderPlugin} = require('vue-loader')
 const vueLoaderPlugin = new VueLoaderPlugin();
 const vueRule = {
     // vue-loader config to load `.vue` files or single file components.
