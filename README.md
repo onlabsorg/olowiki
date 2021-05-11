@@ -54,11 +54,11 @@ olojs install @onlabsorg/olowiki
 Once olowiki is installed, you can serve the library as follows:
 
 ```
-olojs start 8010
+olojs run wiki
 ```
 
 You can now render and edit the olojs documents contained in `/path/to/my-library`
-in the browser at `http://localhost:8010/wiki/#/path/to/doc`.
+in the browser at `http://localhost:8010/#/path/to/doc`.
 
 > The URL hash is interpreted as a document ID, therefore it can also contain
 > document arguments. For example: #/path/to/doc?x=10;y=20;z=30
