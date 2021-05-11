@@ -19,7 +19,7 @@
   "author": "Marcello Del Buono",
   "license": "MIT",
   "dependencies": {
-    "@onlabsorg/olojs": "0.19.x",
+    "@onlabsorg/olojs": "0.20.x",
     "dompurify": "^2.2.3",
     "key-string": "^0.4.0",
     "vue": "^2.6.12",

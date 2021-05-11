@@ -21,6 +21,13 @@ olowiki.createServer = function (store) {
 }
 
 
-olowiki.middlewares = {
-    '/wiki': olowiki.WikiMiddleware
+olowiki.commands = {
+    
+    'wiki': async (store, options) => {
+        const server = olowiki.createServer(store);
+        const port = options.port || 8010;
+        await new Promise((resolve, reject) => server.listen(port, 
+                    err => err ? reject(err) : resolve() ));
+        console.log(`olowiki HTTP server listening on port ${port}`);        
+    }
 }
