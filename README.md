@@ -34,27 +34,27 @@ You can now render and edit the olojs documents contained in `/path/to/store/dir
 in the browser at `http://localhost:8010/`.
 
 
-### Install olowiki as olojs-cli plugin
+### Install olowiki as stilo plugin
 Instead of creating your own server in javascript, you can also use olowiki as
-an [olojs-cli] plugin. First you need to install olojs-cli and create a document 
+an [stilo] plugin. First you need to install stilo and create a document 
 package:
 
 ```
-npm install -g @onlabsorg/olojs-cli
+npm install -g @onlabsorg/stilo
 cd /path/to/my-library
-olojs init
+stilo init
 ```
 
 Then you can add the olowiki plugin to your package:
 
 ```
-olojs install @onlabsorg/olowiki
+stilo install @onlabsorg/olowiki
 ```
 
 Once olowiki is installed, you can serve the library as follows:
 
 ```
-olojs run wiki
+stilo run wiki
 ```
 
 You can now render and edit the olojs documents contained in `/path/to/my-library`
@@ -69,10 +69,10 @@ in the browser at `http://localhost:8010/#/path/to/doc`.
 
 
 ### Related projects
-* [olojs-cli] is a command-line interface written in NodeJS that allows you to
+* [stilo] is a command-line interface written in NodeJS that allows you to
   create and mange local olojs document repositories.
 * [olojs] is a content management system based on a distributed network of 
   documents having the following properties.
 
 [olojs]: https://github.com/onlabsorg/olojs/blob/master/README.md
-[olojs-cli]: https://github.com/onlabsorg/olojs-cli/blob/main/README.md
+[stilo]: https://github.com/onlabsorg/stilo/blob/main/README.md
