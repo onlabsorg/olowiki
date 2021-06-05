@@ -1,0 +1,18 @@
+<head>
+    <script src="vue-olo-editor-test.js"></script>
+    <style>
+        #root {
+            position: absolute;
+            top:0; left:0;
+            bottom:0; right:0;
+        }
+    </style>
+</head>
+
+<body>
+    <vue-olo-editor id="root" 
+            v-model="source" 
+            :fontsize="fontsize" 
+            :theme="theme">
+        </vue-olo-editor>
+</body>
