@@ -32,8 +32,11 @@ module.exports = {
             },
             
             {
-                test: /\.(woff2|woff|ttf)$/,
+                test: /\.(woff2|woff|ttf|svg)$/,
                 loader: 'file-loader',
+                options: {
+                    name: "[name].[ext]"
+                }
             },
             
             {
@@ -52,7 +55,7 @@ module.exports = {
                     },
                     cacheBusting: true,
                 }
-            }
+            },
         ],
     },
 }

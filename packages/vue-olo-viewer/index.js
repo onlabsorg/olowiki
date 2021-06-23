@@ -1,14 +1,17 @@
 
+// TEMPLATE
+const template = `<div class="vue-olo-viewer" v-html="html"></div>`;
+
+
+
+// SCRIPT
 const DOMPurify = require("dompurify");
-
 const Vue = require("vue/dist/vue");
-Vue.use(require('vue-async-computed').default);
-
-require('./main.css');
+Vue.use( require('vue-async-computed').default );
 
 module.exports = store => ({
     
-    template: `<div class="vue-olo-viewer" v-html="html"></div>`,
+    template: template,
     
     props: ['src'],
     
@@ -20,3 +23,9 @@ module.exports = store => ({
         }
     }
 });
+
+
+
+// STYLE
+require('./src/typography.css');
+

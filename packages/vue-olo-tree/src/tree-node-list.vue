@@ -5,7 +5,7 @@
                 @click.prevent.stop="emitTreeNodeClick({path:item.path})"
                 @contextmenu.prevent.stop="emitTreeContextMenu({path:item.path, x:$event.clientX, y:$event.clientY})">
 
-            <md-icon>{{item.isDir ? "folder" : "description"}}</md-icon>
+            <md-icon :md-src="item.isDir ? 'folder.svg' : 'document.svg'"></md-icon>
             <span class="md-list-item-text" :class="{active:item.path===state.selected}" ref="text">{{item.name}}</span>
 
             <olo-tree-node-list slot="md-expand" class="child-list" v-if="item.isDir"
@@ -32,7 +32,9 @@
     const isVisible = name => name[0] !== '.';
     
     require('vue-material/dist/vue-material.css');
-    require('vue-material/dist/theme/default.css');    
+    require('vue-material/dist/theme/default.css'); 
+    require('./folder.svg');
+    require('./document.svg');
 
     module.exports = {
         
@@ -91,15 +93,6 @@
 
 <style>
 
-    @font-face {
-        font-family: 'Material Icons';
-        font-style: normal;
-        font-weight: 400;
-        src: local('Material Icons'),
-        local('MaterialIcons-Regular'),
-        url("./material-icons-font/MaterialIcons-Regular.woff2") format('woff2');
-    }
-
     .olo-tree-node .md-list-item-content {
         min-height: 32px;
     }
@@ -122,5 +115,10 @@
 
     .olo-tree-node.md-list-item.highlighted > .md-list-item-container > .md-list-item-content {
         border: 1px dashed #1976D2;
+    }
+    
+    .olo-tree-node .md-list-item-text.active {
+        font-weight: bold;
+        color: #1976D2;
     }
 </style>

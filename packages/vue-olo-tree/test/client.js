@@ -2,13 +2,13 @@ const Vue = require("vue/dist/vue");
 
 require('@onlabsorg/olojs/browser/olo');
 const targetStore = new olojs.MemoryStore({
-    '/doc01': "document 0.1",
-    '/dir1/doc11': "document 1.1",
-    '/dir1/doc12': "document 1.2",
-    '/dir1/doc13': "document 1.3",
-    '/dir2/doc21': "document 2.1",
-    '/dir2/doc22': "document 2.2",
-    '/dir2/doc23': "document 2.3",
+    '/home/doc01': "document 0.1",
+    '/home/dir1/doc11': "document 1.1",
+    '/home/dir1/doc12': "document 1.2",
+    '/home/dir1/doc13': "document 1.3",
+    '/home/dir2/doc21': "document 2.1",
+    '/home/dir2/doc22': "document 2.2",
+    '/home/dir2/doc23': "document 2.3",
 });
 
 const ObservableStore = require('../../observable-store');
@@ -26,9 +26,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         data: {
             store: store,
-            path: '/', 
+            path: '/home/', 
             state: {
-                selected: "/",
+                selected: "/dir1/doc13",
                 highlighted: "/dir1/doc12",
                 expanded: {'/':true, '/dir1/':true}
             }, 

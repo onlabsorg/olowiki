@@ -1,0 +1,41 @@
+<html>
+
+    <head>
+        <script src="olowiki.js"></script>
+        <link rel="stylesheet" href="olowiki.css"></link>
+    </head>
+    
+    <body>
+        
+        <div id="wiki-container"></div>
+        
+        <script>
+            document.addEventListener("DOMContentLoaded", async function () {
+                const rootStore = new olojs.BrowserStore('olowiki-store');
+                
+                // if it is being run for the first time, show the welcome page
+                if (!location.hash) {
+                    const rootEntries = await rootStore.list('/');
+                    if (rootEntries.length === 0) location.hash = "about:/olowiki";
+                }
+                
+                window.wiki = olojs.Wiki({
+                    appName: "wiki",
+
+                    element: "#wiki-container",
+                    
+                    store: new olojs.Protocols({
+                        about:   new olojs.HTTPStore(`${location.origin}${location.pathname}/about`),
+                        http:    new olojs.HTTPStore('http:/'),
+                        https:   new olojs.HTTPStore('https:/'),
+                        default: rootStore,
+                    }),
+                    
+                    appHomePage: 'about:/olowiki',
+                    
+                    treeRootPath: '/',
+                });                              
+            });            
+        </script>
+    </body>
+</html>

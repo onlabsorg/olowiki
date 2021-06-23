@@ -1,10 +1,12 @@
 
-const olojs = require('@onlabsorg/olojs');
-const olowiki = require('../index');
+const express = require('express');
+const fs = require('fs');
 
-const store = new olojs.FileStore(`${__dirname}/repo`);
-const server = olowiki.createServer(store);
-server.listen(8010, err => {
-    if (err) throw err;
-    console.log('olo-wiki http server listening on port 8010');
+const app = express();
+
+app.use(express.static(`${__dirname}/../dist`));
+
+app.listen(8010, err => {
+    console.log("olowiki test server listening on port 8010")
+    console.log("visit http://localhost:8010")
 });

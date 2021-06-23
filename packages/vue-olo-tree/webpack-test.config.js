@@ -32,10 +32,12 @@ module.exports = {
             },
             
             {
-                test: /\.(woff2|woff|ttf)$/,
+                test: /\.(woff2|woff|ttf|svg)$/,
                 loader: 'file-loader',
+                options: {
+                    name: "[name].[ext]"
+                }
             },
-
             
             {
                 // vue-loader config to load `.vue` files or single file components.
@@ -53,7 +55,7 @@ module.exports = {
                     },
                     cacheBusting: true,
                 }
-            }
+            },
         ],
     },
 }
