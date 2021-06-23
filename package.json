@@ -1,6 +1,6 @@
 {
     "name": "@onlabsorg/olowiki",
-    "version": "0.11.0",
+    "version": "0.11.1",
     "description": "Wiki based on olojs documents",
     "keywords": [
         "wiki",
@@ -19,18 +19,14 @@
     "author": "Marcello Del Buono",
     "license": "ISC",
     "dependencies": {
-        "@onlabsorg/browser-store": "file:packages/browser-store",
         "@onlabsorg/olojs": "^0.20.10",
         "dompurify": "^2.2.3",
         "file-saver": "^2.0.5",
         "jszip": "^3.6.0",
         "key-string": "^0.4.0",
-        "observable-store": "file:packages/observable-store",
         "vue": "^2.6.13",
         "vue-async-computed": "^3.9.0",
-        "vue-material": "^1.0.0-beta-15",
-        "vue-olo-editor": "file:packages/vue-olo-editor",
-        "vue-olo-tree": "file:packages/vue-olo-tree"
+        "vue-material": "^1.0.0-beta-15"
     },
     "devDependencies": {
         "chai": "^4.2.0",
