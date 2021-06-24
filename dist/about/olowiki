@@ -13,33 +13,32 @@ the doc-id should be `about:/olowiki`.
 >  The store containing the `id -> document` mappings can be your [stilo]
 >  repository (if you are running olowiki as stilo plugin), your browser
 >  storage (if you are running the standalone olowiki version), or any
->  other think if you are fetching from a custom olowiki server.
+>  other type of storage if you are fetching from a custom olowiki server.
 
 On the right of the title bar you can see two buttons: an `edit` button to
-edit the source of the currently rendered document and a `save` button to
+modify the source of the currently rendered document and a `save` button to
 store the updated version of the document. Click edit and play with the source 
-of this document and when you are done, click on the `done` button (check mark)
-to render the 
+of this document and, when you are done, click on the `done` button (check mark)
+to render it. 
 
->  If you try to save a modified version of this page, you will get a gentle 
->  error message, because this document is read-only, but you can create
->  your own documents.
+>  If you try to save a modified version of this page, you will get an 
+>  error message because this document is read-only. 
 
 On the right side of this window you can find the store navigation tree, giving
 you access to all the documents contained in the wiki store. By right-clicking
 on it, you get a command menu that allows you to `open`, `add`, `duplicate` or
-download a file or a directory. 
+`download` a file or a directory. 
 
->  If you are using olowiki for the first time in the standalone version,
+>  If you are using the standalone version of olowiki for the first time,
 >  the navigation tree may be empty. In that case just `add` a new document 
 >  and start editing it.
 
 Finally, on the left of the title bar, there is the olowiki logo that opens
-the application document `about:/olowiki`.
+the document `about:/olowiki`.
 
 
 ### More reading
-Learn how [olojs documents](./docs/document.md) work.
+Learn how [olojs documents](https://github.com/onlabsorg/olojs/blob/master/docs/document.md) work.
 
  
  
@@ -49,3 +48,4 @@ Learn how [olojs documents](./docs/document.md) work.
  
  
 [stilo]: https://github.com/onlabsorg/stilo/blob/main/README.md
+
