@@ -148,11 +148,11 @@ module.exports = options => new Vue({
             
             // render the document namespace to text
             this.docText = await this.docContext.str(this.docNamespace);
+            console.log(Array.from(this.docText));
         },
         
         async save () {
             try {
-                console.log(this.docPath);
                 await this.store.write(this.docPath, this.docSource);
                 this.showMessage("Saved");
             } catch (error) {
