@@ -74,7 +74,8 @@ module.exports = options => new Vue({
         docId: "",
         docSource: "",
         docNamespace: {},
-        docText: "Loading...",            
+        docText: "Loading...",    
+        docTitle: "",        
         mode: "view",
         editor: {
             content: "",
@@ -110,7 +111,7 @@ module.exports = options => new Vue({
             return this.store.createContext(this.docId);
         },
         
-        // 3) when docContext changes, update docPath
+        // 3) when docContext changes, update docPath and docTitle
         docPath () {
             return this.docContext.__path__;
         },
@@ -148,7 +149,9 @@ module.exports = options => new Vue({
             
             // render the document namespace to text
             this.docText = await this.docContext.str(this.docNamespace);
-            console.log(Array.from(this.docText));
+            
+            // update the document title
+            this.docTitle = this.docNamespace.__title__ || this.docPath;
         },
         
         async save () {
