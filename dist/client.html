@@ -29,6 +29,7 @@
                         about:   new olojs.HTTPStore(`${location.origin}${location.pathname}/about`),
                         http:    new olojs.HTTPStore('http:/'),
                         https:   new olojs.HTTPStore('https:/'),
+                        ipfs:    new olojs.IPFSStore(['http://localhost:5001', 'http://ipfs.io']),
                         default: rootStore
                     }),
                     

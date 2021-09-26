@@ -18,6 +18,20 @@ module.exports = {
     module: {
         rules: [ 
             
+            {// babel rule
+                test: /\.m?js$/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-env'],
+                        plugins: [
+                            '@babel/plugin-proposal-optional-chaining',
+                            '@babel/plugin-syntax-dynamic-import'
+                        ]
+                    }
+                }
+            },
+            
             {// html rule
                 test: /\.(html)$/,
                 loader: 'html-loader',

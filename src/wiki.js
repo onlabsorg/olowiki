@@ -1,4 +1,4 @@
-const olojs = require('@onlabsorg/olojs/browser');
+const olo = require('@onlabsorg/olojs/browser');
 const pathlib = require('path');
 const WikiStore = require('./wiki-store');
 const DOMPurify = require("dompurify");
@@ -27,7 +27,7 @@ require('./typography.css');
 
 // The main export is a function that instantiates a wiki app in the browser.
 // - options.element: HTMLElement || css-selector, is the element that will contain the wiki app
-// - options.homeStore: olojs.Store, is the wiki store that will be mounted at `/home`
+// - options.homeStore: olo.Store, is the wiki store that will be mounted at `/home`
 // - options.editorFontSize: Number, the size of the editor characters in pt. Defaults to 'chrome'.
 // - options.editorTheme: String, the ace theme to be applied to the editor. Defaults to 12.
 module.exports = options => new Vue({
@@ -37,8 +37,8 @@ module.exports = options => new Vue({
     template: require('./wiki.html'),
     
     components: {
-        'vue-olo-editor': require('vue-olo-editor'),
-        'vue-olo-tree-node-list': require('vue-olo-tree'),
+        'vue-olo-editor': require('./vue-olo-editor'),
+        'vue-olo-tree-node-list': require('./vue-olo-tree'),
         'context-menu': require('./context-menu.vue').default,
         'confirm-dialog': require('./confirm-dialog.vue').default,
         'prompt-dialog': require('./prompt-dialog.vue').default
@@ -52,11 +52,11 @@ module.exports = options => new Vue({
         // app
         appName: options.appName || "wiki",
         appVersion: require('../package.json').version,
-        appHomePage: options.appHomePage || "/",
+        appHomePage: options.appHomePage || "/home/",
 
         // navigation 
         showDrawer: true,
-        treeRootPath: options.treeRootPath ? pathlib.normalize(`/${options.treeRootPath}/`) : '/',
+        treeRootPath: options.treeRootPath ? pathlib.normalize(`/${options.treeRootPath}/`) : '/home/',
         treeState: {
             selected: "",
             highlighted: "",
@@ -108,7 +108,7 @@ module.exports = options => new Vue({
         
         // 2) when docId changes, update docContext
         docContext () {
-            return this.store.createContext(this.docId);
+            return this.store.createContextFromId(this.docId);
         },
         
         // 3) when docContext changes, update docPath and docTitle
@@ -144,11 +144,10 @@ module.exports = options => new Vue({
             this.docSource = docSource;
             
             // evaluate the document source in the current docContext
-            const evaluate = olojs.document.parse(this.docSource);
-            this.docNamespace = await evaluate(this.docContext);
-            
-            // render the document namespace to text
-            this.docText = await this.docContext.str(this.docNamespace);
+            const evaluate = this.store.parseDocument(this.docSource);
+            const {text, data} = await evaluate(this.docContext);
+            this.docNamespace = data;
+            this.docText = text;
             
             // update the document title
             this.docTitle = this.docNamespace.__title__ || this.docPath;
@@ -204,10 +203,10 @@ module.exports = options => new Vue({
         
         reportError (error) {
             const isStoreError = 
-                    error instanceof olojs.Store.ReadPermissionDeniedError ||
-                    error instanceof olojs.Store.WritePermissionDeniedError ||
-                    error instanceof olojs.Store.ReadOperationNotAllowedError ||
-                    error instanceof olojs.Store.WriteOperationNotAllowedError;
+                    error instanceof olo.Store.ReadPermissionDeniedError ||
+                    error instanceof olo.Store.WritePermissionDeniedError ||
+                    error instanceof olo.Store.ReadOperationNotAllowedError ||
+                    error instanceof olo.Store.WriteOperationNotAllowedError;
             this.showMessage( isStoreError ? String(error) : "Unknown Error!" );
             console.error(error);
         },
@@ -228,7 +227,7 @@ module.exports = options => new Vue({
         },
         
         showAddDialog (path) {
-            this.addDialog.path = pathlib.join(path, "new_document");
+            this.addDialog.path = pathlib.join(path, "/");
             this.addDialog.show = true;
         },
         
@@ -267,7 +266,12 @@ module.exports = options => new Vue({
         
         // 1) when the hash changes, the docId gets updated
         handleHashChange () {
-            this.docId = normalizeId(location.hash.slice(1));
+            const hash = location.hash.slice(1);
+            if (!hash) {
+                location.hash = this.appHomePage;
+            } else {
+                this.docId = normalizeId(hash);
+            }
         },
 
         handleKeyboardCommand (event) {
@@ -327,18 +331,13 @@ module.exports = options => new Vue({
             event.stopPropagation();
             this.handleDrawerContextMenu(event);
         });
-        window.addEventListener('hashchange', () => this.handleHashChange());
+        window.addEventListener('hashchange', this.handleHashChange.bind(this));
         this.handleHashChange();
     },
 });
 
 
 function normalizeId (id) {
-    const uriMatch = id.match(/^([a-zA-Z][a-zA-Z0-9+.-]*):\/(.*)$/);
-    if (uriMatch && uriMatch[1]) {
-        return pathlib.normalize(`${uriMatch[1]}:/${uriMatch[2]}`);
-    } else {
-        return pathlib.normalize(`/${id}`);
-    }
+    return pathlib.normalize(`/${id}`);
 }
 

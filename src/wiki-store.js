@@ -1,5 +1,5 @@
 const pathlib = require('path');
-const ObservableStore = require('observable-store');
+const ObservableStore = require('./observable-store');
 
 const isDir = path => path.slice(-1) === '/';
 const normalizePath = path => pathlib.normalize(`/${path}`);
@@ -96,5 +96,5 @@ const WikiStoreMixins = {
                 zip.file(`${entry}.olo`, await this.read(path+entry));
             }
         }
-    }
+    },
 };

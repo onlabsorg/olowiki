@@ -1,6 +1,10 @@
+const express = require('express');
+const olo = require('@onlabsorg/olojs');
+
+
 
 // olowiki HTTP Server
-exports.createServer = require('./lib/server');
+const Server = exports.Server = require('./lib/server');
 
 
 
@@ -9,15 +13,15 @@ exports.stilo = {
     
     routes: {},
     
-    protocols: {},
-    
     commands: {
-        'wiki': async (store, options={}) => {
-            const server = exports.createServer(store);
+        
+        "wiki": async (store, options={}) => {
+            const server = Server(store.homeStore);
             const port = options.port || 8010;
-            await new Promise((resolve, reject) => server.listen(port, 
-                        err => err ? reject(err) : resolve() ));
-            console.log(`olowiki HTTP server listening on port ${port}`);        
+            server.listen(port, err => {
+                if (err) throw err;
+                console.log(`oloWiki server listening on port ${port}`);
+            });
         }
     }
 }

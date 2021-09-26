@@ -1,14 +1,1 @@
-(window["webpackJsonp"] = window["webpackJsonp"] || []).push([["swan_modules/http"],{
-
-/***/ "./node_modules/@onlabsorg/swan-js/lib/modules/http.js":
-/*!*************************************************************!*\
-  !*** ./node_modules/@onlabsorg/swan-js/lib/modules/http.js ***!
-  \*************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("/**\n *  http - swan stdlib module\n *  ============================================================================\n *  The http library exposes methods to use the HTTP protocol.\n */\n\n__webpack_require__(/*! isomorphic-fetch */ \"./node_modules/isomorphic-fetch/fetch-npm-browserify.js\");\n\n\n\n\n/**\n *  http.get - asynchronous function\n *  ----------------------------------------------------------------------------\n *  Sends an HTTP GET request to the given URL and returns the response body as\n *  text. In case of error, it throws the HTTP status code (in js) or returns\n *  an Undefined value (in swan).\n *  ```\n *  text = await http.get(url, options)\n *  ```\n *  - `url` is the URL of the resource to be fetched\n *  - `options` is the second parameter of the JavaScript\n *    [fetch](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch)\n *    function.\n */\nexports.get = async function (url, options={}) {\n    ensureString(url);\n    options = Object(options);\n    options.method = \"get\";\n\n    const response = await fetch(url, options);\n    if (!response.ok) throw new Error(response.status);\n    return await response.text();\n}\n\n\nfunction ensureString (string) {\n    if (typeof string !== \"string\") throw new Error(\"String type expected\");\n}\n\n\n//# sourceURL=webpack:///./node_modules/@onlabsorg/swan-js/lib/modules/http.js?");
-
-/***/ })
-
-}]);
+(window.webpackJsonp=window.webpackJsonp||[]).push([[4],{130:function(e,t,n){function r(e,t,n,r,o,u,i){try{var c=e[u](i),a=c.value}catch(e){return void n(e)}c.done?t(a):Promise.resolve(a).then(r,o)}function o(e){return function(){var t=this,n=arguments;return new Promise((function(o,u){var i=e.apply(t,n);function c(e){r(i,o,u,c,a,"next",e)}function a(e){r(i,o,u,c,a,"throw",e)}c(void 0)}))}}function u(e){if("string"!=typeof e)throw new Error("String type expected")}n(78),e.exports=function(e){return{get:function(e){var t=arguments;return o(regeneratorRuntime.mark((function n(){var r,o;return regeneratorRuntime.wrap((function(n){for(;;)switch(n.prev=n.next){case 0:return r=t.length>1&&void 0!==t[1]?t[1]:{},u(e),(r=Object(r)).method="get",n.next=6,fetch(e,r);case 6:if((o=n.sent).ok){n.next=9;break}throw new Error(o.status);case 9:return n.next=11,o.text();case 11:return n.abrupt("return",n.sent);case 12:case"end":return n.stop()}}),n)})))()}}}}}]);

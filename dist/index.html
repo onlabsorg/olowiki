@@ -11,29 +11,20 @@
         
         <script>
             document.addEventListener("DOMContentLoaded", async function () {
-                const rootStore = new olojs.BrowserStore('olowiki-store');
                 
-                // if it is being run for the first time, show the welcome page
-                if (!location.hash) {
-                    const rootEntries = await rootStore.list('/');
-                    if (rootEntries.length === 0) location.hash = "about:/olowiki";
-                }
+                const homeURL = new URL('/home', location.href);
+                const homeStore = new olo.HTTPStore( String(homeURL) )
                 
-                window.wiki = olojs.Wiki({
+                window.wiki = olo.Wiki({
                     appName: "wiki",
 
                     element: "#wiki-container",
                     
-                    store: new olojs.Protocols({
-                        about:   new olojs.HTTPStore(`${location.origin}${location.pathname}/about`),
-                        http:    new olojs.HTTPStore('http:/'),
-                        https:   new olojs.HTTPStore('https:/'),
-                        default: rootStore,
-                    }),
+                    store: new olo.Hub( homeStore ),
                     
-                    appHomePage: 'about:/olowiki',
+                    appHomePage: '/home/',
                     
-                    treeRootPath: '/',
+                    treeRootPath: '/home/',
                 });                              
             });            
         </script>

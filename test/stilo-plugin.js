@@ -1,9 +1,10 @@
-const olojs = require('@onlabsorg/olojs');
+const olo = require('@onlabsorg/olojs');
 const plugin = require('..').stilo;
 
-const store = new olojs.FileStore(`${__dirname}/stilo-home`);
+const homeStore = new olo.FileStore(`${__dirname}/home`);
+const hub = new olo.Hub(homeStore);
 
-plugin.commands.wiki(store)
+plugin.commands.wiki(hub)
         .then(() => {
             console.log('@test/stilo-plugin: stilo command successfully executed');
         })
