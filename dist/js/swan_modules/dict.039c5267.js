@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["swan_modules/dict"],{"5d3f":function(e,s){function n(e,...s){const n=new Map;for(let[t,o]of s)n.set(t,o);return{size:n.size,has:e=>n.has(e),get:e=>n.get(e)||null,keys:()=>e.Tuple(...n.keys()),values:()=>e.Tuple(...n.values()),entries:()=>e.Tuple(...n.entries())}}function t(e,...s){const t=[];for(let n of s)for(let e of n.entries())t.push(e);return n(e,...t)}e.exports=e=>({create:(...s)=>n(e,...s),merge:(...s)=>t(e,...s)})}}]);
+//# sourceMappingURL=dict.039c5267.js.map

@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["swan_modules/path"],{"89c6":function(e,n,r){const t=r("df7c");e.exports={dir(e){return t.dirname(e)},fullName(e){return t.basename(e)},name(e){const n=this.fullName(e),r=this.ext(e);return n.slice(0,r.length+1)},ext(e){return t.extname(e)},normalize(e){return t.normalize(e)},join(...e){return t.join(...e)},resolve(...e){return t.resolve("/",...e)}}}}]);
+//# sourceMappingURL=path.f07386af.js.map

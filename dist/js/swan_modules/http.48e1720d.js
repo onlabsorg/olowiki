@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["swan_modules/http"],{"40e5":function(t,e,n){function o(t){if("string"!==typeof t)throw new Error("String type expected")}n("2e94"),t.exports=t=>({async get(t,e={}){o(t),e=Object(e),e.method="get";const n=await fetch(t,e);if(!n.ok)throw new Error(n.status);return await n.text()}})}}]);
+//# sourceMappingURL=http.48e1720d.js.map
