@@ -57,9 +57,9 @@ class ObservableStore extends olo.Hub {
 
 class WikiStore extends ObservableStore {
     
-    constructor (homeStore, aboutStore) {
+    constructor (homeStore, documentationStore) {
         super(homeStore);
-        this.mount('/about', aboutStore);
+        this.mount('/help', documentationStore);
     }
     
     createContext (docId) {
@@ -68,6 +68,11 @@ class WikiStore extends ObservableStore {
             version: require('../package.json').version
         }
         return context;
+    }
+    
+    async read (path) {
+        console.log('@src/store: WikiStore.read', path);
+        return await super.read(path);
     }
 
     async exists (path) {
@@ -149,10 +154,10 @@ class WikiStore extends ObservableStore {
 const homeURL = String(new URL('/home', location.href));
 const homeStore = new olo.HTTPStore(homeURL);
 
-const aboutURL = String(new URL('/about', location.href));
-const aboutStore = new olo.HTTPStore(aboutURL, {extension:".olo"});
+const helpURL = String(new URL('/help', location.href));
+const helpStore = new olo.HTTPStore(helpURL, {extension:".olo"});
 
-export default new WikiStore(homeStore, aboutStore);
+export default new WikiStore(homeStore, helpStore);
 
 
 

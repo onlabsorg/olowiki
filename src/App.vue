@@ -28,7 +28,7 @@
                 <olo-menu-item icon="mdi-delete"       title="Delete"    kbshortcut=""       @click="deleteDoc(docPath)"></olo-menu-item>
                 <olo-menu-item icon="mdi-download"     title="Download"  kbshortcut=""       @click="download(docPath)" ></olo-menu-item>
                 <v-divider></v-divider>
-                <olo-menu-item icon="mdi-help-circle"  title="About"     kbshortcut=""       @click="setHash('/about/')"></olo-menu-item>
+                <olo-menu-item icon="mdi-help-circle"  title="About"     kbshortcut=""       @click="setHash('/help/about')"></olo-menu-item>
             </v-list>
         </v-menu>
 

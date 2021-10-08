@@ -1,3 +1,0 @@
-<% __render__ = require 'markdown' %>
-
-# oloWiki v<% __oloWiki__.version %>

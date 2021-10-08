@@ -1,13 +1,10 @@
 # oloWiki
 
-This is a wiki based on [olojs] documents.
+This is a wiki based on [olojs] documents. It can be used in two ways:
 
-![olowiki screenshot](./docs/screenshot.png)
-
-If you want to use olowiki, you have a two options:
-
-* Add oloWiki to [stilo] as plugin and execute `stilo run wiki` at the command line
-* Create your own custom version of olowiki in JavaScript
+* By adding oloWiki to [stilo] as plugin and execute `stilo run wiki` at the 
+  command line
+* By creating an oloWiki HTTP server via JavaScript
 
 Let's explore each of these options.
 
@@ -41,7 +38,7 @@ in the browser at `http://localhost:8010/#/home/path/to/doc`.
 > document arguments. For example: #/home/path/to/doc?x=10;y=20;z=30
 
 
-### Create a custom olowiki server
+### Create a custom oloWiki server
 Another way to use olowiki is by creating a custom wiki server in JavaScript.
 First install olojs and olowiki:
 
@@ -82,7 +79,11 @@ license.
 * [stilo] is a command-line interface written in NodeJS that allows you to
   create and mange local olojs document repositories.
 * [olojs] is a distributed content management system
+* [oloviewer] is a HTTP client and [stilo] plugin for rendering olojs
+  documents in the browser
 
 
 [olojs]: https://github.com/onlabsorg/olojs/blob/master/README.md
 [stilo]: https://github.com/onlabsorg/stilo/blob/main/README.md
+[oloviewer]: https://github.com/onlabsorg/oloviewer/blob/main/README.md
+

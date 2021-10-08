@@ -30,7 +30,9 @@
         props: ['store', 'docid', 'mode'],
         
         data: () => ({
+            path: "",
             source: "",
+            evaluate: () => ({}),
             text: "",
             data: {},
             editorContent: "",
@@ -40,45 +42,30 @@
             
             context () {
                 return this.store ? this.store.createContextFromId(this.docid) : {};
-            },
-            
-            path () {
-                return this.context.__path__;
-            },
-            
-            evaluate () {
-                return this.store.parseDocument(this.source);
-            },
-            
-            sourcePromise () {
-                return this.store.read(this.path);
-            },
-            
-            contentPromise () {
-                return this.evaluate(this.context);
             }
         },
         
         watch: {
             
-            'sourcePromise': async function () {
-                this.source = await this.sourcePromise;
-                this.editorContent = this.source;
-            },
-            
-            'contentPromise': async function () {
-                const {text, data} = await this.contentPromise;
-                this.text = text;
-                this.data = data;
-                this.$emit('doc-rendered', data);
-            },
-            
-            'source': function () {
-                this.editorContent = this.source;
+            context () {
+                this.render();
             }
         },
         
         methods: {
+            
+            async render () {
+                if (this.context.__path__ !== this.path) {
+                    this.path = this.context.__path__;
+                    this.source = await this.store.read(this.path);
+                    this.editorContent = this.source;
+                    this.evaluate = this.store.parseDocument(this.source);
+                }
+                const {text, data} = await this.evaluate(this.context);
+                this.text = text;
+                this.data = data;
+                this.$emit('doc-rendered', data);
+            },
             
             commit () {
                 this.source = this.editorContent;
@@ -101,6 +88,7 @@
 
     .olo-document {
         height: 100%;
+        padding-top: 2em;
     }
 
 </style>
