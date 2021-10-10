@@ -92,7 +92,6 @@
 
     .olo-document {
         height: 100%;
-        padding-top: 2em;
     }
 
 </style>

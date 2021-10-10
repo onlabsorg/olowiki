@@ -56,6 +56,9 @@
             @doc-rendered="docData = $event"
             >
         </olo-document>
+        <v-footer id="olo-footer" class="centered text-center">
+            <i>oloWiki v{{version}} - Copyright 2021 OnLabs.org</i>
+        </v-footer> 
     </v-main>
     
     <v-snackbar
@@ -109,7 +112,8 @@ export default {
             show: false,
             text: "",
             timeout: 2000,
-        }
+        },
+        version: require('../package.json').version
     }),
     
     computed: {
@@ -283,6 +287,15 @@ export default {
     
     .v-navigation-drawer__border {
         width: 0px!important;
+    }
+
+    #olo-footer.v-footer {
+        background-color: #D0D0D4;
+        text-align: center;
+        justify-content: center;
+        color: #848484;
+        font-size: 10pt;
+        padding: 0.5em;
     }
     
     .olo-document {
