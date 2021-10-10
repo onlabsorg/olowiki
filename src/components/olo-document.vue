@@ -1,5 +1,5 @@
 <template>
-    <v-card class="olo-document" rounded>
+    <v-card class="olo-document" elevation="3" rounded>
         
         <olo-viewer
             v-if="mode == 'view'"
@@ -80,6 +80,10 @@
                 await this.store.delete(this.path);
                 this.source = "";
             }
+        },
+        
+        async mounted () {
+            await this.render();
         }
     }
 </script>

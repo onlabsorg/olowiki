@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app flat clipped-left color="#DDDDDE">
+    <v-app-bar app flat clipped-left color="#D0D0D4">
 
         <v-app-bar-nav-icon @click.stop="showDrawer=!showDrawer"></v-app-bar-nav-icon>
       
@@ -34,7 +34,7 @@
 
     </v-app-bar>
     
-    <v-navigation-drawer app clipped v-model="showDrawer" color="#DDDDDE" hide-overlay>
+    <v-navigation-drawer app clipped v-model="showDrawer" color="#D0D0D4" hide-overlay>
         <olo-tree 
             :store="store" 
             root="/home/"
@@ -278,7 +278,7 @@ export default {
     }
     
     .background {
-        background-color: #DDDDDE;
+        background-color: #D0D0D4;
     }
     
     .v-navigation-drawer__border {
