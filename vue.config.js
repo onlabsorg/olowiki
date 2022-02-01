@@ -19,9 +19,9 @@ module.exports = {
         
         before (app) {
             const express = require('express');
-            const homeStore = new olo.FileStore(`${__dirname}/test/home`);
-            app.use('/home', olo.HTTPServer.createMiddleware(homeStore));
-            app.use('/help', express.static(`${__dirname}/docs/help`));
+            const rootStore = new olo.FileStore(`${__dirname}/test/root-store`);
+            app.use('/docs', olo.HTTPServer.createMiddleware(rootStore));
+            app.use('/about', express.static(`${__dirname}/dist/about`));
         }
     }
 }

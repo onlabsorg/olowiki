@@ -1,5 +1,5 @@
 <template>
-    <v-card class="olo-document" elevation="3" rounded>
+    <v-card class="olo-document" elevation="0" rounded>
         
         <olo-viewer
             v-if="mode == 'view'"
@@ -19,6 +19,10 @@
 </template>
 
 <script>
+    import Vue from 'vue';
+    import AsyncComputed from 'vue-async-computed';
+    Vue.use(AsyncComputed);
+
     export default {
         name: "olo-document",
         
@@ -30,11 +34,7 @@
         props: ['store', 'docid', 'mode'],
         
         data: () => ({
-            path: "",
             source: "",
-            evaluate: () => ({}),
-            text: "",
-            data: {},
             editorContent: "",
         }),
         
@@ -42,30 +42,67 @@
             
             context () {
                 return this.store ? this.store.createContextFromId(this.docid) : {};
+            },
+            
+            path () {
+                return this.context.__path__;
+            },
+            
+            evaluate () {
+                return this.store.parseDocument(this.source);
+            },
+
+            text () {
+                return this.doc.text;
+            },
+            
+            data () {
+                return this.doc.data;
+            }
+        },
+        
+        asyncComputed: {
+            
+            fileContent: {
+                
+                async get () {
+                    try {
+                        return this.store.read(this.path);
+                    } catch (error) {
+                        return `<p><b>Failed to load ${this.path}</b></p>
+                                <code><pre>${error.message}</pre></code>`
+                    }
+                },
+                
+                default: ""
+            },
+
+            doc: {
+                
+                async get () {
+                    return this.evaluate(this.context);
+                },
+                
+                default: {text:"", data:{}}
             }
         },
         
         watch: {
             
-            context () {
-                this.render();
+            fileContent () {
+                this.source = this.fileContent;
+            },
+            
+            source () {
+                this.editorContent = this.source;
+            },
+            
+            doc () {
+                this.$emit('doc-rendered', this.doc.data);
             }
         },
         
         methods: {
-            
-            async render () {
-                if (this.context.__path__ !== this.path) {
-                    this.path = this.context.__path__;
-                    this.source = await this.store.read(this.path);
-                    this.editorContent = this.source;
-                    this.evaluate = this.store.parseDocument(this.source);
-                }
-                const {text, data} = await this.evaluate(this.context);
-                this.text = text;
-                this.data = data;
-                this.$emit('doc-rendered', data);
-            },
             
             commit () {
                 this.source = this.editorContent;
@@ -80,10 +117,6 @@
                 await this.store.delete(this.path);
                 this.source = "";
             }
-        },
-        
-        async mounted () {
-            await this.render();
         }
     }
 </script>

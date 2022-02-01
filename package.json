@@ -3,32 +3,32 @@
   "version": "0.13.3",
   "description": "Wiki based on olojs documents",
   "keywords": [
-      "wiki",
-      "swan",
-      "olojs",
-      "olojs-cli",
-      "browser",
-      "cms"
+    "wiki",
+    "swan",
+    "olojs",
+    "olojs-cli",
+    "browser",
+    "cms"
   ],
   "homepage": "https://github.com/onlabsorg/olowiki#readme",
   "bugs": {
     "url": "https://github.com/onlabsorg/olowiki/issues"
   },
-  "author": "Marcello Del Buono <m.delbuono@onlabs.org>",
+  "author": "Marcello Del Buono",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/onlabsorg/olowiki.git"
   },
-  "main": "index.js",  
+  "main": "index.js",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "develop": "vue-cli-service build --mode develop --watch",
     "lint": "vue-cli-service lint"
   },
-  "author": "Marcello Del Buono",
   "license": "ISC",
   "dependencies": {
-    "@onlabsorg/olojs": "0.21.x",
+    "@onlabsorg/olojs": "^0.21.7",
     "brace": "^0.11.1",
     "core-js": "^3.6.5",
     "dompurify": "^2.3.3",

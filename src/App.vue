@@ -1,43 +1,37 @@
 <template>
   <v-app>
-    <v-app-bar app flat clipped-left color="#D0D0D4">
-
-        <v-app-bar-nav-icon @click.stop="showDrawer=!showDrawer"></v-app-bar-nav-icon>
       
-        <v-toolbar-title>{{ docTitle }}</v-toolbar-title>
+    <v-app-bar app flat color="#FFFFFF">
 
+        <v-btn icon @click.stop="showDrawer=true" v-if="!showDrawer">
+            <v-icon>mdi-menu</v-icon>
+        </v-btn>
+        
         <v-spacer></v-spacer>
-
-        <v-btn icon v-if="mode==='view'" @click="mode='edit'">
-            <v-icon>mdi-pencil</v-icon>
+        
+        <v-btn icon @click.stop="showCommands=true" v-if="!showCommands">
+            <v-icon>mdi-view-list</v-icon>
         </v-btn>
-      
-        <v-btn icon v-if="mode === 'edit'" @click="commit(); mode='view'">
-            <v-icon>mdi-check</v-icon>
-        </v-btn>
-
-        <v-menu offset-y>
-            <template v-slot:activator="{ on, attrs }">
-                <v-btn icon v-bind="attrs" v-on="on">
-                    <v-icon>mdi-dots-vertical</v-icon>
-                </v-btn>
-            </template>
-            <v-list>
-                <olo-menu-item icon="mdi-content-save" title="Save"      kbshortcut="CTRL-S" @click="save"              ></olo-menu-item>
-                <olo-menu-item icon="mdi-content-copy" title="Duplicate" kbshortcut=""       @click="copyItem(docPath)" ></olo-menu-item>
-                <olo-menu-item icon="mdi-delete"       title="Delete"    kbshortcut=""       @click="deleteDoc(docPath)"></olo-menu-item>
-                <olo-menu-item icon="mdi-download"     title="Download"  kbshortcut=""       @click="download(docPath)" ></olo-menu-item>
-                <v-divider></v-divider>
-                <olo-menu-item icon="mdi-help-circle"  title="About"     kbshortcut=""       @click="setHash('/help/about')"></olo-menu-item>
-            </v-list>
-        </v-menu>
 
     </v-app-bar>
-    
-    <v-navigation-drawer app clipped v-model="showDrawer" color="#D0D0D4" hide-overlay>
+
+
+    <!-- Navigation panel -->
+    <v-navigation-drawer app v-model="showDrawer" hide-overlay>
+        <v-toolbar dark elevation="0">
+            
+            <v-toolbar-title>Home</v-toolbar-title>
+            
+            <v-spacer></v-spacer>
+
+            <v-btn icon @click="showDrawer=false">
+                <v-icon>mdi-close</v-icon>
+            </v-btn>
+            
+        </v-toolbar>
         <olo-tree 
             :store="store" 
-            root="/home/"
+            root="/"
             :active="docPath"
             @update:active="handleActiveTreeItemChange"
             @add-item="addDocTo($event)"
@@ -48,7 +42,35 @@
         </olo-tree>
     </v-navigation-drawer>
 
-    <v-main class="background">
+
+    <!-- Commands menu -->
+    <v-navigation-drawer app right v-model="showCommands" hide-overlay>
+        <v-toolbar dark elevation="0">
+            
+            <v-toolbar-title>Document</v-toolbar-title>
+            
+            <v-spacer></v-spacer>
+
+            <v-btn icon @click="showCommands=false">
+                <v-icon>mdi-close</v-icon>
+            </v-btn>
+            
+        </v-toolbar>
+
+        <v-list>
+            <olo-menu-item icon="mdi-pencil"       title="Edit"      kbshortcut="CTRL-ENTER" @click="mode='edit'"       v-if="mode==='view'"></olo-menu-item>
+            <olo-menu-item icon="mdi-check"        title="Render"    kbshortcut="CTRL-ENTER" @click="mode='view'"       v-if="mode==='edit'"></olo-menu-item>
+            <olo-menu-item icon="mdi-content-save" title="Save"      kbshortcut="CTRL-S"     @click="save"              ></olo-menu-item>
+            <olo-menu-item icon="mdi-content-copy" title="Duplicate" kbshortcut=""           @click="copyItem(docPath)" ></olo-menu-item>
+            <olo-menu-item icon="mdi-delete"       title="Delete"    kbshortcut=""           @click="deleteDoc(docPath)"></olo-menu-item>
+            <olo-menu-item icon="mdi-download"     title="Download"  kbshortcut=""           @click="download(docPath)" ></olo-menu-item>
+            <v-divider></v-divider>
+            <olo-menu-item icon="mdi-help-circle"  title="About"     kbshortcut=""           @click="setHash(about)"></olo-menu-item>
+        </v-list>
+    </v-navigation-drawer>
+
+
+    <v-main>
         <olo-document ref="document"
             :store="store" 
             :docid="hash"
@@ -56,8 +78,9 @@
             @doc-rendered="docData = $event"
             >
         </olo-document>
+        <v-divider></v-divider>
         <v-footer id="olo-footer" class="centered text-center">
-            <i>oloWiki v{{version}} - Copyright 2021 OnLabs.org</i>
+            <i>oloWiki v{{version}} - Copyright 2022 OnLabs.org</i>
         </v-footer> 
     </v-main>
     
@@ -85,14 +108,14 @@
 </template>
 
 <script>
-import * as pathlib from 'path';
-import store from './store';
 import OloDocument from './components/olo-document';
 import OloTree from './components/olo-tree';
 import {detectKeyString} from 'key-string';
 
 export default {
     name: 'App',
+    
+    props: ['store', 'about'],
 
     components: {
         'olo-document': OloDocument,
@@ -102,10 +125,10 @@ export default {
     },
 
     data: () => ({
-        store: store,
-        hash: "/home/",
+        hash: "",
         mode: "view",
-        showDrawer: true,
+        showDrawer: false,
+        showCommands: false,
         docData: {__path__:"", __title__:"Loading ..."},
         activeTreeItem: [],
         message: {
@@ -120,10 +143,6 @@ export default {
     
         docPath () {
             return this.docData ? this.docData.__path__ : this.hash.split('?')[0];
-        },
-        
-        docTitle () {
-            return this.docData && this.docData.__title__ ? this.docData.__title__ : this.docPath;
         }
     },
     
@@ -134,16 +153,16 @@ export default {
             if (hash) {
                 this.hash = hash;
             } else {
-                this.setHash('/home/');
+                this.setHash('/');
             }
         },
         
         setHash (docId) {
-            location.hash = pathlib.normalize(`/${docId}`);
+            location.hash = this.store.normalizePath(docId);
         },
         
         handleActiveTreeItemChange (activeItemPath) {
-            if (activeItemPath.slice(0, 6) === '/home/') {
+            if (activeItemPath.slice(0, 1) === '/') {
                 this.setHash(activeItemPath);
             }
         },
@@ -281,16 +300,8 @@ export default {
         overflow-y: auto 
     }
     
-    .background {
-        background-color: #D0D0D4;
-    }
-    
-    .v-navigation-drawer__border {
-        width: 0px!important;
-    }
-
     #olo-footer.v-footer {
-        background-color: #D0D0D4;
+        background-color: #FFFFFF;
         text-align: center;
         justify-content: center;
         color: #848484;
@@ -299,7 +310,7 @@ export default {
     }
     
     .olo-document {
-        margin-left: 10%;
-        margin-right: 10%;
+        margin-left: 5%;
+        margin-right: 5%;
     }
 </style>

@@ -1,6 +1,6 @@
 <template>
-    <v-treeview
-        dense rounded hoverable color="black"
+    <v-treeview class="olo-tree"
+        dense hoverable color="black"
 
         :items="children"
         :load-children="injectChildren"

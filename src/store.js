@@ -8,10 +8,10 @@ const normalizePath = path => pathlib.normalize(`/${path}`);
 
 
 
-class ObservableStore extends olo.Hub {
+class ObservableStore extends olo.Router {
     
-    constructor (homeStore) {
-        super(homeStore);
+    constructor (routes) {
+        super(routes);
         this._listeners = [];
     }
 
@@ -55,12 +55,7 @@ class ObservableStore extends olo.Hub {
 
 
 
-class WikiStore extends ObservableStore {
-    
-    constructor (homeStore, documentationStore) {
-        super(homeStore);
-        this.mount('/help', documentationStore);
-    }
+export default class WikiStore extends ObservableStore {
     
     createContext (docId) {
         const context = super.createContext(docId);
@@ -70,11 +65,6 @@ class WikiStore extends ObservableStore {
         return context;
     }
     
-    async read (path) {
-        console.log('@src/store: WikiStore.read', path);
-        return await super.read(path);
-    }
-
     async exists (path) {
         const docSource = await this.read(path);
         return docSource !== "";
@@ -148,16 +138,6 @@ class WikiStore extends ObservableStore {
         }
     }
 }
-
-
-
-const homeURL = String(new URL('/home', location.href));
-const homeStore = new olo.HTTPStore(homeURL);
-
-const helpURL = String(new URL('/help', location.href));
-const helpStore = new olo.HTTPStore(helpURL, {extension:".olo"});
-
-export default new WikiStore(homeStore, helpStore);
 
 
 
