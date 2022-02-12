@@ -1,6 +1,30 @@
 # oloWiki
 
-This is a wiki based on [olojs] documents. It can be used in two ways:
+This is a wiki based on [olojs] documents. 
+  
+-----
+  
+![view mode with menus](./docs/screenshot-view-menus.png)
+*(Screenshot of olowiki in view mode)*
+
+-----
+
+![edit mode with menus](./docs/screenshot-edit-menus.png)
+*(Screenshot of olowiki in edit mode)*
+
+-----
+
+![view mode without menus](./docs/screenshot-view-no-menus.png)
+*(Screenshot of olowiki in distraction-free view mode)*
+
+-----
+
+![edit mode without menus](./docs/screenshot-edit-no-menus.png)
+*(Screenshot of olowiki in distraction-free edit mode)*
+
+-----
+  
+Olowiki can be used in two ways:
 
 * By adding oloWiki to [stilo] as plugin and execute `stilo run wiki` at the 
   command line
@@ -32,10 +56,10 @@ stilo run wiki
 ```
 
 You can now render and edit the olojs documents contained in `/path/to/home`
-in the browser at `http://localhost:8010/#/home/path/to/doc`.
+in the browser at `http://localhost:8010/#/path/to/doc`.
 
 > The URL hash is interpreted as a document ID, therefore it can also contain
-> document arguments. For example: #/home/path/to/doc?x=10;y=20;z=30
+> document arguments. For example: #/path/to/doc?x=10;y=20;z=30
 
 
 ### Create a custom oloWiki server
@@ -67,7 +91,7 @@ server.listen(8010, () => {
 ```
 
 You can now render and edit the olojs documents contained in `/path/to/store/directory`
-in the browser at `http://localhost:8010/#/home/`.
+in the browser at `http://localhost:8010/#/path/to/doc`.
 
 
 ### License
@@ -79,11 +103,8 @@ license.
 * [stilo] is a command-line interface written in NodeJS that allows you to
   create and mange local olojs document repositories.
 * [olojs] is a distributed content management system
-* [oloviewer] is a HTTP client and [stilo] plugin for rendering olojs
-  documents in the browser
 
 
 [olojs]: https://github.com/onlabsorg/olojs/blob/master/README.md
 [stilo]: https://github.com/onlabsorg/stilo/blob/main/README.md
-[oloviewer]: https://github.com/onlabsorg/oloviewer/blob/main/README.md
 

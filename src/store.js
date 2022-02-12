@@ -65,6 +65,13 @@ export default class WikiStore extends ObservableStore {
         return context;
     }
     
+    async loadConfig (path="/.wiki/config") {
+        const configSource = await this.read(path);
+        const configContext = await this.createContext(path);
+        const {data} = await this.parseDocument(configSource)(configContext);
+        return data;
+    }
+    
     async exists (path) {
         const docSource = await this.read(path);
         return docSource !== "";
@@ -138,12 +145,3 @@ export default class WikiStore extends ObservableStore {
         }
     }
 }
-
-
-
-
-
-
-
-
-

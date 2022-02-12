@@ -1,2 +1,6 @@
 <% __render__ = require 'markdown' %>
+<% debug = require 'debug' %>
 # doc at <% __path__ %>
+
+
+<% import 'https://raw.githubusercontent.com/onlabsorg/olowiki/master/README.md' %>

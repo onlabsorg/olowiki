@@ -5,12 +5,11 @@ import WikiStore from './store'
 
 Vue.config.productionTip = false
 
-export default options => new Vue({
+export default (element, routes) => new Vue({
   vuetify,
   render: h => h(App, {
       props: {
-          store: new WikiStore(options.routes),
-          about: options.about
+          store: new WikiStore(routes)
       }
   })
-}).$mount('#app')
+}).$mount(element)

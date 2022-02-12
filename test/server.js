@@ -17,13 +17,12 @@ function exec (command) {
     });
 }
 
-const homeStore = new olo.FileStore(`${__dirname}/home`);
+const homeStore = new olo.FileStore(`${__dirname}/root-store`);
 
 const server = Server(homeStore);
 
 server.listen(8010, async err => {
     if (err) throw err;
     console.log("olowiki test server listening on port 8010")
-    //console.log("Go to http://localhost:8010#/home/test")
-    await exec(`xdg-open http://localhost:8010#/home/test`);
+    await exec(`xdg-open http://localhost:8010#/test`);
 });

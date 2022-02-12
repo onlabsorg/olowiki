@@ -1,6 +1,7 @@
 <template>
   <v-app>
       
+    <!-- Toolbar -->
     <v-app-bar app flat color="#FFFFFF">
 
         <v-btn icon @click.stop="showDrawer=true" v-if="!showDrawer">
@@ -16,20 +17,18 @@
     </v-app-bar>
 
 
-    <!-- Navigation panel -->
+    <!-- Content Navigation Panel -->
     <v-navigation-drawer app v-model="showDrawer" hide-overlay>
-        <v-toolbar dark elevation="0">
-            
-            <v-toolbar-title>Home</v-toolbar-title>
-            
+        
+        <v-toolbar dark elevation="0">    
+            <v-toolbar-title>Content</v-toolbar-title>
             <v-spacer></v-spacer>
-
             <v-btn icon @click="showDrawer=false">
                 <v-icon>mdi-close</v-icon>
             </v-btn>
-            
         </v-toolbar>
-        <olo-tree 
+        
+        <olo-tree v-if="!config.items"
             :store="store" 
             root="/"
             :active="docPath"
@@ -40,21 +39,26 @@
             @download-item="download($event)"
             >
         </olo-tree>
+        
+        <olo-index v-if="config.items"
+            :items="config.items"
+            :active="docPath"
+            @update:active="handleActiveTreeItemChange"
+            >
+        </olo-index>
+        
     </v-navigation-drawer>
 
 
-    <!-- Commands menu -->
+    <!-- Commands Menu -->
     <v-navigation-drawer app right v-model="showCommands" hide-overlay>
+        
         <v-toolbar dark elevation="0">
-            
             <v-toolbar-title>Document</v-toolbar-title>
-            
             <v-spacer></v-spacer>
-
             <v-btn icon @click="showCommands=false">
                 <v-icon>mdi-close</v-icon>
             </v-btn>
-            
         </v-toolbar>
 
         <v-list>
@@ -64,30 +68,36 @@
             <olo-menu-item icon="mdi-content-copy" title="Duplicate" kbshortcut=""           @click="copyItem(docPath)" ></olo-menu-item>
             <olo-menu-item icon="mdi-delete"       title="Delete"    kbshortcut=""           @click="deleteDoc(docPath)"></olo-menu-item>
             <olo-menu-item icon="mdi-download"     title="Download"  kbshortcut=""           @click="download(docPath)" ></olo-menu-item>
-            <v-divider></v-divider>
-            <olo-menu-item icon="mdi-help-circle"  title="About"     kbshortcut=""           @click="setHash(about)"></olo-menu-item>
         </v-list>
+        
+        <template v-slot:append>
+            <v-list>
+                <v-divider></v-divider>
+                <olo-menu-item icon="mdi-cog-outline" title="Settings" kbshortcut="" @click="setHash('/.wiki/config')"    ></olo-menu-item>
+                <olo-menu-item icon="mdi-help-circle" title="Help"     kbshortcut="" @click="setHash('/.wiki/help/index')"></olo-menu-item>
+            </v-list>
+        </template>
     </v-navigation-drawer>
 
 
+    <!-- Main Content -->
     <v-main>
-        <olo-document ref="document"
+        <olo-document ref="document" :class="mode"
             :store="store" 
             :docid="hash"
             :mode="mode"
             @doc-rendered="docData = $event"
             >
         </olo-document>
-        <v-divider></v-divider>
-        <v-footer id="olo-footer" class="centered text-center">
-            <i>oloWiki v{{version}} - Copyright 2022 OnLabs.org</i>
-        </v-footer> 
     </v-main>
+
     
+    <!-- Toast Messageses -->
     <v-snackbar
         v-model="message.show"
         :timeout="message.timeout"
         >
+        
         {{ message.text }}
 
         <template v-slot:action="{ attrs }">
@@ -102,6 +112,8 @@
         </template>
     </v-snackbar>
     
+    
+    <!-- Input Dialog -->
     <olo-input ref="question"></olo-input>
     
   </v-app>
@@ -109,17 +121,17 @@
 
 <script>
 import OloDocument from './components/olo-document';
-import OloTree from './components/olo-tree';
 import {detectKeyString} from 'key-string';
 
 export default {
     name: 'App',
     
-    props: ['store', 'about'],
+    props: ['store'],
 
     components: {
         'olo-document': OloDocument,
-        'olo-tree': OloTree,
+        'olo-tree': () => import('./components/olo-tree'),
+        'olo-index': () => import('./components/olo-index'),
         'olo-menu-item': () => import('./components/olo-menu-item'),
         'olo-input': () => import('./components/olo-input'),
     },
@@ -136,7 +148,7 @@ export default {
             text: "",
             timeout: 2000,
         },
-        version: require('../package.json').version
+        config: {}
     }),
     
     computed: {
@@ -151,7 +163,8 @@ export default {
         updateHash () {
             const hash = location.hash.slice(1);            
             if (hash) {
-                this.hash = hash;
+                this.hash = this.store.normalizePath(hash);
+                if (this.hash !== hash) this.setHash(this.hash);
             } else {
                 this.setHash('/');
             }
@@ -285,7 +298,8 @@ export default {
         }
     },
     
-    mounted () {
+    async mounted () {
+        this.config = await this.store.loadConfig();
         document.body.addEventListener("keydown", 
                 this.handleKeyboardCommand.bind(this), true);
         window.addEventListener('hashchange', this.updateHash.bind(this));
@@ -300,17 +314,4 @@ export default {
         overflow-y: auto 
     }
     
-    #olo-footer.v-footer {
-        background-color: #FFFFFF;
-        text-align: center;
-        justify-content: center;
-        color: #848484;
-        font-size: 10pt;
-        padding: 0.5em;
-    }
-    
-    .olo-document {
-        margin-left: 5%;
-        margin-right: 5%;
-    }
 </style>

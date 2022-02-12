@@ -86,7 +86,12 @@ export default {
     methods: {
         
         async loadChildren (path) {
-            const names = await this.store.list(path);
+            let names;
+            try {
+                names = await this.store.list(path);
+            } catch (e) {
+                names = [];
+            }
             const directories = []; 
             const documents = [];
             for (let name of names.sort().filter(n => n !== "" && n[0] !== ".")) {
