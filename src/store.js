@@ -57,14 +57,6 @@ class ObservableStore extends olo.Router {
 
 export default class WikiStore extends ObservableStore {
     
-    createContext (docId) {
-        const context = super.createContext(docId);
-        context.__oloWiki__ = {
-            version: require('../package.json').version
-        }
-        return context;
-    }
-    
     async loadConfig (path="/.wiki/config") {
         const configSource = await this.read(path);
         const configContext = await this.createContext(path);
@@ -72,6 +64,14 @@ export default class WikiStore extends ObservableStore {
         return data;
     }
     
+    createContext (docId) {
+        const context = super.createContext(docId);
+        context.__oloWiki__ = {
+            version: require('../package.json').version
+        }
+        return context;
+    }
+        
     async exists (path) {
         const docSource = await this.read(path);
         return docSource !== "";

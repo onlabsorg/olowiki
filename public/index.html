@@ -16,12 +16,14 @@
     <div id="app"></div>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            olo.wiki = olo.Wiki('#app', {                
-                '/'      : new olo.HTTPStore(String(new URL('/docs', location.href))),
-                'http:/' : new olo.HTTPStore('http:/'),
-                'https:/': new olo.HTTPStore('https:/'),
-                'local:/': new olo.BrowserStore('olojs_local_store'),
-                'temp:/' : new olo.MemoryStore()
+            olo.wiki = olo.Wiki('#app', { 
+                routes: {
+                    '/'      : new olo.HTTPStore(String(new URL('/docs', location.href))),
+                    'http:/' : new olo.HTTPStore('http:/'),
+                    'https:/': new olo.HTTPStore('https:/'),
+                    'local:/': new olo.BrowserStore('olojs_local_store'),
+                    'temp:/' : new olo.MemoryStore()
+                }               
             });
         });
     </script>

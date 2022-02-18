@@ -1,17 +1,21 @@
-<h1>Settings</h1>
-<p>Edit this document to change the olowiki settings.</p>
+<% __render__ = require 'markdown' %>
+
+Settings
+================================================================================
+
+Edit this document to change the olowiki settings, then reload the app.
 
 
 
-<h2>items</h2>
-<p>
-    The items namespace contains the left-hand navigation tree strucuture.
-    If omitted, the navigation tree will present the store document tree
-    hierarchy instead.
-</p>
+`tree`
+--------------------------------------------------------------------------------
+
+The items namespace contains the left-hand navigation tree strucuture.
+If omitted, the navigation tree will present the store document tree
+hierarchy instead.
 
 <%  # Rename `_item` to `item` to make it effective 
-    _items = [
+    _tree = [
 
         {name: "Group 1",  id="/dir1/",  children=[
         
@@ -36,3 +40,21 @@
         {name:"Document 3",  id="/doc3"}
 
     ]%>
+
+
+
+`homePath`
+--------------------------------------------------------------------------------
+
+This string contains the location of the home document.
+
+<% #homePath = "/" %>
+
+
+
+`helpPath`
+--------------------------------------------------------------------------------
+
+This string contains the location of the help document.
+
+<% #helpPath = "/.wiki/help/index" %>

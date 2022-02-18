@@ -28,7 +28,7 @@
             </v-btn>
         </v-toolbar>
         
-        <olo-tree v-if="!config.items"
+        <olo-tree v-if="!tree"
             :store="store" 
             root="/"
             :active="docPath"
@@ -40,8 +40,8 @@
             >
         </olo-tree>
         
-        <olo-index v-if="config.items"
-            :items="config.items"
+        <olo-index v-if="tree"
+            :items="tree"
             :active="docPath"
             @update:active="handleActiveTreeItemChange"
             >
@@ -73,8 +73,8 @@
         <template v-slot:append>
             <v-list>
                 <v-divider></v-divider>
-                <olo-menu-item icon="mdi-cog-outline" title="Settings" kbshortcut="" @click="setHash('/.wiki/config')"    ></olo-menu-item>
-                <olo-menu-item icon="mdi-help-circle" title="Help"     kbshortcut="" @click="setHash('/.wiki/help/index')"></olo-menu-item>
+                <olo-menu-item icon="mdi-cog-outline" title="Settings" kbshortcut="" @click="setHash(paths.config)"></olo-menu-item>
+                <olo-menu-item icon="mdi-help-circle" title="Help"     kbshortcut="" @click="setHash(paths.help)  "></olo-menu-item>
             </v-list>
         </template>
     </v-navigation-drawer>
@@ -126,7 +126,7 @@ import {detectKeyString} from 'key-string';
 export default {
     name: 'App',
     
-    props: ['store'],
+    props: ['store', 'paths', 'tree'],
 
     components: {
         'olo-document': OloDocument,
@@ -148,7 +148,6 @@ export default {
             text: "",
             timeout: 2000,
         },
-        config: {}
     }),
     
     computed: {
@@ -298,8 +297,7 @@ export default {
         }
     },
     
-    async mounted () {
-        this.config = await this.store.loadConfig();
+    mounted () {
         document.body.addEventListener("keydown", 
                 this.handleKeyboardCommand.bind(this), true);
         window.addEventListener('hashchange', this.updateHash.bind(this));
