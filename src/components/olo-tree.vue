@@ -2,7 +2,7 @@
     <v-treeview class="olo-tree"
         dense hoverable color="black"
 
-        :items="children"
+        :items="items"
         :load-children="injectChildren"
         
         activatable
@@ -18,7 +18,7 @@
             </v-icon>
         </template>
         <template v-slot:append="{ item, leaf }">
-            <v-menu offset-y>
+            <v-menu offset-y v-if="item.mutable">
                 <template v-slot:activator="{ on, attrs }">
                     <v-btn icon v-bind="attrs" v-on="on">
                         <v-icon>mdi-dots-vertical</v-icon>
@@ -70,11 +70,7 @@ export default {
         'olo-menu-item': () => import('./olo-menu-item'),
     },
     
-    props: ['store', 'root', 'active'],
-    
-    data: () => ({
-        children: [],
-    }),
+    props: ['store', 'items', 'active'],
     
     computed: {
     
@@ -85,7 +81,7 @@ export default {
     
     methods: {
         
-        async loadChildren (path) {
+        async loadChildren (path, mutable=false) {
             let names;
             try {
                 names = await this.store.list(path);
@@ -97,6 +93,7 @@ export default {
             for (let name of names.sort().filter(n => n !== "" && n[0] !== ".")) {
                 const child = {};
                 child.id = pathlib.normalize(`/${path}/${name}`);
+                child.mutable = mutable;
                 if (name.slice(-1) === "/") {
                     child.name = name.slice(0,-1);
                     child.children = [];
@@ -110,7 +107,9 @@ export default {
         },
         
         async injectChildren (item) {
-            item.children = await this.loadChildren(item.id);
+            if (item.mutable) {
+                item.children = await this.loadChildren(item.id, item.mutable);
+            }
         },
         
         notifyActiveItemChange (activeItems) {
@@ -118,7 +117,7 @@ export default {
         },
         
         async refresh (item) {            
-            const newChildren = await this.loadChildren(item.id);
+            const newChildren = await this.loadChildren(item.id, item.mutable);
             let lastIndex = 0;
             for (let newChild of newChildren) {
                 const child = item.children.find(child => child.id === newChild.id);
@@ -143,8 +142,9 @@ export default {
     },
     
     async mounted () {
-        this.children = await this.loadChildren(this.id);
-        this.store.onChange(() => this.refresh(this));
+        this.store.onChange(() => {
+            for (let item of this.items) this.refresh(item);
+        });
     }
 }
 </script>

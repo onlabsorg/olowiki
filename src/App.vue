@@ -28,9 +28,9 @@
             </v-btn>
         </v-toolbar>
         
-        <olo-tree v-if="!tree"
+        <olo-tree
             :store="store" 
-            root="/"
+            :items="config.tree"
             :active="docPath"
             @update:active="handleActiveTreeItemChange"
             @add-item="addDocTo($event)"
@@ -39,13 +39,6 @@
             @download-item="download($event)"
             >
         </olo-tree>
-        
-        <olo-index v-if="tree"
-            :items="tree"
-            :active="docPath"
-            @update:active="handleActiveTreeItemChange"
-            >
-        </olo-index>
         
     </v-navigation-drawer>
 
@@ -73,8 +66,8 @@
         <template v-slot:append>
             <v-list>
                 <v-divider></v-divider>
-                <olo-menu-item icon="mdi-cog-outline" title="Settings" kbshortcut="" @click="setHash(paths.config)"></olo-menu-item>
-                <olo-menu-item icon="mdi-help-circle" title="Help"     kbshortcut="" @click="setHash(paths.help)  "></olo-menu-item>
+                <olo-menu-item icon="mdi-cog-outline" title="Settings" kbshortcut="" @click="setHash(configPath)     "></olo-menu-item>
+                <olo-menu-item icon="mdi-help-circle" title="Help"     kbshortcut="" @click="setHash(config.helpPath)"></olo-menu-item>
             </v-list>
         </template>
     </v-navigation-drawer>
@@ -120,25 +113,25 @@
 </template>
 
 <script>
-import OloDocument from './components/olo-document';
 import {detectKeyString} from 'key-string';
+import defaultConfig from './default-config';
 
 export default {
     name: 'App',
     
-    props: ['store', 'paths', 'tree'],
+    props: ['store', 'configPath'],
 
     components: {
-        'olo-document': OloDocument,
-        'olo-tree': () => import('./components/olo-tree'),
-        'olo-index': () => import('./components/olo-index'),
-        'olo-menu-item': () => import('./components/olo-menu-item'),
-        'olo-input': () => import('./components/olo-input'),
+        'olo-document'  : () => import('./components/olo-document'  ),
+        'olo-tree'      : () => import('./components/olo-tree'      ),
+        'olo-menu-item' : () => import('./components/olo-menu-item' ),
+        'olo-input'     : () => import('./components/olo-input'     ),
     },
 
     data: () => ({
         hash: "",
         mode: "view",
+        config: defaultConfig,
         showDrawer: false,
         showCommands: false,
         docData: {__path__:"", __title__:"Loading ..."},
@@ -151,22 +144,25 @@ export default {
     }),
     
     computed: {
-    
+        
         docPath () {
             return this.docData ? this.docData.__path__ : this.hash.split('?')[0];
-        }
+        },
     },
     
     methods: {
         
+        async updateConfig () {
+            const configSource = await this.store.read(this.configPath);
+            const configContext = await this.store.createContext(this.configPath);
+            const {data} = await this.store.parseDocument(configSource)(configContext);
+            this.config = Object.assign({}, defaultConfig, data);
+        },
+        
         updateHash () {
             const hash = location.hash.slice(1);            
-            if (hash) {
-                this.hash = this.store.normalizePath(hash);
-                if (this.hash !== hash) this.setHash(this.hash);
-            } else {
-                this.setHash('/');
-            }
+            this.hash = this.store.normalizePath(hash);
+            if (this.hash !== hash) this.setHash(this.hash);
         },
         
         setHash (docId) {
@@ -297,9 +293,15 @@ export default {
         }
     },
     
-    mounted () {
+    async mounted () {
+        // Load the configuration file
+        await this.updateConfig();
+        
+        // Setup the keyboard listener
         document.body.addEventListener("keydown", 
                 this.handleKeyboardCommand.bind(this), true);
+                
+        // Bind the hash to the active document
         window.addEventListener('hashchange', this.updateHash.bind(this));
         this.updateHash();
     }

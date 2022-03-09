@@ -57,13 +57,6 @@ class ObservableStore extends olo.Router {
 
 export default class WikiStore extends ObservableStore {
     
-    async loadConfig (path="/.wiki/config") {
-        const configSource = await this.read(path);
-        const configContext = await this.createContext(path);
-        const {data} = await this.parseDocument(configSource)(configContext);
-        return data;
-    }
-    
     createContext (docId) {
         const context = super.createContext(docId);
         context.__oloWiki__ = {
