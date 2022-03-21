@@ -60,7 +60,11 @@ export default class WikiStore extends ObservableStore {
     createContext (docId) {
         const context = super.createContext(docId);
         context.__oloWiki__ = {
-            version: require('../package.json').version
+            version: require('../package.json').version,
+        }
+        context.__docs__ = {
+            read: path => this.read(path),
+            list: path => this.list(path),
         }
         return context;
     }

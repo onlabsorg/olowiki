@@ -12,13 +12,7 @@ const Server = exports.Server = require('./lib/server');
 exports.stilo = {
     
     async __init__ (store) {
-        const configDocPath = "/.wiki/config";
-        if (await store.read(configDocPath) == "") {
-            const fs = require('fs');
-            const configDocSource = fs.readFileSync(`${__dirname}/template.wiki/config.olo`, "utf8");
-            await store.write(configDocPath, configDocSource);
-        }
-        store.mount('/.wiki/help/', new olo.FileStore(`${__dirname}/template.wiki/help/`));
+        store.mount('/.wiki/', new olo.FileStore(`${__dirname}/dist/.wiki/`));
         return store;
     },
     

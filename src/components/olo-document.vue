@@ -1,5 +1,5 @@
 <template>
-    <v-card class="olo-document" elevation="0" rounded>
+    <v-card class="olo-document" elevation="1" rounded="lg">
         
         <olo-viewer
             v-if="mode == 'view'"

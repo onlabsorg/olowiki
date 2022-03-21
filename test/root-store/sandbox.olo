@@ -1,0 +1,63 @@
+<% debug = require 'debug' %>
+
+<% Text = require 'text' %>
+
+<% item_names = __docs__.list('/') %>
+
+<% is_dir = item_name -> Text.tail 1 item_name == '/' %>
+
+<%  
+    create = item_name -> is_dir item_name ?
+            create_dir(Text.head(size item_name - 1)(item_name)) ;
+            create_doc item_name
+    %>
+
+<%  
+    create_dir = dir_name -> {
+        name: dir_name,
+        path: item.path + '/' + dir_name,
+        mutable: TRUE,
+        children: _load_children_of
+        }
+
+    %>
+    
+<%  
+    create_doc = doc_name -> {
+        name: doc_name,
+        path: '/path/to/' + doc_name,
+        mutable: TRUE
+        }
+
+    %>
+    
+
+<% 
+
+    _load_children = path -> {
+        Text = require 'text',
+        item_names = __docs__.list(path),
+        is_dir = item_name -> Text.tail(-1) item_name == '/',
+        dir_path = is_dir path ? path ; path + '/',
+        create = item_name -> is_dir item_name ?
+                create_dir(Text.head(size item_name - 1)(item_name)) ;
+                create_doc item_name,
+        create_dir = dir_name -> {
+            name: dir_name,
+            path: dir_path + dir_name,
+            mutable: TRUE,
+            children: item -> _load_children(item.path)
+            },
+        create_doc = doc_name -> {
+            name: doc_name,
+            path: dir_path + doc_name,
+            mutable: TRUE
+            },
+        filter = item -> item.name & item.name(0) != '.' ? item ; ()
+        }.[(dom item_names => i -> create(item_names(i))) => filter]
+    
+    %>
+    
+
+<% debug.log(_load_children '/') %>
+

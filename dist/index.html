@@ -8,7 +8,7 @@
     <title>oloWiki</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
-  <link href="/js/0.js" rel="prefetch"><link href="/js/1.js" rel="prefetch"><link href="/js/2.js" rel="prefetch"><link href="/js/3.js" rel="prefetch"><link href="/js/4.js" rel="prefetch"><link href="/js/5.js" rel="prefetch"><link href="/js/6.js" rel="prefetch"><link href="/js/7.js" rel="prefetch"><link href="/js/swan_modules/debug.js" rel="prefetch"><link href="/js/swan_modules/list.js" rel="prefetch"><link href="/js/swan_modules/markdown.js" rel="prefetch"><link href="/js/swan_modules/numb.js" rel="prefetch"><link href="/js/swan_modules/text.js" rel="prefetch"><link href="/js/swan_modules/time.js" rel="prefetch"><link href="/js/chunk-vendors.js" rel="preload" as="script"><link href="/js/index.js" rel="preload" as="script"></head>
+  <link href="/.wiki/js/0.js" rel="prefetch"><link href="/.wiki/js/1.js" rel="prefetch"><link href="/.wiki/js/2.js" rel="prefetch"><link href="/.wiki/js/3.js" rel="prefetch"><link href="/.wiki/js/4.js" rel="prefetch"><link href="/.wiki/js/5.js" rel="prefetch"><link href="/.wiki/js/6.js" rel="prefetch"><link href="/.wiki/js/7.js" rel="prefetch"><link href="/.wiki/js/swan_modules/debug.js" rel="prefetch"><link href="/.wiki/js/swan_modules/list.js" rel="prefetch"><link href="/.wiki/js/swan_modules/markdown.js" rel="prefetch"><link href="/.wiki/js/swan_modules/numb.js" rel="prefetch"><link href="/.wiki/js/swan_modules/text.js" rel="prefetch"><link href="/.wiki/js/swan_modules/time.js" rel="prefetch"><link href="/.wiki/js/chunk-vendors.js" rel="preload" as="script"><link href="/.wiki/js/index.js" rel="preload" as="script"></head>
   <body>
     <noscript>
       <strong>We're sorry but oloWiki doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
@@ -18,7 +18,8 @@
         document.addEventListener("DOMContentLoaded", () => {
             olo.wiki = olo.Wiki('#app', { 
                 routes: {
-                    '/'      : new olo.HTTPStore(String(new URL('/docs', location.href))),
+                    '/'      : new olo.HTTPStore(location.origin + "/docs/"),
+                    '/.wiki/': new olo.HTTPStore(location.origin + "/.wiki/"),
                     'http:/' : new olo.HTTPStore('http:/'),
                     'https:/': new olo.HTTPStore('https:/'),
                     'local:/': new olo.BrowserStore('olojs_local_store'),
@@ -29,5 +30,5 @@
         });
     </script>
     <!-- built files will be auto injected -->
-  <script type="text/javascript" src="/js/chunk-vendors.js"></script><script type="text/javascript" src="/js/index.js"></script></body>
+  <script type="text/javascript" src="/.wiki/js/chunk-vendors.js"></script><script type="text/javascript" src="/.wiki/js/index.js"></script></body>
 </html>

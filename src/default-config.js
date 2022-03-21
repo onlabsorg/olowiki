@@ -1,54 +1,32 @@
-export default {
+const pathlib = require('path');
+
+export default store => ({
 
     homePath: '/',
     
     helpPath: '/.wiki/help/index',
     
-    tree: [
-        
-        {
-            name: "Home",
-            id: '/',
-            mutable: true,
-            children: []
-        },
-        
-        {   name: "Group 1",  
-            id: "/dir1/",  
-            children: [
-        
-                {name: "Document 1.1", id: "/dir1/doc1"},
-                {name: "Document 1.2", id: "/dir1/doc2"},
-                {name: "Document 1.3", id: "/dir1/doc3"} 
-                
-                ]
-            },
+    tree: {
+        name: 'oloWiki',
+        path: '/',
+        mutable: true,            
+        children: self => loadChildren(store, self.path) 
+    }
+});
 
-        {   name: "Group 2",  
-            id: "/dir2/",  
-            children: [
 
-                {name: "Document 2.1", id: "/dir2/doc1"},
-                {name: "Document 2.2", id: "/dir2/doc2"},
-                {name: "Document 2.3", id: "/dir2/doc3"} 
-                
-                ]
-            },
-
-        {   name: "Group 3",  
-            id: "/dir3/",  
-            children: [
-        
-                {name: "Document 3.1", id: "/dir3/doc1"},
-                {name: "Document 3.2", id: "/dir3/doc2"},
-                {name: "Document 3.3", id: "/dir3/doc3"} 
-                
-                ]
-            },
-
-        {name: "Document 0.1",  id: "/doc1"},
-        {name: "Document 0.2",  id: "/doc2"},
-        {name: "Document 0.3",  id: "/doc3"}
-        
-    ]
+async function loadChildren (store, path) {
+    const items = await store.list(path);
+    return items.map(item_name => ({
+        name: item_name.slice(-1) == "/" ? item_name.slice(0,-1) : item_name,
+        path: pathlib.join(path, item_name),
+        mutable: true,
+        children: item_name.slice(-1) == "/" ? self => loadChildren(store, self.path) : undefined
+    })).filter(
+        item => item.name && item.name[0] !== "."
+    ).sort((item1, item2) => {
+        if (item1.children && !item2.children) return -1;
+        if (!item1.children && item2.children) return +1;
+        return item1.name.localeCompare(item2.name);            
+    });
 }

@@ -3,7 +3,7 @@
         dense hoverable color="black"
 
         :items="items"
-        :load-children="injectChildren"
+        :load-children="loadChildren"
         
         activatable
         :active="[active]"
@@ -62,6 +62,10 @@
 <script>
 import * as pathlib from 'path';
 
+import Vue from 'vue';
+import AsyncComputed from 'vue-async-computed';
+Vue.use(AsyncComputed);
+
 export default {
     
     name: 'olo-tree',
@@ -70,60 +74,37 @@ export default {
         'olo-menu-item': () => import('./olo-menu-item'),
     },
     
-    props: ['store', 'items', 'active'],
+    props: ['store', 'tree', 'active'],
     
-    computed: {
-    
-        id () {
-            return pathlib.normalize(`/${this.root}/`);
+    asyncComputed: {
+        
+        items: {
+            async get () {
+                if (!this.tree) return [];
+                const rootItem = createItem(this.tree);
+                await this.loadChildren(rootItem);
+                return rootItem.children;
+            },
+            default: []
         }
     },
     
     methods: {
         
-        async loadChildren (path, mutable=false) {
-            let names;
-            try {
-                names = await this.store.list(path);
-            } catch (e) {
-                names = [];
-            }
-            const directories = []; 
-            const documents = [];
-            for (let name of names.sort().filter(n => n !== "" && n[0] !== ".")) {
-                const child = {};
-                child.id = pathlib.normalize(`/${path}/${name}`);
-                child.mutable = mutable;
-                if (name.slice(-1) === "/") {
-                    child.name = name.slice(0,-1);
-                    child.children = [];
-                    directories.push(child);
-                } else {
-                    child.name = name;
-                    documents.push(child);
-                }
-            }
-            return directories.concat(documents);
-        },
-        
-        async injectChildren (item) {
-            if (item.mutable) {
-                item.children = await this.loadChildren(item.id, item.mutable);
+        async updateTree () {
+            for (let item of this.items) {
+                if (item.children && item.load) await this.updateChildren(item);
             }
         },
         
-        notifyActiveItemChange (activeItems) {
-            this.$emit('update:active', activeItems[0] || "");
-        },
-        
-        async refresh (item) {            
-            const newChildren = await this.loadChildren(item.id, item.mutable);
+        async updateChildren (item) {
+            const newChildren = await item.load();
             let lastIndex = 0;
             for (let newChild of newChildren) {
                 const child = item.children.find(child => child.id === newChild.id);
                 if (child) {
                     lastIndex = item.children.indexOf(child);
-                    if (child.children) await this.refresh(child);
+                    if (child.children) await this.updateChildren(child);
                 } else {
                     item.children.splice(lastIndex+1, 0, newChild);
                 }
@@ -138,14 +119,46 @@ export default {
                 const index = item.children.indexOf(child);
                 item.children.splice(index, 1);
             }
-        }
+        },
+        
+        async loadChildren (item) {
+            if (item.load) {
+                item.children = await item.load();
+            }
+        },
+        
+        async handleStoreChange (change) {
+            await this.updateTree();
+            return change;
+        },
+         
+        notifyActiveItemChange (activeItems) {
+            this.$emit('update:active', activeItems[0] || "");
+        }        
     },
     
     async mounted () {
-        this.store.onChange(() => {
-            for (let item of this.items) this.refresh(item);
-        });
+        this.store.onChange(this.handleStoreChange.bind(this));
     }
+}
+
+function createItem (itemDefinition) {
+    const item = {};
+    item.id = pathlib.normalize(itemDefinition.path || '/');
+    item.mutable = Boolean(itemDefinition.mutable);
+    item.name = String(itemDefinition.name || "");
+    if (typeof itemDefinition.children === "function") {
+        // TODO: unwrap should not be necessary after swan is fixed
+        item.load = async () => unwrap(await itemDefinition.children(itemDefinition)).map(createItem);
+        item.children = [];
+    } else if (Array.isArray(itemDefinition.children)) {
+        item.children = itemDefinition.children.map(createItem)
+    }
+    return item;
+}
+
+function unwrap (term) {
+    return typeof term.unwrap === "function" ? term.unwrap() : term;
 }
 </script>
 

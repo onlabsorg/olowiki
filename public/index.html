@@ -18,7 +18,8 @@
         document.addEventListener("DOMContentLoaded", () => {
             olo.wiki = olo.Wiki('#app', { 
                 routes: {
-                    '/'      : new olo.HTTPStore(String(new URL('/docs', location.href))),
+                    '/'      : new olo.HTTPStore(location.origin + "/docs/"),
+                    '/.wiki/': new olo.HTTPStore(location.origin + "/.wiki/", {extension:".olo"}),
                     'http:/' : new olo.HTTPStore('http:/'),
                     'https:/': new olo.HTTPStore('https:/'),
                     'local:/': new olo.BrowserStore('olojs_local_store'),

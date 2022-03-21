@@ -1,4 +1,3 @@
-const olo = require('@onlabsorg/olojs');
 
 module.exports = {
     
@@ -11,6 +10,8 @@ module.exports = {
         },
     },
     
+    assetsDir: ".wiki",
+    
     transpileDependencies: [
         'vuetify'
     ],
@@ -18,6 +19,7 @@ module.exports = {
     devServer: {
         
         before (app) {
+            const olo = require('@onlabsorg/olojs');
             const express = require('express');
             const rootStore = new olo.FileStore(`${__dirname}/test/root-store`);
             app.use('/docs', olo.HTTPServer.createMiddleware(rootStore));

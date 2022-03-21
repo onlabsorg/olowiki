@@ -2,35 +2,25 @@
   <v-app>
       
     <!-- Toolbar -->
-    <v-app-bar app flat color="#FFFFFF">
-
-        <v-btn icon @click.stop="showDrawer=true" v-if="!showDrawer">
-            <v-icon>mdi-menu</v-icon>
-        </v-btn>
-        
-        <v-spacer></v-spacer>
-        
-        <v-btn icon @click.stop="showCommands=true" v-if="!showCommands">
-            <v-icon>mdi-view-list</v-icon>
-        </v-btn>
-
+    <v-app-bar app flat color="#F1F3F4">
     </v-app-bar>
 
 
     <!-- Content Navigation Panel -->
-    <v-navigation-drawer app v-model="showDrawer" hide-overlay>
+    <v-navigation-drawer app floating v-model="showNavigation" hide-overlay 
+            :mini-variant="showMiniNavigation" permanent
+            color="#F1F3F4">
         
-        <v-toolbar dark elevation="0">    
-            <v-toolbar-title>Content</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-btn icon @click="showDrawer=false">
-                <v-icon>mdi-close</v-icon>
+        <v-toolbar elevation="0" color="#F1F3F4">    
+            <v-btn icon @click.stop="showMiniNavigation=!showMiniNavigation">
+                <v-icon>mdi-menu</v-icon>
             </v-btn>
+            <v-toolbar-title>{{navigationTitle}}</v-toolbar-title>
         </v-toolbar>
         
-        <olo-tree
+        <olo-tree v-if="!showMiniNavigation"
             :store="store" 
-            :items="config.tree"
+            :tree="config.tree"
             :active="docPath"
             @update:active="handleActiveTreeItemChange"
             @add-item="addDocTo($event)"
@@ -42,16 +32,17 @@
         
     </v-navigation-drawer>
 
-
+ 
     <!-- Commands Menu -->
-    <v-navigation-drawer app right v-model="showCommands" hide-overlay>
+    <v-navigation-drawer app right floating v-model="showCommands" 
+            :mini-variant="showMiniCommands" permanent 
+            color="#F1F3F4">
         
-        <v-toolbar dark elevation="0">
-            <v-toolbar-title>Document</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-btn icon @click="showCommands=false">
-                <v-icon>mdi-close</v-icon>
+        <v-toolbar elevation="0" color="#F1F3F4">
+            <v-btn icon @click.stop="showMiniCommands=!showMiniCommands">
+                <v-icon>{{showMiniCommands ? "mdi-chevron-left" : "mdi-chevron-right"}}</v-icon>
             </v-btn>
+            <v-toolbar-title>Document</v-toolbar-title>
         </v-toolbar>
 
         <v-list>
@@ -74,7 +65,7 @@
 
 
     <!-- Main Content -->
-    <v-main>
+    <v-main style="background-color: #F1F3F4">
         <olo-document ref="document" :class="mode"
             :store="store" 
             :docid="hash"
@@ -114,7 +105,7 @@
 
 <script>
 import {detectKeyString} from 'key-string';
-import defaultConfig from './default-config';
+import DefaultConfig from './default-config';
 
 export default {
     name: 'App',
@@ -131,9 +122,11 @@ export default {
     data: () => ({
         hash: "",
         mode: "view",
-        config: defaultConfig,
-        showDrawer: false,
-        showCommands: false,
+        config: {},
+        showNavigation: true,
+        showMiniNavigation: true,
+        showCommands: true,
+        showMiniCommands: true,
         docData: {__path__:"", __title__:"Loading ..."},
         activeTreeItem: [],
         message: {
@@ -148,6 +141,14 @@ export default {
         docPath () {
             return this.docData ? this.docData.__path__ : this.hash.split('?')[0];
         },
+        
+        navigationTitle () {
+            if (this.config && this.config.tree && this.config.tree.name) {
+                return this.config.tree.name || "Content";
+            } else {
+                return "Content"
+            }
+        }
     },
     
     methods: {
@@ -156,7 +157,7 @@ export default {
             const configSource = await this.store.read(this.configPath);
             const configContext = await this.store.createContext(this.configPath);
             const {data} = await this.store.parseDocument(configSource)(configContext);
-            this.config = Object.assign({}, defaultConfig, data);
+            this.config = Object.assign({}, DefaultConfig(this.store), data);
         },
         
         updateHash () {
@@ -251,6 +252,7 @@ export default {
             this.message.text = text;
             this.message.timeout = timeout;
             this.message.show = true;
+            console.log("[olowiki message]", text);
         },
         
         async askQuestion (question, proposedAnswer="") {
@@ -313,5 +315,4 @@ export default {
     html { 
         overflow-y: auto 
     }
-    
 </style>
