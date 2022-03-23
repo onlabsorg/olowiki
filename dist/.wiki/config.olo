@@ -1,4 +1,6 @@
 <% __render__ = require 'markdown' %>
+<% debug = require "debug" %>
+
 
 Settings
 ================================================================================
@@ -16,29 +18,83 @@ hierarchy instead.
 
 <%  # Rename `_tree` to `tree` to make it effective 
 
-    _tree = [
-    
-        {   name: "Home",
-            id: "/home/",
-            mutable: TRUE,
-            children: []
-            },
+    tree = {
+        name: "Custom Content",
+        children: [
         
-        {   name: "Library",
-            id: "/zlib/",
-            children: [
-                {name:"index", id:"/zlib/index"}
-                ]
+            # Directory item
+            { name: "Home", 
+              path: '/', 
+              mutable: TRUE,
+              children: self -> _load_children(self.path) },
+            
+            # Custom group item 1
+            { name: "Group 1", 
+              path: "/dir1/", 
+              children: [
+                {name: "Document 1.10", path: "/dir1/doc1"},
+                {name: "Document 1.20", path: "/dir1/doc2"},
+                {name: "Document 1.30", path: "/dir1/doc3"} ]},
+
+            # Custom group item 2
+            {   name: "Group 2",  
+                path: "/dir2/",  
+                children: [
+                    {name: "Document 2.1", path: "/dir2/doc1"},
+                    {name: "Document 2.2", path: "/dir2/doc2"},
+                    {name: "Document 2.3", path: "/dir2/doc3"} ]},
+
+            # Custom document items
+            {name: "Document 0.1",  path: "/doc1"},
+            {name: "Document 0.2",  path: "/doc2"},
+            {name: "Document 0.3",  path: "/doc3"}
+
+        ] } %>
+
+
+<% _load_children = path -> {
+        Text = require 'text',
+        item_names = __docs__.list(path),
+        is_dir = item_name -> Text.tail(-1) item_name == '/',
+        dir_path = is_dir path ? path ; path + '/',
+        create = item_name -> is_dir item_name ?
+                create_dir(Text.head(size item_name - 1)(item_name)) ;
+                create_doc item_name,
+        create_dir = dir_name -> {
+            name: dir_name,
+            path: dir_path + dir_name,
+            mutable: TRUE,
+            children: item -> _load_children(item.path)
             },
+        create_doc = doc_name -> {
+            name: doc_name,
+            path: dir_path + doc_name,
+            mutable: TRUE
+            },
+        filter = item -> item.name & item.name(0) != '.' ? item ; (),
+        items = (dom item_names => i -> create(item_names(i))) => filter,
+        dir_items = items => item -> item.children ? item ; (),
+        doc_items = items => item -> not(item.children) ? item ; ()
+        }.[dir_items, doc_items]
+    %>
 
-        {   name: "Help",
-            id: "/help/",
-            children: [
-                {name:"index", id:"/help/index"}
-                ]
-            }
-
-    ]%>
+<!--
+async function loadChildren (store, path) {
+    const items = await store.list(path);
+    return items.map(item_name => ({
+        name: item_name.slice(-1) == "/" ? item_name.slice(0,-1) : item_name,
+        path: pathlib.join(path, item_name),
+        mutable: true,
+        children: item_name.slice(-1) == "/" ? self => loadChildren(store, self.path) : undefined
+    })).filter(
+        item => item.name && item.name[0] !== "."
+    ).sort((item1, item2) => {
+        if (item1.children && !item2.children) return -1;
+        if (!item1.children && item2.children) return +1;
+        return item1.name.localeCompare(item2.name);            
+    });
+}
+-->
 
 
 

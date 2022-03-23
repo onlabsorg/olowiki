@@ -1,2 +1,0 @@
-<% __render__ = require 'markdown' %>
-# doc at <% __path__ %>

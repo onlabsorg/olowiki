@@ -20,7 +20,6 @@
         
         <olo-tree v-if="!showMiniNavigation"
             :store="store" 
-            :tree="config.tree"
             :active="docPath"
             @update:active="handleActiveTreeItemChange"
             @add-item="addDocTo($event)"
@@ -105,7 +104,7 @@
 
 <script>
 import {detectKeyString} from 'key-string';
-import DefaultConfig from './default-config';
+import defaultConfig from './default-config';
 
 export default {
     name: 'App',
@@ -143,8 +142,8 @@ export default {
         },
         
         navigationTitle () {
-            if (this.config && this.config.tree && this.config.tree.name) {
-                return this.config.tree.name || "Content";
+            if (this.config) {
+                return this.config.appName || "Content";
             } else {
                 return "Content"
             }
@@ -157,7 +156,7 @@ export default {
             const configSource = await this.store.read(this.configPath);
             const configContext = await this.store.createContext(this.configPath);
             const {data} = await this.store.parseDocument(configSource)(configContext);
-            this.config = Object.assign({}, DefaultConfig(this.store), data);
+            this.config = Object.assign({}, defaultConfig, data);
         },
         
         updateHash () {

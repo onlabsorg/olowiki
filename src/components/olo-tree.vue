@@ -3,7 +3,7 @@
         dense hoverable color="black"
 
         :items="items"
-        :load-children="loadChildren"
+        :load-children="injectChildren"
         
         activatable
         :active="[active]"
@@ -18,7 +18,7 @@
             </v-icon>
         </template>
         <template v-slot:append="{ item, leaf }">
-            <v-menu offset-y v-if="item.mutable">
+            <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
                     <v-btn icon v-bind="attrs" v-on="on">
                         <v-icon>mdi-dots-vertical</v-icon>
@@ -62,10 +62,6 @@
 <script>
 import * as pathlib from 'path';
 
-import Vue from 'vue';
-import AsyncComputed from 'vue-async-computed';
-Vue.use(AsyncComputed);
-
 export default {
     
     name: 'olo-tree',
@@ -74,31 +70,45 @@ export default {
         'olo-menu-item': () => import('./olo-menu-item'),
     },
     
-    props: ['store', 'tree', 'active'],
+    props: ['store', 'active'],
     
-    asyncComputed: {
-        
-        items: {
-            async get () {
-                if (!this.tree) return [];
-                const rootItem = createItem(this.tree);
-                await this.loadChildren(rootItem);
-                return rootItem.children;
-            },
-            default: []
+    data: () => ({
+        items: []
+    }),
+    
+    watch: {
+        store () {
+            this.initTree();
         }
     },
     
     methods: {
         
-        async updateTree () {
-            for (let item of this.items) {
-                if (item.children && item.load) await this.updateChildren(item);
-            }
+        async initTree () {
+            this.items = await this.loadChildren('/');
         },
         
+        async injectChildren (item) {
+            item.children = await this.loadChildren(item.id);
+        },
+        
+        async loadChildren (path) {
+            const items = await this.store.list(path);
+            return items.map(item_name => ({
+                name: item_name.slice(-1) == "/" ? item_name.slice(0,-1) : item_name,
+                id: pathlib.join(path, item_name),
+                children: item_name.slice(-1) == "/" ? [] : undefined
+            })).filter(
+                item => item.name && item.name[0] !== "."
+            ).sort((item1, item2) => {
+                if (item1.children && !item2.children) return -1;
+                if (!item1.children && item2.children) return +1;
+                return item1.name.localeCompare(item2.name);            
+            });
+        },
+                
         async updateChildren (item) {
-            const newChildren = await item.load();
+            const newChildren = await this.loadChildren(item.id);
             let lastIndex = 0;
             for (let newChild of newChildren) {
                 const child = item.children.find(child => child.id === newChild.id);
@@ -121,14 +131,10 @@ export default {
             }
         },
         
-        async loadChildren (item) {
-            if (item.load) {
-                item.children = await item.load();
-            }
-        },
-        
         async handleStoreChange (change) {
-            await this.updateTree();
+            for (let item of this.items) {
+                if (item.children) await this.updateChildren(item);
+            }
             return change;
         },
          
@@ -138,27 +144,9 @@ export default {
     },
     
     async mounted () {
+        await this.initTree();
         this.store.onChange(this.handleStoreChange.bind(this));
     }
-}
-
-function createItem (itemDefinition) {
-    const item = {};
-    item.id = pathlib.normalize(itemDefinition.path || '/');
-    item.mutable = Boolean(itemDefinition.mutable);
-    item.name = String(itemDefinition.name || "");
-    if (typeof itemDefinition.children === "function") {
-        // TODO: unwrap should not be necessary after swan is fixed
-        item.load = async () => unwrap(await itemDefinition.children(itemDefinition)).map(createItem);
-        item.children = [];
-    } else if (Array.isArray(itemDefinition.children)) {
-        item.children = itemDefinition.children.map(createItem)
-    }
-    return item;
-}
-
-function unwrap (term) {
-    return typeof term.unwrap === "function" ? term.unwrap() : term;
 }
 </script>
 
