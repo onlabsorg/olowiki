@@ -70,22 +70,21 @@ export default {
         'olo-menu-item': () => import('./olo-menu-item'),
     },
     
-    props: ['store', 'active'],
+    props: ['store', 'root', 'active'],
     
     data: () => ({
         items: []
     }),
     
     watch: {
-        store () {
-            this.initTree();
-        }
+        store () { this.initTree() },
+        root  () { this.initTree() }
     },
     
     methods: {
         
         async initTree () {
-            this.items = await this.loadChildren('/');
+            this.items = await this.loadChildren(this.root);
         },
         
         async injectChildren (item) {

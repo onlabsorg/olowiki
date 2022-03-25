@@ -11,10 +11,20 @@ Edit this document to change the olowiki settings, then reload the app.
 `appName`
 --------------------------------------------------------------------------------
 
-The `app_name` text defines the wiki name and it is displayed in the toolbar
+The `appName` text defines the wiki name and it is displayed in the toolbar
 of the navigation drawer.
 
 <% appName = "CustomWiki" %> 
+
+
+
+`treeRoot`
+--------------------------------------------------------------------------------
+
+The `treeRoot` text defines the root path of the navigation tree. It omitted, it
+defaults to `/`.
+
+<% _treeRoot = "/" %> 
 
 
 

@@ -20,6 +20,7 @@
         
         <olo-tree v-if="!showMiniNavigation"
             :store="store" 
+            :root="config.treeRoot"
             :active="docPath"
             @update:active="handleActiveTreeItemChange"
             @add-item="addDocTo($event)"
