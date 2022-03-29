@@ -3,43 +3,27 @@
 
 Settings
 ================================================================================
-
 Edit this document to change the olowiki settings, then reload the app.
 
 
-
-`appName`
+`appName: <% appName: "oloWiki" %>`
 --------------------------------------------------------------------------------
-
 The `appName` text defines the wiki name and it is displayed in the toolbar
 of the navigation drawer.
 
-<% appName = "CustomWiki" %> 
-
-
-
-`treeRoot`
+ 
+`treeRoot: <% treeRoot: "/" %>`
 --------------------------------------------------------------------------------
-
 The `treeRoot` text defines the root path of the navigation tree. It omitted, it
 defaults to `/`.
 
-<% _treeRoot = "/" %> 
-
-
-
-`homePath`
+ 
+`homePath: <% homePath: "/home/index" %>`
 --------------------------------------------------------------------------------
-
 This string contains the location of the home document.
 
-<% homePath = "/home/index" %>
 
-
-
-`helpPath`
+`helpPath: <% helpPath = "/.wiki/help/index" %>`
 --------------------------------------------------------------------------------
-
 This string contains the location of the help document.
 
-<% helpPath = "/.wiki/help/index" %>

@@ -4,23 +4,13 @@ This is a wiki based on [olojs] documents.
   
 -----
   
-![view mode with menus](./docs/screenshot-view-menus.png)
+![view mode](./docs/screenshot-view-mode.png)
 *(Screenshot of olowiki in view mode)*
 
 -----
 
-![edit mode with menus](./docs/screenshot-edit-menus.png)
+![edit mode with menus](./docs/screenshot-edit-mode.png)
 *(Screenshot of olowiki in edit mode)*
-
------
-
-![view mode without menus](./docs/screenshot-view-no-menus.png)
-*(Screenshot of olowiki in distraction-free view mode)*
-
------
-
-![edit mode without menus](./docs/screenshot-edit-no-menus.png)
-*(Screenshot of olowiki in distraction-free edit mode)*
 
 -----
   

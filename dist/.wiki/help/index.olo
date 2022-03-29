@@ -3,23 +3,23 @@
 olowiki
 ================================================================================
 
-This is a minimalistic personal wiki that makes it easy to write content by
-allowing you to use pieces of content created by other users.
-
+This is a minimalistic personal wiki that makes it easy to write content in a
+modular way. This mean that in any document you can reuse content from other
+documents, either created by you or by others.
 
 
 
 Get familiar with the user interface
 --------------------------------------------------------------------------------
 
-The user interface is made of three parts: the document content, the left-side
-navigation pane and the right-side menu.
+The user interface is made of three parts: the *document content*, the left-side 
+*navigation pane* and the right-side *commands menu*.
 
-The document content is what you are looking at now: it shows the active 
-document either in view or edit mode. If the background is white, then you are
-in view mode, while if the background is dark, you are in edit mode. You
-can switch between view and edit mode (and vice-versa) by hitting `CTRL-ENTER`: 
-try it!
+**The document content** is what you are looking at now: it shows the active 
+document either in view or edit mode. If the background is white, then you are 
+in view mode, while if the background is dark, you are in edit mode. You can 
+switch between view and edit mode (and vice-versa) by hitting `CTRL-ENTER`: try 
+it!
 
 When in edit mode, the document markup is shown in a tex editor and you can 
 change it as you please. In order to do that, you need to know how the
@@ -27,16 +27,15 @@ olo-document markup works and that will be explained in the next chapter, but
 bear in mind that it is a superset of HTML, therefore you can just add some
 HTML, hit `CTRL-ENTER` and see how the rendering changes in view mode.
 
-On the left side of the interface there is the navigation pane; if it is
-hiddenm show it by clicking on the top-left icon. By default, the navigation
-tree shows all the documents and folders available in this wiki, but that
-can be changed to a custom index of documents.
+**The navigation pane** on the left side of the interface shows all the 
+documents and folders available in this wiki; if it is hiddenm show it by 
+clicking on the top-left icon. 
 
-On the right side of the interface there is the commands menu which can be
-shown by clicking on the top-right icon (if it is not visible yet). The menu
+**The commands menu** on the right side of the interface is collapsed by default
+but if can be expanded by clicking on the top-right icon. The commands menu
 contains all the actions that can be performed on the current document, plus
-two links to special documents: the settings document that controls some
-customizations and this help document.
+two links to special documents: the *settings document* that controls some
+customizations and this *help home page*.
 
 There is nothing more to know about the interface: it's that simple! What you
 need to know instead, is how to write an olo-document markup. That's covered
@@ -80,4 +79,6 @@ visit the following projects on GitHub:
   olowiki as editor for your local repository of olo-documents.
 - [olojs](https://github.com/onlabsorg/olojs): the core library for handling
   olo-documents, on which both stilo and olowiki are based.
-- Related projects
+- [swan-js](https://github.com/onlabsorg/swan-js): the language used in the
+  documents inline expressions.
+  

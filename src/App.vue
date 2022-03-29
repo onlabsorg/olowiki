@@ -57,8 +57,9 @@
         <template v-slot:append>
             <v-list>
                 <v-divider></v-divider>
-                <olo-menu-item icon="mdi-cog-outline" title="Settings" kbshortcut="" @click="setHash(configPath)     "></olo-menu-item>
-                <olo-menu-item icon="mdi-help-circle" title="Help"     kbshortcut="" @click="setHash(config.helpPath)"></olo-menu-item>
+                <olo-menu-item icon="mdi-home-outline"        title="Home"     kbshortcut="" @click="setHash(config.homePath)"></olo-menu-item>
+                <olo-menu-item icon="mdi-cog-outline"         title="Settings" kbshortcut="" @click="setHash(configPath)     "></olo-menu-item>
+                <olo-menu-item icon="mdi-help-circle-outline" title="Help"     kbshortcut="" @click="setHash(config.helpPath)"></olo-menu-item>
             </v-list>
         </template>
     </v-navigation-drawer>
@@ -160,20 +161,8 @@ export default {
             this.config = Object.assign({}, defaultConfig, data);
         },
         
-        updateHash () {
-            const hash = location.hash.slice(1);            
-            this.hash = this.store.normalizePath(hash);
-            if (this.hash !== hash) this.setHash(this.hash);
-        },
-        
         setHash (docId) {
             location.hash = this.store.normalizePath(docId);
-        },
-        
-        handleActiveTreeItemChange (activeItemPath) {
-            if (activeItemPath.slice(0, 1) === '/') {
-                this.setHash(activeItemPath);
-            }
         },
         
         commit () {
@@ -259,6 +248,22 @@ export default {
             return await this.$refs.question.ask(question, proposedAnswer);
         },
         
+        handleActiveTreeItemChange (activeItemPath) {
+            if (activeItemPath.slice(0, 1) === '/') {
+                this.setHash(activeItemPath);
+            }
+        },
+        
+        handleHashChange () {
+            if (location.hash) {
+                const hash = location.hash.slice(1);
+                this.hash = this.store.normalizePath(hash);
+                if (this.hash !== hash) this.setHash(this.hash);                
+            } else {
+                location.hash = this.config.homePath;
+            }
+        },
+        
         handleKeyboardCommand (event) {
             const keyString = detectKeyString(event);
 
@@ -304,8 +309,8 @@ export default {
                 this.handleKeyboardCommand.bind(this), true);
                 
         // Bind the hash to the active document
-        window.addEventListener('hashchange', this.updateHash.bind(this));
-        this.updateHash();
+        window.addEventListener('hashchange', this.handleHashChange.bind(this));
+        this.handleHashChange();
     }
 };
 </script>

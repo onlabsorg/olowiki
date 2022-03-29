@@ -1,3 +1,0 @@
-<% __render__ = require 'markdown' %>
-
-<% import 'https://raw.githubusercontent.com/onlabsorg/swan-js/main/docs/swan.md' %>

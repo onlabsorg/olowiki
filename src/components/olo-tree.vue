@@ -2,7 +2,7 @@
     <v-treeview class="olo-tree"
         dense hoverable color="black"
 
-        :items="items"
+        :items="children"
         :load-children="injectChildren"
         
         activatable
@@ -73,19 +73,22 @@ export default {
     props: ['store', 'root', 'active'],
     
     data: () => ({
-        items: []
+        children: []
     }),
     
+    computed: {
+        
+        id () {
+            return this.root;
+        }
+    },
+    
     watch: {
-        store () { this.initTree() },
-        root  () { this.initTree() }
+        store () { this.injectChildren(this) },
+        root  () { this.injectChildren(this) }
     },
     
     methods: {
-        
-        async initTree () {
-            this.items = await this.loadChildren(this.root);
-        },
         
         async injectChildren (item) {
             item.children = await this.loadChildren(item.id);
@@ -130,11 +133,8 @@ export default {
             }
         },
         
-        async handleStoreChange (change) {
-            for (let item of this.items) {
-                if (item.children) await this.updateChildren(item);
-            }
-            return change;
+        async handleStoreChange () {
+            await this.updateChildren(this);
         },
          
         notifyActiveItemChange (activeItems) {
@@ -143,7 +143,7 @@ export default {
     },
     
     async mounted () {
-        await this.initTree();
+        await this.injectChildren(this);
         this.store.onChange(this.handleStoreChange.bind(this));
     }
 }
