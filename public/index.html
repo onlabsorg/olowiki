@@ -14,21 +14,6 @@
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
     <div id="app"></div>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            olo.wiki = olo.Wiki('#app', { 
-                routes: {
-                    '/'      : new olo.HTTPStore(location.origin + "/docs/"),
-                    '/.wiki/': new olo.HTTPStore(location.origin + "/.wiki/", {extension:".olo"}),
-                    'http:/' : new olo.HTTPStore('http:/'),
-                    'https:/': new olo.HTTPStore('https:/'),
-                    'local:/': new olo.BrowserStore('olojs_local_store'),
-                    'temp:/' : new olo.MemoryStore()
-                },
-                configPath: "/.wiki/config"
-            });
-        });
-    </script>
     <!-- built files will be auto injected -->
   </body>
 </html>

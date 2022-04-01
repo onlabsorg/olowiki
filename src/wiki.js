@@ -9,19 +9,21 @@ Vue.config.productionTip = false
 
 export default async function (element, options={}) {
     const wiki = {};
+    const props = {};
     
-    wiki.store = new WikiStore(options.routes || defaultOptions.routes);
-    
-    wiki.configPath = options.configPath || defaultOptions.configPath;
+    wiki.store = props.store = new WikiStore(options.routes || defaultOptions.routes);
 
+    for (let optionName of Object.keys(defaultOptions)) {
+        if (optionName !== 'routes') {
+            wiki[optionName] = props[optionName] = options[optionName] || defaultOptions[optionName];
+        }
+    }
+    
+    console.log(props)
+    
     wiki.vue = new Vue({
         vuetify,
-        render: h => h(App, {
-            props: {
-                store: wiki.store,
-                configPath: wiki.configPath,
-            }
-        }),
+        render: h => h(App, {props}),
     }).$mount(element);
     
     return wiki;
@@ -30,9 +32,14 @@ export default async function (element, options={}) {
 
 
 const defaultOptions = {
+    
+    appName: "olowiki",
         
     routes: {},
     
-    configPath: '/.wiki/config',
+    homePath: "/",
     
+    helpPath: "./wiki/help/index",
+    
+    treeRoot: "/"
 };

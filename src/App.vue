@@ -20,7 +20,7 @@
         
         <olo-tree v-if="!showMiniNavigation"
             :store="store" 
-            :root="config.treeRoot"
+            :root="treeRoot"
             :active="docPath"
             @update:active="handleActiveTreeItemChange"
             @add-item="addDocTo($event)"
@@ -57,9 +57,8 @@
         <template v-slot:append>
             <v-list>
                 <v-divider></v-divider>
-                <olo-menu-item icon="mdi-home-outline"        title="Home"     kbshortcut="" @click="setHash(config.homePath)"></olo-menu-item>
-                <olo-menu-item icon="mdi-cog-outline"         title="Settings" kbshortcut="" @click="setHash(configPath)     "></olo-menu-item>
-                <olo-menu-item icon="mdi-help-circle-outline" title="Help"     kbshortcut="" @click="setHash(config.helpPath)"></olo-menu-item>
+                <olo-menu-item icon="mdi-home-outline"        title="Home"     kbshortcut="" @click="setHash(homePath)"></olo-menu-item>
+                <olo-menu-item icon="mdi-help-circle-outline" title="Help"     kbshortcut="" @click="setHash(helpPath)"></olo-menu-item>
             </v-list>
         </template>
     </v-navigation-drawer>
@@ -106,12 +105,11 @@
 
 <script>
 import {detectKeyString} from 'key-string';
-import defaultConfig from './default-config';
 
 export default {
     name: 'App',
     
-    props: ['store', 'configPath'],
+    props: ['appName', 'store', 'homePath', 'helpPath', 'treeRoot'],
 
     components: {
         'olo-document'  : () => import('./components/olo-document'  ),
@@ -123,7 +121,6 @@ export default {
     data: () => ({
         hash: "",
         mode: "view",
-        config: {},
         showNavigation: true,
         showMiniNavigation: true,
         showCommands: true,
@@ -144,22 +141,11 @@ export default {
         },
         
         navigationTitle () {
-            if (this.config) {
-                return this.config.appName || "Content";
-            } else {
-                return "Content"
-            }
+            return this.appName || "Content";
         }
     },
     
     methods: {
-        
-        async updateConfig () {
-            const configSource = await this.store.read(this.configPath);
-            const configContext = await this.store.createContext(this.configPath);
-            const {data} = await this.store.parseDocument(configSource)(configContext);
-            this.config = Object.assign({}, defaultConfig, data);
-        },
         
         setHash (docId) {
             location.hash = this.store.normalizePath(docId);
@@ -260,7 +246,7 @@ export default {
                 this.hash = this.store.normalizePath(hash);
                 if (this.hash !== hash) this.setHash(this.hash);                
             } else {
-                location.hash = this.config.homePath;
+                location.hash = this.homePath;
             }
         },
         
@@ -301,8 +287,6 @@ export default {
     },
     
     async mounted () {
-        // Load the configuration file
-        await this.updateConfig();
         
         // Setup the keyboard listener
         document.body.addEventListener("keydown", 

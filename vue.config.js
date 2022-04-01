@@ -10,8 +10,6 @@ module.exports = {
         },
     },
     
-    assetsDir: ".wiki",
-    
     transpileDependencies: [
         'vuetify'
     ],
