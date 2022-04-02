@@ -19,8 +19,6 @@ export default async function (element, options={}) {
         }
     }
     
-    console.log(props)
-    
     wiki.vue = new Vue({
         vuetify,
         render: h => h(App, {props}),

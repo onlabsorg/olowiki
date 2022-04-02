@@ -3,22 +3,29 @@
       
     <!-- Toolbar -->
     <v-app-bar app flat color="#F1F3F4">
+        <v-btn icon v-if="!showNavigation" @click.stop="showNavigation=true">
+            <v-icon>mdi-menu</v-icon>
+        </v-btn>
+        <v-spacer></v-spacer>
+        <v-btn icon v-if="!showCommands" @click.stop="showCommands=true">
+            <v-icon>mdi-chevron-left</v-icon>
+        </v-btn>        
     </v-app-bar>
 
 
     <!-- Content Navigation Panel -->
     <v-navigation-drawer app floating v-model="showNavigation" hide-overlay 
-            :mini-variant="showMiniNavigation" permanent
+            :mini-variant="showMiniNavigation && !mini"
             color="#F1F3F4">
         
         <v-toolbar elevation="0" color="#F1F3F4">    
-            <v-btn icon @click.stop="showMiniNavigation=!showMiniNavigation">
+            <v-btn icon @click.stop="mini ? showNavigation=false : showMiniNavigation=!showMiniNavigation">
                 <v-icon>mdi-menu</v-icon>
             </v-btn>
             <v-toolbar-title>{{navigationTitle}}</v-toolbar-title>
         </v-toolbar>
         
-        <olo-tree v-if="!showMiniNavigation"
+        <olo-tree v-if="!showMiniNavigation || mini"
             :store="store" 
             :root="treeRoot"
             :active="docPath"
@@ -35,12 +42,15 @@
  
     <!-- Commands Menu -->
     <v-navigation-drawer app right floating v-model="showCommands" 
-            :mini-variant="showMiniCommands" permanent 
+            :mini-variant="showMiniCommands && !mini"
             color="#F1F3F4">
         
         <v-toolbar elevation="0" color="#F1F3F4">
-            <v-btn icon @click.stop="showMiniCommands=!showMiniCommands">
-                <v-icon>{{showMiniCommands ? "mdi-chevron-left" : "mdi-chevron-right"}}</v-icon>
+            <v-btn icon v-if="mini" @click.stop="showCommands=false">
+                <v-icon>mdi-chevron-right</v-icon>
+            </v-btn>
+            <v-btn icon v-if="!mini" @click.stop="showMiniCommands=!showMiniCommands">
+                <v-icon>{{showMiniCommands && !mini ? "mdi-chevron-left" : "mdi-chevron-right"}}</v-icon>
             </v-btn>
             <v-toolbar-title>Document</v-toolbar-title>
         </v-toolbar>
@@ -121,9 +131,9 @@ export default {
     data: () => ({
         hash: "",
         mode: "view",
-        showNavigation: true,
+        showNavigation: null,
         showMiniNavigation: true,
-        showCommands: true,
+        showCommands: null,
         showMiniCommands: true,
         docData: {__path__:"", __title__:"Loading ..."},
         activeTreeItem: [],
@@ -142,6 +152,17 @@ export default {
         
         navigationTitle () {
             return this.appName || "Content";
+        },
+        
+        mini () {
+            switch (this.$vuetify.breakpoint.name) {
+                case 'xs': return true;
+                case 'sm': return true;
+                case 'md': return true;
+                case 'lg': return false;
+                case 'xl': return false;
+                default  : return false;
+            }
         }
     },
     

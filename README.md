@@ -1,6 +1,7 @@
 # oloWiki
 
-This is a wiki based on [olojs] documents. 
+This is a wiki based on [olojs] documents. See the [Zion](zion.onlabs.org)
+implementation for a live demo.
   
 -----
   
