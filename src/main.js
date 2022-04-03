@@ -4,8 +4,8 @@ window.olo = olo;
 
 import Wiki from './wiki';
 
-document.addEventListener("DOMContentLoaded", () => {
-    olo.wiki = Wiki('#app', { 
+document.addEventListener("DOMContentLoaded", async () => {
+    olo.wiki = await Wiki('#app', { 
         
         appName: "oloWiki",
         
