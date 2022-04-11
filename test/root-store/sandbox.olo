@@ -1,3 +1,5 @@
+Olowiki version = <% __olowiki__.version %>
+
 <% debug = require 'debug' %>
 
 <% Text = require 'text' %>

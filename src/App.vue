@@ -80,6 +80,7 @@
             :store="store" 
             :docid="hash"
             :mode="mode"
+            :presets="context"
             @doc-rendered="docData = $event"
             >
         </olo-document>
@@ -119,7 +120,7 @@ import {detectKeyString} from 'key-string';
 export default {
     name: 'App',
     
-    props: ['appName', 'store', 'homePath', 'helpPath', 'treeRoot'],
+    props: ['appName', 'store', 'homePath', 'helpPath', 'treeRoot', 'context'],
 
     components: {
         'olo-document'  : () => import('./components/olo-document'  ),

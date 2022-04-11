@@ -35,6 +35,8 @@ const defaultOptions = {
         
     routes: {},
     
+    context: {},
+    
     homePath: "/",
     
     helpPath: "./wiki/help/index",

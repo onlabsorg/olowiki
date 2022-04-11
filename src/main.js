@@ -18,6 +18,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             'temp:/' : new olo.MemoryStore()
         },
         
+        context: {
+            __olowiki__: {
+                version: require('../package.json').version,
+            }
+        },
+        
         homePath: "/index",
         
         helpPath: "/.wiki/help/index",

@@ -57,18 +57,6 @@ class ObservableStore extends olo.Router {
 
 export default class WikiStore extends ObservableStore {
     
-    createContext (docId) {
-        const context = super.createContext(docId);
-        context.__oloWiki__ = {
-            version: require('../package.json').version,
-        }
-        context.__docs__ = {
-            read: path => this.read(path),
-            list: path => this.list(path),
-        }
-        return context;
-    }
-        
     async exists (path) {
         const docSource = await this.read(path);
         return docSource !== "";

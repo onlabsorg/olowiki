@@ -31,7 +31,7 @@
             'olo-editor': () => import('./olo-editor'),
         },    
         
-        props: ['store', 'docid', 'mode'],
+        props: ['store', 'docid', 'mode', 'presets'],
         
         data: () => ({
             source: "",
@@ -41,15 +41,15 @@
         computed: {
             
             context () {
-                return this.store ? this.store.createContextFromId(this.docid) : {};
+                return this.store ? this.createDocument().createContext(this.presets) : {};
             },
             
             path () {
-                return this.context.__path__;
+                return this.docid.split('?')[0];
             },
             
             evaluate () {
-                return this.store.parseDocument(this.source);
+                return this.createDocument(this.source).parse();
             },
 
             text () {
@@ -103,6 +103,10 @@
         },
         
         methods: {
+            
+            createDocument (source="") {
+                return new this.store.constructor.Document(this.store, this.docid, source);
+            },
             
             commit () {
                 this.source = this.editorContent;
