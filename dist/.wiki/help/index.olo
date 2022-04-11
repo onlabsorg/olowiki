@@ -34,8 +34,7 @@ clicking on the top-left icon.
 **The commands menu** on the right side of the interface is collapsed by default
 but if can be expanded by clicking on the top-right icon. The commands menu
 contains all the actions that can be performed on the current document, plus
-two links to special documents: the *settings document* that controls some
-customizations and this *help home page*.
+two links to special documents: your *home document* and this *help home page*.
 
 There is nothing more to know about the interface: it's that simple! What you
 need to know instead, is how to write an olo-document markup. That's covered
