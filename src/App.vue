@@ -3,30 +3,32 @@
       
     <!-- Toolbar -->
     <v-app-bar app flat color="#F1F3F4">
-        <v-btn icon v-if="!showNavigation" @click.stop="showNavigation=true">
+        <v-btn icon v-if="!navigation.show" @click.stop="navigation.show=true">
             <v-icon>mdi-menu</v-icon>
         </v-btn>
         <olo-omnibar v-model="docId"></olo-omnibar>
         <v-spacer></v-spacer>
-        <v-btn icon v-if="!showCommands" @click.stop="showCommands=true">
+        <v-btn icon v-if="!commands.show" @click.stop="commands.show=true">
             <v-icon>mdi-chevron-left</v-icon>
         </v-btn>        
     </v-app-bar>
 
 
     <!-- Content Navigation Panel -->
-    <v-navigation-drawer app floating v-model="showNavigation" hide-overlay 
-            :mini-variant="showMiniNavigation && !mini"
+    <v-navigation-drawer app floating ref="navigation"
+            v-model="navigation.show" hide-overlay 
+            :mini-variant="navigation.mini && !mini"
+            :width="navigation.width"
             color="#F1F3F4">
         
         <v-toolbar elevation="0" color="#F1F3F4">    
-            <v-btn icon @click.stop="mini ? showNavigation=false : showMiniNavigation=!showMiniNavigation">
+            <v-btn icon @click.stop="mini ? navigation.show=false : navigation.mini=!navigation.mini">
                 <v-icon>mdi-menu</v-icon>
             </v-btn>
             <v-toolbar-title>{{navigationTitle}}</v-toolbar-title>
         </v-toolbar>
         
-        <olo-tree v-if="!showMiniNavigation || mini"
+        <olo-tree v-if="!navigation.mini || mini"
             :store="store" 
             :root="treeRoot"
             :active="docPath"
@@ -41,16 +43,16 @@
 
  
     <!-- Commands Menu -->
-    <v-navigation-drawer app right floating v-model="showCommands" 
-            :mini-variant="showMiniCommands && !mini"
+    <v-navigation-drawer app right floating v-model="commands.show" 
+            :mini-variant="commands.mini && !mini"
             color="#F1F3F4">
         
         <v-toolbar elevation="0" color="#F1F3F4">
-            <v-btn icon v-if="mini" @click.stop="showCommands=false">
+            <v-btn icon v-if="mini" @click.stop="commands.show=false">
                 <v-icon>mdi-chevron-right</v-icon>
             </v-btn>
-            <v-btn icon v-if="!mini" @click.stop="showMiniCommands=!showMiniCommands">
-                <v-icon>{{showMiniCommands && !mini ? "mdi-chevron-left" : "mdi-chevron-right"}}</v-icon>
+            <v-btn icon v-if="!mini" @click.stop="commands.mini=!commands.mini">
+                <v-icon>{{commands.mini && !mini ? "mdi-chevron-left" : "mdi-chevron-right"}}</v-icon>
             </v-btn>
             <v-toolbar-title>Document</v-toolbar-title>
         </v-toolbar>
@@ -109,8 +111,7 @@
     
     
     <!-- Input Dialog -->
-    <olo-input ref="question"></olo-input>
-    
+    <olo-input ref="question"></olo-input>    
   </v-app>
 </template>
 
@@ -133,10 +134,16 @@ export default {
     data: () => ({
         docId: "",  // two-way bound to location.hash
         mode: "view",
-        showNavigation: null,
-        showMiniNavigation: true,
-        showCommands: null,
-        showMiniCommands: true,
+        navigation: {
+            show: null,
+            mini: true,
+            width: 256,
+            borderSize: 3
+        },
+        commands: {
+            show: null,
+            mini: true,
+        },
         docData: {__path__:"", __title__:"Loading ..."},
         activeTreeItem: [],
         message: {
@@ -275,6 +282,10 @@ export default {
             this.docId = this.store.normalizePath(docId);
         },
         
+        handleMouseOverNavigationBorder () {
+            
+        },
+        
         handleKeyboardCommand (event) {
             const keyString = detectKeyString(event);
 
@@ -308,6 +319,48 @@ export default {
                 default:
                     break;
             }
+        },
+        
+        initNavigation () {
+            const navigationElt = this.$refs.navigation.$el;
+            const borderElt = navigationElt.querySelector(".v-navigation-drawer__border");
+            
+            borderElt.style.width = this.navigation.borderSize + "px";
+            
+            const minSize = this.navigation.borderSize;
+            
+            const resize = event => {
+                navigationElt.style.width = event.clientX + "px";
+            }
+
+            borderElt.addEventListener('mouseover', () => {
+                document.body.style.cursor = this.navigation.mini ? "" : "ew-resize";                    
+            });
+            
+            borderElt.addEventListener('mouseout', () => {
+                document.body.style.cursor = "";
+            });
+
+            borderElt.addEventListener('mousedown', event => {
+                if (event.offsetX < minSize && !this.navigation.mini) {
+                    navigationElt.style.transition = "initial";
+                    borderElt.style.backgroundColor = "#919191";
+                    document.addEventListener('mousemove', resize, false);
+                }
+              },
+              false
+            );
+
+            document.addEventListener('mouseup', () => {
+                navigationElt.style.transition = "";
+                borderElt.style.backgroundColor = "";
+                document.removeEventListener('mousemove', resize, false);
+                if (!this.navigation.mini) {
+                    this.navigation.width = Number(navigationElt.style.width.slice(0,-2));
+                }
+              },
+              false
+            );
         }
     },
     
@@ -320,6 +373,9 @@ export default {
         // Bind the hash to the active document
         window.addEventListener('hashchange', this.handleHashChange.bind(this));
         this.handleHashChange();
+        
+        // Initialize the navigation drawer events
+        this.initNavigation();
     }
 };
 </script>
