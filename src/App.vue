@@ -6,6 +6,7 @@
         <v-btn icon v-if="!showNavigation" @click.stop="showNavigation=true">
             <v-icon>mdi-menu</v-icon>
         </v-btn>
+        <olo-omnibar v-model="docId"></olo-omnibar>
         <v-spacer></v-spacer>
         <v-btn icon v-if="!showCommands" @click.stop="showCommands=true">
             <v-icon>mdi-chevron-left</v-icon>
@@ -35,8 +36,7 @@
             @delete-item="deleteItem($event)"
             @download-item="download($event)"
             >
-        </olo-tree>
-        
+        </olo-tree>        
     </v-navigation-drawer>
 
  
@@ -67,8 +67,8 @@
         <template v-slot:append>
             <v-list>
                 <v-divider></v-divider>
-                <olo-menu-item icon="mdi-home-outline"        title="Home"     kbshortcut="" @click="setHash(homePath)"></olo-menu-item>
-                <olo-menu-item icon="mdi-help-circle-outline" title="Help"     kbshortcut="" @click="setHash(helpPath)"></olo-menu-item>
+                <olo-menu-item icon="mdi-home-outline"        title="Home"     kbshortcut="" @click="docId=homePath"></olo-menu-item>
+                <olo-menu-item icon="mdi-help-circle-outline" title="Help"     kbshortcut="" @click="docId=helpPath"></olo-menu-item>
             </v-list>
         </template>
     </v-navigation-drawer>
@@ -78,7 +78,7 @@
     <v-main style="background-color: #F1F3F4">
         <olo-document ref="document" :class="mode"
             :store="store" 
-            :docid="hash"
+            :docid="docId"
             :mode="mode"
             :presets="context"
             @doc-rendered="docData = $event"
@@ -123,14 +123,15 @@ export default {
     props: ['appName', 'store', 'homePath', 'helpPath', 'treeRoot', 'context'],
 
     components: {
-        'olo-document'  : () => import('./components/olo-document'  ),
-        'olo-tree'      : () => import('./components/olo-tree'      ),
-        'olo-menu-item' : () => import('./components/olo-menu-item' ),
-        'olo-input'     : () => import('./components/olo-input'     ),
+        'olo-document'  : () => import('./components/olo-document' ),
+        'olo-tree'      : () => import('./components/olo-tree'     ),
+        'olo-menu-item' : () => import('./components/olo-menu-item'),
+        'olo-input'     : () => import('./components/olo-input'    ),
+        'olo-omnibar'   : () => import('./components/olo-omnibar'  )
     },
 
     data: () => ({
-        hash: "",
+        docId: "",  // two-way bound to location.hash
         mode: "view",
         showNavigation: null,
         showMiniNavigation: true,
@@ -148,7 +149,7 @@ export default {
     computed: {
         
         docPath () {
-            return this.docData ? this.docData.__path__ : this.hash.split('?')[0];
+            return this.docId.split('?')[0];
         },
         
         navigationTitle () {
@@ -167,11 +168,16 @@ export default {
         }
     },
     
-    methods: {
+    watch: {
         
-        setHash (docId) {
-            location.hash = this.store.normalizePath(docId);
-        },
+        docId () {
+            // Bind the page URI hash to the docId property, while a hashchange
+            // event handler takes care of binding docId to the hash.
+            location.hash = this.store.normalizePath( this.docId );
+        }
+    },
+    
+    methods: {
         
         commit () {
             this.$refs.document.commit();
@@ -258,18 +264,15 @@ export default {
         
         handleActiveTreeItemChange (activeItemPath) {
             if (activeItemPath.slice(0, 1) === '/') {
-                this.setHash(activeItemPath);
+                this.docId = activeItemPath;
             }
         },
         
         handleHashChange () {
-            if (location.hash) {
-                const hash = location.hash.slice(1);
-                this.hash = this.store.normalizePath(hash);
-                if (this.hash !== hash) this.setHash(this.hash);                
-            } else {
-                location.hash = this.homePath;
-            }
+            // Bind the docId property to the page URI hash, while a docId
+            // watcher takes care of binding the hash to docId.
+            const docId = location.hash ? location.hash.slice(1) : this.homePath;
+            this.docId = this.store.normalizePath(docId);
         },
         
         handleKeyboardCommand (event) {
@@ -325,5 +328,10 @@ export default {
 
     html { 
         overflow-y: auto 
+    }
+
+    .v-app-bar .olo-omnibar {
+        width: 100%;
+        height: 100%;
     }
 </style>
