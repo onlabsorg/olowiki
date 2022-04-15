@@ -105,7 +105,7 @@
         methods: {
             
             createDocument (source="") {
-                return new this.store.constructor.Document(this.store, this.docid, source);
+                return this.store.create(this.docid, source);
             },
             
             commit () {
