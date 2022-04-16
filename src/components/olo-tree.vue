@@ -108,15 +108,16 @@ export default {
                 return item1.name.localeCompare(item2.name);            
             });
         },
-                
-        async updateChildren (item) {
+        
+        async updateChildren (item, change) {
+            if (change.path.indexOf(this.store.normalizePath(`${item.id}/`)) !== 0) return;
             const newChildren = await this.loadChildren(item.id);
             let lastIndex = 0;
             for (let newChild of newChildren) {
                 const child = item.children.find(child => child.id === newChild.id);
                 if (child) {
                     lastIndex = item.children.indexOf(child);
-                    if (child.children) await this.updateChildren(child);
+                    if (child.children) await this.updateChildren(child, change);
                 } else {
                     item.children.splice(lastIndex+1, 0, newChild);
                 }
@@ -133,8 +134,8 @@ export default {
             }
         },
         
-        async handleStoreChange () {
-            await this.updateChildren(this);
+        async handleStoreChange (change) {
+            await this.updateChildren(this, change);
         },
          
         notifyActiveItemChange (activeItems) {
