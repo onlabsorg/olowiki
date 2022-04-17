@@ -100,26 +100,23 @@ export default {
                 name: item_name.slice(-1) == "/" ? item_name.slice(0,-1) : item_name,
                 id: pathlib.join(path, item_name),
                 children: item_name.slice(-1) == "/" ? [] : undefined
-            })).filter(
-                item => item.name && item.name[0] !== "."
-            ).sort((item1, item2) => {
-                if (item1.children && !item2.children) return -1;
-                if (!item1.children && item2.children) return +1;
-                return item1.name.localeCompare(item2.name);            
-            });
+                }))
+                .filter( item => item.name && item.name[0] !== ".")
+                .sort(compareItems);
         },
         
         async updateChildren (item, change) {
             if (change.path.indexOf(this.store.normalizePath(`${item.id}/`)) !== 0) return;
             const newChildren = await this.loadChildren(item.id);
-            let lastIndex = 0;
             for (let newChild of newChildren) {
                 const child = item.children.find(child => child.id === newChild.id);
                 if (child) {
-                    lastIndex = item.children.indexOf(child);
                     if (child.children) await this.updateChildren(child, change);
                 } else {
-                    item.children.splice(lastIndex+1, 0, newChild);
+                    for (var pos=0; pos<item.children.length; pos++) {
+                        if (compareItems(item.children[pos], newChild) !== -1) break;
+                    }
+                    item.children.splice(pos, 0, newChild);
                 }
             }
             
@@ -147,6 +144,12 @@ export default {
         await this.injectChildren(this);
         this.store.onChange(this.handleStoreChange.bind(this));
     }
+}
+
+function compareItems (item1, item2) {
+    if (item1.children && !item2.children) return -1;
+    if (!item1.children && item2.children) return +1;
+    return item1.name.localeCompare(item2.name);                
 }
 </script>
 
