@@ -1,0 +1,298 @@
+<% __render__ = require 'markdown' %>
+<% __title__ = "Welcome to oloWiki v" + __oloWiki__.version %>
+
+# olowiki style
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
+incididunt ut labore et dolore magna aliqua. [Ut enim ad minim veniam](https://www.lipsum.com/), quis 
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
+culpa qui officia deserunt mollit anim id est laborum.
+
+# Header 1
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
+culpa qui officia deserunt mollit anim id est laborum.
+
+## Header 2
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
+culpa qui officia deserunt mollit anim id est laborum.
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
+culpa qui officia deserunt mollit anim id est laborum.
+
+
+### Header 3
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
+culpa qui officia deserunt mollit anim id est laborum.
+
+
+#### Header 4
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
+culpa qui officia deserunt mollit anim id est laborum.
+
+
+##### Header 5
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
+culpa qui officia deserunt mollit anim id est laborum.
+
+
+###### Header 6
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
+culpa qui officia deserunt mollit anim id est laborum.
+
+
+
+Details
+================================================================================
+
+<details>
+    <summary>Lorem ipsum 1 ...</summary>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
+    incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
+    nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
+    fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
+    culpa qui officia deserunt mollit anim id est laborum.
+</details>
+
+<details>
+    <summary>Lorem ipsum 2 ...</summary>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
+    incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
+    nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
+    fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
+    culpa qui officia deserunt mollit anim id est laborum.
+</details>
+
+<details>
+    <summary>Lorem ipsum 3 ...</summary>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
+    incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
+    nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
+    fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
+    culpa qui officia deserunt mollit anim id est laborum.
+</details>
+
+
+
+Strong
+================================================================================
+
+**Lorem ipsum** dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
+incididunt ut labore et dolore magna aliqua. **Ut enim ad minim veniam**, quis 
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
+fugiat nulla pariatur. <strong>Excepteur sint occaecat cupidatat non proident
+</strong>, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+
+
+Monospace elements
+================================================================================
+
+## kbd
+
+Lorem ipsum dolor <kbd>sit</kbd> amet, consectetur adipiscing elit, sed do eiusmod tempor 
+incididunt <kbd>u</kbd><kbd>t</kbd> labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea <kbd>commodo</kbd> consequat. 
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
+culpa qui officia deserunt mollit <kbd>anim id est</kbd> laborum.
+
+## code
+
+Lorem ipsum dolor `sit` amet, consectetur adipiscing elit, sed do eiusmod tempor 
+incididunt ut labore et dolore magna aliqua. `Ut enim ad minim veniam, quis 
+nostrud exercitation` ullamco laboris <code>nisi ut aliquip ex ea commodo</code> consequat. 
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
+culpa qui officia deserunt mollit <code>anim id est</code> laborum.
+
+## pre
+
+<pre>Lorem ipsum dolor `sit` amet, consectetur adipiscing elit, sed do eiusmod tempor 
+incididunt ut labore et dolore magna aliqua. `Ut enim ad minim veniam, quis 
+nostrud exercitation` ullamco laboris <code>nisi ut aliquip ex ea commodo</code> consequat. 
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
+culpa qui officia deserunt mollit <code>anim id est</code> laborum.</pre>
+
+## pre code
+
+```
+Lorem ipsum dolor `sit` amet, consectetur adipiscing elit, sed do eiusmod tempor 
+incididunt ut labore et dolore magna aliqua. `Ut enim ad minim veniam, quis 
+nostrud exercitation` ullamco laboris <code>nisi ut aliquip ex ea commodo</code> consequat. 
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
+culpa qui officia deserunt mollit <code>anim id est</code> laborum.
+````
+
+
+
+Blockquote
+================================================================================
+
+> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
+> incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
+> nostrud <code>exercitation ullamco laboris</code> nisi ut aliquip ex ea commodo consequat. 
+> Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
+> fugiat <kbd>nulla</kbd> pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
+> culpa qui officia deserunt mollit anim id est laborum.
+
+
+
+Tables
+================================================================================
+
+## HTML Table
+
+<table>
+    <tr>
+        <th>Lorem</th>
+        <th>ipsum</th>
+        <th>dolor</th>
+        <th>sit</th>
+        <th>amet</th>
+    </tr>
+    <tr>
+        <td>consectetur</td>
+        <td>adipiscing</td>
+        <td>elit</td>
+        <td>sed</td>
+        <td>do</td>
+    </tr>
+    <tr>
+        <td>euismod</td>
+        <td>tempor</td>
+        <td>incididunt</td>
+        <td>ut labore</td>
+        <td>et dolore</td>
+    </tr>
+    <tr>
+        <td>magna</td>
+        <td>aligua</td>
+        <td>Ut enum</td>
+        <td>ad minim</td>
+        <td>veniam</td>
+    </tr>
+</table>
+
+## Markdown table
+
+| Lorem       | ipsum      | dolor      | sit       | amet      |
+| ----------- | ---------- | ----------:| --------- | --------- |
+| consectetur | adipiscing | elit       | sed       | do        |
+| euismod     | tempor     | incididunt | ut labore | et dolore |
+| magna       | aligua     | Ut enum    | ad minim  | veniam    |
+
+
+
+Lists
+================================================================================
+
+## Bullet lists
+
+<ul>
+    <li>List item 1</li>
+    <li>
+        List item 2
+        <ul>
+            <li>List item 1.1</li>
+            <li>List item 1.2</li>
+            <li>List item 1.3</li>
+        </ul>
+    </li>
+    <li>List item 3</li>
+    <li>List item 4</li>
+    <li>List item 5</li>
+</ul>
+
+- Markdonw List Item 1
+- Markdonw List Item 2
+    - Markdonw List Item 2.1
+    - Markdonw List Item 2.2
+    - Markdonw List Item 2.3
+- Markdonw List Item 3
+- Markdonw List Item 4
+- Markdonw List Item 5
+
+
+## Numbered lists
+
+<ol>
+    <li>List item 1</li>
+    <li>
+        List item 2
+        <ol>
+            <li>List item 1.1</li>
+            <li>List item 1.2</li>
+            <li>List item 1.3</li>
+        </ol>
+    </li>
+    <li>List item 3</li>
+    <li>List item 4</li>
+    <li>List item 5</li>
+</ol>
+
+1. Markdonw List Item 1
+2. Markdonw List Item 2
+    1. Markdonw List Item 2.1
+    2. Markdonw List Item 2.2
+    3. Markdonw List Item 2.3
+3. Markdonw List Item 3
+4. Markdonw List Item 4
+5. Markdonw List Item 5
+
+
+Line Break
+================================================================================
+
+<hr></hr>
+
+-----
+
+
+Images
+================================================================================
+
+<img src="https://cdn.pixabay.com/photo/2019/11/20/22/59/space-4641363_960_720.jpg">
+
+![Tall image](https://cdn.pixabay.com/photo/2020/05/28/11/02/moon-5230836_960_720.jpg)

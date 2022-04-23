@@ -33,7 +33,7 @@
 <style>
 
     .olo-omnibar.v-text-field input {
-        font-size: 1.3em !important;
+        font-size: 1.5em !important;
         color: #616161 !important;
         text-align: center !important;
         padding-left: 100px !important;
