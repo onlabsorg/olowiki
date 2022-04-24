@@ -386,8 +386,14 @@ export default {
         overflow-y: auto 
     }
 
+    .v-app-bar .v-toolbar__content {
+        padding: 0 !important;
+    }
+
     .v-app-bar .olo-omnibar {
+        align-self: stretch;
+        margin: 8px 0;
         width: 100%;
-        height: 100%;
+        border-radius: 8px;
     }
 </style>
