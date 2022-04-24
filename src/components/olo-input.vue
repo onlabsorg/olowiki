@@ -69,7 +69,7 @@
 </script>
 
 <style>
-    .v-dialog__content[role=document] {
-        align-items: start;
+    .v-dialog__content {
+        align-items: start !important;
     }
 </style>

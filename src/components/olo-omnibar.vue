@@ -64,22 +64,31 @@
         padding: 8px 18px;
     }
 
-    .olo-omnibar.focused {
-        background-color: #FBFBFF;
-        border: 2px solid #1976D2;
-    }
-
     .olo-omnibar input {
         width: 100%;
         font-size: 1.5em !important;
-        color: #616161 !important;
+        color: #727272 !important;
         text-align: center !important;
         padding-left: 100px !important;
         padding-right: 100px !important;
         outline: none;
     }
 
+    .olo-omnibar:hover {
+        background-color: #D7D9DC;
+    }
+
+    .olo-omnibar:hover input {
+        font-weight: 600;
+    }
+
+    .olo-omnibar.focused {
+        background-color: #FBFBFF;
+        border: 2px solid #1976D2;
+    }
+
     .olo-omnibar.focused input {
+        font-weight: 600;
         color: #212121 !important;
     }
 </style>
