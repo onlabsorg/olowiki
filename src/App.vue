@@ -138,6 +138,7 @@ export default {
             show: null,
             mini: true,
             width: 256,
+            minWidth: 256,
             borderSize: 3
         },
         commands: {
@@ -330,7 +331,9 @@ export default {
             const minSize = this.navigation.borderSize;
             
             const resize = event => {
-                navigationElt.style.width = event.clientX + "px";
+                if (event.clientX >= this.navigation.minWidth) {
+                    navigationElt.style.width = event.clientX + "px";
+                }
             }
 
             borderElt.addEventListener('mouseover', () => {
