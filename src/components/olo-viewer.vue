@@ -27,10 +27,12 @@ export default {
         --text-color: #212121;
         --text-light-color: #6A737D;
         --text-dark-color: #000000;
+        --text-accent-color: #FFEBEE;
         
         --background-color: #ECEEF1;
         --background-light-color: #FFFFFF;
         --background-dark-color: #CFD8DC;
+        --background-accent-color: #B71C1C;
         
         --link-color: #0366d6;
         
@@ -212,6 +214,12 @@ export default {
         border-radius: 1em;
         margin: 1.5em 0;
         overflow: auto;
+    }
+
+    .olo-viewer pre.accent,
+    .olo-viewer pre.accent code {
+        background-color: var(--background-accent-color) !important;
+        color: var(--text-accent-color) !important;
     }
 
 
