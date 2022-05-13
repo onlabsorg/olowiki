@@ -199,7 +199,7 @@ export default {
         line-height: 1.2;
         color: var(--text-color) !important;
         background-color: var(--background-color) !important;
-        padding: .1em .5em;
+        padding: .1em 0;
         border-radius: 0.25em;
         margin: .15em 0;
     }
