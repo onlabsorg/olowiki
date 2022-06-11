@@ -1,0 +1,15 @@
+<% __render__ = require 'markdown' %>
+
+# Root Document
+
+<% _toc = [
+
+    {name: "item1"},
+    {name: "item2"},
+    {name: "item3", children: [
+            {name: "item3.1"},
+            {name: "item3.2"},
+            {name: "item3.3"}
+        ]}
+
+  ] %>

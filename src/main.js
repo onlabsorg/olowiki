@@ -5,10 +5,10 @@ window.olo = olo;
 import Wiki from './wiki';
 
 document.addEventListener("DOMContentLoaded", async () => {
-    olo.wiki = await Wiki('#app', { 
-        
-        appName: "oloWiki",
-        
+    olo.wiki = await Wiki('#app', {
+
+        appName: "olowiki",
+
         routes: {
             '/'      : new olo.HTTPStore(location.origin + "/docs/"),
             '/.wiki/': new olo.HTTPStore(location.origin + "/.wiki/", {extension:".olo"}),
@@ -17,19 +17,17 @@ document.addEventListener("DOMContentLoaded", async () => {
             'local:/': new olo.BrowserStore('olojs_local_store'),
             'temp:/' : new olo.MemoryStore()
         },
-        
+
         context: {
             __olowiki__: {
                 version: require('../package.json').version,
             }
         },
-        
-        homePath: "/index",
-        
+
+        homePath: "/",
+
         helpPath: "/.wiki/help/index",
-        
+
         treeRoot: "/"
     });
 });
-
-
