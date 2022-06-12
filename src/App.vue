@@ -33,10 +33,6 @@
             :root="treeRoot"
             :active="docPath"
             @update:active="handleActiveTreeItemChange"
-            @add-item="addDocTo($event)"
-            @copy-item="copyItem($event)"
-            @delete-item="deleteItem($event)"
-            @download-item="download($event)"
             >
         </olo-tree>
 
@@ -62,7 +58,7 @@
             <olo-menu-item icon="mdi-pencil"       title="Edit"      kbshortcut="CTRL-ENTER" @click="mode='edit'"       v-if="mode==='view'"></olo-menu-item>
             <olo-menu-item icon="mdi-check"        title="Render"    kbshortcut="CTRL-ENTER" @click="mode='view'"       v-if="mode==='edit'"></olo-menu-item>
             <olo-menu-item icon="mdi-content-save" title="Save"      kbshortcut="CTRL-S"     @click="save"              ></olo-menu-item>
-            <olo-menu-item icon="mdi-content-copy" title="Duplicate" kbshortcut=""           @click="copyItem(docPath)" ></olo-menu-item>
+            <olo-menu-item icon="mdi-content-copy" title="Duplicate" kbshortcut=""           @click="copyDoc(docPath)"  ></olo-menu-item>
             <olo-menu-item icon="mdi-delete"       title="Delete"    kbshortcut=""           @click="deleteDoc(docPath)"></olo-menu-item>
             <olo-menu-item icon="mdi-download"     title="Download"  kbshortcut=""           @click="download(docPath)" ></olo-menu-item>
         </v-list>
@@ -202,27 +198,14 @@ export default {
             }
         },
 
-        async addDocTo (dirPath) {
-            const docPath = await this.askQuestion("Enter the path of the new document.", dirPath);
-            if (docPath) {
+        async copyDoc (docPath) {
+            const newDocPath = await this.askQuestion("Enter the path of document copy.", docPath);
+            if (newDocPath) {
                 try {
-                    await this.store.createDocument(docPath);
-                    this.showMessage(`Created ${docPath}`);
+                    await this.store.copy(docPath, newDocPath);
+                    this.showMessage(`Copied ${docPath} to ${newDocPath}`);
                 } catch (e) {
-                    this.showMessage(`Failed to create ${docPath}`);
-                    console.error(e);
-                }
-            }
-        },
-
-        async copyItem (itemPath) {
-            const newItemPath = await this.askQuestion("Enter the path of document copy.", itemPath);
-            if (newItemPath) {
-                try {
-                    await this.store.copy(itemPath, newItemPath);
-                    this.showMessage(`Copied ${itemPath} to ${newItemPath}`);
-                } catch (e) {
-                    this.showMessage(`Failed to copy ${itemPath} to ${newItemPath}`);
+                    this.showMessage(`Failed to copy ${docPath} to ${newDocPath}`);
                     console.error(e);
                 }
             }
@@ -239,20 +222,6 @@ export default {
             } catch (e) {
                 this.showMessage(`Failed to delete ${docPath}`);
                 console.error(e);
-            }
-        },
-
-        async deleteItem (itemPath) {
-            if (itemPath.slice(-1) === '/') {
-                try {
-                    await this.store.deleteAll(itemPath);
-                    this.showMessage(`Deleted ${itemPath}`);
-                } catch (e) {
-                    this.showMessage(`Failed to delete ${itemPath}`);
-                    console.error(e);
-                }
-            } else {
-                await this.deleteDoc(itemPath);
             }
         },
 
