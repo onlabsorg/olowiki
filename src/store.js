@@ -5,7 +5,6 @@ import * as FileSaver from 'file-saver';
 const normalizePath = path => pathlib.normalize(`/${path}`);
 
 
-
 class ObservableStore extends olo.Router {
     
     constructor (routes) {
