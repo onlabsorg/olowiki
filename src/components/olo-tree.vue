@@ -47,10 +47,7 @@ export default {
     methods: {
 
         async updateTOC () {
-            const rootDocSource = await this.store.read(this.root);
-            const rootDocContext = this.store.createContext(this.root);
-            const evaluateRootDoc = this.store.parse(rootDocSource);
-            const {data} = await evaluateRootDoc(rootDocContext);
+            const {data} = await this.store.load(this.root);
             this.toc = Array.isArray(data._toc) ? data._toc : [];
         },
 
