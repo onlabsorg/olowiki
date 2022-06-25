@@ -4,7 +4,8 @@
 
 <% __toc__ = [
 
-    {name: "aforismi", children: import "aforismi/" . __toc__},
+    {name: "Aforismi", children: import "aforismi/" . __toc__ },
+    {name: "Favole"  , children: import "favole/" . __toc__   },
 
     {name: "item1"},
     {name: "item2"},

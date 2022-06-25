@@ -67,12 +67,14 @@ export default {
 }
 
 const Children = (path, toc) => toc.map(item => {
+    if (typeof item === "string") {
+        item = {name: item};
+    }
     const child = {
         name: item.name,
-        id: pathlib.join(path, item.name.toLowerCase().replace(' ','_'))
+        id: pathlib.join(path, item.name.toLowerCase().replace(' ','_')) + (item.children ? '/' : "")
     };
     if (Array.isArray(item.children)) {
-        child.id += '/';
         child.children = Children(child.id, item.children);
     }
     return child;
