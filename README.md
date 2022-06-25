@@ -25,7 +25,7 @@ Let's explore each of these options.
 
 ### The stilo plugin
 You can install olowiki as [stilo] plugin and use it to edit your local 
-olojs repository in the browser. To do so, first you need to install stilo and 
+olojs repository in the browser. To do so, first you need to install [stilo] and 
 create a document repository:
 
 ```
@@ -48,9 +48,6 @@ stilo run wiki
 
 You can now render and edit the olojs documents contained in `/path/to/home`
 in the browser at `http://localhost:8010/#/path/to/doc`.
-
-> The URL hash is interpreted as a document ID, therefore it can also contain
-> document arguments. For example: #/path/to/doc?x=10;y=20;z=30
 
 
 ### Create a custom oloWiki server
@@ -92,10 +89,9 @@ license.
 
 ### Related projects
 * [stilo] is a command-line interface written in NodeJS that allows you to
-  create and mange local olojs document repositories.
+  create and manage local olojs document repositories.
 * [olojs] is a distributed content management system
 
 
 [olojs]: https://github.com/onlabsorg/olojs/blob/master/README.md
 [stilo]: https://github.com/onlabsorg/stilo/blob/main/README.md
-

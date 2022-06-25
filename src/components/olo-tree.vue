@@ -48,7 +48,7 @@ export default {
 
         async updateTOC () {
             const {data} = await this.store.load(this.root);
-            this.toc = Array.isArray(data._toc) ? data._toc : [];
+            this.toc = Array.isArray(data.__toc__) ? data.__toc__ : [];
         },
 
         async handleStoreChange () {

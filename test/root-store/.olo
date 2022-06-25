@@ -2,7 +2,9 @@
 
 # Root Document
 
-<% _toc = [
+<% __toc__ = [
+
+    {name: "aforismi", children: import "aforismi/" . __toc__},
 
     {name: "item1"},
     {name: "item2"},
