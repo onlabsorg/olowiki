@@ -1,18 +1,32 @@
 <template>
-    <v-treeview class="olo-tree"
-        dense hoverable color="black"
-        :items="children"
-        activatable :active="[active]" @update:active="notifyActiveItemChange"
-        >
-        <template v-slot:prepend="{ item }">
-            <v-icon v-if="item.children">
-                mdi-file-document-multiple-outline
-            </v-icon>
-            <v-icon v-else>
-                mdi-file-document-outline
-            </v-icon>
-        </template>
-    </v-treeview>
+    <div>
+        <v-treeview class="olo-tree-root"
+            dense hoverable color="black"
+            :items="rootItem"
+            activatable :active="[active]" @update:active="notifyActiveItemChange"
+            >
+            <template v-slot:prepend="{}">
+                <v-icon>mdi-home-outline</v-icon>
+            </template>
+            <template v-slot:label="{item}">
+                {{mini ? "" : item.name}}
+            </template>
+        </v-treeview>
+        <v-treeview class="olo-tree" :class="{hidden: mini}"
+            dense hoverable color="black"
+            :items="children"
+            activatable :active="[active]" @update:active="notifyActiveItemChange"
+            >
+            <template v-slot:prepend="{ item }">
+                <v-icon v-if="item.children">
+                    mdi-file-document-multiple-outline
+                </v-icon>
+                <v-icon v-else>
+                    mdi-file-document-outline
+                </v-icon>
+            </template>
+        </v-treeview>
+    </div>
 </template>
 
 <script>
@@ -22,17 +36,28 @@ export default {
 
     name: 'olo-tree',
 
-    props: ['store', 'root', 'active', 'open'],
+    props: ['store', 'root', 'active', 'mini'],
 
     data: () => ({
         toc: [],
     }),
 
     computed: {
-
+        
         children () {
-            return Children('/', this.toc);
-        }
+            return Children(this.rootId, this.toc)
+        },
+        
+        rootItem () {
+            return [{
+                name: "Home",
+                id: this.rootId 
+            }]
+        },
+        
+        rootId () {
+            return pathlib.normalize(`/${this.root}/`);
+        }         
     },
 
     watch: {
@@ -78,4 +103,12 @@ const Children = (path, toc) => toc.map(item => {
 </script>
 
 <style>
+
+    .olo-tree-root .v-treeview-node__level {
+        display: none;
+    }
+    
+    .olo-tree.hidden {
+        display: none;
+    }
 </style>

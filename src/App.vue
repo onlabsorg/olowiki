@@ -17,40 +17,48 @@
     <!-- Content Navigation Panel -->
     <v-navigation-drawer app floating ref="navigation"
             v-model="navigation.show" hide-overlay
-            :mini-variant="navigation.mini && !mini"
+            :mini-variant="navigation.mini && !smallScreen"
             :width="navigation.width"
             color="#F1F3F4">
 
         <v-toolbar elevation="0" color="#F1F3F4">
-            <v-btn icon @click.stop="mini ? navigation.show=false : navigation.mini=!navigation.mini">
+            <v-btn icon @click.stop="smallScreen ? navigation.show=false : navigation.mini=!navigation.mini">
                 <v-icon>mdi-menu</v-icon>
             </v-btn>
             <v-toolbar-title>{{navigationTitle}}</v-toolbar-title>
         </v-toolbar>
 
-        <olo-tree :class="{hidden: navigation.mini && !mini}"
+        <olo-tree
             :store="store"
             :root="treeRoot"
             :active="docPath" @update:active="handleActiveTreeItemChange"
+            :mini="navigation.mini && !smallScreen"
             >
         </olo-tree>
+
+        <template v-slot:append>
+            <v-list>
+                <v-divider></v-divider>
+                <olo-menu-item icon="mdi-help-circle-outline" title="Help"     kbshortcut="" @click="docId=helpPath"></olo-menu-item>
+            </v-list>
+        </template>
 
     </v-navigation-drawer>
 
 
     <!-- Commands Menu -->
     <v-navigation-drawer app right floating v-model="commands.show"
-            :mini-variant="commands.mini && !mini"
+            :mini-variant="commands.mini && !smallScreen"
             color="#F1F3F4">
 
         <v-toolbar elevation="0" color="#F1F3F4">
-            <v-btn icon v-if="mini" @click.stop="commands.show=false">
+            <v-btn icon v-if="smallScreen" @click.stop="commands.show=false">
                 <v-icon>mdi-chevron-right</v-icon>
             </v-btn>
-            <v-btn icon v-if="!mini" @click.stop="commands.mini=!commands.mini">
-                <v-icon>{{commands.mini && !mini ? "mdi-chevron-left" : "mdi-chevron-right"}}</v-icon>
+            <v-btn icon v-if="!smallScreen" @click.stop="commands.mini=!commands.mini">
+                <v-icon>{{commands.mini && !smallScreen ? "mdi-chevron-left" : "mdi-chevron-right"}}</v-icon>
             </v-btn>
-            <v-toolbar-title>Document</v-toolbar-title>
+            <v-toolbar-title>Page</v-toolbar-title>
         </v-toolbar>
 
         <v-list>
@@ -62,13 +70,6 @@
             <olo-menu-item icon="mdi-download"     title="Download"  kbshortcut=""           @click="download(docPath)" ></olo-menu-item>
         </v-list>
 
-        <template v-slot:append>
-            <v-list>
-                <v-divider></v-divider>
-                <olo-menu-item icon="mdi-home-outline"        title="Home"     kbshortcut="" @click="docId=homePath"></olo-menu-item>
-                <olo-menu-item icon="mdi-help-circle-outline" title="Help"     kbshortcut="" @click="docId=helpPath"></olo-menu-item>
-            </v-list>
-        </template>
     </v-navigation-drawer>
 
 
@@ -159,7 +160,7 @@ export default {
             return this.appName || "Content";
         },
 
-        mini () {
+        smallScreen () {
             switch (this.$vuetify.breakpoint.name) {
                 case 'xs': return true;
                 case 'sm': return true;
@@ -370,7 +371,4 @@ export default {
         border-radius: 8px;
     }
     
-    .hidden {
-        display: none;
-    }
 </style>
