@@ -7,8 +7,6 @@ import Wiki from './wiki';
 document.addEventListener("DOMContentLoaded", async () => {
     olo.wiki = await Wiki('#app', {
 
-        appName: "olowiki",
-
         routes: {
             '/'      : new olo.HTTPStore(location.origin + "/docs/"),
             '/.wiki/': new olo.HTTPStore(location.origin + "/.wiki/", {extension:".olo"}),
