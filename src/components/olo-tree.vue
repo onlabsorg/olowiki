@@ -1,12 +1,8 @@
 <template>
     <v-treeview class="olo-tree"
         dense hoverable color="black"
-
         :items="children"
-
-        activatable
-        :active="[active]"
-        @update:active="notifyActiveItemChange"
+        activatable :active="[active]" @update:active="notifyActiveItemChange"
         >
         <template v-slot:prepend="{ item }">
             <v-icon v-if="item.children">
@@ -26,7 +22,7 @@ export default {
 
     name: 'olo-tree',
 
-    props: ['store', 'root', 'active'],
+    props: ['store', 'root', 'active', 'open'],
 
     data: () => ({
         toc: [],
@@ -72,7 +68,7 @@ const Children = (path, toc) => toc.map(item => {
     }
     const child = {
         name: item.name,
-        id: pathlib.join(path, item.name.toLowerCase().replace(' ','_')) + (item.children ? '/' : "")
+        id: pathlib.join(path, item.name.toLowerCase().replaceAll(' ','_')) + (item.children ? '/' : "")
     };
     if (Array.isArray(item.children)) {
         child.children = Children(child.id, item.children);

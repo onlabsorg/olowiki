@@ -28,11 +28,10 @@
             <v-toolbar-title>{{navigationTitle}}</v-toolbar-title>
         </v-toolbar>
 
-        <olo-tree v-if="!navigation.mini || mini"
+        <olo-tree :class="{hidden: navigation.mini && !mini}"
             :store="store"
             :root="treeRoot"
-            :active="docPath"
-            @update:active="handleActiveTreeItemChange"
+            :active="docPath" @update:active="handleActiveTreeItemChange"
             >
         </olo-tree>
 
@@ -143,7 +142,6 @@ export default {
             mini: true,
         },
         docData: {__path__:"", __title__:"Loading ..."},
-        activeTreeItem: [],
         message: {
             show: false,
             text: "",
@@ -183,6 +181,10 @@ export default {
     },
 
     methods: {
+        
+        logEvent (event) {
+            console.log(event);
+        },
 
         commit () {
             this.$refs.document.commit();
@@ -239,7 +241,7 @@ export default {
         async askQuestion (question, proposedAnswer="") {
             return await this.$refs.question.ask(question, proposedAnswer);
         },
-
+        
         handleActiveTreeItemChange (activeItemPath) {
             if (activeItemPath.slice(0, 1) === '/') {
                 this.docId = activeItemPath;
@@ -253,9 +255,7 @@ export default {
             this.docId = this.store.normalizePath(docId);
         },
 
-        handleMouseOverNavigationBorder () {
-
-        },
+        handleMouseOverNavigationBorder () {},
 
         handleKeyboardCommand (event) {
             const keyString = detectKeyString(event);
@@ -368,5 +368,9 @@ export default {
         margin: 8px 0;
         width: 100%;
         border-radius: 8px;
+    }
+    
+    .hidden {
+        display: none;
     }
 </style>
