@@ -37,7 +37,7 @@ const defaultOptions = {
     
     homePath: "/",
     
-    helpPath: "./wiki/help/index",
+    helpPath: "./wiki/help/",
     
     treeRoot: "/"
 };

@@ -1,18 +1,21 @@
-<% __render__ = require 'markdown' %>
+<% __render__ = require "markdown" %>
 
-olowiki
+
+olowiki guide
 ================================================================================
 
-This is a minimalistic personal wiki that makes it easy to write content in a
-modular way. This means that in any document you can reuse content from other
-documents, either created by you or by others.
+<% _logline: "
+This is a minimalistic personal wiki that allows you to create content in a
+modular way. This means that in any page of the wiki you can reuse content from 
+other pages of the same wiki or even from pages imported form other wikis.
+" %>
 
 
 
 Get familiar with the user interface
 --------------------------------------------------------------------------------
 
-The user interface is made of three parts: the *document content*, the left-side 
+The user interface is made of three parts: the *page content*, the left-side 
 *navigation pane* and the right-side *commands menu*.
 
 **The document content** is what you are looking at now: it shows the active 
@@ -27,18 +30,17 @@ olo-document markup works and that will be explained in the next chapter, but
 bear in mind that it is a superset of HTML, therefore you can just add some
 HTML, hit `CTRL-ENTER` and see how the rendering changes in view mode.
 
-**The navigation pane** on the left side of the interface shows all the 
-documents and folders available in this wiki; if it is hiddenm show it by 
-clicking on the top-left icon. 
+**The navigation pane** on the left side of the interface shows the contant 
+tree of this wiki; if it is hiddenm show it by clicking on the top-left icon.
+The content tree is defined by the `__toc__` variable conteined in the frontpage.
 
 **The commands menu** on the right side of the interface is collapsed by default
 but if can be expanded by clicking on the top-right icon. The commands menu
-contains all the actions that can be performed on the current document, plus
-two links to special documents: your *home document* and this *help home page*.
+contains all the actions that can be performed on the current page.
 
 There is nothing more to know about the interface: it's that simple! What you
-need to know instead, is how to write an olo-document markup. That's covered
-in the next chapter.
+need to know instead, is how to write an olo-document markup in order to create
+pages. That's covered in the next chapter.
 
 
 
@@ -51,9 +53,9 @@ rendering, the expressions are evaluated and replaced with their return value.
 All you need to learn is actually the expression language, which is called
 *Swan* and is documented [here](https://github.com/onlabsorg/swan-js/blob/main/docs/swan.md).
 
-An important feature of the olo-documents is the possibility to import other
-olo-documents and use their text or the data defined by their inline
-expression. This is done via the Swan `import` function.
+An important feature of the pages expressions is the possibility to import other
+pages and use their text or the data defined by their inline expression. This is 
+done via the Swan `import` function.
 
 Finally, it is possible to write an olo-document in 
 [markdown](https://en.wikipedia.org/wiki/Markdown) by adding the 
@@ -80,4 +82,5 @@ visit the following projects on GitHub:
   olo-documents, on which both stilo and olowiki are based.
 - [swan-js](https://github.com/onlabsorg/swan-js): the language used in the
   documents inline expressions.
-  
+
+
