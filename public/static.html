@@ -19,8 +19,7 @@
             olo.wiki = await olo.Wiki('#app', {
 
                 routes: {
-                    '/'      : new olo.HTTPStore(location.origin + "/docs/"),
-                    '/.wiki/': new olo.HTTPStore(location.origin + "/.wiki/", {extension:".olo"}),
+                    '/'      : new olo.HTTPStore(location.origin, {extension:".olo"}),
                     'http:/' : new olo.HTTPStore('http:/'),
                     'https:/': new olo.HTTPStore('https:/'),
                     'local:/': new olo.BrowserStore('olojs_local_store'),

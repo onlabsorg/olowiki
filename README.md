@@ -17,13 +17,13 @@ implementation for a live demo.
   
 Olowiki can be used in two ways:
 
-* By adding oloWiki to [stilo] as plugin and execute `stilo run wiki` at the 
-  command line
+* By adding oloWiki to [stilo] as plugin and execute `stilo run wiki` or 
+  `stilo run wiki-build` at the command line
 * By creating an oloWiki HTTP server via JavaScript
 
 Let's explore each of these options.
 
-### The stilo plugin
+### The stilo plugin: dynamic wiki
 You can install olowiki as [stilo] plugin and use it to edit your local 
 olojs repository in the browser. To do so, first you need to install [stilo] and 
 create a document repository:
@@ -48,6 +48,20 @@ stilo run wiki
 
 You can now render and edit the olojs documents contained in `/path/to/home`
 in the browser at `http://localhost:8010/#/path/to/doc`.
+
+
+### The stilo plugin: static wiki
+
+An alternative way to serve your files via olo-wiki is given by the stilo plugin
+command `stilo run wiki-build [dir-path]`. This command will create a static
+version of olo-wiki in the given directory; you can then start any static http 
+server in that directory and serve its content via olo-wiki.
+
+```sh
+cd /path/to/dir
+stilo run wiki-build .
+python -m http.server 8010
+```
 
 
 ### Create a custom oloWiki server

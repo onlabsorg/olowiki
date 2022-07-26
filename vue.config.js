@@ -8,7 +8,15 @@ module.exports = {
             filename: 'index.html',
             title: 'oloWiki',
         },
+        static: {
+            entry: 'src/main.js',
+            template: 'public/static.html',
+            filename: 'static.html',
+            title: 'oloWiki',
+        },
     },
+    
+    assetsDir: ".wiki",
     
     transpileDependencies: [
         'vuetify'

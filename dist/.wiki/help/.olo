@@ -1,0 +1,86 @@
+<% __render__ = require "markdown" %>
+
+
+olowiki guide
+================================================================================
+
+<% _logline: "
+This is a minimalistic personal wiki that allows you to create content in a
+modular way. This means that in any page of the wiki you can reuse content from 
+other pages of the same wiki or even from pages imported form other wikis.
+" %>
+
+
+
+Get familiar with the user interface
+--------------------------------------------------------------------------------
+
+The user interface is made of three parts: the *page content*, the left-side 
+*navigation pane* and the right-side *commands menu*.
+
+**The document content** is what you are looking at now: it shows the active 
+document either in view or edit mode. If the background is white, then you are 
+in view mode, while if the background is dark, you are in edit mode. You can 
+switch between view and edit mode (and vice-versa) by hitting `CTRL-ENTER`: try 
+it!
+
+When in edit mode, the document markup is shown in a tex editor and you can 
+change it as you please. In order to do that, you need to know how the
+olo-document markup works and that will be explained in the next chapter, but
+bear in mind that it is a superset of HTML, therefore you can just add some
+HTML, hit `CTRL-ENTER` and see how the rendering changes in view mode.
+
+**The navigation pane** on the left side of the interface shows the contant 
+tree of this wiki; if it is hiddenm show it by clicking on the top-left icon.
+The content tree is defined by the `__toc__` variable conteined in the frontpage.
+
+**The commands menu** on the right side of the interface is collapsed by default
+but if can be expanded by clicking on the top-right icon. The commands menu
+contains all the actions that can be performed on the current page.
+
+There is nothing more to know about the interface: it's that simple! What you
+need to know instead, is how to write an olo-document markup in order to create
+pages. That's covered in the next chapter.
+
+
+
+Learn how to write olo-documents
+--------------------------------------------------------------------------------
+
+Every document can be modified by editing its markup, which is just HTML with
+inline expressions enclosed between `<% '<'+'%' %>` and `<% '%'+'>' %>`. Upon
+rendering, the expressions are evaluated and replaced with their return value.
+All you need to learn is actually the expression language, which is called
+*Swan* and is documented [here](https://github.com/onlabsorg/swan-js/blob/main/docs/swan.md).
+
+An important feature of the pages expressions is the possibility to import other
+pages and use their text or the data defined by their inline expression. This is 
+done via the Swan `import` function.
+
+Finally, it is possible to write an olo-document in 
+[markdown](https://en.wikipedia.org/wiki/Markdown) by adding the 
+`<% '<'+'%' %> __render__ = require 'markdown' <% '%'+'>' %>` inline expression 
+anywhere in the document.
+
+A more in depth description of the olo-documents markup can be found
+[here](https://github.com/onlabsorg/olojs/blob/master/docs/document.md).
+
+
+
+Contribute
+--------------------------------------------------------------------------------
+
+At the moment this software and the entire olo system of libraries and tools
+is mantained only be me. If you are a developer interested in contributing,
+visit the following projects on GitHub:
+
+- [olowiki](https://github.com/onlabsorg/olowiki): this web application
+- [stilo](https://github.com/onlabsorg/stilo): the command-line equivalent
+  of olowiki for managing olo-documents. Stilo can also be used to launch
+  olowiki as editor for your local repository of olo-documents.
+- [olojs](https://github.com/onlabsorg/olojs): the core library for handling
+  olo-documents, on which both stilo and olowiki are based.
+- [swan-js](https://github.com/onlabsorg/swan-js): the language used in the
+  documents inline expressions.
+
+
