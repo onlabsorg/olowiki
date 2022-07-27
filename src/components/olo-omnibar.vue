@@ -26,8 +26,12 @@
         methods: {
             
             updateInput () {
-                if (this.$refs.input.value !== this.value) {
-                    this.$refs.input.value = this.value;
+                let value = this.value;
+                if (value.slice(0, 10) === '/.schemes/') {
+                    value = value.slice(10).replace('/', ":/");
+                }
+                if (this.$refs.input.value !== value) {
+                    this.$refs.input.value = value;
                 }                
             },
             

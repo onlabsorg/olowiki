@@ -12,7 +12,10 @@
     {name: "item3", children: [
             {name: "item3.1"},
             {name: "item3.2"},
-            {name: "item3.3"}
+            {name: "item3.3"},
+            {name: "Pinocchio", target: "../favole/pinocchio"},
+            {name: "Favole"   , target: "../favole", children: import "../favole/" . __toc__   },
+            {name: "Local Store"   , target: "local:/", children: import "local:/" . __toc__   }
         ]}
 
   ] %>

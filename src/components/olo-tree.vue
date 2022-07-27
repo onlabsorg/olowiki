@@ -45,7 +45,7 @@ export default {
     computed: {
         
         children () {
-            return Children(this.rootId, this.toc)
+            return this.createChildren(this.rootId, this.toc)
         },
         
         rootItem () {
@@ -78,6 +78,31 @@ export default {
 
         notifyActiveItemChange (activeItems) {
             this.$emit('update:active', activeItems[0] || "");
+        },
+        
+        createChildren (path, toc) {
+            return toc.map(item => {
+                
+                if (typeof item === "string") {
+                    item = {name: item};
+                }
+                
+                if (!item.target) {
+                    item.target = item.name.toLowerCase().replaceAll(' ','_');
+                }
+                
+                const child = {
+                    name: item.name,
+                    id: this.store.normalizePath(
+                            this.store.resolvePath(path, item.target) + (item.children ? '/' : ""))
+                };
+                
+                if (Array.isArray(item.children)) {
+                    child.children = this.createChildren(child.id, item.children);
+                }
+                
+                return child;
+            });            
         }
     },
 
@@ -86,20 +111,6 @@ export default {
         this.store.onChange(this.handleStoreChange.bind(this));
     }
 }
-
-const Children = (path, toc) => toc.map(item => {
-    if (typeof item === "string") {
-        item = {name: item};
-    }
-    const child = {
-        name: item.name,
-        id: pathlib.join(path, item.name.toLowerCase().replaceAll(' ','_')) + (item.children ? '/' : "")
-    };
-    if (Array.isArray(item.children)) {
-        child.children = Children(child.id, item.children);
-    }
-    return child;
-});
 </script>
 
 <style>
