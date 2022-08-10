@@ -50,7 +50,7 @@ export default {
         
         rootItem () {
             return [{
-                name: "Frontpage",
+                name: "Home",
                 id: this.rootId 
             }]
         },

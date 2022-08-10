@@ -25,7 +25,7 @@
             <v-btn icon @click.stop="smallScreen ? navigation.show=false : navigation.mini=!navigation.mini">
                 <v-icon>mdi-menu</v-icon>
             </v-btn>
-            <v-toolbar-title>Book</v-toolbar-title>
+            <v-toolbar-title>{{title}}</v-toolbar-title>
         </v-toolbar>
 
         <olo-tree
@@ -118,7 +118,7 @@ import {detectKeyString} from 'key-string';
 export default {
     name: 'App',
 
-    props: ['store', 'homePath', 'helpPath', 'treeRoot', 'context'],
+    props: ['title', 'store', 'homePath', 'helpPath', 'treeRoot', 'context'],
 
     components: {
         'olo-document'  : () => import('./components/olo-document' ),

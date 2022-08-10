@@ -10,9 +10,9 @@ module.exports = {
         },
         static: {
             entry: 'src/main.js',
-            template: 'public/static.html',
-            filename: 'static.html',
-            title: 'oloWiki',
+            template: 'public/index.olo',
+            filename: 'index.olo',
+            minify: false
         },
     },
     

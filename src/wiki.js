@@ -31,6 +31,8 @@ export default async function (element, options={}) {
 
 const defaultOptions = {
     
+    title: "olowiki",
+    
     routes: {},
     
     context: {},
