@@ -117,8 +117,8 @@
 import {detectKeyString} from 'key-string';
 
 const DEFAULT_CONFIG = {
-    title: "MyWiki",
-    toc: []
+    title : "My Wiki",
+    toc   : []
 };
 
 export default {
@@ -172,7 +172,7 @@ export default {
                 case 'xl': return false;
                 default  : return false;
             }
-        }
+        },        
     },
 
     watch: {
@@ -193,13 +193,9 @@ export default {
         
         async updateConfig () {
             const {data} = await this.store.load(this.homePath);
-            if (data.__wiki__) {
-                this.config = {
-                    title: String(data.__wiki__.title) || DEFAULT_CONFIG.title,
-                    toc: Array.isArray(data.__wiki__.toc) ? data.__wiki__.toc : DEFAULT_CONFIG.toc
-                };
-            } else {
-                this.config = DEFAULT_CONFIG;
+            this.config = {
+                title: data.__title__ ? String(data.__title__) : DEFAULT_CONFIG.title,
+                toc: Array.isArray(data.__toc__) ? data.__toc__ : DEFAULT_CONFIG.toc
             }
         },
         

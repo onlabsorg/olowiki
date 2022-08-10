@@ -1,12 +1,8 @@
 <% __render__ = require 'markdown' %>
 
-<% __wiki__ = {
+<% __title__ = "My Local Wiki" %>
 
-        title: "My Local Wiki",
-
-        toc: [] 
-        
-    } %>
+<% __toc__ = [] %>
 
 # Local Store
 

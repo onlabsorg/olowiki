@@ -39,8 +39,13 @@
                 treeRoot: "/"
             });
             
+            if (await olo.wiki.store.read('/') === "") {
+                const rootSource = await olo.wiki.store.read("/.wiki/templates/root");
+                await olo.wiki.store.write('/', rootSource);
+            }
+
             if (await olo.wiki.store.read('local:/') === "") {
-                const localRootSource = await olo.wiki.store.read("/.wiki/local-root-template");
+                const localRootSource = await olo.wiki.store.read("/.wiki/templates/local-root");
                 await olo.wiki.store.write('local:/', localRootSource);
             }
         });

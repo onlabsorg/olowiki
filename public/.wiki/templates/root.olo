@@ -1,14 +1,10 @@
 <% __render__ = require 'markdown' %>
 
-<% __wiki__ = {
+<% __title__ = "My Wiki" %>
 
-        title: "My Wiki",
-        
-        toc: []
+<% __toc__ = [] %>
 
-    } %>
-
-# <% __wiki__.title %>
+# <% __title__ %>
 
 This is the home page of your personal wiki. This page should contain an 
 overview of its content and remand to the child documents for detailed content.
@@ -17,11 +13,10 @@ overview of its content and remand to the child documents for detailed content.
 > and used to build this document, so you shouldn't duplicate content.
 
 This page also contains some configuration data that you can use to customize 
-the user interface of your wiki. Namely, that data is contained in the 
-`__wiki__` namespace, which has the following items:
+the user interface of your wiki. Namely, that is:
 
-* The `__wiki__.title` Text defines the wiki title: its content will appear in 
+* The `__title__` Text which defines the wiki title: its content will appear in 
   the browser tab and in the toolbar of the navigation pane.
 
-* The `__wiki__.toc` List which defines the table of contents shown in the 
+* The `__toc__` List which defines the table of contents shown in the 
   navigation pane.

@@ -32,9 +32,9 @@ HTML, hit `CTRL-ENTER` and see how the rendering changes in view mode.
 
 **The navigation pane** on the left side of the interface shows the content 
 tree of this wiki; if it is hidden show it by clicking on the top-left icon.
-The title of this wiki is defined by the `__wiki__.title` Text contained in 
+The title of this wiki is defined by the `__title__` Text contained in 
 the home page (`/`) of this wiki, while the content tree is defined by the 
-`__wiki__.toc` List of the same document.
+`__toc__` List of the same document.
 
 **The commands menu** on the right side of the interface is collapsed by default
 but if can be expanded by clicking on the top-right icon. The commands menu
