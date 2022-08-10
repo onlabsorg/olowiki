@@ -1,0 +1,18 @@
+<% __render__ = require 'markdown' %>
+
+<%  # The items defined in the table of content will be shown in the navigation
+    # tree if it is contains an item pointing to `local:/`
+   
+        __toc__ = [] 
+        
+    %>
+
+# Local Store
+
+The documents under this path are stored locally in your browser, therefore they
+are private and you have complete control over them. The downside is that they 
+are not synchronized across your browsers.
+
+You can start editing this document by clicking on the edit button on the
+right-hand side bar or create new sub-documents by typing `local:/path/to/doc`
+in the top bar.

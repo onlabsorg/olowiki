@@ -25,7 +25,7 @@
                     '/'      : new olo.HTTPStore(location.origin, {extension:".olo"}),
                     'http:/' : new olo.HTTPStore('http:/'),
                     'https:/': new olo.HTTPStore('https:/'),
-                    'local:/': new olo.BrowserStore('olojs_local_store'),
+                    'local:/': new olo.BrowserStore('olowiki_local_store'),
                     'temp:/' : new olo.MemoryStore()
                 },
 
@@ -41,6 +41,11 @@
 
                 treeRoot: "/"
             });
+            
+            if (await olo.wiki.store.read('local:/') === "") {
+                const localRootSource = await olo.wiki.store.read("/.wiki/local-root-template");
+                await olo.wiki.store.write('local:/', localRootSource);
+            }
         });
     </script>
     <!-- built files will be auto injected -->
