@@ -1,11 +1,12 @@
 <% __render__ = require 'markdown' %>
 
-<%  # The items defined in the table of content will be shown in the navigation
-    # tree if it is contains an item pointing to `local:/`
-   
-        __toc__ = [] 
+<% __wiki__ = {
+
+        title: "My Local Wiki",
+
+        toc: [] 
         
-    %>
+    } %>
 
 # Local Store
 

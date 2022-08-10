@@ -36,16 +36,14 @@ export default {
 
     name: 'olo-tree',
 
-    props: ['store', 'root', 'active', 'mini'],
+    props: ['toc', 'store', 'root', 'active', 'mini'],
 
-    data: () => ({
-        toc: [],
-    }),
+    data: () => ({}),
 
     computed: {
         
         children () {
-            return this.createChildren(this.rootId, this.toc)
+            return this.createChildren(this.rootId, this.toc || [])
         },
         
         rootItem () {
@@ -66,15 +64,6 @@ export default {
     },
 
     methods: {
-
-        async updateTOC () {
-            const {data} = await this.store.load(this.root);
-            this.toc = Array.isArray(data.__toc__) ? data.__toc__ : [];
-        },
-
-        async handleStoreChange () {
-            await this.updateTOC();
-        },
 
         notifyActiveItemChange (activeItems) {
             this.$emit('update:active', activeItems[0] || "");
@@ -104,11 +93,6 @@ export default {
                 return child;
             });            
         }
-    },
-
-    async mounted () {
-        await this.updateTOC();
-        this.store.onChange(this.handleStoreChange.bind(this));
     }
 }
 </script>

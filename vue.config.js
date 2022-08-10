@@ -3,15 +3,17 @@ module.exports = {
     
     pages: {
         index: {
+            title: "OloWiki",
             entry: 'src/main.js',
             template: 'public/index.html',
             filename: 'index.html',
             title: 'oloWiki',
         },
         static: {
+            title: "OloWiki",
             entry: 'src/main.js',
-            template: 'public/index.olo',
-            filename: 'index.olo',
+            template: 'public/static.html',
+            filename: 'static.html',
             minify: false
         },
     },

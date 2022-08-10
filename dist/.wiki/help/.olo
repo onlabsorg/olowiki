@@ -24,15 +24,17 @@ in view mode, while if the background is dark, you are in edit mode. You can
 switch between view and edit mode (and vice-versa) by hitting `CTRL-ENTER`: try 
 it!
 
-When in edit mode, the document markup is shown in a tex editor and you can 
+When in edit mode, the document markup is shown in a text editor and you can 
 change it as you please. In order to do that, you need to know how the
 olo-document markup works and that will be explained in the next chapter, but
 bear in mind that it is a superset of HTML, therefore you can just add some
 HTML, hit `CTRL-ENTER` and see how the rendering changes in view mode.
 
-**The navigation pane** on the left side of the interface shows the contant 
-tree of this wiki; if it is hiddenm show it by clicking on the top-left icon.
-The content tree is defined by the `__toc__` variable conteined in the frontpage.
+**The navigation pane** on the left side of the interface shows the content 
+tree of this wiki; if it is hidden show it by clicking on the top-left icon.
+The title of this wiki is defined by the `__wiki__.title` Text contained in 
+the home page (`/`) of this wiki, while the content tree is defined by the 
+`__wiki__.toc` List of the same document.
 
 **The commands menu** on the right side of the interface is collapsed by default
 but if can be expanded by clicking on the top-right icon. The commands menu
@@ -82,5 +84,3 @@ visit the following projects on GitHub:
   olo-documents, on which both stilo and olowiki are based.
 - [swan-js](https://github.com/onlabsorg/swan-js): the language used in the
   documents inline expressions.
-
-

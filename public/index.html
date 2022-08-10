@@ -18,8 +18,6 @@
         document.addEventListener("DOMContentLoaded", async () => {
             olo.wiki = await olo.Wiki('#app', {
                 
-                title: "oloWiki",
-
                 routes: {
                     '/'      : new olo.HTTPStore(location.origin + "/docs/"),
                     '/.wiki/': new olo.HTTPStore(location.origin + "/.wiki/", {extension:".olo"}),
@@ -42,10 +40,15 @@
                 treeRoot: "/"
             });
             
-            if (await olo.wiki.store.read('local:/') === "") {
-                const localRootSource = await olo.wiki.store.read("/.wiki/local-root-template");
-                await olo.wiki.store.write('local:/', localRootSource);
+            if (await olo.wiki.store.read('/') === "") {
+                const rootSource = await olo.wiki.store.read("/.wiki/templates/root");
+                await olo.wiki.store.write('/', rootSource);
             }
+
+            if (await olo.wiki.store.read('local:/') === "") {
+                const localRootSource = await olo.wiki.store.read("/.wiki/templates/local-root");
+                await olo.wiki.store.write('local:/', localRootSource);
+            }            
         });
     </script>
     <!-- built files will be auto injected -->

@@ -25,10 +25,11 @@
             <v-btn icon @click.stop="smallScreen ? navigation.show=false : navigation.mini=!navigation.mini">
                 <v-icon>mdi-menu</v-icon>
             </v-btn>
-            <v-toolbar-title>{{title}}</v-toolbar-title>
+            <v-toolbar-title>{{config.title}}</v-toolbar-title>
         </v-toolbar>
 
         <olo-tree
+            :toc="config.toc"
             :store="store"
             :root="treeRoot"
             :active="docPath" @update:active="handleActiveTreeItemChange"
@@ -115,10 +116,15 @@
 <script>
 import {detectKeyString} from 'key-string';
 
+const DEFAULT_CONFIG = {
+    title: "MyWiki",
+    toc: []
+};
+
 export default {
     name: 'App',
 
-    props: ['title', 'store', 'homePath', 'helpPath', 'treeRoot', 'context'],
+    props: ['store', 'homePath', 'helpPath', 'treeRoot', 'context'],
 
     components: {
         'olo-document'  : () => import('./components/olo-document' ),
@@ -148,6 +154,7 @@ export default {
             text: "",
             timeout: 2000,
         },
+        config: DEFAULT_CONFIG
     }),
 
     computed: {
@@ -174,10 +181,27 @@ export default {
             // Bind the page URI hash to the docId property, while a hashchange
             // event handler takes care of binding docId to the hash.
             location.hash = this.store.normalizePath( this.docId );
+        },
+        
+        'config.title' () {
+            const titleElt = document.head.querySelector("title");
+            titleElt.innerHTML = this.config.title;
         }
     },
 
     methods: {
+        
+        async updateConfig () {
+            const {data} = await this.store.load(this.homePath);
+            if (data.__wiki__) {
+                this.config = {
+                    title: String(data.__wiki__.title) || DEFAULT_CONFIG.title,
+                    toc: Array.isArray(data.__wiki__.toc) ? data.__wiki__.toc : DEFAULT_CONFIG.toc
+                };
+            } else {
+                this.config = DEFAULT_CONFIG;
+            }
+        },
         
         logEvent (event) {
             console.log(event);
@@ -237,6 +261,10 @@ export default {
 
         async askQuestion (question, proposedAnswer="") {
             return await this.$refs.question.ask(question, proposedAnswer);
+        },
+        
+        async handleStoreChange () {
+            await this.updateConfig();
         },
         
         handleActiveTreeItemChange (activeItemPath) {
@@ -343,6 +371,10 @@ export default {
         // Bind the hash to the active document
         window.addEventListener('hashchange', this.handleHashChange.bind(this));
         this.handleHashChange();
+        
+        // Bind the __wiki__ configuration namespace to the 
+        this.store.onChange(this.handleStoreChange.bind(this));
+        await this.updateConfig();
 
         // Initialize the navigation drawer events
         this.initNavigation();
