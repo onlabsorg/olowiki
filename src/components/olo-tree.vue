@@ -81,13 +81,16 @@ export default {
                 }
                 
                 const child = {
-                    name: item.name,
-                    id: this.store.normalizePath(
-                            this.store.resolvePath(path, item.target) + (item.children ? '/' : ""))
+                    name: item.name
                 };
                 
                 if (Array.isArray(item.children)) {
+                    child.id = this.store.normalizePath(
+                                this.store.resolvePath(path, item.target) + '/');
                     child.children = this.createChildren(child.id, item.children);
+                } else {
+                    child.id = this.store.normalizePath(
+                                this.store.resolvePath(path, item.target));                    
                 }
                 
                 return child;
