@@ -70,13 +70,16 @@ export default {
         },
         
         createChildren (path, toc) {
+            let count = 0;
             return toc.map(item => {
                 
                 if (typeof item === "string") {
                     item = {name: item};
+                } else if (!item || typeof item !== "object") {
+                    item = {name: `Item ${count++}`}
                 }
                 
-                if (!item.target) {
+                if (typeof item.target !== "string") {
                     item.target = item.name.toLowerCase().replaceAll(' ','_');
                 }
                 
@@ -84,7 +87,7 @@ export default {
                     name: item.name
                 };
                 
-                if (Array.isArray(item.children)) {
+                if (Array.isArray(item.children) && item.children.length > 0) {
                     child.id = this.store.normalizePath(
                                 this.store.resolvePath(path, item.target) + '/');
                     child.children = this.createChildren(child.id, item.children);
