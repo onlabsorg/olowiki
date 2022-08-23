@@ -69,35 +69,37 @@ export default {
             this.$emit('update:active', activeItems[0] || "");
         },
         
-        createChildren (path, toc) {
+        createChildren (parentPath, toc) {
             let count = 0;
+            
             return toc.map(item => {
                 
                 if (typeof item === "string") {
-                    item = {name: item};
-                } else if (!item || typeof item !== "object") {
-                    item = {name: `Item ${count++}`}
+                    return this._createChild(parentPath, item);
                 }
                 
-                if (typeof item.target !== "string") {
-                    item.target = item.name.toLowerCase().replaceAll(' ','_');
+                if (item && typeof item === "object") {
+                    return this._createChild(parentPath, item.name, item.target, item.children);
                 }
                 
-                const child = {
-                    name: item.name
-                };
-                
-                if (Array.isArray(item.children) && item.children.length > 0) {
-                    child.id = this.store.normalizePath(
-                                this.store.resolvePath(path, item.target) + '/');
-                    child.children = this.createChildren(child.id, item.children);
-                } else {
-                    child.id = this.store.normalizePath(
-                                this.store.resolvePath(path, item.target));                    
-                }
-                
-                return child;
+                return this._createChild(parentPath, `Undefined Item ${count++}`);
             });            
+        },
+        
+        _createChild (parentPath, name, target, children) {
+            const child = {};
+            
+            child.name = String(name);
+                        
+            const relativeId = typeof target === 'string' ? target : child.name.toLowerCase().replaceAll(' ','_');
+            child.id = this.store.normalizePath( this.store.resolvePath(parentPath, relativeId) );
+            
+            if (Array.isArray(children)) {
+                child.id += "/";
+                child.children = this.createChildren(child.id, children);
+            }
+            
+            return child;
         }
     }
 }
