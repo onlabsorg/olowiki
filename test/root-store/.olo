@@ -1,6 +1,7 @@
 <% __render__ = require 'markdown' %>
 
-# <% __title__ : "Test Wiki" %>
+
+<% A = import 'A/' %>
 
 <% __toc__ = [
 
@@ -16,6 +17,12 @@
                 {name: "Pinocchio", target: "../favole/pinocchio"},
                 {name: "Favole"   , target: "../favole", children: import "../favole/" . __toc__   },
                 {name: "Local Store"   , target: "local:/", children: import "local:/" . __toc__   }
-            ]}
+            ]},
+            
+        {name:A.__title__, target:A.__path__, children:A.__toc__ }
     
     ] %>
+
+<% __title__ : "Test Wiki" %>
+================================================================================
+

@@ -59,20 +59,6 @@
         
         asyncComputed: {
             
-            fileContent: {
-                
-                async get () {
-                    try {
-                        return this.store.read(this.path);
-                    } catch (error) {
-                        return `<p><b>Failed to load ${this.path}</b></p>
-                                <code><pre>${error.message}</pre></code>`
-                    }
-                },
-                
-                default: ""
-            },
-
             doc: {
                 
                 async get () {
@@ -85,8 +71,12 @@
         
         watch: {
             
-            fileContent () {
-                this.source = this.fileContent;
+            store () {
+                this.loadSource();
+            },
+            
+            path () {
+                this.loadSource();
             },
             
             source () {
@@ -99,6 +89,16 @@
         },
         
         methods: {
+            
+            async loadSource () {
+                try {
+                    this.source = await this.store.read(this.path);
+                } catch (error) {
+                    this.source = `
+                            <p><b>Failed to load ${this.path}</b></p>
+                            <code><pre>${error.message}</pre></code>`
+                }                
+            },
             
             commit () {
                 this.source = this.editorContent;

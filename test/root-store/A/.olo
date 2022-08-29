@@ -1,0 +1,16 @@
+<% __render__ = require 'markdown' %>
+
+<% _children = (
+        A1: import 'A1' ,
+        A2: import 'A2' ,
+        A3: import 'A3' ,
+        A4: import 'A4' ,
+        A5: import 'A5' ,
+        A6: import 'A6' ,
+        A7: import 'A7' 
+    ) %>
+    
+<% __toc__ = [_children => doc -> {name:doc.__title__, target:doc.__path__}] %>
+
+<% __title__: "Item A" %>
+================================================================================
