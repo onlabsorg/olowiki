@@ -4,6 +4,9 @@
 
 <script>
 import DOMPurify from 'dompurify';
+const DOMPURIFY_OPTIONS = {
+    ADD_TAGS: ['style']    
+}
 
 export default {
     name: "olo-viewer",
@@ -13,7 +16,7 @@ export default {
     computed: {
         
         saneHTML () {
-            return DOMPurify.sanitize(this.html);
+            return DOMPurify.sanitize(this.html, DOMPURIFY_OPTIONS);
         },
     }
 }

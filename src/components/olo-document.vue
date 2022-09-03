@@ -113,6 +113,10 @@
                 await this.store.delete(this.path);
                 this.source = "";
             }
+        },
+        
+        mounted () {
+            this.loadSource();
         }
     }
 </script>
