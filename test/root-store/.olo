@@ -1,25 +1,20 @@
 <% __render__ = require 'markdown' %>
 
-<% A = import 'A/' %>
-
 <% __toc__ = [
 
-        {name: "Aforismi", children: import "aforismi/" . __toc__ },
-        {name: "Favole"  , children: import "favole/" . __toc__   },
+        {name: "Aforismi", children: import "aforismi/" '__toc__' },
+        {name: "Favole"  , children: import "favole/" '__toc__'   },
     
         {name: "item1"},
         {name: "item2"},
         {name: "item3", children: [
-                {name: "item3.1"},
-                {name: "item3.2"},
-                {name: "item3.3"},
-                {name: "Pinocchio", target: "../favole/pinocchio"},
-                {name: "Favole"   , target: "../favole", children: import "../favole/" . __toc__   },
-                {name: "Local Store"   , target: "local:/", children: import "local:/" . __toc__   }
-            ]},
-            
-        {name:A.__title__, target:A.__path__, children:A.__toc__ }
-    
+                {name: "item3.1", children:[]},
+                {name: "item3.2", children:[]},
+                {name: "item3.3", children:[]},
+                {name: "Pinocchio", target: "../favole/pinocchio", children:[]},
+                {name: "Favole"   , target: "../favole", children: import "../favole/" '__toc__'   },
+                {name: "Local Store"   , target: "local:/", children: import "local:/" '__toc__'   }
+            ]}
     ] %>
 
 <% __title__ : "Test Wiki" %>

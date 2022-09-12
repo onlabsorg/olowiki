@@ -8,8 +8,8 @@ xxxx
 
 <% __toc__ = [
 
-        {name: "Alber Einstein"},
-        {name: "Woody Allen"},
-        {name: "Dalai Lama"}
+        owns {name: "Alber Einstein"},
+        owns {name: "Woody Allen"},
+        owns {name: "Dalai Lama"}
 
     ] %>
