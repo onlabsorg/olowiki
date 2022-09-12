@@ -1,6 +1,5 @@
 <% __render__ = require 'markdown' %>
 
-
 <% A = import 'A/' %>
 
 <% __toc__ = [

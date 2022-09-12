@@ -5,7 +5,7 @@
 <script>
 import DOMPurify from 'dompurify';
 const DOMPURIFY_OPTIONS = {
-    ADD_TAGS: ['style']    
+    ADD_TAGS: ['style', 'polyline']
 }
 
 export default {
