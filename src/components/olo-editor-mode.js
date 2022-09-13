@@ -20,6 +20,7 @@ ace.define("ace/mode/olo_highlight_rules", ["require","exports","module","ace/mo
             "expression" : [
                 {token:"string", regex:/'(?=[\s\S]*)/, next:"string1"},     // single quote string
                 {token:"string", regex:/"(?=[\s\S]*)/, next:"string2"},     // double quote string
+                {token:"string", regex:/`(?=[\s\S]*)/, next:"stringTemp"},  // accent quote string
                 {token:"constant.numeric", regex:/(?:\d\d*(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+\b)?/},   // decimal integers and floats
                 {token:"variable", regex:/[a-z_A-Z]+[a-z_A-Z0-9]*/},
                 expressionClosingToken,
@@ -39,6 +40,20 @@ ace.define("ace/mode/olo_highlight_rules", ["require","exports","module","ace/mo
             "string2" : [
                 {token:"string", regex:'"', next:"expression"}, 
                 {defaultToken:"string"}                
+            ],
+            
+            // accent quote string
+            "stringTemp" : [
+                {token:"constant.numeric", regex:'{%', next:"stringTempExpression"}, 
+                {token:"string", regex:'`', next:"expression"}, 
+                {defaultToken:"string"}
+            ],
+            
+            // template expression
+            "stringTempExpression" : [
+                {token:"constant.numeric", regex:/%}/, next:"stringTemp"}, 
+                {token:"string", regex:'`', next:"expression"}, 
+                {defaultToken:"constant.numeric"}
             ],
             
             // comment

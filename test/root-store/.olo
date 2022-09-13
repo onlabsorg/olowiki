@@ -1,5 +1,10 @@
 <% __render__ = require 'markdown' %>
 
+<% `Il doppio di sei e' {% 2*6 %}.` %>
+
+<% 2 + 7 - 6 * 5 %>
+
+
 <% __toc__ = [
 
         {name: "Aforismi", children: import "aforismi/" '__toc__' },
@@ -8,10 +13,10 @@
         {name: "item1"},
         {name: "item2"},
         {name: "item3", children: [
-                {name: "item3.1", children:[]},
-                {name: "item3.2", children:[]},
-                {name: "item3.3", children:[]},
-                {name: "Pinocchio", target: "../favole/pinocchio", children:[]},
+                own {name: "item3.1"},
+                own {name: "item3.2"},
+                own {name: "item3.3"},
+                own {name: "Pinocchio", target: "../favole/pinocchio"},
                 {name: "Favole"   , target: "../favole", children: import "../favole/" '__toc__'   },
                 {name: "Local Store"   , target: "local:/", children: import "local:/" '__toc__'   }
             ]}
