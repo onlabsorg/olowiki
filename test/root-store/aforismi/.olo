@@ -6,10 +6,10 @@
 xxxx
 
 
-<% __toc__ = [
+<% __toc__ = [(
 
-        owns {name: "Alber Einstein"},
-        owns {name: "Woody Allen"},
-        owns {name: "Dalai Lama"}
+        {name: "Alber Einstein"},
+        {name: "Woody Allen"},
+        {name: "Dalai Lama"}
 
-    ] %>
+    ) => Namespace.own] %>

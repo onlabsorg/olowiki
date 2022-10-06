@@ -13,10 +13,10 @@
         {name: "item1"},
         {name: "item2"},
         {name: "item3", children: [
-                own {name: "item3.1"},
-                own {name: "item3.2"},
-                own {name: "item3.3"},
-                own {name: "Pinocchio", target: "../favole/pinocchio"},
+                Namespace.own {name: "item3.1"},
+                Namespace.own {name: "item3.2"},
+                Namespace.own {name: "item3.3"},
+                Namespace.own {name: "Pinocchio", target: "../favole/pinocchio"},
                 {name: "Favole"   , target: "../favole", children: import "../favole/" '__toc__'   },
                 {name: "Local Store"   , target: "local:/", children: import "local:/" '__toc__'   }
             ]}
