@@ -57,11 +57,6 @@ export default class WikiStore extends ObservableStore {
         }        
     }
 
-    async createDocument (path) {
-        await this.assertNonExistance(path);
-        await this.write(path, "");
-    }
-
     async copy (path1, path2) {
         path1 = normalizePath(path1);
         path2 = normalizePath(path2);

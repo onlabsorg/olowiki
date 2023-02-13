@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["swan_modules/path"],{"89c6":function(n,o,t){const s=t("b69a");n.exports=n=>{const o={};return o.join=(...o)=>{const t=o.map(o=>n.wrap(o).toString());return s.normalize(t.join("/"))},o.split=(...t)=>{const s=o.join(...t).slice(1);return new n.Tuple(...s.split("/")).normalize()},o}}}]);
+//# sourceMappingURL=path.12b02b32.js.map

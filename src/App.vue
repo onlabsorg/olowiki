@@ -192,7 +192,7 @@ export default {
     methods: {
         
         async updateConfig () {
-            const {data} = await this.store.load(this.homePath);
+            const data = await this.store.evaluateDocument(this.homePath);
             this.config = {
                 title: data.__title__ ? String(data.__title__) : DEFAULT_CONFIG.title,
                 toc: Array.isArray(data.__toc__) ? data.__toc__ : DEFAULT_CONFIG.toc

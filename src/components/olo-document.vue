@@ -40,32 +40,22 @@
         
         computed: {
             
-            context () {
-                return this.store ? this.store.createContext(this.path, this.presets) : {};
-            },
-            
-            evaluate () {
-                return this.store.parse(this.source);
-            },
-
             text () {
-                return this.doc.text;
-            },
-            
-            data () {
-                return this.doc.data;
+                return this.docns.__text__ || "";
             }
         },
         
         asyncComputed: {
             
-            doc: {
+            docns: {
                 
                 async get () {
-                    return this.evaluate(this.context);
+                    const doc = this.store.createDocument(this.path, this.source);
+                    const context = doc.createContext(this.presets);
+                    return await doc.evaluate(context);
                 },
                 
-                default: {text:"", data:{}}
+                default: {}
             }
         },
         
@@ -83,8 +73,8 @@
                 this.editorContent = this.source;
             },
             
-            doc () {
-                this.$emit('doc-rendered', this.doc.data);
+            docns () {
+                this.$emit('doc-rendered', this.docns);
             }
         },
         
