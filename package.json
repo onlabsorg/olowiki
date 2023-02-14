@@ -1,6 +1,6 @@
 {
   "name": "@onlabsorg/olowiki",
-  "version": "0.17.3",
+  "version": "0.18.0",
   "description": "Wiki based on olojs documents",
   "keywords": [
     "wiki",
