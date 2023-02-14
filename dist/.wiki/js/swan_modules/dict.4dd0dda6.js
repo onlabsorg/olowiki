@@ -1,2 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["swan_modules/dict"],{"5d3f":function(e,n){const s=Symbol("Swan Dictionary Map");e.exports=e=>({create(...n){const a=new Map(n);return{[s]:a,size:a.size,keys:new e.Tuple(...a.keys()),values:new e.Tuple(...a.values()),entries:new e.Tuple(...a.entries()),get:n=>a.has(n)?a.get(n):new e.Undefined("Mapping",n),has:e=>a.has(e)}},isDict(n){return e.wrap(n)instanceof e.Namespace&&n[s]instanceof Map}})}}]);
-//# sourceMappingURL=dict.4dd0dda6.js.map

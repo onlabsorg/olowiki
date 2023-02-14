@@ -1,4 +1,3 @@
-<% __render__ = require "markdown" %>
 
 
 olowiki guide
@@ -61,8 +60,8 @@ done via the Swan `import` function.
 
 Finally, it is possible to write an olo-document in 
 [markdown](https://en.wikipedia.org/wiki/Markdown) by adding the 
-`<% '<'+'%' %> __render__ = require 'markdown' <% '%'+'>' %>` inline expression 
-anywhere in the document.
+`<% '<'+'%' %> __text__ = require 'markdown' __text__ <% '%'+'>' %>` inline
+expression at the end of the document.
 
 A more in depth description of the olo-documents markup can be found
 [here](https://github.com/onlabsorg/olojs/blob/master/docs/document.md).
@@ -84,3 +83,7 @@ visit the following projects on GitHub:
   olo-documents, on which both stilo and olowiki are based.
 - [swan-js](https://github.com/onlabsorg/swan-js): the language used in the
   documents inline expressions.
+
+
+
+<% __text__ = require "markdown" __text__ %>
